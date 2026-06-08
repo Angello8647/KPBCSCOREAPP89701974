@@ -1,3 +1,4 @@
+// TODO: REMOVE
 // 🚫 TIJDELIJK UITGESCHAKELD TIJDENS HERSCHRIJVEN
 function exportAllData() { alert("⚠️ Export tijdelijk uitgeschakeld."); }
 function exportOnlyMatches() { alert("⚠️ Export tijdelijk uitgeschakeld."); }
