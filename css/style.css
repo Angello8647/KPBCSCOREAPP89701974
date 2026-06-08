@@ -1,1 +1,966 @@
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        
+        /* SWIPE PREVENTIE CSS - ALLEEN VOOR PAGINA 6 */
+        body { 
+            background: #2c3e50; 
+            color: white;
+            overscroll-behavior: contain;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden !important;
+        }
+        
+        .page { 
+            display: none; 
+            padding: 10px;
+            overflow-y: auto !important;
+            height: calc(100vh - 20px) !important;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        /* PAGINA 6: GEEN SCROLL TOEGESTAAN */
+        #page6.page {
+            overflow-y: hidden !important;
+            overflow: hidden !important;
+            overscroll-behavior: none !important;
+            -webkit-overflow-scrolling: none !important;
+            touch-action: none !important;
+        }
+        
+        /* Voor de scroll containers binnen pagina 6 */
+        #page6 .turns-scroll-container {
+            overflow-y: auto !important;
+            touch-action: pan-y !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+        }
+        
+        .active { display: block; }
+        
+        /* Scrollbare containers mogen wel scrollen */
+        .turns-scroll-container,
+        #availablePlayers,
+        #playersList > div,
+        .matches-list-container {
+            overscroll-behavior: contain !important;
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-y !important;
+        }
+        
+        /* Swipe warning animaties */
+        @keyframes slideDown {
+            from { transform: translate(-50%, -100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translate(-50%, 0); opacity: 1; }
+            to { transform: translate(-50%, -100%); opacity: 0; }
+        }
+        
+        /* REST VAN JE CSS BEGINT HIER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #34495e;
+        }
+        
+        .header h1 {
+            font-size: 1.5em;
+            margin: 0;
+        }
+        
+        .back-btn {
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .home-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+        
+        .match-card {
+            background: #34495e;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .match-card.completed {
+            opacity: 0.7;
+            background: #2c3e50;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .match-card.downloaded {
+            opacity: 0.6;
+            background: #2c3e50;
+            border-left: 5px solid #3498db;
+        }
+        
+        .delete-match-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .players-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .player-card {
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .player-active {
+            border: 4px solid #e74c3c;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+        
+        .player-inactive {
+            opacity: 0.7;
+            border: 4px solid transparent;
+        }
+        
+        .player-white {
+            background: white;
+            color: black;
+        }
+        
+        .player-yellow {
+            background: #f1c40f;
+            color: black;
+        }
+        
+        /* HUIDIGE BEURT IN HET MIDDEN */
+        .current-turn-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .current-turn {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 12px 25px;
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 10px;
+            border: 2px solid #3498db;
+            min-width: 300px;
+        }
+        
+        .score-controls {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between; /* Dit zorgt voor knoppen aan de randen */
+	    margin: 20px 0;
+	    padding: 0 20px;
+	}
 
+	.score-btn {
+	    width: 80px;
+	    height: 80px;
+	    border-radius: 50%;
+	    border: none;
+	    font-size: 35px;
+	    cursor: pointer;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    font-weight: bold;
+	    transition: all 0.3s;
+	    flex-shrink: 0; /* Voorkomt dat knoppen kleiner worden */
+	}
+
+	/* Plus knoppen (groen) */
+	.score-btn.plus-btn {
+	    background: #2ecc71;
+	    color: white;
+	}
+	
+	/* Min knop (rood) */
+	.score-btn.minus-btn {
+	    background: #e74c3c;
+	    color: white;
+	}
+	
+	/* Container voor score en min knop (in het midden) */
+	.score-middle {
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    flex-grow: 1; /* Neemt alle beschikbare ruimte in het midden */
+	}
+
+	.score-display {
+	    font-size: 50px;
+	    font-weight: bold;
+	    width: 90px;
+	    text-align: center;
+	    background: #ecf0f1;
+	    color: #2c3e50;
+	    padding: 5px;
+	    border-radius: 10px;
+	    margin-right: 5px; /* Weinig ruimte tussen score en min knop */
+	}
+        
+	.action-btn {
+	    padding: 16px 30px;  /* Meer padding voor grotere knop */
+	    font-size: 1.2em;    /* Groter lettertype (i.p.v. 18px) */
+	    border: none;
+	    border-radius: 12px; /* Meer afgeronde hoeken */
+	    cursor: pointer;
+	    font-weight: bold;   /* Vetgedrukt */
+	    letter-spacing: 0.5px; /* Betere leesbaarheid */
+	}
+
+	.confirm-btn {
+	    background: linear-gradient(135deg, #e74c3c, #c0392b); /* Rode gradient */
+	    color: white;
+	    flex-grow: 1;
+	    max-width: 85%;
+	    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3); /* Schaduw voor diepte */
+	    transition: all 0.3s ease; /* Soepele hover animatie */
+	}
+
+
+	.confirm-btn:hover {
+	    background: linear-gradient(135deg, #c0392b, #a93226);
+	    transform: translateY(-2px); /* Licht omhoog bij hover */
+	    box-shadow: 0 6px 12px rgba(231, 76, 60, 0.4);
+	}
+
+	.confirm-btn:active {
+	    transform: translateY(1px); /* Klik effect */
+	    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+	}
+
+
+	.action-buttons {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px;
+	    margin: 5px 0 25px 0; /* Minder ruimte boven, meer onder */
+	    padding: 0 20px;
+	}
+
+
+	.confirm-btn {
+	    background: linear-gradient(135deg, #c0392b, #922b21);
+	    color: white;
+	    box-shadow: 0 4px 8px rgba(192, 57, 43, 0.3);
+	}
+	.confirm-btn:hover {
+	    background: linear-gradient(135deg, #922b21, #7b241c);
+	    box-shadow: 0 6px 12px rgba(192, 57, 43, 0.4);
+	}
+
+
+        /* Wachtwoord veld styling */
+        #adminPassword {
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #3498db;
+            background: #34495e;
+            color: white;
+            width: 150px;
+        }
+
+        #adminPassword:focus {
+            outline: none;
+            border-color: #2ecc71 !important;
+            box-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
+        }
+
+        /* Password change button */
+        .password-change-btn {
+            background: #9b59b6 !important;
+            margin-left: 10px;
+        }
+        
+        .undo-btn {
+            background: #e74c3c;
+            color: white;
+            margin-left: auto;
+        }
+        
+        /* Verwijder de download knop van de scoring pagina */
+        .action-buttons .download-btn {
+            display: none;
+        }
+        
+        .match-ended {
+            background: #27ae60;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px;
+            font-weight: bold;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .stat-icon {
+            font-size: 1.2em;
+            margin-bottom: 3px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        /* NIEUW: Scrollbare beurtenlijst */
+        .turns-scroll-container {
+            flex-grow: 1;
+            margin-top: 10px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+            padding: 8px;
+            max-height: 200px;
+        }
+        
+        .turns-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .turn-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        
+        .turn-row:first-child {
+            background: rgba(52, 152, 219, 0.2);
+            font-weight: bold;
+        }
+
+        /* Tabbladen */
+        .matches-tabs {
+            display: flex;
+            border-bottom: 2px solid #34495e;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: #2c3e50;
+            border: none;
+            color: #ecf0f1;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            background: #34495e;
+        }
+        
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .tab-btn .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+        
+        /* NIEUW: Dynamische "nog nodig" display */
+        .dynamic-needed {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 10;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* NIEUW: File upload en download stijlen */
+        .file-upload-container {
+            background: #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .file-input {
+            margin: 15px 0;
+            padding: 10px;
+            background: #2c3e50;
+            border: 2px dashed #3498db;
+            border-radius: 5px;
+            color: white;
+            width: 100%;
+        }
+        
+        .upload-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        .download-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        .info-box {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        /* NIEUW: Ball color selection simplified */
+        .ball-selection-container {
+            background: #34495e;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .ball-selection-title {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            color: #ecf0f1;
+        }
+        
+        .ball-option {
+            display: block;
+            margin: 15px 0;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .ball-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0 auto 10px;
+            border: 4px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .ball-circle.white {
+            background: white;
+            color: black;
+        }
+        
+        .ball-circle.yellow {
+            background: #f1c40f;
+            color: black;
+        }
+        
+        .ball-circle.selected {
+            border-color: #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+            transform: scale(1.1);
+        }
+        
+        .ball-option-label {
+            font-size: 1em;
+            margin-top: 5px;
+        }
+        
+        .start-match-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        
+        .disabled-btn {
+            background: #7f8c8d;
+            cursor: not-allowed;
+        }
+        
+        /* NIEUW: Selection screens */
+        .selection-container {
+            background: #34495e;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .selection-title {
+            font-size: 1.4em;
+            margin-bottom: 30px;
+            color: #ecf0f1;
+        }
+        
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .selection-option {
+            background: #2c3e50;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .selection-option:hover {
+            background: #3c4e60;
+            transform: translateY(-2px);
+        }
+        
+        .selection-option.selected {
+            background: #3498db;
+            border: 2px solid #2980b9;
+        }
+        
+        .selection-option h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .selection-option p {
+            font-size: 0.9em;
+            color: #bdc3c7;
+            margin: 0;
+        }
+        
+        .date-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            background: #2c3e50;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .next-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .category-option {
+            background: #2c3e50;
+            border-radius: 8px;
+            padding: 25px 15px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .category-option:hover {
+            background: #3c4e60;
+            transform: scale(1.05);
+        }
+        
+        .category-option.selected {
+            background: #3498db;
+            border: 2px solid #2980b9;
+        }
+        
+        /* NIEUW: Header buttons */
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .no-matches {
+            text-align: center;
+            padding: 40px;
+            color: #95a5a6;
+        }
+        
+        .match-info {
+            font-size: 0.85em;
+            color: #bdc3c7;
+            margin-top: 5px;
+        }
+        
+        .upload-instructions {
+            background: #2c3e50;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .upload-instructions h4 {
+            margin: 0 0 10px 0;
+            color: #3498db;
+        }
+        
+        .upload-instructions code {
+            background: #34495e;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        /* NIEUW: All matches display */
+        .matches-list-container {
+            margin-top: 20px;
+        }
+        
+        .matches-list-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #ecf0f1;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status-pending {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .status-completed {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .status-downloaded {
+            background: #3498db;
+            color: white;
+        }
+        
+        .clear-all-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .match-stats {
+            font-size: 0.8em;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        
+        .download-section {
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .download-section h3 {
+            color: #2ecc71;
+            margin-bottom: 15px;
+        }
+        
+        /* NIEUW: Speler selectie voor nieuwe match */
+        .player-selection-container {
+            background: #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .player-selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .player-select-box {
+            background: #2c3e50;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .player-select-box:hover {
+            background: #3c4e60;
+            transform: translateY(-2px);
+        }
+        
+        .player-select-box.selected {
+            background: #3498db;
+            border-color: #2980b9;
+        }
+        
+        .player-select-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .player-select-box p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #bdc3c7;
+        }
+        
+        .target-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 2px solid #3498db;
+            background: #2c3e50;
+            color: white;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        
+        .create-match-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .create-match-btn:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+        }
+        
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Action buttons in match cards */
+        .match-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .action-btn-small:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        
+        /* NIEUW: Export/Import knoppen */
+        .data-transfer-section {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #9b59b6;
+        }
+        
+        .data-transfer-section h3 {
+            color: #ecf0f1;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .transfer-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .export-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .import-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .sync-btn {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            grid-column: span 2;
+        }
