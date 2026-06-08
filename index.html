@@ -6,9 +6,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-	<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <title>Biljart Score</title>
-
 </head>
 <body>
     <!-- PAGINA 1: Datum selectie -->
@@ -16,9 +15,7 @@
         <div class="header">
             <h1>⚪🟡🔴 Biljart Competitie Koninklijke Poperingse BiljartClub</h1>
             <div class="header-buttons">
-                <!-- Wachtwoord input (verborgen standaard) -->
-                <input type="password" id="adminPassword" placeholder="Wachtwoord" 
-                       style="display: none;">
+                <input type="password" id="adminPassword" placeholder="Wachtwoord" style="display: none;">
                 <button class="upload-btn" onclick="checkPassword()">📤 Beheer Matchen</button>
             </div>
         </div>
@@ -27,15 +24,6 @@
             <div class="selection-title">Selecteer Datum</div>
             <input type="date" id="dateSelect" class="date-input">
             <button class="next-btn" onclick="goToPage2()">Volgende →</button>
-            
-            <!-- NIEUW: Data transfer info -->
-            <div class="info-box" style="margin-top: 20px;">
-                <strong>💡 Hoe werkt synchronisatie?</strong><br>
-                1. Op PC: Exporteer data (Exporteer ALLES)<br>
-                2. Upload export.json naar OneDrive<br>
-                3. Op tablets: Importeer data (Importeer ALLES)<br>
-                4. Herhaal elke week voor nieuwe matchen
-            </div>
         </div>
     </div>
     
@@ -87,7 +75,7 @@
         </div>
     </div>
     
-    <!-- PAGINA 4: Match selectie (alleen niet-voltooide matchen) -->
+    <!-- PAGINA 4: Match selectie -->
     <div id="page4" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(3)">← Terug</button>
@@ -146,7 +134,6 @@
             </div>
         </div>
         
-        <!-- HUIDIGE BEURT IN HET MIDDEN -->
         <div class="current-turn-container">
             <div class="current-turn" id="currentPlayerDisplay"></div>
         </div>
@@ -154,15 +141,13 @@
         <div id="matchEndedAlert" class="match-ended" style="display: none;"></div>
         
         <div class="score-controls">
-	    <button class="score-btn plus-btn left-plus" onclick="changeScore(1)">+</button>
-    
-	    <div class="score-middle">
-	        <div class="score-display" id="currentScore">0</div>            
-	        <button class="score-btn minus-btn" onclick="changeScore(-1)">−</button>
-	    </div>
-	    
-	    <button class="score-btn plus-btn right-plus" onclick="changeScore(1)">+</button>
-	</div>
+            <button class="score-btn plus-btn left-plus" onclick="changeScore(1)">+</button>
+            <div class="score-middle">
+                <div class="score-display" id="currentScore">0</div>            
+                <button class="score-btn minus-btn" onclick="changeScore(-1)">−</button>
+            </div>
+            <button class="score-btn plus-btn right-plus" onclick="changeScore(1)">+</button>
+        </div>
         
         <div class="action-buttons">
             <button class="action-btn confirm-btn" onclick="addScore()" id="confirmScoreBtn">
@@ -176,88 +161,15 @@
         </div>
     </div>
     
-    <!-- PAGINA 7: Beheer matchen (upload + overzicht + download + SYNC) -->
+    <!-- PAGINA 7: Beheer matchen (OPGESCHOOND) -->
     <div id="page7" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(1)">← Terug</button>
             <h1>📤 Beheer Matchen</h1>
             <div style="display: flex; gap: 10px;">
                 <button class="upload-btn" onclick="showPage(8)">👥 Spelers</button>
-                <button class="upload-btn" onclick="showPage(10)">🔄 Synchronisatie</button>
                 <button class="upload-btn" onclick="changeAdminPassword()" style="background: #9b59b6;">🔐 Wachtwoord</button>
                 <div style="width: 70px;"></div>
-            </div>
-        </div>
-        
-        <!-- NIEUW: Data transfer sectie bovenaan -->
-        <div class="data-transfer-section">
-            <h3>🔄 Synchronisatie tussen PC en Tablets</h3>
-            <div class="transfer-buttons">
-                <button class="export-btn" onclick="exportAllData()">
-                    📤 Exporteer ALLES naar JSON
-                </button>
-                <button class="import-btn" onclick="importDataFromFile()">
-                    📥 Importeer ALLES van JSON
-                </button>
-                <button class="sync-btn" onclick="showSyncHelp()">
-                    ℹ️ Hoe synchroniseren?
-                </button>
-            </div>
-            <div class="info-box" style="margin-top: 10px;">
-                <strong>Tip:</strong> Exporteer op PC → Upload naar OneDrive → Importeer op tablets
-            </div>
-        </div>
-        
-        <div class="file-upload-container">
-            <p><strong>Upload een CSV bestand met matchen</strong></p>
-            <p style="font-size: 0.9em; color: #bdc3c7; margin: 10px 0;">
-                Formaat: Datum (DD/MM/YYYY),Speler1,Speler2,Target1,Target2,Discipline,Categorie<br>
-                Scheiding met komma's (CSV) - één match per regel
-            </p>
-            <input type="file" id="fileInput" accept=".csv,.txt" style="display: none;" onchange="handleFileUpload(event)">
-            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">📁 Upload CSV Bestand</button>
-            
-            <div class="upload-instructions">
-                <h4>📋 Hoe maak je een CSV bestand?</h4>
-                <p>1. Maak een nieuw tekstbestand (.txt) ou use Excel<br>
-                2. Voeg per match een regel toe in dit formaat:<br>
-                <code>11/01/2026,Speler A,Speler B,25,22,Vrijspel,1</code><br>
-                3. Sla op als CSV (komma gescheiden) of .txt bestand<br>
-                4. Upload het bestand hier</p>
-            </div>
-            
-            <div class="info-box">
-                💡 <strong>Voorbeeld inhoud:</strong><br>
-                <small>11/01/2026,Speler A,Speler B,25,22,Vrijspel,1<br>
-                11/01/2026,Speler C,Speler D,20,18,Bandstoten,2<br>
-                11/01/2026,Speler E,Speler F,30,28,Driebanden,3</small>
-            </div>
-        </div>
-        
-        <div class="download-section">
-            <h3>📥 Download Resultaten</h3>
-            <div style="margin: 20px 0;">
-                <button class="download-btn" onclick="downloadAllResults()" style="width: 100%; padding: 15px; margin-bottom: 10px;">
-                    📥 Download Voltooide Matchen
-                </button>
-                <p style="margin-top: 10px; color: #bdc3c7; font-size: 0.9em;">
-                    Download voltooide matchen naar CSV. Matchen worden naar "Gedownloade Matchen" verplaatst.
-                </p>
-            </div>
-            
-            <div style="margin: 20px 0;">
-                <label for="filterDate" style="display: block; margin-bottom: 10px; font-weight: bold;">Filter op datum:</label>
-                <input type="date" id="filterDate" class="date-input" style="margin-bottom: 15px;">
-                <button class="download-btn" onclick="downloadFilteredResults()" style="width: 100%; padding: 15px;">
-                    📥 Download Gefilterde Resultaten
-                </button>
-                <p style="margin-top: 10px; color: #bdc3c7; font-size: 0.9em;">
-                    Download voltooide matchen voor een specifieke datum.
-                </p>
-            </div>
-            
-            <div class="info-box">
-                ℹ️ <strong>Let op:</strong> Gedownloade matchen worden verplaatst naar het tabblad "Gedownloade Matchen".
             </div>
         </div>
         
@@ -270,10 +182,6 @@
                 Voltooide Matchen
                 <span class="badge" id="badgeCompleted">0</span>
             </button>
-            <button class="tab-btn" onclick="showMatchesTab('downloaded')" id="tabDownloaded">
-                Gedownloade Matchen
-                <span class="badge" id="badgeDownloaded">0</span>
-            </button>
         </div>
         
         <div id="matchesTabContent">
@@ -283,40 +191,15 @@
             <div class="tab-content" id="tabContentCompleted">
                 <!-- Voltooide matchen komen hier -->
             </div>
-            <div class="tab-content" id="tabContentDownloaded">
-                <!-- Gedownloade matchen komen hier -->
-            </div>
         </div>
     </div>
     
-    <!-- PAGINA 8: Spelers upload -->
+    <!-- PAGINA 8: Spelers (OPGESCHOOND - geen CSV upload meer) -->
     <div id="page8" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(7)">← Terug</button>
             <h1>📋 Spelers Beheer</h1>
             <div style="width: 70px;"></div>
-        </div>
-    
-        <div class="file-upload-container">
-            <p><strong>Upload een CSV bestand met spelers</strong></p>
-            <p style="font-size: 0.9em; color: #bdc3c7; margin: 10px 0;">
-                Formaat: Naam;TSG;PNT;Cat1<br>
-                Scheiding met puntkomma's (CSV) - één regel per speler<br>
-                TSG = Te Spelen Gemiddelde, PNT = Te Spelen Punten
-            </p>
-            <input type="file" id="playersFileInput" accept=".csv,.txt" style="display: none;" onchange="handlePlayersFileUpload(event)">
-            <button class="upload-btn" onclick="document.getElementById('playersFileInput').click()">📁 Upload Spelers CSV</button>
-            
-            <div class="upload-instructions">
-                <h4>📋 Voorbeeld spelers CSV formaat:</h4>
-                <p><code>Naam;TSG;PNT;Cat;Discipline</code><br>
-            <code>BOUDEWEEL Jan;4,864;87;1;Vrijspel</code><br>
-            <code>DEBEUF Marnik;2,000;28;1;Bandstoten</code><br>
-            <code>DECANCQ Jorn;2,500;21;2;Driebanden</code></p>
-            <p><small>Let op: gebruik een puntkomma (;) als scheiding en een komma (,) voor decimalen.<br>
-            Discipline moet zijn: Vrijspel, Bandstoten of Driebanden<br>
-            <strong>Alle vorige spelers worden verwijderd bij nieuwe upload!</strong></small></p>
-        </div>
         </div>
     
         <div class="selection-container" style="margin-top: 20px;">
@@ -401,76 +284,12 @@
         </div>
     </div>
 
-    <!-- PAGINA 10: Synchronisatie -->
-    <div id="page10" class="page">
-        <div class="header">
-            <button class="back-btn" onclick="showPage(7)">← Terug</button>
-            <h1>🔄 Synchronisatie</h1>
-            <div style="width: 70px;"></div>
-        </div>
-        
-        <div class="selection-container">
-            <div class="selection-title">Synchronisatie tussen PC en Tablets</div>
-            
-            <div class="info-box" style="margin-bottom: 20px;">
-                <strong>💡 WERKWIJZE:</strong><br>
-                1. Op PC: Exporteer data (Exporteer ALLES)<br>
-                2. Sla export.json op in OneDrive map<br>
-                3. Op tablets: Importeer data (Importeer ALLES)<br>
-                4. Herhaal elke week voor nieuwe matchen
-            </div>
-            
-            <div class="transfer-buttons">
-                <button class="export-btn" onclick="exportAllData()">
-                    📤 Exporteer ALLES naar JSON
-                </button>
-                <button class="import-btn" onclick="importDataFromFile()">
-                    📥 Importeer ALLES van JSON
-                </button>
-                <button class="export-btn" onclick="exportOnlyMatches()">
-                    📤 Exporteer alleen matchen
-                </button>
-                <button class="import-btn" onclick="importOnlyMatches()">
-                    📥 Importeer alleen matchen
-                </button>
-            </div>
-            
-            <div class="data-transfer-section" style="margin-top: 30px;">
-                <h3>📊 Huidige Data Overzicht</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-                    <div style="background: #3498db; padding: 15px; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 2em; font-weight: bold;">${state.players.length}</div>
-                        <div>Spelers</div>
-                    </div>
-                    <div style="background: #2ecc71; padding: 15px; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 2em; font-weight: bold;">${state.matches.filter(m => !m.completed).length}</div>
-                        <div>Actieve Matchen</div>
-                    </div>
-                    <div style="background: #f39c12; padding: 15px; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 2em; font-weight: bold;">${state.matches.filter(m => m.completed).length}</div>
-                        <div>Voltooide Matchen</div>
-                    </div>
-                    <div style="background: #9b59b6; padding: 15px; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 2em; font-weight: bold;">${state.downloadedMatches.length}</div>
-                        <div>Gedownloade Matchen</div>
-                    </div>
-                </div>
-                
-                <button class="clear-all-btn" onclick="clearAllDataPermanently()" style="width: 100%; padding: 15px; margin-top: 20px;">
-                    💀 ALLES WISSEN (reset alles)
-                </button>
-            </div>
-            
-            <div class="upload-instructions" style="margin-top: 30px;">
-                <h4>📋 Synchronisatie Tips:</h4>
-                <p>• <strong>Begin van het seizoen:</strong> Exporteer op PC na spelers upload → Importeer op alle tablets</p>
-                <p>• <strong>Elke week:</strong> Exporteer op PC na matchen upload → Importeer op alle tablets</p>
-                <p>• <strong>Na wedstrijddag:</strong> Exporteer op tablets → Importeer op PC om scores te verzamelen</p>
-                <p>• <strong>Backup:</strong> Exporteer regelmatig als backup!</p>
-            </div>
-        </div>
-    </div>
-
-<script src="js/app.js" defer></script>
+    <script src="js/state.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/players.js"></script>
+    <script src="js/matches.js"></script>
+    <script src="js/scoring.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
