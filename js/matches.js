@@ -24,41 +24,46 @@ async function fetchMatchesFromAPI() {
         const newMatches = [];
         
         apiMatches.forEach(apiMatch => {
-            // Haal de twee spelers op
             const [p1Data, p2Data] = apiMatch.players;
+            const refData = apiMatch.referee; // NIEUW: Haal scheidsrechter data op
             
-            // Zoek speler 1 op basis van club_id
+            // Zoek spelers (en eventueel scheidsrechter) op basis van club_id
             const player1 = state.players.find(p => String(p.id) === String(p1Data.club_id));
             const player2 = state.players.find(p => String(p.id) === String(p2Data.club_id));
+            const referee = refData ? state.players.find(p => String(p.id) === String(refData.club_id)) : null; // NIEUW
+            
+            const p1Name = player1 ? player1.name : `ONBEKEND (ID: ${p1Data.club_id})`;
+            const p2Name = player2 ? player2.name : `ONBEKEND (ID: ${p2Data.club_id})`;
+            const refName = referee ? referee.name : null; // NIEUW: Naam van de scheidsrechter (of null)
+            
+            const target1 = player1 ? player1.target : 0;
+            const target2 = player2 ? player2.target : 0;
             
             if (!player1 || !player2) {
-                console.warn(`⚠️ Spelers niet gevonden voor match ${p1Data.club_id} vs ${p2Data.club_id}`);
-                return;
+                console.warn(`⚠️ Speler(s) niet gevonden voor match! P1 ID: ${p1Data.club_id}, P2 ID: ${p2Data.club_id}`);
             }
             
-            // Maak unieke match-ID (kleinste club_id eerst)
             const clubIds = [parseInt(p1Data.club_id), parseInt(p2Data.club_id)].sort((a, b) => a - b);
             const matchId = `${clubIds[0]}-${clubIds[1]}`;
             
-            // Check of match al bestaat
             const exists = state.matches.some(m => m.id === matchId);
             if (exists) {
                 console.log(`⏭️ Match ${matchId} bestaat al, overslaan`);
                 return;
             }
             
-            // Converteer naar biljart-app formaat
             newMatches.push({
                 id: matchId,
                 date: apiMatch.match_date,
                 time: apiMatch.match_time || '',
                 table: apiMatch.table_nr || 1,
-                p1: player1.name,
-                p2: player2.name,
+                p1: p1Name,
+                p2: p2Name,
+                referee: refName, // NIEUW: Sla de naam van de scheidsrechter op
                 p1_club_id: parseInt(p1Data.club_id),
                 p2_club_id: parseInt(p2Data.club_id),
-                target1: player1.target,
-                target2: player2.target,
+                target1: target1,
+                target2: target2,
                 discipline: apiMatch.discipline,
                 cat: parseInt(apiMatch.category),
                 match_type: apiMatch.match_type || 'Regular',
@@ -73,7 +78,7 @@ async function fetchMatchesFromAPI() {
                 synced_at: new Date().toISOString()
             });
             
-            console.log(`✅ Match toegevoegd: ${player1.name} vs ${player2.name} (${apiMatch.discipline} Cat. ${apiMatch.category})`);
+            console.log(`✅ Match verwerkt: ${p1Name} vs ${p2Name}`);
         });
         
         // Voeg nieuwe matchen toe aan state
@@ -165,14 +170,19 @@ function loadFilteredMatches() {
         html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">`;
         
         group.matches.forEach(m => {
-            // LET OP: '${m.id}' moet tussen aanhalingstekens staan omdat de ID een streepje bevat (bijv. "10001-10002")
+            // Bereid de extra regels voor (alleen tonen als ze bestaan)
+            const refLine = m.referee ? `<br>👔 Scheids: ${m.referee}` : '';
+            const discCatLine = `<br>🎱 ${m.discipline} - Cat. ${m.cat}`;
+            
+            // LET OP: '${m.id}' heeft aanhalingstekens nodig vanwege het streepje in de ID
             html += `<div class="match-card" onclick="selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                 <h3 style="font-size: 1.05em; margin-bottom: 8px; line-height: 1.3;">
                     ${m.p1} <span style="color:#95a5a6; font-size: 0.9em;">vs</span> ${m.p2}
                 </h3>
                 <p class="match-info" style="font-size: 0.9em; line-height: 1.4; margin: 0;">
-                    🎯 <strong>${m.target1}</strong> - <strong>${m.target2}</strong><br>
-                    📋 ${m.match_type || 'Regular'}
+                    🎯 <strong>${m.target1}</strong> - <strong>${m.target2}</strong>
+                    ${discCatLine}
+                    ${refLine}
                 </p>
             </div>`;
         });
