@@ -227,7 +227,7 @@ window.selectMatch = function(id) {
     }
     
     console.log("🚀 Doorsturen naar Pagina 4 (Kies Witte Bal)...");
-    showPage(4); // <-- Dit stuurt naar de bal-selectie
+    window.showPage(4); // <-- Dit stuurt naar de bal-selectie
 };
 
 function showMatchesTab(tab) {
