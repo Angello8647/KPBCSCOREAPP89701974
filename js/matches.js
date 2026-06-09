@@ -193,33 +193,7 @@ function loadFilteredMatches() {
 // ============================================
 // MATCH SELECTIE
 // ============================================
-window.selectMatch = function(id) {
-    const match = state.matches.find(m => String(m.id) === String(id));
-    
-    if (!match) {
-        alert("❌ Match niet gevonden!");
-        return;
-    }
-    
-    if (match.completed) {
-        alert("Deze match is al voltooid.");
-        return;
-    }
-    
-    // Stel de huidige match in
-    state.currentMatch = match;
-    state.selectedWhitePlayer = null;
-    
-    // Update de titel op pagina 4
-    const titleEl = document.getElementById('matchTitleSelect');
-    if (titleEl) {
-        titleEl.textContent = `${match.p1} ⚔️ ${match.p2}`;
-    }
-    
-    // Ga naar de bal-selectie pagina
-    showPage(4);
-};
-
+window.selectMatch 
 
 function showMatchesTab(tab) {
     state.currentMatchesTab = tab;
