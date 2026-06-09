@@ -128,18 +128,17 @@ function loadFilteredMatches() {
     const displayDate = formatDateDisplay(state.selectedDate);
     const dayOfWeek = getDayOfWeek(state.selectedDate);
     
-    title.textContent = `Matchen - ${dayOfWeek} ${displayDate}`;
+    if (title) title.textContent = `Matchen - ${dayOfWeek} ${displayDate}`;
+    if (!matchList) return;
     
     const filtered = state.matches.filter(m => m.date === state.selectedDate && !m.completed);
     
     if (filtered.length === 0) {
-        matchList.innerHTML = `<div class="no-matches">
-            <p>Geen matchen gevonden voor ${dayOfWeek} ${displayDate}</p>
-        </div>`;
+        matchList.innerHTML = `<div class="no-matches"><p>Geen matchen gevonden voor ${dayOfWeek} ${displayDate}</p></div>`;
         return;
     }
     
-    // GROEPEER op Tijd en Tafel
+    // Groepeer op Tijd en Tafel
     const grouped = {};
     filtered.forEach(m => {
         const timeStr = m.time || "00:00";
@@ -172,8 +171,8 @@ function loadFilteredMatches() {
             const refLine = m.referee ? `<br>👔 Scheids: ${m.referee}` : '';
             const discCatLine = `<br>🎱 ${m.discipline} - Cat. ${m.cat}`;
             
-            // ⚠️ LET OP: '${m.id}' heeft AANHALINGSTEKENS nodig!
-            html += `<div class="match-card" onclick="selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+            // ⚠️ CRUCIAAL: Enkelvoudige aanhalingstekens rond '${m.id}'
+            html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                 <h3 style="font-size: 1.05em; margin-bottom: 8px; line-height: 1.3;">
                     ${m.p1} <span style="color:#95a5a6; font-size: 0.9em;">vs</span> ${m.p2}
                 </h3>
@@ -193,7 +192,41 @@ function loadFilteredMatches() {
 // ============================================
 // MATCH SELECTIE
 // ============================================
-window.selectMatch 
+window.selectMatch = function(matchId) {
+    console.log("🎯 selectMatch aangeroepen met ID:", matchId, "Type:", typeof matchId);
+
+    // Forceer alles naar tekst voor een veilige vergelijking
+    const idStr = String(matchId).trim();
+
+    // Zoek de match
+    const match = state.matches.find(m => String(m.id).trim() === idStr);
+
+    if (!match) {
+        console.error("❌ Match NIET gevonden! Beschikbare IDs:", state.matches.map(m => m.id));
+        alert("Fout: Match niet gevonden. Ververs de pagina (Ctrl+F5) en haal de matchen opnieuw op.");
+        return;
+    }
+
+    console.log("✅ Match gevonden:", match);
+
+    if (match.completed) {
+        alert("Deze match is al voltooid en kan niet meer gestart worden.");
+        return;
+    }
+
+    // Stel de state in
+    state.currentMatch = match;
+    state.selectedWhitePlayer = null;
+
+    // Update UI titel
+    const titleEl = document.getElementById('matchTitleSelect');
+    if (titleEl) {
+        titleEl.textContent = `${match.p1} ⚔️ ${match.p2}`;
+    }
+
+    console.log("🚀 Doorsturen naar Pagina 4 (Bal selectie)...");
+    showPage(4);
+};
 
 function showMatchesTab(tab) {
     state.currentMatchesTab = tab;
