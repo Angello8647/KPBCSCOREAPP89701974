@@ -1020,13 +1020,13 @@
 		}
 		
 		.ball-circle { 
-		    width: 240px !important;  /* ✅ ECHT GROOT (was 130px) */
-		    height: 240px !important; /* ✅ ECHT GROOT (was 130px) */
+		    width: 180px !important;  /* ✅ ECHT GROOT (was 130px) */
+		    height: 180px !important; /* ✅ ECHT GROOT (was 130px) */
 		    border-radius: 50%; 
 		    display: flex; 
 		    align-items: center; 
 		    justify-content: center; 
-		    font-size: 2.2rem !important; /* ✅ GROTE, LEESBARE TEKST */
+		    font-size: 1.8rem !important; /* ✅ GROTE, LEESBARE TEKST */
 		    font-weight: 900 !important; 
 		    margin: 0 auto 20px; 
 		    border: 5px solid transparent; 
