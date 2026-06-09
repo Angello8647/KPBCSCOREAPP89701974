@@ -60,7 +60,7 @@ async function fetchPlayersFromAPI() {
         localStorage.removeItem('biljartPlayers');
         savePlayersToStorage();
         
-        alert(`✅ ${users.length} gebruikers gesynchroniseerd!\n${state.players.length} combinaties geladen.`);
+        
         
         if (selectedDiscipline && selectedPlayerCategory) {
             loadFilteredPlayers();
