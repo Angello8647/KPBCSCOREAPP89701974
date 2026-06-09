@@ -28,8 +28,8 @@ async function fetchMatchesFromAPI() {
             const [p1Data, p2Data] = apiMatch.players;
             
             // Zoek speler 1 op basis van club_id
-            const player1 = state.players.find(p => p.id === parseInt(p1Data.club_id));
-            const player2 = state.players.find(p => p.id === parseInt(p2Data.club_id));
+            const player1 = state.players.find(p => String(p.id) === String(p1Data.club_id));
+            const player2 = state.players.find(p => String(p.id) === String(p2Data.club_id));
             
             if (!player1 || !player2) {
                 console.warn(`⚠️ Spelers niet gevonden voor match ${p1Data.club_id} vs ${p2Data.club_id}`);
