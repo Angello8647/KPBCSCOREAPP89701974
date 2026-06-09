@@ -125,11 +125,13 @@ async function fetchMatchesFromAPI() {
 function loadFilteredMatches() {
     const matchList = document.getElementById('matchList');
     const title = document.getElementById('matchListTitle');
+    
+    if (!matchList) return;
+
     const displayDate = formatDateDisplay(state.selectedDate);
     const dayOfWeek = getDayOfWeek(state.selectedDate);
     
     if (title) title.textContent = `Matchen - ${dayOfWeek} ${displayDate}`;
-    if (!matchList) return;
     
     const filtered = state.matches.filter(m => m.date === state.selectedDate && !m.completed);
     
@@ -171,7 +173,7 @@ function loadFilteredMatches() {
             const refLine = m.referee ? `<br>👔 Scheids: ${m.referee}` : '';
             const discCatLine = `<br>🎱 ${m.discipline} - Cat. ${m.cat}`;
             
-            // ⚠️ CRUCIAAL: Enkelvoudige aanhalingstekens rond '${m.id}'
+            // ⚠️ BELANGRIJK: window.selectMatch met aanhalingstekens rond '${m.id}'
             html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                 <h3 style="font-size: 1.05em; margin-bottom: 8px; line-height: 1.3;">
                     ${m.p1} <span style="color:#95a5a6; font-size: 0.9em;">vs</span> ${m.p2}
@@ -188,46 +190,43 @@ function loadFilteredMatches() {
     });
     
     matchList.innerHTML = html;
+    console.log("✅ loadFilteredMatches uitgevoerd, aantal matchen:", filtered.length);
 }
+
+
 // ============================================
 // MATCH SELECTIE
 // ============================================
-window.selectMatch = function(matchId) {
-    console.log("🎯 selectMatch aangeroepen met ID:", matchId, "Type:", typeof matchId);
-
-    // Forceer alles naar tekst voor een veilige vergelijking
-    const idStr = String(matchId).trim();
-
-    // Zoek de match
-    const match = state.matches.find(m => String(m.id).trim() === idStr);
-
-    if (!match) {
-        console.error("❌ Match NIET gevonden! Beschikbare IDs:", state.matches.map(m => m.id));
-        alert("Fout: Match niet gevonden. Ververs de pagina (Ctrl+F5) en haal de matchen opnieuw op.");
+window.selectMatch = function(id) {
+    console.log("🎯 selectMatch aangeroepen met ID:", id);
+    
+    // Zoek de match (converteer id naar string voor vergelijking)
+    const m = state.matches.find(x => String(x.id) === String(id));
+    
+    if (!m) {
+        console.error("❌ Match niet gevonden! ID:", id);
+        alert("Fout: Match niet gevonden.");
         return;
     }
-
-    console.log("✅ Match gevonden:", match);
-
-    if (match.completed) {
-        alert("Deze match is al voltooid en kan niet meer gestart worden.");
+    
+    if (m.completed) {
+        alert("Deze match is al afgerond.");
         return;
     }
-
-    // Stel de state in
-    state.currentMatch = match;
+    
+    // Stel de match in
+    state.currentMatch = m;
     state.selectedWhitePlayer = null;
-
-    // Update UI titel
+    
+    // Update titel
     const titleEl = document.getElementById('matchTitleSelect');
     if (titleEl) {
-        titleEl.textContent = `${match.p1} ⚔️ ${match.p2}`;
+        titleEl.textContent = `${m.p1} ⚔️ ${m.p2}`;
     }
-
-    console.log("🚀 Doorsturen naar Pagina 4 (Bal selectie)...");
+    
+    console.log("✅ Match gevonden, doorsturen naar pagina 4");
     showPage(4);
 };
-
 function showMatchesTab(tab) {
     state.currentMatchesTab = tab;
     document.querySelectorAll('#matchesTabs .tab-btn').forEach(b => b.classList.remove('active'));
