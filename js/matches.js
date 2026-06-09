@@ -214,21 +214,22 @@ window.selectMatch = function(id) {
         return;
     }
     
-    // BELANGRIJK: Stel de match in
+    // Stel de match in
     state.currentMatch = match;
     state.selectedWhitePlayer = null;
     
     console.log("✅ Match ingesteld:", match);
     
-    // Update titel
+    // Update titel op Pagina 4
     const titleEl = document.getElementById('matchTitleSelect');
     if (titleEl) {
         titleEl.textContent = `${match.p1} ⚔️ ${match.p2}`;
     }
     
-    console.log("🚀 Doorsturen naar Pagina 4 (Bal selectie)...");
-    showPage(4);
+    console.log("🚀 Doorsturen naar Pagina 4 (Kies Witte Bal)...");
+    showPage(4); // <-- Dit stuurt naar de bal-selectie
 };
+
 function showMatchesTab(tab) {
     state.currentMatchesTab = tab;
     document.querySelectorAll('#matchesTabs .tab-btn').forEach(b => b.classList.remove('active'));
