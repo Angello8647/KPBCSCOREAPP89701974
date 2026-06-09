@@ -170,11 +170,10 @@ function loadFilteredMatches() {
         html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">`;
         
         group.matches.forEach(m => {
-            // Bereid de extra regels voor (alleen tonen als ze bestaan)
+            // Toon scheidsrechter ALLEEN als m.referee een waarde heeft
             const refLine = m.referee ? `<br>👔 Scheids: ${m.referee}` : '';
             const discCatLine = `<br>🎱 ${m.discipline} - Cat. ${m.cat}`;
             
-            // LET OP: '${m.id}' heeft aanhalingstekens nodig vanwege het streepje in de ID
             html += `<div class="match-card" onclick="selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                 <h3 style="font-size: 1.05em; margin-bottom: 8px; line-height: 1.3;">
                     ${m.p1} <span style="color:#95a5a6; font-size: 0.9em;">vs</span> ${m.p2}
