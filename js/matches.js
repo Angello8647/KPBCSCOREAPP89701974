@@ -3,12 +3,13 @@ async function fetchMatchesFromAPI() {
     const apiUrl = "https://kpbc.pythonanywhere.com/api/export/matches";
     
     try {
+        console.log("🎯 START SYNC. Geselecteerde datum in app:", state.selectedDate);
+        
         const matchList = document.getElementById('matchList');
         if (matchList) {
             matchList.innerHTML = `<div class="no-matches"><p>🔄 Eerst spelers synchroniseren...</p></div>`;
         }
         
-        console.log("🔄 Spelers bijwerken voor match-sync...");
         await fetchPlayersFromAPI(); 
         
         if (matchList) {
@@ -16,28 +17,40 @@ async function fetchMatchesFromAPI() {
         }
 
         const response = await fetch(apiUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const apiMatches = await response.json();
-        console.log(`📥 ${apiMatches.length} matchen opgehaald van API voor deze datum`);
+        console.log(`📥 ${apiMatches.length} matchen ontvangen van API`);
         
-        // 🧹 STAP 1: Veeg de niet-voltooide matchen van de gekozen datum schoon
-        // Dit verwijdert geannuleerde matchen, maar beschermt reeds gespeelde matchen!
-        const matchesBefore = state.matches.length;
-        state.matches = state.matches.filter(m => 
-            m.date !== state.selectedDate || m.completed === true
-        );
-        const matchesRemoved = matchesBefore - state.matches.length;
-        if (matchesRemoved > 0) {
-            console.log(`🗑️ ${matchesRemoved} geannuleerde/verwijderde matchen verwijderd van ${state.selectedDate}`);
+        // 🧹 STAP 1: HARDE CLEANUP VOOR DE GESELECTEERDE DATUM
+        console.log(`🧹 Start cleanup voor datum: '${state.selectedDate}'`);
+        const beforeCount = state.matches.filter(m => m.date === state.selectedDate && !m.completed).length;
+        console.log(`   - Matchen voor deze datum vóór cleanup: ${beforeCount}`);
+        
+        // Verwijder ALLE niet-voltooide matchen die exact overeenkomen met de geselecteerde datum
+        state.matches = state.matches.filter(m => {
+            return m.date !== state.selectedDate || m.completed === true;
+        });
+        
+        const afterCount = state.matches.filter(m => m.date === state.selectedDate && !m.completed).length;
+        console.log(`   - Matchen voor deze datum ná cleanup: ${afterCount}`);
+        
+        if (beforeCount > 0 && afterCount === 0) {
+            console.log("✅ Cleanup succesvol: oude matchen voor deze datum zijn verwijderd!");
+        } else if (beforeCount > 0 && afterCount > 0) {
+            console.warn("⚠️ LET OP: Sommige matchen zijn NIET verwijderd. Controleer datum-formaat!");
         }
-        
+
+        // 🏗️ STAP 2: Bouw de lijst opnieuw op met de verse data uit de API
         const newMatches = [];
         
-        // 🏗️ STAP 2: Bouw de lijst opnieuw op met de verse data uit de API
         apiMatches.forEach(apiMatch => {
+            // Alleen verwerken als de match overeenkomt met de geselecteerde datum
+            // (De API stuurt soms alle toekomstige matchen, we filteren lokaal op de gekozen dag)
+            if (apiMatch.match_date !== state.selectedDate) {
+                return; 
+            }
+
             const [p1Data, p2Data] = apiMatch.players;
             const refData = apiMatch.referee;
             
@@ -52,17 +65,12 @@ async function fetchMatchesFromAPI() {
             let refName = null;
             if (refData && refData.club_id) {
                 const referee = state.players.find(p => String(p.id) === String(refData.club_id));
-                if (referee) {
-                    refName = referee.name;
-                } else {
-                    refName = `Scheids (ID: ${refData.club_id})`;
-                }
+                refName = referee ? referee.name : `Scheids (ID: ${refData.club_id})`;
             }
             
             const clubIds = [parseInt(p1Data.club_id), parseInt(p2Data.club_id)].sort((a, b) => a - b);
             const matchId = `${clubIds[0]}-${clubIds[1]}`;
             
-            // Voeg toe aan de nieuwe lijst
             newMatches.push({
                 id: matchId,
                 date: apiMatch.match_date,
@@ -90,15 +98,16 @@ async function fetchMatchesFromAPI() {
             });
         });
         
-        // 💾 STAP 3: Voeg de verse matchen toe en sla op
         if (newMatches.length > 0) {
             state.matches.push(...newMatches);
-            console.log(`✅ ${newMatches.length} matchen gesynchroniseerd voor ${state.selectedDate}`);
+            console.log(`✅ ${newMatches.length} verse matchen toegevoegd voor ${state.selectedDate}`);
+        } else {
+            console.log(`ℹ️ Geen nieuwe matchen gevonden voor ${state.selectedDate} in de API.`);
         }
         
+        // 💾 STAP 3: Altijd opslaan na een sync-actie
         saveStateToStorage();
         
-        // 🔄 STAP 4: Update de weergave
         if (state.currentPage === 4) {
             loadFilteredMatches();
         } else if (state.currentPage === 7) {
@@ -109,14 +118,6 @@ async function fetchMatchesFromAPI() {
         
     } catch (error) {
         console.error('❌ Fout bij ophalen matchen:', error);
-        alert(`❌ Kon matchen niet ophalen.\n\nFout: ${error.message}`);
-        
-        if (state.currentPage === 4) {
-            loadFilteredMatches();
-        } else if (state.currentPage === 7) {
-            loadMatchesTabContent();
-        }
-        
         return false;
     }
 }
