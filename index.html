@@ -312,7 +312,7 @@
         </div>
     </div>
 
-        <!-- PAGINA 10: Matchen Ophalen (NIEUW) -->
+    <!-- PAGINA 10: Matchen Ophalen (NIEUW) -->
     <div id="page10" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(1)">← Terug</button>
@@ -335,20 +335,29 @@
         </div>
     </div>
 
-        <!-- PAGINA 11: Nieuwe Pagina (Placeholder) -->
+    <!-- PAGINA 11: Match Selectie (Uit Planning) -->
     <div id="page11" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(1)">← Terug naar Hoofdmenu</button>
-            <h1>Titel van Pagina 11</h1>
+            <h1 id="matchListTitle">Geplande Matchen</h1>
             <div style="width: 70px;"></div>
         </div>
         
+        <div id="matchList" class="matches-list-container">
+            <!-- Hier komen de gegroepeerde matchen te staan -->
+        </div>
+    </div>
+        
         <div class="selection-container">
-            <div class="selection-title">Inhoud van Pagina 11</div>
-            <p style="color: #bdc3c7; margin-bottom: 20px;">
-                Deze pagina is zojuist aangemaakt. Laat me weten wat hier precies moet komen te staan!
-            </p>
-            <!-- Hier komt jouw nieuwe inhoud -->
+            <div class="selection-title">Kies een categorie (1-6)</div>
+            <div class="category-grid">
+                <div class="category-option" onclick="selectCategory(1)">Cat. 1</div>
+                <div class="category-option" onclick="selectCategory(2)">Cat. 2</div>
+                <div class="category-option" onclick="selectCategory(3)">Cat. 3</div>
+                <div class="category-option" onclick="selectCategory(4)">Cat. 4</div>
+                <div class="category-option" onclick="selectCategory(5)">Cat. 5</div>
+                <div class="category-option" onclick="selectCategory(6)">Cat. 6</div>
+            </div>
         </div>
     </div>
     
