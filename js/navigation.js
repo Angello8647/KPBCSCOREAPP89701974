@@ -16,7 +16,7 @@ function showPage(pn) {
     } else if(pn===4){
         loadFilteredMatches();
     } else if(pn===5){
-        updateBallSelectionPage();
+        updateScoringPage();
     } else if(pn===7){
         loadMatchesTabContent();
     } else if(pn===8){
