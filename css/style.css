@@ -530,11 +530,7 @@
             text-align: center;
         }
         
-        .ball-selection-title {
-            font-size: 1.3em;
-            margin-bottom: 25px;
-            color: #ecf0f1;
-        }
+        
         
         .ball-option {
             display: block;
@@ -1000,11 +996,11 @@
 		    text-align: center; 
 		}
 		
-		.ball-selection-title { 
-		    font-size: 1.6em; 
-		    margin-bottom: 35px; 
-		    color: #ecf0f1; 
-		}
+		.ball-selection-title {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            color: #ecf0f1;
+        }
 		
 		.ball-option { 
 		    display: inline-block; 
