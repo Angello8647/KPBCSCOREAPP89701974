@@ -83,15 +83,13 @@ function syncAndProceedToPage2() {
     statusDiv.textContent = "🔄 Bezig met ophalen van server...";
     statusDiv.style.color = "#f1c40f";
     
-    // Roep de fetch functie aan
     fetchMatchesFromAPI().then(success => {
         if (success) {
-            statusDiv.textContent = "✅ Succes! Doorsturen naar speltype...";
+            statusDiv.textContent = "✅ Succes! Doorsturen naar matchen...";
             statusDiv.style.color = "#2ecc71";
             
-            // Wacht 1,5 seconde zodat de gebruiker het ziet, ga dan door naar Pagina 2
             setTimeout(() => {
-                showPage(2); 
+                showPage(4); // ← NU NAAR PAGINA 4 (was 2)
             }, 1500);
         } else {
             statusDiv.textContent = "❌ Fout bij ophalen. Controleer je internetverbinding.";
