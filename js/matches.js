@@ -1,7 +1,4 @@
 // js/matches.js
-// ============================================
-// MATCH SYNC MET PLANNING APP
-// ============================================
 async function fetchMatchesFromAPI() {
     const apiUrl = "https://kpbc.pythonanywhere.com/api/export/matches";
     
