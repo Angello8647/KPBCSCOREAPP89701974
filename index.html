@@ -8,7 +8,6 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="css/style.css">
     <title>Biljart Score</title>
-    
 </head>
 <body>
     <!-- PAGINA 1: Datum selectie -->
@@ -28,7 +27,7 @@
         </div>
     </div>
     
-    <!-- PAGINA 2: Speltype selectie -->
+    <!-- PAGINA 2: Speltype selectie (voor later - handmatige matches) -->
     <div id="page2" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(1)">← Terug</button>
@@ -55,7 +54,7 @@
         </div>
     </div>
     
-    <!-- PAGINA 3: Categorie selectie -->
+    <!-- PAGINA 3: Categorie selectie (voor later - handmatige matches) -->
     <div id="page3" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(2)">← Terug</button>
@@ -79,7 +78,7 @@
     <!-- PAGINA 4: Bal kleur selectie -->
     <div id="page4" class="page">
         <div class="header">
-            <button class="back-btn" onclick="showPage(2)">← Terug</button>
+            <button class="back-btn" onclick="showPage(11)">← Terug</button>
             <h1 id="matchTitleSelect">Kies Witte Bal</h1>
             <div style="width: 70px;"></div>
         </div>
@@ -189,7 +188,7 @@
         <div class="kiosk-hint">⬆️ Druk kort op de pijl omhoog toets, houd dan de pijl-omhoog toets 3 seconden ingedrukt voor het hoofdmenu</div>
     </div>
     
-    <!-- PAGINA 7: Beheer matchen (OPGESCHOOND) -->
+    <!-- PAGINA 7: Beheer matchen -->
     <div id="page7" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(1)">← Terug</button>
@@ -222,7 +221,7 @@
         </div>
     </div>
     
-    <!-- PAGINA 8: Spelers (OPGESCHOOND - geen CSV upload meer) -->
+    <!-- PAGINA 8: Spelers Beheer -->
     <div id="page8" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(7)">← Terug</button>
@@ -312,7 +311,7 @@
         </div>
     </div>
 
-    <!-- PAGINA 10: Matchen Ophalen (NIEUW) -->
+    <!-- PAGINA 10: Matchen Ophalen (Sync) -->
     <div id="page10" class="page">
         <div class="header">
             <button class="back-btn" onclick="showPage(1)">← Terug</button>
@@ -347,20 +346,6 @@
             <!-- Hier komen de gegroepeerde matchen te staan -->
         </div>
     </div>
-        
-        <div class="selection-container">
-            <div class="selection-title">Kies een categorie (1-6)</div>
-            <div class="category-grid">
-                <div class="category-option" onclick="selectCategory(1)">Cat. 1</div>
-                <div class="category-option" onclick="selectCategory(2)">Cat. 2</div>
-                <div class="category-option" onclick="selectCategory(3)">Cat. 3</div>
-                <div class="category-option" onclick="selectCategory(4)">Cat. 4</div>
-                <div class="category-option" onclick="selectCategory(5)">Cat. 5</div>
-                <div class="category-option" onclick="selectCategory(6)">Cat. 6</div>
-            </div>
-        </div>
-    </div>
-    
 
     <script src="js/state.js"></script>
     <script src="js/utils.js"></script>
