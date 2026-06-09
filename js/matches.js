@@ -8,7 +8,6 @@ async function fetchMatchesFromAPI() {
             matchList.innerHTML = `<div class="no-matches"><p>🔄 Eerst spelers synchroniseren...</p></div>`;
         }
         
-        // 1️⃣ Eerst de spelers ophalen om zeker te weten dat we de juiste club_id's hebben
         console.log("🔄 Spelers bijwerken voor match-sync...");
         await fetchPlayersFromAPI(); 
         
@@ -16,7 +15,6 @@ async function fetchMatchesFromAPI() {
             matchList.innerHTML = `<div class="no-matches"><p>🔄 Nu matchen ophalen van planning app...</p></div>`;
         }
 
-        // 2️⃣ Nu de matchen ophalen
         const response = await fetch(apiUrl);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -26,15 +24,15 @@ async function fetchMatchesFromAPI() {
         console.log(`📥 ${apiMatches.length} matchen opgehaald van API`);
         
         const newMatches = [];
+        let updatedCount = 0;
         
         apiMatches.forEach(apiMatch => {
             const [p1Data, p2Data] = apiMatch.players;
-            const refData = apiMatch.referee; // Kan een object zijn, of null/undefined
+            const refData = apiMatch.referee;
             
             console.log("🔍 Match data:", apiMatch.match_date, apiMatch.match_time, "Tafel:", apiMatch.table_nr);
             console.log("🔍 Referee data uit API:", refData);
             
-            // Zoek spelers op basis van club_id
             const player1 = state.players.find(p => String(p.id) === String(p1Data.club_id));
             const player2 = state.players.find(p => String(p.id) === String(p2Data.club_id));
             
@@ -43,7 +41,6 @@ async function fetchMatchesFromAPI() {
             const target1 = player1 ? player1.target : 0;
             const target2 = player2 ? player2.target : 0;
             
-            // Zoek scheidsrechter op basis van club_id
             let refName = null;
             if (refData && refData.club_id) {
                 const referee = state.players.find(p => String(p.id) === String(refData.club_id));
@@ -63,12 +60,22 @@ async function fetchMatchesFromAPI() {
             const clubIds = [parseInt(p1Data.club_id), parseInt(p2Data.club_id)].sort((a, b) => a - b);
             const matchId = `${clubIds[0]}-${clubIds[1]}`;
             
-            const exists = state.matches.some(m => m.id === matchId);
-            if (exists) {
-                console.log(`⏭️ Match ${matchId} bestaat al, overslaan`);
+            // 🔍 CHECK OF MATCH AL BESTAAT
+            const existingMatch = state.matches.find(m => m.id === matchId);
+            
+            if (existingMatch) {
+                // ✅ MATCH BESTAAT AL - UPDATE SCHEIDSRECHTER ALS DIE ONTBREEKT OF VERSCHILT
+                if (existingMatch.referee !== refName) {
+                    console.log(`🔄 Match ${matchId} updaten: scheidsrechter ${existingMatch.referee || 'geen'} → ${refName || 'geen'}`);
+                    existingMatch.referee = refName;
+                    updatedCount++;
+                } else {
+                    console.log(`⏭️ Match ${matchId} bestaat al en is up-to-date`);
+                }
                 return;
             }
             
+            // ➕ NIEUWE MATCH TOEVOEGEN
             newMatches.push({
                 id: matchId,
                 date: apiMatch.match_date,
@@ -100,10 +107,18 @@ async function fetchMatchesFromAPI() {
         
         if (newMatches.length > 0) {
             state.matches.push(...newMatches);
-            saveStateToStorage();
             console.log(`✅ ${newMatches.length} nieuwe matchen toegevoegd!`);
+        }
+        
+        if (updatedCount > 0) {
+            console.log(`🔄 ${updatedCount} bestaande matchen geüpdatet met scheidsrechter info!`);
+        }
+        
+        // 💾 ALTIJD OPSLAAN (ook als we alleen updates hebben)
+        if (newMatches.length > 0 || updatedCount > 0) {
+            saveStateToStorage();
         } else {
-            console.log(`ℹ️ Geen nieuwe matchen gevonden.`);
+            console.log(`ℹ️ Geen nieuwe matchen of updates gevonden.`);
         }
         
         if (state.currentPage === 4) {
@@ -126,7 +141,6 @@ async function fetchMatchesFromAPI() {
         return false;
     }
 }
-
 
 function loadFilteredMatches() {
     const matchList = document.getElementById('matchList');
