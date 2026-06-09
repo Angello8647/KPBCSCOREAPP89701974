@@ -87,8 +87,9 @@ window.showPage = function(pageNum) {
     }
     else if (actualPageNum === 11) {
         // PAGINA 11: Match selectie (competitie matches)
-        if (typeof window.loadPage11Matches === 'function') {
-            window.loadPage11Matches();
+        // ✅ GEBRUIKT DEZELFDE FUNCTIE ALS PAGINA 2
+        if (typeof window.loadFilteredMatches === 'function') {
+            window.loadFilteredMatches();
         }
     }
 };
