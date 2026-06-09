@@ -6,12 +6,20 @@ async function fetchMatchesFromAPI() {
     const apiUrl = "https://kpbc.pythonanywhere.com/api/export/matches";
     
     try {
-        // Toon loading (optioneel, voor als de functie vanuit andere pagina's wordt aangeroepen)
         const matchList = document.getElementById('matchList');
         if (matchList) {
-            matchList.innerHTML = `<div class="no-matches"><p>🔄 Matchen ophalen van planning app...</p></div>`;
+            matchList.innerHTML = `<div class="no-matches"><p>🔄 Eerst spelers synchroniseren...</p></div>`;
         }
         
+        // 1️⃣ Eerst de spelers ophalen om zeker te weten dat we de juiste club_id's hebben
+        console.log("🔄 Spelers bijwerken voor match-sync...");
+        await fetchPlayersFromAPI(); 
+        
+        if (matchList) {
+            matchList.innerHTML = `<div class="no-matches"><p>🔄 Nu matchen ophalen van planning app...</p></div>`;
+        }
+
+        // 2️⃣ Nu de matchen ophalen
         const response = await fetch(apiUrl);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -20,24 +28,36 @@ async function fetchMatchesFromAPI() {
         const apiMatches = await response.json();
         console.log(`📥 ${apiMatches.length} matchen opgehaald van API`);
         
-        // Converteer API matchen naar biljart-app formaat
         const newMatches = [];
         
         apiMatches.forEach(apiMatch => {
             const [p1Data, p2Data] = apiMatch.players;
-            const refData = apiMatch.referee; // NIEUW: Haal scheidsrechter data op
+            const refData = apiMatch.referee; // Kan een object zijn, of null/undefined
             
-            // Zoek spelers (en eventueel scheidsrechter) op basis van club_id
+            console.log("🔍 Match data:", apiMatch.match_date, apiMatch.match_time, "Tafel:", apiMatch.table_nr);
+            console.log("🔍 Referee data uit API:", refData);
+            
+            // Zoek spelers op basis van club_id
             const player1 = state.players.find(p => String(p.id) === String(p1Data.club_id));
             const player2 = state.players.find(p => String(p.id) === String(p2Data.club_id));
-            const referee = refData ? state.players.find(p => String(p.id) === String(refData.club_id)) : null; // NIEUW
             
             const p1Name = player1 ? player1.name : `ONBEKEND (ID: ${p1Data.club_id})`;
             const p2Name = player2 ? player2.name : `ONBEKEND (ID: ${p2Data.club_id})`;
-            const refName = referee ? referee.name : null; // NIEUW: Naam van de scheidsrechter (of null)
-            
             const target1 = player1 ? player1.target : 0;
             const target2 = player2 ? player2.target : 0;
+            
+            // Zoek scheidsrechter op basis van club_id
+            let refName = null;
+            if (refData && refData.club_id) {
+                const referee = state.players.find(p => String(p.id) === String(refData.club_id));
+                if (referee) {
+                    refName = referee.name;
+                    console.log(`✅ Scheidsrechter gevonden: ${refName} (Club ID: ${refData.club_id})`);
+                } else {
+                    console.warn(`⚠️ Scheidsrechter NIET gevonden in spelerslijst! Gezocht op Club ID: ${refData.club_id}`);
+                    refName = `Scheids (ID: ${refData.club_id})`;
+                }
+            }
             
             if (!player1 || !player2) {
                 console.warn(`⚠️ Speler(s) niet gevonden voor match! P1 ID: ${p1Data.club_id}, P2 ID: ${p2Data.club_id}`);
@@ -59,7 +79,7 @@ async function fetchMatchesFromAPI() {
                 table: apiMatch.table_nr || 1,
                 p1: p1Name,
                 p2: p2Name,
-                referee: refName, // NIEUW: Sla de naam van de scheidsrechter op
+                referee: refName,
                 p1_club_id: parseInt(p1Data.club_id),
                 p2_club_id: parseInt(p2Data.club_id),
                 target1: target1,
@@ -78,38 +98,35 @@ async function fetchMatchesFromAPI() {
                 synced_at: new Date().toISOString()
             });
             
-            console.log(`✅ Match verwerkt: ${p1Name} vs ${p2Name}`);
+            console.log(`✅ Match verwerkt: ${p1Name} vs ${p2Name} | Scheids: ${refName || 'Geen'}`);
         });
         
-        // Voeg nieuwe matchen toe aan state
         if (newMatches.length > 0) {
             state.matches.push(...newMatches);
             saveStateToStorage();
-            console.log(`✅ ${newMatches.length} nieuwe matchen gesynchroniseerd!`);
+            console.log(`✅ ${newMatches.length} nieuwe matchen toegevoegd!`);
         } else {
             console.log(`ℹ️ Geen nieuwe matchen gevonden.`);
         }
         
-        // Refresh de UI indien nodig
         if (state.currentPage === 4) {
             loadFilteredMatches();
         } else if (state.currentPage === 7) {
             loadMatchesTabContent();
         }
         
-        return true; // ✅ Succes - vertelt de navigatie dat het gelukt is
+        return true;
         
     } catch (error) {
         console.error('❌ Fout bij ophalen matchen:', error);
         
-        // Herstel UI indien nodig
         if (state.currentPage === 4) {
             loadFilteredMatches();
         } else if (state.currentPage === 7) {
             loadMatchesTabContent();
         }
         
-        return false; // ❌ Mislukt - vertelt de navigatie dat het mislukt is
+        return false;
     }
 }
 
