@@ -62,3 +62,7 @@ function loadStateFromStorage() {
     const t = new Date();
     state.selectedDate = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
 }
+
+function savePlayersToStorage() {
+    localStorage.setItem('biljartPlayers', JSON.stringify(state.players));
+}
