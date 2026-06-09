@@ -964,3 +964,164 @@
             text-align: center;
             grid-column: span 2;
         }
+
+/* =========================================
+   SCORE SCHERM OPMAAK (Geïnspireerd op oude versie)
+   ========================================= */
+
+/* --- Header Spelers & Targets --- */
+.header-match-info {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    gap: 20px; padding: 0 10px; width: 100%;
+}
+.header-player-side { display: flex; align-items: center; gap: 14px; }
+.header-target {
+    font-size: 4.5rem; font-weight: 800; line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+#headerTarget1 { color: #ffffff !important; }
+#headerTarget2 { color: #f1c40f !important; }
+.header-name {
+    font-size: 3rem; color: #ecf0f1; font-weight: 700;
+    max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#headerName2 { color: #f1c40f !important; }
+.header-vs { font-size: 3rem; color: #bdc3c7; margin: 0 15px; }
+
+/* --- Horizontale Score Rij --- */
+.scoring-row-container {
+    display: flex; justify-content: center; align-items: stretch; gap: 18px;
+    margin: 25px 0; padding: 0 15px; flex-wrap: wrap;
+}
+.score-cell {
+    flex: 1; min-width: 120px; max-width: 210px; border-radius: 18px;
+    padding: 15px 9px; text-align: center; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    background: rgba(44, 62, 80, 0.8); border: 3px solid #34495e;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.score-cell.center-info {
+    flex: 1.8; min-width: 270px; max-width: 450px;
+    background: rgba(52, 152, 219, 0.15); border-color: #3498db;
+}
+.cell-label { font-size: 1.2rem; color: #bdc3c7; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.75px; }
+.cell-value { font-size: 6rem; font-weight: 900; color: white; line-height: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
+
+/* Actieve speler effecten */
+.score-cell.active-player { transform: scale(1.03); }
+#p1CurrentCell.active-player { background: white !important; border-color: #3182ce !important; box-shadow: 0 0 12px rgba(49, 130, 206, 0.4) !important; }
+#p1CurrentCell.active-player .cell-value { color: #000 !important; }
+#p2CurrentCell.active-player { background: #f1c40f !important; border-color: #3182ce !important; box-shadow: 0 0 12px rgba(241, 196, 15, 0.5) !important; }
+#p2CurrentCell.active-player .cell-value { color: #000 !important; }
+
+.score-cell.turn-hidden { visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+
+/* Nog nodig cellen (met rode waarschuwing bij <= 5) */
+.needed-cell { background: rgba(46, 204, 113, 0.15) !important; border-color: #27ae60 !important; }
+.needed-cell .cell-value { color: #2ecc71 !important; }
+.needed-cell.dimmed { opacity: 0.4 !important; transform: scale(0.96) !important; filter: grayscale(0.3) !important; }
+.needed-cell.danger { border-color: #e74c3c !important; background: rgba(231, 76, 60, 0.15) !important; animation: danger-pulse 1.5s infinite; }
+.needed-cell.danger .cell-value { color: #e74c3c !important; }
+@keyframes danger-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); }
+    50% { box-shadow: 0 0 25px 6px rgba(231,76,60,0.25); }
+}
+
+/* Totaalpunten (altijd groot en zichtbaar) */
+#p1TotalCell { background: white !important; color: black !important; border: 3px solid #3182ce !important; }
+#p2TotalCell { background: #f1c40f !important; color: black !important; border: 3px solid #3182ce !important; }
+#p1TotalCell .cell-value, #p2TotalCell .cell-value { font-size: 6.5rem !important; color: #000 !important; }
+
+/* --- Bedieningsknoppen & Statistieken --- */
+.score-controls {
+    display: flex !important; align-items: center !important; width: 100% !important;
+    padding: 0 20px !important; margin: 35px 0 20px 0 !important; box-sizing: border-box !important;
+}
+.stat-group {
+    flex: 1 !important; display: flex !important; align-items: center !important;
+    justify-content: space-evenly !important; gap: 8px !important; min-width: 0 !important;
+}
+.score-controls .score-btn {
+    width: 120px !important; height: 120px !important; border-radius: 50% !important;
+    font-size: 52px !important; font-weight: 900 !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4); border-width: 3px !important; cursor: pointer !important;
+    flex-shrink: 0 !important; transition: transform 0.1s;
+}
+.score-controls .score-btn:active { transform: scale(0.95); }
+.plus-btn { background: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
+.minus-btn { background: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
+
+/* Statistiek blokjes met kleurcodering en emoji's */
+.stat-box {
+    width: 120px !important; height: 120px !important; border-radius: 16px !important;
+    background: rgba(44, 62, 80, 0.95) !important; color: #ffffff !important;
+    border-width: 3px !important; border-style: solid !important;
+    font-size: 1.8rem !important; font-weight: 900 !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4); position: relative !important; overflow: hidden !important;
+}
+#p1PlayedAvg, #p2PlayedAvg { border-color: #3498db !important; }
+#p1Highest, #p2Highest { border-color: #f1c40f !important; }
+#p1TargetAvg, #p2TargetAvg { border-color: #e67e22 !important; }
+
+.stat-box::before {
+    position: absolute !important; top: 50% !important; left: 50% !important;
+    transform: translate(-50%, -50%) !important; font-size: 5rem !important;
+    opacity: 0.15 !important; filter: brightness(1.2) !important; pointer-events: none !important;
+}
+#p1PlayedAvg::before, #p2PlayedAvg::before { content: "📈"; color: #3498db; }
+#p1Highest::before, #p2Highest::before { content: "⭐"; color: #f1c40f; }
+#p1TargetAvg::before, #p2TargetAvg::before { content: "🎯"; color: #e67e22; }
+
+/* --- Spelerkaarten & Beurtenlijst (4 koloms) --- */
+.players-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; padding: 0 20px; }
+.player-card {
+    border-radius: 15px; padding: 20px; font-size: 1.1em; transition: all 0.3s;
+    min-height: 350px; display: flex; flex-direction: column; position: relative;
+}
+.player-active { border: 4px solid #e74c3c; box-shadow: 0 0 15px rgba(231, 76, 60, 0.5); }
+.player-inactive { opacity: 0.6; border: 4px solid transparent; }
+.player-white { background: white; color: black; }
+.player-yellow { background: #f1c40f; color: black; }
+.player-card h3 { text-align: center; margin-bottom: 15px; font-size: 1.5rem; }
+
+.turns-scroll-container {
+    height: 350px !important; min-height: 350px !important; max-height: 350px !important;
+    overflow-y: auto !important; background: rgba(0,0,0,0.05) !important;
+    border-radius: 8px !important; padding: 10px !important; flex-grow: 0 !important;
+}
+.turns-list {
+    display: grid !important;
+    grid-template-rows: repeat(8, 1fr) !important; /* Max 8 rijen hoog */
+    grid-auto-flow: column !important;             /* Vul EERST naar beneden, dan volgende kolom */
+    grid-auto-columns: 1fr !important;             /* Kolommen even breed */
+    gap: 8px 10px !important;
+    align-content: start !important;
+}
+.turn-row {
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    padding: 6px 4px !important; background: rgba(255,255,255,0.8) !important;
+    border-radius: 6px !important; border: 1px solid rgba(0,0,0,0.1);
+    white-space: nowrap !important;
+}
+.turn-row span {
+    font-size: 1.1rem !important; color: #2c3e50 !important;
+    font-weight: 700 !important; line-height: 1.2 !important;
+}
+
+/* Responsive aanpassingen voor kleinere schermen */
+@media (max-width: 1100px) {
+    .score-controls .score-btn, .stat-box { width: 90px !important; height: 90px !important; }
+    .score-controls .score-btn { font-size: 2.2rem !important; }
+    .stat-box { font-size: 1.3rem !important; border-radius: 12px !important; }
+    .cell-value { font-size: 4rem !important; }
+    #p1TotalCell .cell-value, #p2TotalCell .cell-value { font-size: 4.5rem !important; }
+}
+@media (max-width: 750px) {
+    .players-container { grid-template-columns: 1fr; }
+    .scoring-row-container { gap: 8px; }
+    .score-cell { min-width: 80px; padding: 10px 5px; }
+    .cell-value { font-size: 3rem !important; }
+}
