@@ -114,14 +114,60 @@ function loadFilteredMatches() {
     const title = document.getElementById('matchListTitle');
     const displayDate = formatDateDisplay(state.selectedDate);
     const dayOfWeek = getDayOfWeek(state.selectedDate);
-    title.textContent = `Matchen-${dayOfWeek}-${displayDate}-${state.selectedGameType}-Cat. ${state.selectedCategory}`;
     
-    const filtered = state.matches.filter(m => m.date === state.selectedDate && m.discipline === state.selectedGameType && m.cat === state.selectedCategory && !m.completed);
+    // NIEUWE TITEL: toont alleen de datum
+    title.textContent = `Matchen - ${dayOfWeek} ${displayDate}`;
+    
+    // FILTER: alleen op datum, NIET op speltype of categorie
+    const filtered = state.matches.filter(m => 
+        m.date === state.selectedDate && !m.completed
+    );
+    
     if (filtered.length === 0) {
-        matchList.innerHTML = `<div class="no-matches"><p>Geen matchen gevonden voor deze selectie</p><p><small>Maak een nieuwe match aan met de ➕ knop</small></p></div>`;
+        matchList.innerHTML = `<div class="no-matches">
+            <p>Geen matchen gevonden voor ${dayOfWeek} ${displayDate}</p>
+            <p><small>Er zijn geen (toekomstige) matchen gepland voor deze datum.</small></p>
+        </div>`;
         return;
     }
-    matchList.innerHTML = filtered.map(m => `<div class="match-card" onclick="selectMatch(${m.id})"><h3>${m.discipline} - Cat. ${m.cat}</h3><p class="match-info"><strong>${m.p1}</strong> vs <strong>${m.p2}</strong><br>🎯 Te maken punten: ${m.target1} - ${m.target2}<br>📅 Datum: ${formatDateDisplay(m.date)}</p></div>`).join('');
+    
+    // GROEPEER per discipline en categorie voor een mooi overzicht
+    const grouped = {};
+    filtered.forEach(m => {
+        const key = `${m.discipline} - Cat. ${m.cat}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(m);
+    });
+    
+    let html = `<div class="matches-list-title">${filtered.length} matchen voor ${dayOfWeek} ${displayDate}</div>`;
+    
+    // Toon per discipline/categorie groep
+    Object.keys(grouped).sort().forEach(groupKey => {
+        const matches = grouped[groupKey];
+        html += `<div style="margin-bottom: 25px;">
+            <h3 style="color: #3498db; border-bottom: 1px solid #34495e; padding-bottom: 5px; margin-bottom: 10px;">
+                🎱 ${groupKey} (${matches.length} matchen)
+            </h3>`;
+        
+        matches.forEach(m => {
+            const timeInfo = m.time ? `⏰ ${m.time}` : '';
+            const tableInfo = m.table ? `🎱 Tafel ${m.table}` : '';
+            
+            html += `<div class="match-card" onclick="selectMatch('${m.id}')">
+                <h3>${m.p1} vs ${m.p2}</h3>
+                <p class="match-info">
+                    🎯 Te maken punten: ${m.target1} - ${m.target2}<br>
+                    ${timeInfo ? timeInfo + '<br>' : ''}
+                    ${tableInfo ? tableInfo + '<br>' : ''}
+                    📋 Type: ${m.match_type || 'Regular'}
+                </p>
+            </div>`;
+        });
+        
+        html += `</div>`;
+    });
+    
+    matchList.innerHTML = html;
 }
 
 function showMatchesTab(tab) {
