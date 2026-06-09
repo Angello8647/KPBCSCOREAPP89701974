@@ -23,7 +23,7 @@
         <div class="selection-container">
             <div class="selection-title">Selecteer Datum</div>
             <input type="date" id="dateSelect" class="date-input">
-            <button class="next-btn" onclick="goToPage2()">Volgende →</button>
+            <button class="next-btn" onclick="goToPage10()">Volgende →</button>
         </div>
     </div>
     
@@ -283,6 +283,30 @@
             </div>
         </div>
     </div>
+
+        <!-- PAGINA 10: Matchen Ophalen (NIEUW) -->
+    <div id="page10" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage(1)">← Terug</button>
+            <h1>Planning Ophalen</h1>
+            <div style="width: 70px;"></div>
+        </div>
+        
+        <div class="selection-container" style="text-align: center; padding-top: 40px;">
+            <h2 style="margin-bottom: 10px;">Datum: <span id="syncDateDisplay" style="color: #3498db; font-weight: bold;"></span></h2>
+            <p style="color: #bdc3c7; margin-bottom: 40px; font-size: 1.1em;">
+                Haal de laatste planning op van de server.<br>
+                <small>Alleen toekomstige, nog niet gespeelde matchen worden toegevoegd.</small>
+            </p>
+            
+            <button class="upload-btn" onclick="syncAndProceedToPage2()" style="background: #2ecc71; font-size: 1.2em; padding: 20px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);">
+                🔄 Haal Matchen Op
+            </button>
+            
+            <div id="syncStatus" style="margin-top: 30px; font-weight: bold; color: #f1c40f;"></div>
+        </div>
+    </div>
+    
 
     <script src="js/state.js"></script>
     <script src="js/utils.js"></script>
