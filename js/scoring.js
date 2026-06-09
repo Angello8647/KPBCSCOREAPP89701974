@@ -268,6 +268,60 @@ function updateHeaderButtons() {
 // ==========================================
 // MATCH STARTEN (na bal-selectie)
 // ==========================================
+// ==========================================
+// BAL SELECTIE PAGINA (Pagina 4)
+// ==========================================
+window.updateBallSelectionPage = function() {
+    if (!state.currentMatch) return;
+    
+    // Reset selectie
+    state.selectedWhitePlayer = null;
+    
+    // Zet de namen op de ballen
+    document.getElementById('whiteBall1Text').textContent = state.currentMatch.p1;
+    document.getElementById('whiteBall2Text').textContent = state.currentMatch.p2;
+    
+    // Reset visuele state
+    document.querySelectorAll('.ball-option').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.ball-circle').forEach(el => el.classList.remove('yellow'));
+    
+    const startBtn = document.getElementById('startMatchBtn');
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.classList.add('disabled-btn');
+    }
+};
+
+window.selectWhitePlayer = function(playerNum) {
+    state.selectedWhitePlayer = playerNum;
+    
+    // Visuele feedback
+    document.querySelectorAll('.ball-option').forEach(el => el.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    
+    // Maak de andere bal geel
+    const ball1 = document.getElementById('whiteBall1');
+    const ball2 = document.getElementById('whiteBall2');
+    
+    if (playerNum === 1) {
+        ball1.classList.remove('yellow');
+        ball2.classList.add('yellow');
+    } else {
+        ball2.classList.remove('yellow');
+        ball1.classList.add('yellow');
+    }
+    
+    // Activeer de start-knop
+    const startBtn = document.getElementById('startMatchBtn');
+    if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.classList.remove('disabled-btn');
+    }
+};
+
+// ==========================================
+// MATCH STARTEN (na bal-selectie)
+// ==========================================
 window.startMatch = function() {
     if (!state.selectedWhitePlayer) {
         return alert("Selecteer eerst wie met de witte bal speelt!");
@@ -313,7 +367,7 @@ window.startMatch = function() {
     state.currentInput = 0;
     state.matchEnded = false;
 
-    // Als speler 2 met wit speelt, wissel dan de volgorde om
+    // Als speler 2 met wit speelt, wissel dan de volgorde
     if (state.selectedWhitePlayer === 2) {
         state.currentMatch.p1 = originalP2;
         state.currentMatch.p2 = originalP1;
@@ -357,12 +411,6 @@ window.startMatch = function() {
     const alertEl = document.getElementById('matchEndedAlert');
     if (alertEl) alertEl.style.display = 'none';
 
-    // Update header targets
-    document.getElementById('headerTarget1').textContent = state.player1.target;
-    document.getElementById('headerTarget2').textContent = state.player2.target;
-    document.getElementById('headerName1').textContent = state.currentMatch.p1;
-    document.getElementById('headerName2').textContent = state.currentMatch.p2;
-
     // Reset score displays
     document.getElementById('p1CurrentVal').textContent = '0';
     document.getElementById('p2CurrentVal').textContent = '0';
@@ -378,7 +426,8 @@ window.startMatch = function() {
     // Activeer knoppen
     enableScoreButtons();
 
-    // Ga naar het score-scherm (pagina 5)
+    // Sla state op en ga naar score-scherm
+    saveStateToStorage();
     showPage(5);
     updateScoringPage();
 };
@@ -391,7 +440,6 @@ function enableScoreButtons() {
         btn.style.cursor = 'pointer';
     });
 }
-
 
 
 
