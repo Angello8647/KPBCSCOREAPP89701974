@@ -13,8 +13,10 @@ function showPage(pn) {
         state.selectedGameType=null; state.selectedCategory=null;
         const pf=document.getElementById('adminPassword');
         if(pf.style.display==='block'){ pf.style.display='none'; pf.value=''; document.querySelector('.upload-btn').textContent='📤 Beheer Matchen'; }
-    } else if(pn===4){
+    } else if(pn===2){
         loadFilteredMatches();
+    } else if(pn===4){
+        updateBallSelectionPage();
     } else if(pn===5){
         updateScoringPage();
     } else if(pn===7){
@@ -33,8 +35,8 @@ function showPage(pn) {
         if(s){
             s.innerHTML=s.innerHTML
                 .replace(/\${state\.players\.length}/g, state.players.length)
-                .replace(/\${state\.matches\.filter\(m=>!m\.completed\)\.length}/g, state.matches.filter(m=>!m.completed).length)
-                .replace(/\${state\.matches\.filter\(m=>m\.completed\)\.length}/g, state.matches.filter(m=>m.completed).length)
+                .replace(/\${state\.matches\.filter\(m=>!m.completed\)\.length}/g, state.matches.filter(m=>!m.completed).length)
+                .replace(/\${state\.matches\.filter\(m=>m.completed\)\.length}/g, state.matches.filter(m=>m.completed).length)
                 .replace(/\${state\.downloadedMatches\.length}/g, state.downloadedMatches.length);
         }
     }
