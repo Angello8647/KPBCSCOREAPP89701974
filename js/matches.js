@@ -6,7 +6,7 @@ async function fetchMatchesFromAPI() {
     const apiUrl = "https://kpbc.pythonanywhere.com/api/export/matches";
     
     try {
-        // Toon loading
+        // Toon loading (optioneel, voor als de functie vanuit andere pagina's wordt aangeroepen)
         const matchList = document.getElementById('matchList');
         if (matchList) {
             matchList.innerHTML = `<div class="no-matches"><p>🔄 Matchen ophalen van planning app...</p></div>`;
@@ -80,29 +80,31 @@ async function fetchMatchesFromAPI() {
         if (newMatches.length > 0) {
             state.matches.push(...newMatches);
             saveStateToStorage();
-            
-            alert(`✅ ${newMatches.length} nieuwe matchen gesynchroniseerd!\n\nTotaal: ${state.matches.length} matchen in de app.`);
+            console.log(`✅ ${newMatches.length} nieuwe matchen gesynchroniseerd!`);
         } else {
-            alert(`ℹ️ Geen nieuwe matchen gevonden.\n\nAlle matchen zijn al gesynchroniseerd.`);
+            console.log(`ℹ️ Geen nieuwe matchen gevonden.`);
         }
         
-        // Refresh de UI
+        // Refresh de UI indien nodig
         if (state.currentPage === 4) {
             loadFilteredMatches();
         } else if (state.currentPage === 7) {
             loadMatchesTabContent();
         }
+        
+        return true; // ✅ Succes - vertelt de navigatie dat het gelukt is
         
     } catch (error) {
         console.error('❌ Fout bij ophalen matchen:', error);
-        alert(`❌ Kon matchen niet ophalen van planning app.\n\nFout: ${error.message}\n\nControleer:\n1. Is de planning app online?\n2. Is er een internetverbinding?\n3. Bestaat het endpoint /api/export/matches?`);
         
-        // Herstel UI
+        // Herstel UI indien nodig
         if (state.currentPage === 4) {
             loadFilteredMatches();
         } else if (state.currentPage === 7) {
             loadMatchesTabContent();
         }
+        
+        return false; // ❌ Mislukt - vertelt de navigatie dat het mislukt is
     }
 }
 
