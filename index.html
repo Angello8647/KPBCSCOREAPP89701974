@@ -76,24 +76,39 @@
         </div>
     </div>
     
-    <!-- PAGINA 4: Match selectie -->
+    <!-- PAGINA 4: Bal kleur selectie -->
     <div id="page4" class="page">
         <div class="header">
-            <button class="back-btn" onclick="showPage(1)">← Terug</button>  <!-- ← WAS showPage(3) -->
-            <h1 id="matchListTitle">Matchen</h1>
-            <div style="display: flex; gap: 10px;">
-                <button class="upload-btn" onclick="createNewMatch()" style="font-size: 0.9em; padding: 8px 15px;">➕ Nieuwe Match</button>
-                <div style="width: 70px;"></div>
-            </div>
+            <button class="back-btn" onclick="showPage(2)">← Terug</button>
+            <h1 id="matchTitleSelect">Kies Witte Bal</h1>
+            <div style="width: 70px;"></div>
         </div>
         
-        <div id="matchList"></div>
+        <div class="ball-selection-container">
+            <div class="ball-selection-title">Wie speelt met de witte bal?<br><small>(De andere speelt automatisch met geel)</small></div>
+            
+            <div class="ball-option" onclick="selectWhitePlayer(1)">
+                <div class="ball-circle white" id="whiteBall1">
+                    <div id="whiteBall1Text">Speler 1</div>
+                </div>
+            </div>
+            
+            <div class="ball-option" onclick="selectWhitePlayer(2)">
+                <div class="ball-circle white" id="whiteBall2">
+                    <div id="whiteBall2Text">Speler 2</div>
+                </div>
+            </div>
+            
+            <button id="startMatchBtn" class="start-match-btn disabled-btn" onclick="startMatch()" disabled>
+                🎯 Start Match
+            </button>
+        </div>
     </div>
     
-    <!-- PAGINA 5: Score Scherm -->
+    <!-- PAGINA 5: Scoring -->
     <div id="page5" class="page">
         <div class="header">
-            <button id="headerLeftBtn" class="action-btn confirm-btn" style="width: auto; padding: 10px 20px; font-size: 1rem;">Einde beurt</button>
+            <button id="headerLeftBtn" class="action-btn confirm-btn">Einde beurt</button>
             <div class="header-match-info">
                 <div class="header-player-side left">
                     <span class="header-target" id="headerTarget1">0</span>
@@ -105,108 +120,67 @@
                     <span class="header-target" id="headerTarget2">0</span>
                 </div>
             </div>
-            <button id="headerRightBtn" class="action-btn undo-btn" style="width: auto; padding: 10px 20px; font-size: 1rem;" disabled>↩️ Ongedaan</button>
+            <button id="headerRightBtn" class="action-btn undo-btn" disabled>↩️ Ongedaan</button>
         </div>
 
         <div id="matchEndedAlert" class="match-ended" style="display: none;"></div>
 
-        <!-- HORIZONTALE SCORE LAYOUT -->
         <div class="scoring-row-container">
-            <!-- P1: Nog nodig -->
             <div class="score-cell needed-cell" id="p1NeededCell">
                 <div class="cell-value" id="p1NeededVal">0</div>
             </div>
-            <!-- P1: Deze beurt -->
             <div class="score-cell current-turn-cell" id="p1CurrentCell">
                 <div class="cell-value" id="p1CurrentVal">0</div>
             </div>
-            <!-- P1: Totaal -->
             <div class="score-cell total-cell" id="p1TotalCell">
                 <div class="cell-value" id="p1TotalVal">0</div>
             </div>
-            
-            <!-- Midden: Beurt info -->
-            <div class="score-cell center-info" id="currentPlayerDisplay">
-                <!-- Wordt gevuld door JS -->
-            </div>
-
-            <!-- P2: Totaal -->
+            <div class="score-cell center-info" id="currentPlayerDisplay"></div>
             <div class="score-cell total-cell" id="p2TotalCell">
                 <div class="cell-value" id="p2TotalVal">0</div>
             </div>
-            <!-- P2: Deze beurt -->
             <div class="score-cell current-turn-cell" id="p2CurrentCell">
                 <div class="cell-value" id="p2CurrentVal">0</div>
             </div>
-            <!-- P2: Nog nodig -->
             <div class="score-cell needed-cell" id="p2NeededCell">
                 <div class="cell-value" id="p2NeededVal">0</div>
             </div>
         </div>
 
-        <!-- BEDIENING & STATISTIEKEN -->
         <div class="score-controls">
             <button class="score-btn plus-btn" onclick="changeScore(1)">+</button>
             <div class="stat-group left-group">
-                <div class="stat-box" id="p1PlayedAvg" title="Gespeeld gemiddelde">0,00</div>
-                <div class="stat-box" id="p1Highest" title="Hoogste reeks">0</div>
-                <div class="stat-box" id="p1TargetAvg" title="Te spelen gemiddelde">−</div>
+                <div class="stat-box" id="p1PlayedAvg">0,00</div>
+                <div class="stat-box" id="p1Highest">0</div>
+                <div class="stat-box" id="p1TargetAvg">−</div>
             </div>
             <button class="score-btn minus-btn" onclick="changeScore(-1)">−</button>
             <div class="stat-group right-group">
-                <div class="stat-box" id="p2TargetAvg" title="Te spelen gemiddelde">−</div>
-                <div class="stat-box" id="p2Highest" title="Hoogste reeks">0</div>
-                <div class="stat-box" id="p2PlayedAvg" title="Gespeeld gemiddelde">0,00</div>
+                <div class="stat-box" id="p2TargetAvg">−</div>
+                <div class="stat-box" id="p2Highest">0</div>
+                <div class="stat-box" id="p2PlayedAvg">0,00</div>
             </div>
             <button class="score-btn plus-btn" onclick="changeScore(1)">+</button>
         </div>
 
-        <!-- SPELERKAARTEN MET BEURTENLIJST (4-koloms) -->
-        <div class="players-container">
-            <div class="player-card player-white" id="player1Card">
-                <!-- Wordt gevuld door JS -->
-            </div>
-            <div class="player-card player-yellow" id="player2Card">
-                <!-- Wordt gevuld door JS -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- PAGINA 6: Scoring -->
-    <div id="page6" class="page">
-        <div class="header">
-            <button class="home-btn" id="homeMenuBtn" onclick="showPage(1)">🏠 Hoofdmenu</button>
-            <h1 id="matchTitle"></h1>
-            <div style="display: flex; gap: 10px;">
-                <button class="back-btn" id="backBtn" onclick="showPage(5)">← Terug</button>
-            </div>
-        </div>
-        
-        <div class="current-turn-container">
-            <div class="current-turn" id="currentPlayerDisplay"></div>
-        </div>
-        
-        <div id="matchEndedAlert" class="match-ended" style="display: none;"></div>
-        
-        <div class="score-controls">
-            <button class="score-btn plus-btn left-plus" onclick="changeScore(1)">+</button>
-            <div class="score-middle">
-                <div class="score-display" id="currentScore">0</div>            
-                <button class="score-btn minus-btn" onclick="changeScore(-1)">−</button>
-            </div>
-            <button class="score-btn plus-btn right-plus" onclick="changeScore(1)">+</button>
-        </div>
-        
-        <div class="action-buttons">
-            <button class="action-btn confirm-btn" onclick="addScore()" id="confirmScoreBtn">
-                Einde beurt voor <span id="currentPlayerBtnName">Speler</span> en score toevoegen
-            </button>
-        </div>
-        
         <div class="players-container">
             <div class="player-card player-white" id="player1Card"></div>
             <div class="player-card player-yellow" id="player2Card"></div>
         </div>
+    </div>
+    
+    <!-- PAGINA 6: Match Overzicht -->
+    <div id="page6" class="page">
+        <div class="page6-header">
+            <button class="home-btn" onclick="showPage(1)">🏠 Hoofdmenu</button>
+            <h1>🏁 Match Overzicht</h1>
+            <div></div>
+        </div>
+        <div class="match-summary-container">
+            <div class="summary-half summary-left" id="summaryPlayer1"></div>
+            <div class="summary-half summary-right" id="summaryPlayer2"></div>
+        </div>
+        <div class="kiosk-hint">⬆️ Druk kort op de pijl omhoog toets, houd dan de pijl-omhoog toets 3 seconden ingedrukt voor het hoofdmenu</div>
     </div>
     
     <!-- PAGINA 7: Beheer matchen (OPGESCHOOND) -->
