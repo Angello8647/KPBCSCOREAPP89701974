@@ -272,18 +272,28 @@ function updateHeaderButtons() {
 // BAL SELECTIE PAGINA (Pagina 4)
 // ==========================================
 window.updateBallSelectionPage = function() {
-    if (!state.currentMatch) return;
+    console.log("🎱 updateBallSelectionPage aangeroepen");
+    
+    if (!state.currentMatch) {
+        console.error("❌ state.currentMatch is null!");
+        return;
+    }
     
     // Reset selectie
     state.selectedWhitePlayer = null;
     
     // Zet de namen op de ballen
-    document.getElementById('whiteBall1Text').textContent = state.currentMatch.p1;
-    document.getElementById('whiteBall2Text').textContent = state.currentMatch.p2;
+    const ball1Text = document.getElementById('whiteBall1Text');
+    const ball2Text = document.getElementById('whiteBall2Text');
+    
+    if (ball1Text) ball1Text.textContent = state.currentMatch.p1;
+    if (ball2Text) ball2Text.textContent = state.currentMatch.p2;
+    
+    console.log("✅ Namen ingesteld:", state.currentMatch.p1, "vs", state.currentMatch.p2);
     
     // Reset visuele state
     document.querySelectorAll('.ball-option').forEach(el => el.classList.remove('selected'));
-    document.querySelectorAll('.ball-circle').forEach(el => el.classList.remove('yellow'));
+    document.querySelectorAll('.ball-circle').forEach(el => el.classList.remove('yellow', 'selected'));
     
     const startBtn = document.getElementById('startMatchBtn');
     if (startBtn) {
