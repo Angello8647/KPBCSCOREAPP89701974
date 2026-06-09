@@ -19,7 +19,6 @@ function showPage(pn) {
         updateBallSelectionPage();
     } else if(pn===7){
         loadMatchesTabContent();
-        document.getElementById('filterDate').value=formatDateForInput(new Date());
     } else if(pn===8){
         selectedDiscipline=null; selectedPlayerCategory=null;
         document.querySelectorAll('#page8 .selection-option').forEach(o=>o.classList.remove('selected'));
