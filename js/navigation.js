@@ -110,29 +110,35 @@ window.goToPage10 = function() {
 };
 
 // Na het syncen op Pagina 10: Ga naar Pagina 11 (competitie matchen)
-window.syncAndProceedToPage11 = function() {
-    const statusDiv = document.getElementById('syncStatus');
-    if (statusDiv) {
-        statusDiv.textContent = "🔄 Bezig met ophalen van server...";
-        statusDiv.style.color = "#f1c40f";
+// ==========================================
+// DIRECTE SYNC & DOORSTUUR FUNCTIE
+// ==========================================
+window.syncAndGoToMatches = function() {
+    const d = document.getElementById('dateSelect');
+    if (!d.value) {
+        alert("Selecteer eerst een datum!");
+        return;
     }
+    state.selectedDate = d.value;
     
+    // Geef visuele feedback op de knop zelf (geen aparte melding)
+    const btn = d.nextElementSibling; // De knop zelf
+    const originalText = btn.textContent;
+    btn.textContent = "⏳ Bezig met ophalen...";
+    btn.disabled = true;
+
     if (typeof window.fetchMatchesFromAPI === 'function') {
         window.fetchMatchesFromAPI().then(success => {
+            // Herstel de knop
+            btn.textContent = originalText;
+            btn.disabled = false;
+            
             if (success) {
-                if (statusDiv) {
-                    statusDiv.textContent = "✅ Succes! Matchen geladen.";
-                    statusDiv.style.color = "#2ecc71";
-                }
-                // Wacht 1 seconde en ga dan naar Pagina 11 (competitie matchen)
-                setTimeout(() => {
-                    window.showPage(11);
-                }, 1000);
+                // ✅ DIRECT door naar Pagina 11, GEEN alert of melding!
+                window.showPage(11);
             } else {
-                if (statusDiv) {
-                    statusDiv.textContent = "❌ Fout bij ophalen.";
-                    statusDiv.style.color = "#e74c3c";
-                }
+                // Alleen bij een échte fout tonen we een melding
+                alert("❌ Fout bij ophalen van matchen. Controleer je internetverbinding.");
             }
         });
     }
