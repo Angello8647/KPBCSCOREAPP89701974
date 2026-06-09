@@ -21,17 +21,25 @@ async function fetchMatchesFromAPI() {
         }
         
         const apiMatches = await response.json();
-        console.log(`📥 ${apiMatches.length} matchen opgehaald van API`);
+        console.log(`📥 ${apiMatches.length} matchen opgehaald van API voor deze datum`);
+        
+        // 🧹 STAP 1: Veeg de niet-voltooide matchen van de gekozen datum schoon
+        // Dit verwijdert geannuleerde matchen, maar beschermt reeds gespeelde matchen!
+        const matchesBefore = state.matches.length;
+        state.matches = state.matches.filter(m => 
+            m.date !== state.selectedDate || m.completed === true
+        );
+        const matchesRemoved = matchesBefore - state.matches.length;
+        if (matchesRemoved > 0) {
+            console.log(`🗑️ ${matchesRemoved} geannuleerde/verwijderde matchen verwijderd van ${state.selectedDate}`);
+        }
         
         const newMatches = [];
-        let updatedCount = 0;
         
+        // 🏗️ STAP 2: Bouw de lijst opnieuw op met de verse data uit de API
         apiMatches.forEach(apiMatch => {
             const [p1Data, p2Data] = apiMatch.players;
             const refData = apiMatch.referee;
-            
-            console.log("🔍 Match data:", apiMatch.match_date, apiMatch.match_time, "Tafel:", apiMatch.table_nr);
-            console.log("🔍 Referee data uit API:", refData);
             
             const player1 = state.players.find(p => String(p.id) === String(p1Data.club_id));
             const player2 = state.players.find(p => String(p.id) === String(p2Data.club_id));
@@ -46,36 +54,15 @@ async function fetchMatchesFromAPI() {
                 const referee = state.players.find(p => String(p.id) === String(refData.club_id));
                 if (referee) {
                     refName = referee.name;
-                    console.log(`✅ Scheidsrechter gevonden: ${refName} (Club ID: ${refData.club_id})`);
                 } else {
-                    console.warn(`⚠️ Scheidsrechter NIET gevonden in spelerslijst! Gezocht op Club ID: ${refData.club_id}`);
                     refName = `Scheids (ID: ${refData.club_id})`;
                 }
-            }
-            
-            if (!player1 || !player2) {
-                console.warn(`⚠️ Speler(s) niet gevonden voor match! P1 ID: ${p1Data.club_id}, P2 ID: ${p2Data.club_id}`);
             }
             
             const clubIds = [parseInt(p1Data.club_id), parseInt(p2Data.club_id)].sort((a, b) => a - b);
             const matchId = `${clubIds[0]}-${clubIds[1]}`;
             
-            // 🔍 CHECK OF MATCH AL BESTAAT
-            const existingMatch = state.matches.find(m => m.id === matchId);
-            
-            if (existingMatch) {
-                // ✅ MATCH BESTAAT AL - UPDATE SCHEIDSRECHTER ALS DIE ONTBREEKT OF VERSCHILT
-                if (existingMatch.referee !== refName) {
-                    console.log(`🔄 Match ${matchId} updaten: scheidsrechter ${existingMatch.referee || 'geen'} → ${refName || 'geen'}`);
-                    existingMatch.referee = refName;
-                    updatedCount++;
-                } else {
-                    console.log(`⏭️ Match ${matchId} bestaat al en is up-to-date`);
-                }
-                return;
-            }
-            
-            // ➕ NIEUWE MATCH TOEVOEGEN
+            // Voeg toe aan de nieuwe lijst
             newMatches.push({
                 id: matchId,
                 date: apiMatch.match_date,
@@ -101,26 +88,17 @@ async function fetchMatchesFromAPI() {
                 p2Highest: 0,
                 synced_at: new Date().toISOString()
             });
-            
-            console.log(`✅ Match verwerkt: ${p1Name} vs ${p2Name} | Scheids: ${refName || 'Geen'}`);
         });
         
+        // 💾 STAP 3: Voeg de verse matchen toe en sla op
         if (newMatches.length > 0) {
             state.matches.push(...newMatches);
-            console.log(`✅ ${newMatches.length} nieuwe matchen toegevoegd!`);
+            console.log(`✅ ${newMatches.length} matchen gesynchroniseerd voor ${state.selectedDate}`);
         }
         
-        if (updatedCount > 0) {
-            console.log(`🔄 ${updatedCount} bestaande matchen geüpdatet met scheidsrechter info!`);
-        }
+        saveStateToStorage();
         
-        // 💾 ALTIJD OPSLAAN (ook als we alleen updates hebben)
-        if (newMatches.length > 0 || updatedCount > 0) {
-            saveStateToStorage();
-        } else {
-            console.log(`ℹ️ Geen nieuwe matchen of updates gevonden.`);
-        }
-        
+        // 🔄 STAP 4: Update de weergave
         if (state.currentPage === 4) {
             loadFilteredMatches();
         } else if (state.currentPage === 7) {
@@ -131,6 +109,7 @@ async function fetchMatchesFromAPI() {
         
     } catch (error) {
         console.error('❌ Fout bij ophalen matchen:', error);
+        alert(`❌ Kon matchen niet ophalen.\n\nFout: ${error.message}`);
         
         if (state.currentPage === 4) {
             loadFilteredMatches();
