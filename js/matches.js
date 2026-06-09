@@ -197,10 +197,10 @@ function loadFilteredMatches() {
 // ============================================
 // MATCH SELECTIE
 // ============================================
-window.selectMatch = function(matchId) {
-    console.log("🎯 selectMatch aangeroepen met ID:", matchId);
+window.selectMatch = function(id) {
+    console.log("🎯 selectMatch aangeroepen met ID:", id);
     
-    const idStr = String(matchId).trim();
+    const idStr = String(id).trim();
     const match = state.matches.find(m => String(m.id).trim() === idStr);
     
     if (!match) {
@@ -214,9 +214,13 @@ window.selectMatch = function(matchId) {
         return;
     }
     
+    // BELANGRIJK: Stel de match in
     state.currentMatch = match;
     state.selectedWhitePlayer = null;
     
+    console.log("✅ Match ingesteld:", match);
+    
+    // Update titel
     const titleEl = document.getElementById('matchTitleSelect');
     if (titleEl) {
         titleEl.textContent = `${match.p1} ⚔️ ${match.p2}`;
