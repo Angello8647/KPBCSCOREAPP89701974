@@ -266,6 +266,137 @@ function updateHeaderButtons() {
 }
 
 // ==========================================
+// MATCH STARTEN (na bal-selectie)
+// ==========================================
+window.startMatch = function() {
+    if (!state.selectedWhitePlayer) {
+        return alert("Selecteer eerst wie met de witte bal speelt!");
+    }
+
+    // Bewaar originele spelers en targets
+    const originalP1 = state.currentMatch.p1;
+    const originalP2 = state.currentMatch.p2;
+    const originalTarget1 = state.currentMatch.target1;
+    const originalTarget2 = state.currentMatch.target2;
+
+    state.currentMatch.originalP1 = originalP1;
+    state.currentMatch.originalP2 = originalP2;
+    state.currentMatch.originalTarget1 = originalTarget1;
+    state.currentMatch.originalTarget2 = originalTarget2;
+
+    // Zoek de TSG van beide spelers
+    const tsg1 = state.players.find(p => p.name === originalP1)?.tsg || '−';
+    const tsg2 = state.players.find(p => p.name === originalP2)?.tsg || '−';
+
+    // Reset player state
+    state.player1 = {
+        score: 0,
+        turns: [],
+        target: 0,
+        beurtNummer: 1,
+        highestSeries: 0,
+        isWhite: false,
+        fixedTSG: '−'
+    };
+    state.player2 = {
+        score: 0,
+        turns: [],
+        target: 0,
+        beurtNummer: 1,
+        highestSeries: 0,
+        isWhite: false,
+        fixedTSG: '−'
+    };
+
+    state.firstToTarget = null;
+    state.isNabeurt = false;
+    state.currentInput = 0;
+    state.matchEnded = false;
+
+    // Als speler 2 met wit speelt, wissel dan de volgorde om
+    if (state.selectedWhitePlayer === 2) {
+        state.currentMatch.p1 = originalP2;
+        state.currentMatch.p2 = originalP1;
+        state.currentMatch.target1 = originalTarget2;
+        state.currentMatch.target2 = originalTarget1;
+
+        state.player1.isWhite = true;
+        state.player1.target = state.currentMatch.target1;
+        state.player1.fixedTSG = tsg2;
+
+        state.player2.isWhite = false;
+        state.player2.target = state.currentMatch.target2;
+        state.player2.fixedTSG = tsg1;
+
+        state.currentMatch.whitePlayer = 2;
+    } else {
+        state.currentMatch.p1 = originalP1;
+        state.currentMatch.p2 = originalP2;
+        state.currentMatch.target1 = originalTarget1;
+        state.currentMatch.target2 = originalTarget2;
+
+        state.player1.isWhite = true;
+        state.player1.target = state.currentMatch.target1;
+        state.player1.fixedTSG = tsg1;
+
+        state.player2.isWhite = false;
+        state.player2.target = state.currentMatch.target2;
+        state.player2.fixedTSG = tsg2;
+
+        state.currentMatch.whitePlayer = 1;
+    }
+
+    // Reset match state
+    state.currentPlayer = 1;
+    state.turnNumber = 1;
+    state.isFirstPlayerInRound = true;
+    state.pendingEnd = false;
+    window.lastStateBeforeAdd = null;
+
+    // Verberg match-ended alert
+    const alertEl = document.getElementById('matchEndedAlert');
+    if (alertEl) alertEl.style.display = 'none';
+
+    // Update header targets
+    document.getElementById('headerTarget1').textContent = state.player1.target;
+    document.getElementById('headerTarget2').textContent = state.player2.target;
+    document.getElementById('headerName1').textContent = state.currentMatch.p1;
+    document.getElementById('headerName2').textContent = state.currentMatch.p2;
+
+    // Reset score displays
+    document.getElementById('p1CurrentVal').textContent = '0';
+    document.getElementById('p2CurrentVal').textContent = '0';
+    document.getElementById('p1TotalVal').textContent = '0';
+    document.getElementById('p2TotalVal').textContent = '0';
+
+    // Verwijder oude classes
+    ['p1CurrentCell', 'p2CurrentCell', 'p1NeededCell', 'p2NeededCell'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active-player', 'turn-hidden', 'dimmed');
+    });
+
+    // Activeer knoppen
+    enableScoreButtons();
+
+    // Ga naar het score-scherm (pagina 5)
+    showPage(5);
+    updateScoringPage();
+};
+
+// Helper functie voor score knoppen
+function enableScoreButtons() {
+    document.querySelectorAll('.score-btn').forEach(btn => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+    });
+}
+
+
+
+
+
+// ==========================================
 // PRESENTER / TOETSENBORD CONTROLS
 // ==========================================
 function initPresenterControls() {
