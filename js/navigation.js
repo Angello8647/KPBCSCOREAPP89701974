@@ -1,7 +1,7 @@
 // js/navigation.js
 
 window.showPage = function(pageNum) {
-    let actualPageNum = typeof pageNum === 'string' ? parseInt(pageNum.replace('Page','')) : pageNum;
+    let actualPageNum = typeof pageNum === 'string' ? parseInt(pageNum) : pageNum;
     if (isNaN(actualPageNum) || actualPageNum < 1) actualPageNum = 1;
     
     const pageId = `page${actualPageNum}`;
@@ -16,46 +16,44 @@ window.showPage = function(pageNum) {
     if (actualPageNum === 1) {
         const d = document.getElementById('dateSelect');
         if (d && !d.value) {
-            d.value = formatDateForInput(new Date());
+            d.value = new Date().toISOString().split('T')[0];
             state.selectedDate = d.value;
         }
     } else if (actualPageNum === 2) {
-        if (typeof loadFilteredMatches === 'function') loadFilteredMatches();
-    } else if (actualPageNum === 3) {
-        if (typeof setupNewMatchPage === 'function') setupNewMatchPage();
-    } else if (actualPageNum === 4) {
-        if (typeof updateBallSelectionPage === 'function') updateBallSelectionPage();
-    } else if (actualPageNum === 5) {
-        if (typeof updateScoringPage === 'function') updateScoringPage();
-    } else if (actualPageNum === 7) {
-        if (typeof loadMatchesTabContent === 'function') loadMatchesTabContent();
-    } else if (actualPageNum === 8) {
-        if (typeof loadStatsPage === 'function') loadStatsPage();
-    } else if (actualPageNum === 9) {
-        if (typeof loadRankingPage === 'function') loadRankingPage();
-    } else if (actualPageNum === 10) {
-        // Sync pagina logica
-        const c = document.getElementById('page10');
-        const s = c?.querySelector('.data-transfer-section');
-        if (s) {
-            s.innerHTML = s.innerHTML
-                .replace(/\${state\.players\.length}/g, state.players.length)
-                .replace(/\${state\.matches\.filter\(m=>!m.completed\)\.length}/g, state.matches.filter(m => !m.completed).length)
-                .replace(/\${state\.matches\.filter\(m=>m.completed\)\.length}/g, state.matches.filter(m => m.completed).length);
+        // PAGINA 2 = DE MATCHEN LIJST
+        if (typeof window.loadFilteredMatches === 'function') {
+            window.loadFilteredMatches();
         }
+    } else if (actualPageNum === 3) {
+        if (typeof window.setupNewMatchPage === 'function') window.setupNewMatchPage();
+    } else if (actualPageNum === 4) {
+        // PAGINA 4 = KIES WITTE BAL
+        if (typeof window.updateBallSelectionPage === 'function') window.updateBallSelectionPage();
+    } else if (actualPageNum === 5) {
+        // PAGINA 5 = SCORING
+        if (typeof window.updateScoringPage === 'function') window.updateScoringPage();
+    } else if (actualPageNum === 6) {
+        if (typeof window.renderMatchSummary === 'function') window.renderMatchSummary();
+    } else if (actualPageNum === 7) {
+        if (typeof window.loadMatchesTabContent === 'function') window.loadMatchesTabContent();
+    } else if (actualPageNum === 8) {
+        if (typeof window.loadStatsPage === 'function') window.loadStatsPage();
+    } else if (actualPageNum === 9) {
+        if (typeof window.loadRankingPage === 'function') window.loadRankingPage();
+    } else if (actualPageNum === 10) {
+        // PAGINA 10 = SYNC PAGINA
+        const syncDateDisplay = document.getElementById('syncDateDisplay');
+        if (syncDateDisplay && state.selectedDate) {
+            const d = new Date(state.selectedDate);
+            const days = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag'];
+            syncDateDisplay.textContent = `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+        }
+        const syncStatus = document.getElementById('syncStatus');
+        if (syncStatus) syncStatus.textContent = "";
     }
 };
 
-window.goToPage2 = function() {
-    const d = document.getElementById('dateSelect');
-    if (!d.value) {
-        alert("Selecteer eerst een datum!");
-        return;
-    }
-    state.selectedDate = d.value;
-    showPage(2);
-};
-
+// Vanuit Pagina 1: Ga naar de Sync Pagina (Pagina 10)
 window.goToPage10 = function() {
     const d = document.getElementById('dateSelect');
     if (!d.value) {
@@ -63,18 +61,10 @@ window.goToPage10 = function() {
         return;
     }
     state.selectedDate = d.value;
-    
-    const displayDate = formatDateDisplay(state.selectedDate);
-    const dayOfWeek = getDayOfWeek(state.selectedDate);
-    const syncDateDisplay = document.getElementById('syncDateDisplay');
-    if (syncDateDisplay) syncDateDisplay.textContent = `${dayOfWeek} ${displayDate}`;
-    
-    const syncStatus = document.getElementById('syncStatus');
-    if (syncStatus) syncStatus.textContent = "";
-    
     showPage(10);
 };
 
+// Na het syncen op Pagina 10: Ga direct naar de Matchenlijst (Pagina 2)
 window.syncAndProceedToPage2 = function() {
     const statusDiv = document.getElementById('syncStatus');
     if (statusDiv) {
@@ -82,20 +72,23 @@ window.syncAndProceedToPage2 = function() {
         statusDiv.style.color = "#f1c40f";
     }
     
-    fetchMatchesFromAPI().then(success => {
-        if (success) {
-            if (statusDiv) {
-                statusDiv.textContent = "✅ Succes! Doorsturen naar matchen...";
-                statusDiv.style.color = "#2ecc71";
+    if (typeof window.fetchMatchesFromAPI === 'function') {
+        window.fetchMatchesFromAPI().then(success => {
+            if (success) {
+                if (statusDiv) {
+                    statusDiv.textContent = "✅ Succes! Matchen geladen.";
+                    statusDiv.style.color = "#2ecc71";
+                }
+                // Wacht 1 seconde en ga dan naar Pagina 2 (de matchenlijst)
+                setTimeout(() => {
+                    window.showPage(2);
+                }, 1000);
+            } else {
+                if (statusDiv) {
+                    statusDiv.textContent = "❌ Fout bij ophalen.";
+                    statusDiv.style.color = "#e74c3c";
+                }
             }
-            setTimeout(() => {
-                showPage(2);
-            }, 1500);
-        } else {
-            if (statusDiv) {
-                statusDiv.textContent = "❌ Fout bij ophalen. Controleer je internetverbinding.";
-                statusDiv.style.color = "#e74c3c";
-            }
-        }
-    });
+        });
+    }
 };
