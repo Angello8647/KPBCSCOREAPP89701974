@@ -964,6 +964,41 @@
             text-align: center;
             grid-column: span 2;
         }
+		.ball-option.selected .ball-circle.white {
+		    box-shadow: 0 0 0 4px #2ecc71, 0 0 20px rgba(46, 204, 113, 0.5);
+		    transform: scale(1.05);
+		}
+		.ball-option.selected .ball-option-label {
+		    color: #2ecc71;
+		    font-weight: bold;
+		}
+		.ball-circle.yellow {
+		    background: #f1c40f !important;
+		    color: black !important;
+		}
+		.start-match-btn.disabled-btn {
+		    opacity: 0.5;
+		    cursor: not-allowed;
+		}
+		.start-match-btn:not(.disabled-btn) {
+		    background: #2ecc71;
+		    cursor: pointer;
+		    transition: all 0.2s;
+		}
+		.start-match-btn:not(.disabled-btn):hover {
+		    background: #27ae60;
+		    transform: translateY(-2px);
+		}
+
+
+
+
+
+
+
+
+
+
 
 /* =========================================
    SCORE SCHERM OPMAAK (Geïnspireerd op oude versie)
