@@ -1,4 +1,112 @@
 // js/matches.js
+// ============================================
+// MATCH SYNC MET PLANNING APP
+// ============================================
+async function fetchMatchesFromAPI() {
+    const apiUrl = "https://kpbc.pythonanywhere.com/api/export/matches";
+    
+    try {
+        // Toon loading
+        const matchList = document.getElementById('matchList');
+        if (matchList) {
+            matchList.innerHTML = `<div class="no-matches"><p>🔄 Matchen ophalen van planning app...</p></div>`;
+        }
+        
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const apiMatches = await response.json();
+        console.log(`📥 ${apiMatches.length} matchen opgehaald van API`);
+        
+        // Converteer API matchen naar biljart-app formaat
+        const newMatches = [];
+        
+        apiMatches.forEach(apiMatch => {
+            // Haal de twee spelers op
+            const [p1Data, p2Data] = apiMatch.players;
+            
+            // Zoek speler 1 op basis van club_id
+            const player1 = state.players.find(p => p.id === parseInt(p1Data.club_id));
+            const player2 = state.players.find(p => p.id === parseInt(p2Data.club_id));
+            
+            if (!player1 || !player2) {
+                console.warn(`⚠️ Spelers niet gevonden voor match ${p1Data.club_id} vs ${p2Data.club_id}`);
+                return;
+            }
+            
+            // Maak unieke match-ID (kleinste club_id eerst)
+            const clubIds = [parseInt(p1Data.club_id), parseInt(p2Data.club_id)].sort((a, b) => a - b);
+            const matchId = `${clubIds[0]}-${clubIds[1]}`;
+            
+            // Check of match al bestaat
+            const exists = state.matches.some(m => m.id === matchId);
+            if (exists) {
+                console.log(`⏭️ Match ${matchId} bestaat al, overslaan`);
+                return;
+            }
+            
+            // Converteer naar biljart-app formaat
+            newMatches.push({
+                id: matchId,
+                date: apiMatch.match_date,
+                time: apiMatch.match_time || '',
+                table: apiMatch.table_nr || 1,
+                p1: player1.name,
+                p2: player2.name,
+                p1_club_id: parseInt(p1Data.club_id),
+                p2_club_id: parseInt(p2Data.club_id),
+                target1: player1.target,
+                target2: player2.target,
+                discipline: apiMatch.discipline,
+                cat: parseInt(apiMatch.category),
+                match_type: apiMatch.match_type || 'Regular',
+                completed: false,
+                whitePlayer: null,
+                p1Score: 0,
+                p2Score: 0,
+                p1Turns: [],
+                p2Turns: [],
+                p1Highest: 0,
+                p2Highest: 0,
+                synced_at: new Date().toISOString()
+            });
+            
+            console.log(`✅ Match toegevoegd: ${player1.name} vs ${player2.name} (${apiMatch.discipline} Cat. ${apiMatch.category})`);
+        });
+        
+        // Voeg nieuwe matchen toe aan state
+        if (newMatches.length > 0) {
+            state.matches.push(...newMatches);
+            saveStateToStorage();
+            
+            alert(`✅ ${newMatches.length} nieuwe matchen gesynchroniseerd!\n\nTotaal: ${state.matches.length} matchen in de app.`);
+        } else {
+            alert(`ℹ️ Geen nieuwe matchen gevonden.\n\nAlle matchen zijn al gesynchroniseerd.`);
+        }
+        
+        // Refresh de UI
+        if (state.currentPage === 4) {
+            loadFilteredMatches();
+        } else if (state.currentPage === 7) {
+            loadMatchesTabContent();
+        }
+        
+    } catch (error) {
+        console.error('❌ Fout bij ophalen matchen:', error);
+        alert(`❌ Kon matchen niet ophalen van planning app.\n\nFout: ${error.message}\n\nControleer:\n1. Is de planning app online?\n2. Is er een internetverbinding?\n3. Bestaat het endpoint /api/export/matches?`);
+        
+        // Herstel UI
+        if (state.currentPage === 4) {
+            loadFilteredMatches();
+        } else if (state.currentPage === 7) {
+            loadMatchesTabContent();
+        }
+    }
+}
+
+
 function loadFilteredMatches() {
     const matchList = document.getElementById('matchList');
     const title = document.getElementById('matchListTitle');
