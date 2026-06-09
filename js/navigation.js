@@ -60,3 +60,42 @@ function selectCategory(c){
     event.currentTarget.classList.add('selected');
     setTimeout(()=>showPage(4), 300);
 }
+
+function goToPage10() {
+    const d = document.getElementById('dateSelect');
+    if (!d.value) {
+        alert("Selecteer eerst een datum!");
+        return;
+    }
+    state.selectedDate = d.value;
+    
+    // Toon de datum op Pagina 10
+    const displayDate = formatDateDisplay(state.selectedDate);
+    const dayOfWeek = getDayOfWeek(state.selectedDate);
+    document.getElementById('syncDateDisplay').textContent = `${dayOfWeek} ${displayDate}`;
+    document.getElementById('syncStatus').textContent = ""; // Reset status
+    
+    showPage(10);
+}
+
+function syncAndProceedToPage2() {
+    const statusDiv = document.getElementById('syncStatus');
+    statusDiv.textContent = "🔄 Bezig met ophalen van server...";
+    statusDiv.style.color = "#f1c40f";
+    
+    // Roep de fetch functie aan
+    fetchMatchesFromAPI().then(success => {
+        if (success) {
+            statusDiv.textContent = "✅ Succes! Doorsturen naar speltype...";
+            statusDiv.style.color = "#2ecc71";
+            
+            // Wacht 1,5 seconde zodat de gebruiker het ziet, ga dan door naar Pagina 2
+            setTimeout(() => {
+                showPage(2); 
+            }, 1500);
+        } else {
+            statusDiv.textContent = "❌ Fout bij ophalen. Controleer je internetverbinding.";
+            statusDiv.style.color = "#e74c3c";
+        }
+    });
+}
