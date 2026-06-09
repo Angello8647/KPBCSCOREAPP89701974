@@ -130,58 +130,49 @@ function loadFilteredMatches() {
     
     title.textContent = `Matchen - ${dayOfWeek} ${displayDate}`;
     
-    // Filter: alleen op datum en nog niet voltooid
     const filtered = state.matches.filter(m => m.date === state.selectedDate && !m.completed);
     
     if (filtered.length === 0) {
         matchList.innerHTML = `<div class="no-matches">
             <p>Geen matchen gevonden voor ${dayOfWeek} ${displayDate}</p>
-            <p><small>Er zijn geen (toekomstige) matchen gepland voor deze datum.</small></p>
         </div>`;
         return;
     }
     
-    // 1️⃣ GROEPEER op Tijd en Tafel
+    // GROEPEER op Tijd en Tafel
     const grouped = {};
     filtered.forEach(m => {
         const timeStr = m.time || "00:00";
         const tableNum = m.table || 1;
-        // Sorteer-sleutel: Eerst tijd, dan tafel (met leading zero voor juiste sorteervolgorde)
         const sortKey = `${timeStr}-${String(tableNum).padStart(2, '0')}`;
-        const displayTitle = `Tafel ${tableNum} • ⏰ ${timeStr}`;
         
         if (!grouped[sortKey]) {
             grouped[sortKey] = {
-                displayTitle: displayTitle,
+                displayTitle: `Tafel ${tableNum} • ⏰ ${timeStr}`,
                 matches: []
             };
         }
         grouped[sortKey].matches.push(m);
     });
     
-    // 2️⃣ SORTEREN van de groepen (chronologisch op tijd, dan op tafel)
     const sortedKeys = Object.keys(grouped).sort();
-    
-    // 3️⃣ HTML OPBOUWEN
     let html = `<div class="matches-list-title">${filtered.length} matchen voor ${dayOfWeek} ${displayDate}</div>`;
     
     sortedKeys.forEach(key => {
         const group = grouped[key];
         
-        // Groepscontainer met mooie afscheiding
         html += `<div style="margin-bottom: 30px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border-left: 4px solid #3498db;">`;
         html += `<h3 style="color: #f1c40f; margin: 0 0 15px 0; font-size: 1.2em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                     🎱 ${group.displayTitle} <span style="color: #95a5a6; font-size: 0.8em;">(${group.matches.length} matchen)</span>
                  </h3>`;
         
-        // GRID CONTAINER: Zet matchen naast elkaar (minimaal 220px breed per kaart)
         html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">`;
         
         group.matches.forEach(m => {
-            // Toon scheidsrechter ALLEEN als m.referee een waarde heeft
             const refLine = m.referee ? `<br>👔 Scheids: ${m.referee}` : '';
             const discCatLine = `<br>🎱 ${m.discipline} - Cat. ${m.cat}`;
             
+            // ⚠️ LET OP: '${m.id}' heeft AANHALINGSTEKENS nodig!
             html += `<div class="match-card" onclick="selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                 <h3 style="font-size: 1.05em; margin-bottom: 8px; line-height: 1.3;">
                     ${m.p1} <span style="color:#95a5a6; font-size: 0.9em;">vs</span> ${m.p2}
@@ -194,12 +185,11 @@ function loadFilteredMatches() {
             </div>`;
         });
         
-        html += `</div></div>`; // Sluit grid en groep
+        html += `</div></div>`;
     });
     
     matchList.innerHTML = html;
 }
-
 // ============================================
 // MATCH SELECTIE
 // ============================================
