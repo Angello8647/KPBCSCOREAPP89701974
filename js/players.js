@@ -2,14 +2,84 @@
 let selectedDiscipline = null;
 let selectedPlayerCategory = null;
 
-// --- TOEKOMSTIGE API KOPPELING ---
+// --- API KOPPELING MET PLANNING APP ---
 async function fetchPlayersFromAPI() {
-    // TODO: Hier komt later de fetch naar jouw planning-app
-    // Voor nu tonen we een melding dat dit de nieuwe methode wordt
-    console.log("🔄 Spelers ophalen via API (nog te implementeren)");
-    alert("De spelers worden binnenkort automatisch gesynchroniseerd met de planning-app!");
+    const apiUrl = "https://kpbc.pythonanywhere.com/api/export/users";
+    
+    try {
+        const playersList = document.getElementById('playersList');
+        playersList.innerHTML = `<div class="no-matches"><p>🔄 Spelers ophalen van planning app...</p></div>`;
+        
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const users = await response.json();
+        console.log("📥 Ruwe API data ontvangen:", users);
+        
+        state.players = [];
+        
+        users.forEach(user => {
+            const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+            
+            if (user.stats && user.stats.length > 0) {
+                user.stats.forEach(stat => {
+                    const clubId = parseInt(stat.club_id);
+                    console.log(`✅ Speler: ${fullName} | Club ID: ${clubId} | Discipline: ${stat.discipline}`);
+                    
+                    state.players.push({
+                        id: clubId,
+                        user_id: user.id,
+                        name: fullName,
+                        email: user.email || '',
+                        discipline: stat.discipline || 'Vrijspel',
+                        category: parseInt(stat.category) || 1,
+                        target: parseInt(stat.target) || 50,
+                        tsg: stat.tsg ? parseFloat(stat.tsg).toFixed(3).replace('.', ',') : '0,000',
+                        pnt: parseInt(stat.target) || 50
+                    });
+                });
+            } else {
+                console.warn(`⚠️ Geen stats gevonden voor ${fullName}`);
+                state.players.push({
+                    id: user.id,
+                    name: fullName,
+                    email: user.email || '',
+                    discipline: 'Vrijspel',
+                    category: 1,
+                    target: 50,
+                    tsg: '0,000',
+                    pnt: 50
+                });
+            }
+        });
+        
+        console.log("📦 Uiteindelijke state.players (eerste 3):", state.players.slice(0, 3));
+        
+        localStorage.removeItem('biljartPlayers');
+        savePlayersToStorage();
+        
+        alert(`✅ ${users.length} gebruikers gesynchroniseerd!\n${state.players.length} combinaties geladen.`);
+        
+        if (selectedDiscipline && selectedPlayerCategory) {
+            loadFilteredPlayers();
+        } else {
+            loadPlayersList();
+        }
+        
+    } catch (error) {
+        console.error('❌ Fout bij ophalen spelers:', error);
+        alert(`❌ Kon spelers niet ophalen.\n\nFout: ${error.message}`);
+        if (selectedDiscipline && selectedPlayerCategory) { 
+            loadFilteredPlayers(); 
+        } else { 
+            loadPlayersList(); 
+        }
+    }
 }
 
+// --- BESTAANDE FUNCTIES (ongewijzigd) ---
 function selectDiscipline(discipline) {
     selectedDiscipline = discipline;
     document.querySelectorAll('#page8 .selection-option').forEach(option => option.classList.remove('selected'));
@@ -65,17 +135,33 @@ function loadFilteredPlayers() {
     }
     
     filtered.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // COMPACTE 4-KOLOMS GRID: 60px | Rest | 70px | 90px
     let html = `<div class="matches-list-title">Spelers voor ${selectedDiscipline} - Categorie ${selectedPlayerCategory} (${filtered.length})</div>`;
-    html += `<div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-weight: bold; padding: 10px; background: #34495e; border-radius: 8px;"><div>Naam</div><div>TSG</div><div>Target</div></div>`;
+    html += `<div style="margin-bottom: 20px; display: grid; grid-template-columns: 60px 1fr 70px 90px; gap: 10px; font-weight: bold; padding: 10px; background: #34495e; border-radius: 8px; text-align: center; font-size: 0.9em;">
+        <div>Club ID</div>
+        <div style="text-align: left;">Naam</div>
+        <div>TSG</div>
+        <div>Target</div>
+    </div>`;
     
     filtered.forEach(player => {
-        const globalIndex = state.players.findIndex(p => p.name === player.name && p.discipline.toLowerCase() === player.discipline.toLowerCase() && p.category === player.category);
-        html += `<div style="padding: 15px; margin: 5px 0; background: rgba(255,255,255,0.05); border-radius: 5px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: center;">
-            <div><strong>${player.name}</strong><br><small style="color: #95a5a6;">${player.discipline} - Cat. ${player.category}</small></div>
-            <div style="text-align: center;"><span style="font-size: 1.1em; color: #f1c40f;">${player.tsg || 'N/A'}</span></div>
-            <div style="text-align: center; display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 1.1em; color: #2ecc71;">${player.target}</span>
-                <button class="delete-match-btn" onclick="deletePlayerByIndex(${globalIndex})" title="Verwijderen">×</button>
+        const globalIndex = state.players.findIndex(p => p.id === player.id);
+        
+        html += `<div style="padding: 12px; margin: 5px 0; background: rgba(255,255,255,0.05); border-radius: 5px; display: grid; grid-template-columns: 60px 1fr 70px 90px; gap: 10px; align-items: center; font-size: 0.95em;">
+            <div style="text-align: center; font-family: monospace; font-size: 1em; color: #f39c12;">
+                ${player.id}
+            </div>
+            <div style="text-align: left; line-height: 1.3;">
+                <strong>${player.name}</strong><br>
+                <small style="color: #95a5a6; font-size: 0.85em;">${player.discipline} - Cat. ${player.category}</small>
+            </div>
+            <div style="text-align: center; font-size: 1em; color: #f1c40f;">
+                ${player.tsg || 'N/A'}
+            </div>
+            <div style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                <span style="font-size: 1em; color: #2ecc71;">${player.target}</span>
+                <button class="delete-match-btn" onclick="deletePlayerByIndex(${globalIndex})" title="Verwijderen" style="position: relative; top: 0; right: 0; width: 28px; height: 28px; border-radius: 6px; font-size: 16px; display: flex; align-items: center; justify-content: center; padding: 0;">🗑️</button>
             </div>
         </div>`;
     });
@@ -84,11 +170,25 @@ function loadFilteredPlayers() {
 
 function loadPlayersList() {
     const playersList = document.getElementById('playersList');
+    
+    // START MET DE KNOPPEN (altijd zichtbaar)
+    let html = `<div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+        <button class="upload-btn" onclick="fetchPlayersFromAPI()" style="background: #2ecc71;">🔄 Sync met Planning App</button>`;
+    
+    if (state.players.length > 0) {
+        html += `<button class="clear-all-btn" onclick="clearAllPlayers()">🗑️ Alle Spelers Verwijderen</button>`;
+    }
+    
+    html += `</div>`;
+    
+    // CHECK OF ER SPELERS ZIJN
     if (state.players.length === 0) {
-        playersList.innerHTML = `<div class="no-matches"><p>Nog geen spelers toegevoegd</p><p><small>Spelers worden binnenkort gesynchroniseerd met de planning-app.</small></p></div>`;
+        html += `<div class="no-matches"><p>Nog geen spelers geladen</p><p><small>Klik op "🔄 Sync met Planning App" om spelers op te halen</small></p></div>`;
+        playersList.innerHTML = html;
         return;
     }
     
+    // ALS ER WEL SPELERS ZIJN, TOON DE LIJST
     const playersByDiscipline = {};
     state.players.forEach(player => {
         if (!playersByDiscipline[player.discipline]) playersByDiscipline[player.discipline] = {};
@@ -96,11 +196,7 @@ function loadPlayersList() {
         playersByDiscipline[player.discipline][player.category].push(player);
     });
     
-    let html = `<div class="matches-list-title">Alle Spelers Overzicht (${state.players.length} spelers)</div>`;
-    html += `<div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-        <button class="clear-all-btn" onclick="clearAllPlayers()">🗑️ Alle Spelers Verwijderen</button>
-        <button class="upload-btn" onclick="fetchPlayersFromAPI()" style="background: #2ecc71;">🔄 Sync met Planning App</button>
-    </div>`;
+    html += `<div class="matches-list-title">Alle Spelers Overzicht (${state.players.length} spelers)</div>`;
     
     const desiredOrder = ["Vrijspel", "Bandstoten", "Driebanden"];
     const disciplines = Object.keys(playersByDiscipline);
@@ -127,14 +223,13 @@ function loadPlayersList() {
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">`;
             
             categoryPlayers.sort((a, b) => a.name.localeCompare(b.name)).forEach(player => {
-                html += `<div style="padding: 10px; background: rgba(255,255,255,0.03); border-radius: 5px; border-left: 3px solid #3498db;">
-                    <div style="font-weight: bold; margin-bottom: 5px;">${player.name}</div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.9em;">
-                        <span style="color: #f1c40f;">TSG: ${player.tsg || 'N/A'}</span>
-                        <span style="color: #2ecc71;">Target: ${player.target}</span>
-                    </div>
-                </div>`;
-            });
+				html += `<div style="padding: 10px; background: rgba(255,255,255,0.03); border-radius: 5px; border-left: 3px solid #3498db; display: grid; grid-template-columns: 60px 1fr 70px 70px; gap: 10px; align-items: center; font-size: 0.95em;">
+					<div style="text-align: center; font-family: monospace; color: #f39c12;">${player.id}</div>
+					<div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${player.name}">${player.name}</div>
+					<div style="text-align: center; color: #f1c40f;">${player.tsg || 'N/A'}</div>
+					<div style="text-align: center; color: #2ecc71;">${player.target}</div>
+				</div>`;
+			});
             html += `</div></div>`;
         });
         html += `</div>`;
@@ -159,7 +254,7 @@ function deletePlayerByIndex(playerIndex) {
         const player = state.players[playerIndex];
         if (confirm(`Weet je zeker dat je ${player.name} (${player.discipline}) wilt verwijderen?`)) {
             state.players.splice(playerIndex, 1);
-            saveStateToStorage();
+            savePlayersToStorage();
             loadPlayersList();
         }
     }
@@ -168,7 +263,7 @@ function deletePlayerByIndex(playerIndex) {
 function clearAllPlayers() {
     if (confirm("Weet je zeker dat je ALLE spelers wilt verwijderen?")) {
         state.players = [];
-        saveStateToStorage();
+        savePlayersToStorage();
         loadPlayersList();
     }
 }
