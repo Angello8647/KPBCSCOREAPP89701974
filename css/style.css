@@ -990,7 +990,80 @@
 		    transform: translateY(-2px);
 		}
 
-
+		/* ========== GROTERE BALLEN VOOR PAGINA 4 ========== */
+		.ball-selection-container { 
+		    background: #34495e; 
+		    border-radius: 10px; 
+		    padding: 30px; 
+		    margin: 20px auto; 
+		    max-width: 600px; /* Iets breder voor de grotere ballen */
+		    text-align: center; 
+		}
+		
+		.ball-option { 
+		    display: inline-block; /* Zorgt dat ze mooi naast elkaar kunnen als het kan, of onder elkaar */
+		    margin: 20px 15px; 
+		    cursor: pointer; 
+		    text-align: center; 
+		    vertical-align: top;
+		}
+		
+		.ball-circle { 
+		    width: 180px !important; /* GROTER GEMAAKT (was 130px) */
+		    height: 180px !important; /* GROTER GEMAAKT (was 130px) */
+		    border-radius: 50%; 
+		    display: flex; 
+		    align-items: center; 
+		    justify-content: center; 
+		    font-size: 1.8em !important; /* GROTERE TEKST */
+		    font-weight: bold; 
+		    margin: 0 auto 15px; 
+		    border: 4px solid transparent; 
+		    transition: all 0.3s; 
+		}
+		
+		.ball-circle.white { 
+		    background: white !important; 
+		    color: black !important; 
+		}
+		
+		.ball-circle.yellow { 
+		    background: #f1c40f !important; 
+		    color: black !important; 
+		}
+		
+		.ball-circle.selected { 
+		    border: none !important; 
+		    outline: none; 
+		    box-shadow: 0 0 25px rgba(255,255,255,0.9), inset 0 -3px 10px rgba(0,0,0,0.1), inset 0 3px 15px rgba(255,255,255,0.7) !important; 
+		    transform: scale(1.05); 
+		    position: relative; 
+		    overflow: hidden; 
+		}
+		
+		.start-match-btn { 
+		    background: #2ecc71; 
+		    color: white; 
+		    border: none; 
+		    padding: 15px 40px; /* Iets breder */
+		    border-radius: 8px; 
+		    font-size: 20px; /* Iets grotere tekst op de knop */
+		    font-weight: bold;
+		    cursor: pointer; 
+		    margin-top: 30px; 
+		    transition: all 0.2s;
+		}
+		
+		.start-match-btn:hover:not(.disabled-btn) {
+		    background: #27ae60;
+		    transform: translateY(-2px);
+		}
+		
+		.disabled-btn { 
+		    background: #7f8c8d !important; 
+		    cursor: not-allowed; 
+		    opacity: 0.6;
+		}
 
 
 
