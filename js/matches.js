@@ -197,34 +197,32 @@ function loadFilteredMatches() {
 // ============================================
 // MATCH SELECTIE
 // ============================================
-window.selectMatch = function(id) {
-    console.log("🎯 selectMatch aangeroepen met ID:", id);
+window.selectMatch = function(matchId) {
+    console.log("🎯 selectMatch aangeroepen met ID:", matchId);
     
-    // Zoek de match (converteer id naar string voor vergelijking)
-    const m = state.matches.find(x => String(x.id) === String(id));
+    const idStr = String(matchId).trim();
+    const match = state.matches.find(m => String(m.id).trim() === idStr);
     
-    if (!m) {
-        console.error("❌ Match niet gevonden! ID:", id);
+    if (!match) {
+        console.error("❌ Match NIET gevonden!");
         alert("Fout: Match niet gevonden.");
         return;
     }
     
-    if (m.completed) {
-        alert("Deze match is al afgerond.");
+    if (match.completed) {
+        alert("Deze match is al voltooid.");
         return;
     }
     
-    // Stel de match in
-    state.currentMatch = m;
+    state.currentMatch = match;
     state.selectedWhitePlayer = null;
     
-    // Update titel
     const titleEl = document.getElementById('matchTitleSelect');
     if (titleEl) {
-        titleEl.textContent = `${m.p1} ⚔️ ${m.p2}`;
+        titleEl.textContent = `${match.p1} ⚔️ ${match.p2}`;
     }
     
-    console.log("✅ Match gevonden, doorsturen naar pagina 4");
+    console.log("🚀 Doorsturen naar Pagina 4 (Bal selectie)...");
     showPage(4);
 };
 function showMatchesTab(tab) {
