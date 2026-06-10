@@ -1654,3 +1654,11 @@
         font-size: 1.6rem !important;
     }
 }
+
+/* Focus state voor match selectie op Pagina 2 */
+.match-card.focused {
+    border: 3px solid #3498db !important;
+    background: rgba(52, 152, 219, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
