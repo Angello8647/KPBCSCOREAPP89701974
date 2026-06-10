@@ -290,6 +290,8 @@ window.undoLastAdd = function() {
 function endMatch() {
     state.matchEnded = true;
     state.currentMatch.completed = true;
+    
+    // Eindstatistieken opslaan
     state.currentMatch.p1Score = state.player1.score;
     state.currentMatch.p2Score = state.player2.score;
     state.currentMatch.p1Turns = [...state.player1.turns];
@@ -299,10 +301,16 @@ function endMatch() {
     state.currentMatch.winner = state.player1.score >= state.player1.target ? state.currentMatch.p1 : state.currentMatch.p2;
     
     saveStateToStorage();
+    
+    // UI opschonen
     updateScoringPage();
     updateHeaderButtons();
     
-    
+    // ✅ Toon samenvatting op Pagina 6 (geen alert meer!)
+    setTimeout(() => {
+        renderMatchSummary();
+        showPage(6);
+    }, 600);
 }
 
 function updateHeaderButtons() {
