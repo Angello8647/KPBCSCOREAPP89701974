@@ -680,19 +680,7 @@ function changeDateByDays(days) {
     state.selectedDate = dateInput.value;
 }
 
-// ============================================
-// ✅ Helper: Highlight de gefocuste match op Pagina 2
-// ============================================
-function highlightMatch(cards) {
-    cards.forEach(c => c.classList.remove('focused'));
-    if (cards[window.matchListFocusIndex]) {
-        cards[window.matchListFocusIndex].classList.add('focused');
-        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-}
 
-
-}
 // ==========================================
 // MATCH SAMENVATTING RENDEREN (Pagina 6)
 // ==========================================
