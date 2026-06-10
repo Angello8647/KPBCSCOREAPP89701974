@@ -496,7 +496,7 @@ function enableScoreButtons() {
 function initPresenterControls() {
     let pageUpStartTime = null;
     let lastScoreTime = 0;
-    const COOLDOWN = 300;
+    const COOLDOWN = 1000;
     let lastTabTime = 0;
     window.matchListFocusIndex = 0;
 
@@ -516,23 +516,18 @@ function initPresenterControls() {
             return;
         }
 
-        // ============================================
         // ✅ PAGINA 1: Datum wijzigen + Matchen ophalen
-        // ============================================
         if (activePage.id === 'page1') {
-            // Pijl Omhoog / PageUp = Datum +1 dag
             if (key === 'ArrowUp' || key === 'PageUp') {
                 event.preventDefault();
                 changeDateByDays(1);
                 return;
             }
-            // Pijl Omlaag / PageDown = Datum -1 dag
             if (key === 'ArrowDown' || key === 'PageDown') {
                 event.preventDefault();
                 changeDateByDays(-1);
                 return;
             }
-            // Tab of Enter = Matchen Ophalen
             if (key === 'Tab' || key === 'Enter') {
                 event.preventDefault();
                 if (typeof window.syncAndGoToMatches === 'function') {
@@ -545,79 +540,60 @@ function initPresenterControls() {
             return;
         }
 
-        // ============================================
-        // ✅ PAGINA 2: Door matchen navigeren + selecteren
-        // ============================================
+        // ✅ PAGINA 2: Door matchen navigeren + selecteren (DIRECTE AANROEP)
         if (activePage.id === 'page2') {
             const cards = document.querySelectorAll('#matchList .match-card');
-            if (cards.length === 0) return;
+            if (cards.length > 0) {
+                window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, cards.length - 1));
 
-            // Zorg dat index binnen bereik blijft
-            window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, cards.length - 1));
-
-            // Pijl Omlaag / PageDown = volgende match
-            if (key === 'ArrowDown' || key === 'PageDown') {
-                event.preventDefault();
-                window.matchListFocusIndex = Math.min(window.matchListFocusIndex + 1, cards.length - 1);
-                highlightMatch(cards);
-                return;
-            }
-            // Pijl Omhoog / PageUp = vorige match
-            if (key === 'ArrowUp' || key === 'PageUp') {
-                event.preventDefault();
-                window.matchListFocusIndex = Math.max(window.matchListFocusIndex - 1, 0);
-                highlightMatch(cards);
-                return;
-            }
-            // Tab of Enter = geselecteerde match openen
-            if (key === 'Tab' || key === 'Enter') {
-                event.preventDefault();
-                cards[window.matchListFocusIndex].click();
-                return;
+                if (key === 'PageDown' || key === 'ArrowDown') {
+                    event.preventDefault();
+                    window.matchListFocusIndex = Math.min(window.matchListFocusIndex + 1, cards.length - 1);
+                    highlightMatch(cards);
+                } else if (key === 'PageUp' || key === 'ArrowUp') {
+                    event.preventDefault();
+                    window.matchListFocusIndex = Math.max(window.matchListFocusIndex - 1, 0);
+                    highlightMatch(cards);
+                } else if (key === 'Tab' || key === 'Enter') {
+                    event.preventDefault();
+                    // ✅ DIRECTE AANROEP: Haal de match op uit de state en roep selectMatch aan
+                    const filtered = state.matches.filter(m => m.date === state.selectedDate && !m.completed);
+                    const matchToSelect = filtered[window.matchListFocusIndex];
+                    
+                    if (matchToSelect && typeof window.selectMatch === 'function') {
+                        window.selectMatch(matchToSelect.id);
+                    }
+                }
             }
             return;
         }
 
-        // ============================================
         // ✅ PAGINA 4: Witte bal kiezen + match starten
-        // ============================================
         if (activePage.id === 'page4') {
-            // Pijl Omhoog / PageUp = Speler 1 speelt met wit
             if (key === 'ArrowUp' || key === 'PageUp') {
                 event.preventDefault();
                 if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(1);
-                return;
-            }
-            // Pijl Omlaag / PageDown = Speler 2 speelt met wit
-            if (key === 'ArrowDown' || key === 'PageDown') {
+            } else if (key === 'ArrowDown' || key === 'PageDown') {
                 event.preventDefault();
                 if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(2);
-                return;
-            }
-            // Tab of Enter = Match starten
-            if (key === 'Tab' || key === 'Enter') {
+            } else if (key === 'Tab' || key === 'Enter') {
                 event.preventDefault();
                 if (typeof window.startMatch === 'function' && state.selectedWhitePlayer) {
                     window.startMatch();
                 }
-                return;
             }
             return;
         }
 
-        // ============================================
-        // ✅ PAGINA 5: SCORING (bestaande logica)
-        // ============================================
+        // ✅ PAGINA 5: SCORING
         if (activePage.id === 'page5') {
             if (!state.currentMatch || state.matchEnded) return;
 
-            // PageUp: start timer voor long-press detectie
             if (key === 'PageUp' || key === 'ArrowUp') {
                 event.preventDefault();
                 pageUpStartTime = Date.now();
                 return;
             }
-            // PageDown = -1 (met cooldown)
             if (key === 'PageDown' || key === 'ArrowDown') {
                 event.preventDefault();
                 if (now - lastScoreTime >= COOLDOWN) {
@@ -626,14 +602,12 @@ function initPresenterControls() {
                 }
                 return;
             }
-            // 'b'/'B' = UNDO
             if (key === 'b' || key === 'B' || code === 'KeyB') {
                 event.preventDefault();
                 if (typeof window.undoLastAdd === 'function') window.undoLastAdd();
                 lastScoreTime = now;
                 return;
             }
-            // Tab of Enter = Einde beurt
             if (key === 'Tab' || key === 'Enter') {
                 event.preventDefault();
                 if (now - lastTabTime < 500) return;
@@ -653,19 +627,17 @@ function initPresenterControls() {
         if (event.key === 'PageUp' || event.key === 'ArrowUp') {
             event.preventDefault();
             if (pageUpStartTime === null) return;
-
+            
             const holdDuration = Date.now() - pageUpStartTime;
             pageUpStartTime = null;
 
             if (holdDuration >= 2000) {
-                // Lang ingedrukt: terug naar home (alleen als 0 beurten)
                 const p1T = state.player1.turns?.length || 0;
                 const p2T = state.player2.turns?.length || 0;
                 if (p1T === 0 && p2T === 0) {
                     if (typeof window.showPage === 'function') window.showPage(1);
                 }
             } else {
-                // Kort ingedrukt: +1 punt
                 if (Date.now() - lastScoreTime >= COOLDOWN) {
                     if (typeof window.changeScore === 'function') window.changeScore(1);
                     lastScoreTime = Date.now();
@@ -673,6 +645,32 @@ function initPresenterControls() {
             }
         }
     });
+}
+
+// ✅ Helper: Highlight de gefocuste match op Pagina 2
+function highlightMatch(cards) {
+    cards.forEach(c => c.classList.remove('focused'));
+    if (cards[window.matchListFocusIndex]) {
+        cards[window.matchListFocusIndex].classList.add('focused');
+        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+}
+
+// ✅ Helper: Datum wijzigen met +/- dagen
+function changeDateByDays(days) {
+    const dateInput = document.getElementById('dateSelect');
+    if (!dateInput) return;
+    if (!dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
+    
+    const currentDate = new Date(dateInput.value);
+    currentDate.setDate(currentDate.getDate() + days);
+    
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    
+    dateInput.value = `${year}-${month}-${day}`;
+    state.selectedDate = dateInput.value;
 }
 
 // ============================================
@@ -686,29 +684,7 @@ function highlightMatch(cards) {
     }
 }
 
-// ============================================
-// ✅ Helper: Datum wijzigen met +/- dagen (voor Pagina 1)
-// ============================================
-function changeDateByDays(days) {
-    const dateInput = document.getElementById('dateSelect');
-    if (!dateInput) return;
-    
-    // Als er geen datum is, gebruik vandaag
-    if (!dateInput.value) {
-        dateInput.value = new Date().toISOString().split('T')[0];
-    }
-    
-    const currentDate = new Date(dateInput.value);
-    currentDate.setDate(currentDate.getDate() + days);
-    
-    // Format als YYYY-MM-DD
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const newDateStr = `${year}-${month}-${day}`;
-    
-    dateInput.value = newDateStr;
-    state.selectedDate = newDateStr;
+
 }
 // ==========================================
 // MATCH SAMENVATTING RENDEREN (Pagina 6)
