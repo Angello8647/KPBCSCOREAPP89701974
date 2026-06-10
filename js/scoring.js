@@ -259,6 +259,14 @@ window.addScore = function() {
     if (score > p.highestSeries) p.highestSeries = score;
     p.beurtNummer++;
 
+    // ✅ CHECK: Is dit de allereerste beurt van de match?
+    if (state.player1.turns.length === 1 && state.player2.turns.length === 0) {
+        if (!state.currentMatch.isReportedStarted) {
+            state.currentMatch.isReportedStarted = true;
+            updateMatchStatusOnServer(state.currentMatch.id, "gestart");
+        }
+    }
+
     const reached = p.score >= t;
 
     if (reached && state.firstToTarget === null) {
