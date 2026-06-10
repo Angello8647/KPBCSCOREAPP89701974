@@ -179,32 +179,40 @@ function updateCurrentScoreDisplay() {
 // SCORE ACTIES
 // ==========================================
 window.changeScore = function(delta) {
-    if (state.matchEnded) return;
-    
+    if(state.matchEnded) return; // Match afgelopen, doe niets
+
     const p = state.currentPlayer === 1 ? state.player1 : state.player2;
     const pot = state.currentInput + delta;
-    
-    // Voorkom dat de score boven het target uitkomt
-    if (p.score + pot > p.target) {
-        state.currentInput = Math.max(0, p.target - p.score);
-    } else {
-        state.currentInput = Math.max(0, pot);
+
+    // ✅ VERWIJDERD: De checks die voorkwamen dat je boven het target kwam.
+    // Je mag nu gewoon vrij door scoren boven het target!
+
+    // Zorg dat de invoer niet onder 0 kan gaan
+    state.currentInput = Math.max(0, pot);
+
+    if (delta > 0) {
+        // playScoreSound(state.currentInput); // (Optioneel, als je deze functie hebt)
     }
-    
+
     updateCurrentScoreDisplay();
-};
+    updateStaticNeededValues();
+}
 
 window.addScore = function() {
-    if (state.matchEnded) return;
-    
+    if(state.matchEnded) return;
+
     const score = state.currentInput;
     const p = state.currentPlayer === 1 ? state.player1 : state.player2;
-    
+    const t = p.target;
+
+    // ✅ VERWIJDERD: De check die blokkeerde als target al bereikt was.
+
     // Sla state op voor undo
-    window.lastStateBeforeAdd = {
+    lastStateBeforeAdd = {
         player1: { score: state.player1.score, turns: [...state.player1.turns], beurtNummer: state.player1.beurtNummer, highestSeries: state.player1.highestSeries },
         player2: { score: state.player2.score, turns: [...state.player2.turns], beurtNummer: state.player2.beurtNummer, highestSeries: state.player2.highestSeries },
         currentPlayer: state.currentPlayer,
+        turnNumber: state.turnNumber,
         isFirstPlayerInRound: state.isFirstPlayerInRound,
         firstToTarget: state.firstToTarget,
         isNabeurt: state.isNabeurt,
@@ -212,38 +220,41 @@ window.addScore = function() {
         currentInput: state.currentInput
     };
 
-    // Score toevoegen
+    // Score toevoegen aan totaal
     p.score += score;
     p.turns.push(score);
-    if (score > p.highestSeries) p.highestSeries = score;
+    if(score > p.highestSeries) p.highestSeries = score;
     p.beurtNummer++;
 
-    const reachedTarget = p.score >= p.target;
+    // ✅ HIER CHECKEN WE PAS OF HET TARGET BEREIKT IS (na het toevoegen van de score)
+    const reached = p.score >= t;
 
-    // Match eindigen logica (nabeurt)
-    if (reachedTarget && state.firstToTarget === null) {
+    if(reached && state.firstToTarget === null) {
         state.firstToTarget = state.currentPlayer;
-        if (state.currentPlayer === 1) {
+        if(state.currentPlayer === 1) { 
+            // Speler 1 (Wit) heeft target bereikt → Geel krijgt nabeurt
             state.isNabeurt = true;
-            state.currentPlayer = 2;
+            state.currentPlayer = 2; 
             state.isFirstPlayerInRound = false;
             state.currentInput = 0;
             updateCurrentScoreDisplay();
+            updateSideScoreDisplays();
             updateScoringPage();
             return;
-        } else {
+        } else { 
+            // Speler 2 (Geel) heeft target bereikt → Match is direct over
             endMatch();
             return;
         }
     }
 
-    if (state.isNabeurt) {
+    if(state.isNabeurt) {
         endMatch();
         return;
     }
 
-    // Wissel van speler
-    if (state.isFirstPlayerInRound) {
+    // Wissel van speler (normale beurtwissel)
+    if(state.isFirstPlayerInRound) {
         state.currentPlayer = 2;
         state.isFirstPlayerInRound = false;
     } else {
@@ -251,12 +262,22 @@ window.addScore = function() {
         state.isFirstPlayerInRound = true;
         state.turnNumber++;
     }
-    
+
     state.currentInput = 0;
-    saveStateToStorage();
+
+    // Backup maken (bestaande logica behouden)
+    backupMatchSilently({
+        matchId: state.currentMatch.id, player1: state.currentMatch.p1, player2: state.currentMatch.p2,
+        date: state.currentMatch.date, p1Score: state.player1.score, p2Score: state.player2.score,
+        p1Turns: [...state.player1.turns], p2Turns: [...state.player2.turns],
+        currentPlayer: state.currentPlayer, isNabeurt: state.isNabeurt,
+        firstToTarget: state.firstToTarget, completed: state.matchEnded
+    });
+
     updateCurrentScoreDisplay();
+    updateSideScoreDisplays();
     updateScoringPage();
-};
+}
 
 window.undoLastAdd = function() {
     if (!window.lastStateBeforeAdd) return;
