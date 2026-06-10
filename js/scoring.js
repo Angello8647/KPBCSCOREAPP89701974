@@ -19,10 +19,15 @@ function updateScoringPage() {
     p1Card.className = `player-card ${state.player1.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 1 ? 'player-active' : 'player-inactive'}`;
     p2Card.className = `player-card ${state.player2.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 2 ? 'player-active' : 'player-inactive'}`;
 
-    // Helper voor beurt-weergave: B1 bovenaan, vult naar beneden
-    const renderTurns = (turns) => {
+    // Helper voor beurt-weergave: markeert ALLE beurten die gelijk zijn aan de hoogste reeks
+    const renderTurns = (turns, player) => {
+        if (!turns || turns.length === 0) {
+            return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
+        }
+        
         const minBeurten = 56;
         const totalToShow = Math.max(minBeurten, turns.length);
+        const highest = player.highestSeries || 0;
         let html = '';
         
         for (let i = 1; i <= totalToShow; i++) {
@@ -33,18 +38,22 @@ function updateScoringPage() {
             if (isPlayed) {
                 const score = turns[i - 1];
                 
-                // ✅ 0 punten wordt '-' en krijgt een speciale class
                 if (score === 0) {
                     scoreDisplay = '-';
                     classes += ' played zero-turn';
                 } else {
                     scoreDisplay = score;
                     classes += ' played';
+                    
+                    // ✅ NIEUW: Als deze beurt gelijk is aan de hoogste reeks (en die is > 0), maak hem groen!
+                    if (score === highest && highest > 0) {
+                        classes += ' highest-series';
+                    }
                 }
                 
-                // ✅ Alleen de allerlaatst gespeelde beurt krijgt het blauwe accent
-                if (i === turns.length) {
-                    classes += ' last-played';
+                // Subtiel accent voor de allerlaatste beurt, ALLEEN als het niet al de hoogste reeks is
+                if (i === turns.length && score !== highest) {
+                    classes += ' latest-turn';
                 }
             } else {
                 classes += ' pending';
