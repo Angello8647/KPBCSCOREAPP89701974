@@ -198,15 +198,13 @@ window.changeScore = function(delta) {
     if (state.matchEnded) return;
     
     const pot = state.currentInput + delta;
-    
-    // ✅ Geen target-blokkade meer - vrij scoren boven target
     state.currentInput = Math.max(0, pot);
     
-    if (delta > 0 && typeof playScoreSound === 'function') {
+    // ✅ HIER ROEPEN WE DE SPRAAKFUNCTIE AAN ALS ER PUNTEN BIJ KOMEN (+)
+    if (delta > 0) {
         playScoreSound(state.currentInput);
     }
     
-    // ✅ VERWIJDERD: updateStaticNeededValues() - deze functie bestaat niet!
     updateCurrentScoreDisplay();
 }
 
