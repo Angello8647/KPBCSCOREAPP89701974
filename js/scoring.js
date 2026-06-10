@@ -12,80 +12,81 @@ function updateScoringPage() {
     document.getElementById('headerName1').textContent = state.currentMatch.p1;
     document.getElementById('headerName2').textContent = state.currentMatch.p2;
 
-    // 2. Spelerkaarten & Beurtenlijst (4-koloms grid)
+    // 2. Spelerkaarten & Beurtenlijst
     const p1Card = document.getElementById('player1Card');
     const p2Card = document.getElementById('player2Card');
     
-    p1Card.className = `player-card ${state.player1.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 1 ? 'player-active' : 'player-inactive'}`;
-    p2Card.className = `player-card ${state.player2.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 2 ? 'player-active' : 'player-inactive'}`;
+    if (p1Card && p2Card) {
+        p1Card.className = `player-card ${state.player1.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 1 ? 'player-active' : 'player-inactive'}`;
+        p2Card.className = `player-card ${state.player2.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 2 ? 'player-active' : 'player-inactive'}`;
 
-    // Helper voor beurt-weergave: markeert ALLE beurten die gelijk zijn aan de hoogste reeks
-    const renderTurns = (turns, player) => {
-        if (!turns || turns.length === 0) {
-            return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
-        }
-        
-        const minBeurten = 56;
-        const totalToShow = Math.max(minBeurten, turns.length);
-        const highest = player.highestSeries || 0;
-        let html = '';
-        
-        for (let i = 1; i <= totalToShow; i++) {
-            const isPlayed = i <= turns.length;
-            let scoreDisplay = '−';
-            let classes = 'turn-row';
-            
-            if (isPlayed) {
-                const score = turns[i - 1];
-                
-                if (score === 0) {
-                    scoreDisplay = '-';
-                    classes += ' played zero-turn';
-                } else {
-                    scoreDisplay = score;
-                    classes += ' played';
-                    
-                    // ✅ NIEUW: Als deze beurt gelijk is aan de hoogste reeks (en die is > 0), maak hem groen!
-                    if (score === highest && highest > 0) {
-                        classes += ' highest-series';
-                    }
-                }
-                
-                // Subtiel accent voor de allerlaatste beurt, ALLEEN als het niet al de hoogste reeks is
-                if (i === turns.length && score !== highest) {
-                    classes += ' latest-turn';
-                }
-            } else {
-                classes += ' pending';
+        // Helper functie voor beurt-weergave (lokaal gedefinieerd, dus altijd bereikbaar)
+        const renderTurns = (turns, player) => {
+            if (!turns || turns.length === 0) {
+                return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
             }
             
-            html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
-        }
-        return html;
-    };
+            const minBeurten = 56;
+            const totalToShow = Math.max(minBeurten, turns.length);
+            const highest = player.highestSeries || 0;
+            let html = '';
+            
+            for (let i = 1; i <= totalToShow; i++) {
+                const isPlayed = i <= turns.length;
+                let scoreDisplay = '−';
+                let classes = 'turn-row';
+                
+                if (isPlayed) {
+                    const score = turns[i - 1];
+                    
+                    if (score === 0) {
+                        scoreDisplay = '-';
+                        classes += ' played zero-turn';
+                    } else {
+                        scoreDisplay = score;
+                        classes += ' played';
+                        
+                        // ✅ Markeer als hoogste reeks
+                        if (score === highest && highest > 0) {
+                            classes += ' highest-series';
+                        }
+                    }
+                    
+                    // Subtiel accent voor de allerlaatste beurt (als het niet de hoogste reeks is)
+                    if (i === turns.length && score !== highest) {
+                        classes += ' latest-turn';
+                    }
+                } else {
+                    classes += ' pending';
+                }
+                
+                html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
+            }
+            return html;
+        };
 
-    p1c.innerHTML = `<div><h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3></div>
-    <div class="turns-scroll-container">
-    <div class="turns-list">${renderTurns(state.player1.turns, state.player1)}</div>
-    </div>`;
-    
-    p2c.innerHTML = `<div><h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3></div>
-    <div class="turns-scroll-container">
-    <div class="turns-list">${renderTurns(state.player2.turns, state.player2)}</div>
-    </div>`;
+        // ✅ HTML opbouwen met de CORRECTE variabelen (p1Card / p2Card)
+        p1Card.innerHTML = `
+            <div><h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3></div>
+            <div class="turns-scroll-container">
+                <div class="turns-list">${renderTurns(state.player1.turns, state.player1)}</div>
+            </div>`;
+
+        p2Card.innerHTML = `
+            <div><h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3></div>
+            <div class="turns-scroll-container">
+                <div class="turns-list">${renderTurns(state.player2.turns, state.player2)}</div>
+            </div>`;
+    }
 
     // 3. Middenblok: Beurt info (DYNAMISCHE KLEUR)
     let currentBeurt = state.currentPlayer === 1 ? state.player1.beurtNummer : state.player2.beurtNummer;
     if (state.matchEnded) currentBeurt = Math.max(1, currentBeurt - 1);
     
-    // Bepaal of de huidige speler wit of geel heeft
     const isWhite = (state.currentPlayer === 1 && state.player1.isWhite) || (state.currentPlayer === 2 && state.player2.isWhite);
-    
-    // Kies de kleur en een subtiele gloed (glow) voor extra diepte
     const textColor = isWhite ? '#ffffff' : '#f1c40f';
     const glowColor = isWhite ? 'rgba(255, 255, 255, 0.4)' : 'rgba(241, 196, 15, 0.4)';
     
-    // Extra info (alleen tonen als het relevant is)
     let extraInfo = '';
     if (state.isNabeurt) {
         extraInfo = '<div style="margin-top:15px; font-size:1.3rem; color:#ffcc00; font-weight:bold; text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);">⚠️ NABEURT</div>';
@@ -93,7 +94,6 @@ function updateScoringPage() {
         extraInfo = '<div style="margin-top:15px; font-size:1.3rem; color:#2ecc71; font-weight:bold; text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);">✅ Laatste beurt voor speler 2</div>';
     }
 
-    // Update de HTML: Alleen het beurtnummer in de juiste kleur, geen badge meer
     document.getElementById('currentPlayerDisplay').innerHTML = `
         <div style="text-align:center;">
             <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
