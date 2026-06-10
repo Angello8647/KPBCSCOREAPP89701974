@@ -574,8 +574,9 @@ function initPresenterControls() {
             return;
         }
 
-        // ✅ PAGINA 2: Door matchen navigeren + selecteren
-        if (activePage.id === 'page2') {
+     
+        // ✅ PAGINA 2 OF 11: Door matchen navigeren + selecteren
+        if (activePage.id === 'page2' || activePage.id === 'page11') {
             const cards = document.querySelectorAll('#matchList .match-card');
             if (cards.length > 0) {
                 window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, cards.length - 1));
