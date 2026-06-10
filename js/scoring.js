@@ -498,7 +498,28 @@ function enableScoreButtons() {
 }
 
 // ==========================================
-// PRESENTER / TOETSENBORD CONTROLS
+// ✅ HELPER: Highlight match (KOPPEL AAN WINDOW ZODAT HIJ ALTIJD GEVONDEN WORDT)
+// ==========================================
+window.highlightMatch = function(cards) {
+    if (!cards || cards.length === 0) return;
+    
+    // Zorg dat de index een geldig getal is
+    if (typeof window.matchListFocusIndex !== 'number') {
+        window.matchListFocusIndex = 0;
+    }
+    
+    // Verwijder 'focused' van alle kaarten
+    cards.forEach(c => c.classList.remove('focused'));
+    
+    Voeg 'focused' toe aan de huidige kaart en scroll ernaartoe
+    if (cards[window.matchListFocusIndex]) {
+        cards[window.matchListFocusIndex].classList.add('focused');
+        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+};
+
+// ==========================================
+// PRESENTER CONTROLS
 // ==========================================
 function initPresenterControls() {
     let pageUpStartTime = null;
@@ -527,41 +548,49 @@ function initPresenterControls() {
         if (activePage.id === 'page1') {
             if (key === 'ArrowUp' || key === 'PageUp') {
                 event.preventDefault();
-                changeDateByDays(1);
+                const dateInput = document.getElementById('dateSelect');
+                if (dateInput && dateInput.value) {
+                    const d = new Date(dateInput.value);
+                    d.setDate(d.getDate() + 1);
+                    dateInput.value = d.toISOString().split('T')[0];
+                    state.selectedDate = dateInput.value;
+                }
                 return;
             }
             if (key === 'ArrowDown' || key === 'PageDown') {
                 event.preventDefault();
-                changeDateByDays(-1);
+                const dateInput = document.getElementById('dateSelect');
+                if (dateInput && dateInput.value) {
+                    const d = new Date(dateInput.value);
+                    d.setDate(d.getDate() - 1);
+                    dateInput.value = d.toISOString().split('T')[0];
+                    state.selectedDate = dateInput.value;
+                }
                 return;
             }
             if (key === 'Tab' || key === 'Enter') {
                 event.preventDefault();
-                if (typeof window.syncAndGoToMatches === 'function') {
-                    window.syncAndGoToMatches();
-                }
+                if (typeof window.goToPage2 === 'function') window.goToPage2();
                 return;
             }
             return;
         }
 
-        // ✅ PAGINA 11: Door matchen navigeren + selecteren (GEBRUIKT .click() zoals oude code)
-        if (activePage.id === 'page11') {
+        // ✅ PAGINA 2: Door matchen navigeren + selecteren
+        if (activePage.id === 'page2') {
             const cards = document.querySelectorAll('#matchList .match-card');
             if (cards.length > 0) {
                 window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, cards.length - 1));
-        
                 if (key === 'PageDown' || key === 'ArrowDown') {
                     event.preventDefault();
                     window.matchListFocusIndex = Math.min(window.matchListFocusIndex + 1, cards.length - 1);
-                    highlightMatch(cards);
+                    window.highlightMatch(cards); // ✅ Gebruik nu window.highlightMatch
                 } else if (key === 'PageUp' || key === 'ArrowUp') {
                     event.preventDefault();
                     window.matchListFocusIndex = Math.max(window.matchListFocusIndex - 1, 0);
-                    highlightMatch(cards);
-                } else if (key === 'Tab' || key === 'Enter') {
+                    window.highlightMatch(cards); // ✅ Gebruik nu window.highlightMatch
+                } else if (key === 'Tab') {
                     event.preventDefault();
-                    // ✅ GEBRUIK .click() zoals in de oude code - dit triggert de onclick handler
                     cards[window.matchListFocusIndex].click();
                 }
             }
@@ -570,17 +599,15 @@ function initPresenterControls() {
 
         // ✅ PAGINA 4: Witte bal kiezen + match starten
         if (activePage.id === 'page4') {
-            if (key === 'ArrowUp' || key === 'PageUp') {
+            if (key === 'PageUp' || key === 'ArrowUp') {
                 event.preventDefault();
                 if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(1);
-            } else if (key === 'ArrowDown' || key === 'PageDown') {
+            } else if (key === 'PageDown' || key === 'ArrowDown') {
                 event.preventDefault();
                 if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(2);
-            } else if (key === 'Tab' || key === 'Enter') {
+            } else if (key === 'Tab') {
                 event.preventDefault();
-                if (typeof window.startMatch === 'function' && state.selectedWhitePlayer) {
-                    window.startMatch();
-                }
+                if (typeof window.startMatch === 'function' && state.selectedWhitePlayer) window.startMatch();
             }
             return;
         }
@@ -608,12 +635,11 @@ function initPresenterControls() {
                 lastScoreTime = now;
                 return;
             }
-            if (key === 'Tab' || key === 'Enter') {
+            if (key === 'Tab') {
                 event.preventDefault();
                 if (now - lastTabTime < 500) return;
                 lastTabTime = now;
                 if (typeof window.addScore === 'function') window.addScore();
-                return;
             }
             return;
         }
@@ -789,14 +815,3 @@ function renderMatchSummary() {
     document.getElementById('summaryPlayer2').innerHTML = html2;
 }
 
-
-// ==========================================
-// ✅ HELPER: Highlight de gefocuste match voor presenter navigatie
-// ==========================================
-function highlightMatch(cards) {
-    cards.forEach(c => c.classList.remove('focused'));
-    if (cards[window.matchListFocusIndex]) {
-        cards[window.matchListFocusIndex].classList.add('focused');
-        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-}
