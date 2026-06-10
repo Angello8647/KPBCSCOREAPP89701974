@@ -1293,3 +1293,27 @@
     background: rgba(231, 76, 60, 0.18) !important;
     border: 2px solid #3498db !important;
 }
+
+
+/* ✅ HOOGSTE REEKS: Alle beurten die gelijk zijn aan de hoogste reeks worden groen */
+.turn-row.played.highest-series {
+    background: rgba(46, 204, 113, 0.25) !important; /* Lichtgroene achtergrond */
+    border: 2px solid #2ecc71 !important;            /* Duidelijke groene rand */
+    color: #27ae60 !important;
+    font-weight: 900 !important;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3) !important;
+}
+
+.turn-row.played.highest-series span {
+    color: #27ae60 !important; /* Groene tekst voor de score */
+}
+
+/* ✅ ALLERLAATSTE BEURT (subtiel blauw accent, alleen als het NIET de hoogste reeks is) */
+.turn-row.played.latest-turn {
+    border: 2px solid #3498db !important;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+}
+.turn-row.played.latest-turn span {
+    color: #2980b9 !important;
+    font-weight: 900 !important;
+}
