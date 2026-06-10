@@ -1300,3 +1300,15 @@
     color: #3498db !important;
     font-weight: 900 !important;
 }
+
+
+/* ✅ Accent voor de laatst gespeelde beurt (staat nu onderaan de gespeelde lijst) */
+.turn-row.played.last-played {
+    background: rgba(52, 152, 219, 0.25) !important;
+    border: 2px solid #3498db !important;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+}
+.turn-row.played.last-played span {
+    color: #3498db !important;
+    font-weight: 900 !important;
+}
