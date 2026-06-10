@@ -20,22 +20,37 @@ function updateScoringPage() {
     p2Card.className = `player-card ${state.player2.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 2 ? 'player-active' : 'player-inactive'}`;
 
     // Helper voor beurt-weergave: B1 bovenaan, vult naar beneden
-    const renderTurns = (turns, playerName) => {
+    const renderTurns = (turns) => {
         const minBeurten = 56;
         const totalToShow = Math.max(minBeurten, turns.length);
-        
         let html = '';
-        // Van B1 naar B(totalToShow) (B1 staat bovenaan)
+        
         for (let i = 1; i <= totalToShow; i++) {
             const isPlayed = i <= turns.length;
-            const score = isPlayed ? turns[i - 1] : '−';
-            const className = isPlayed ? 'turn-row played' : 'turn-row pending';
+            let scoreDisplay = '−';
+            let classes = 'turn-row';
             
-            // Geef de laatst gespeelde beurt een extra accent (blauwe rand)
-            const isLastPlayed = (i === turns.length && turns.length > 0);
-            const extraClass = isLastPlayed ? ' last-played' : '';
+            if (isPlayed) {
+                const score = turns[i - 1];
+                
+                // ✅ 0 punten wordt '-' en krijgt een speciale class
+                if (score === 0) {
+                    scoreDisplay = '-';
+                    classes += ' played zero-turn';
+                } else {
+                    scoreDisplay = score;
+                    classes += ' played';
+                }
+                
+                // ✅ Alleen de allerlaatst gespeelde beurt krijgt het blauwe accent
+                if (i === turns.length) {
+                    classes += ' last-played';
+                }
+            } else {
+                classes += ' pending';
+            }
             
-            html += `<div class="${className}${extraClass}"><span>B${i}: ${score}</span></div>`;
+            html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
         }
         return html;
     };
