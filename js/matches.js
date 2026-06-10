@@ -139,6 +139,7 @@ window.loadFilteredMatches = function() {
     
     if (filtered.length === 0) {
         matchList.innerHTML = `<div class="no-matches" style="font-size: 1.35rem; padding: 40px;"><p>Geen matchen gevonden voor ${dayName} ${dateStr}</p></div>`;
+        window.matchListFocusIndex = 0;
         return;
     }
     
@@ -174,19 +175,18 @@ window.loadFilteredMatches = function() {
         
         group.matches.forEach(m => {
             const refLine = m.referee ? `<br>👔 Scheids: <strong>${m.referee}</strong>` : '';
+            const discCatLine = `<br>⚪🟡🔴 <strong>${m.discipline} - Cat. ${m.cat}</strong>`;
             
-            // ✅ NIEUW: Alles op één regel zoals gevraagd: 🎯 Driebanden - Cat. 1 - 27 - 18
-            const infoLine = `🎯 <strong>${m.discipline} - Cat. ${m.cat}</strong> - <strong style="color: #ffffff; font-size: 1.8rem;">${m.target1} - ${m.target2}</strong>`;
-            
-            html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: all 0.3s ease; padding: 25px; border-radius: 15px; background: #34495e; border: 3px solid #2c3e50; box-shadow: 0 5px 15px rgba(0,0,0,0.3);" 
+            // ✅ CRUCIAAL: Aanhalingstekens rond '${m.id}' zodat de presenter dit correct kan lezen
+            html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: all 0.3s ease; padding: 25px; border-radius: 15px; background: #34495e; border: 3px solid #2c3e50; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: left;" 
                 onmouseover="this.style.transform='scale(1.02) translateY(-6px)'; this.style.borderColor='#00a8ff'; this.style.borderWidth='6px'; this.style.boxShadow='0 0 25px rgba(0, 168, 255, 0.5)'; this.style.background='#3d566e';" 
                 onmouseout="this.style.transform='scale(1) translateY(0)'; this.style.borderColor='#2c3e50'; this.style.borderWidth='3px'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'; this.style.background='#34495e';">
                 
-                <h3 style="font-size: 2.15rem; margin-bottom: 15px; line-height: 1.2; color: #ffffff; font-weight: 800; text-align: left;">
-                    ${m.p1} <span style="color:#f1c40f; font-size: 1.6rem; vertical-align: middle;">⚔️</span><br>${m.p2}
+                <h3 style="font-size: 2.15rem; margin-bottom: 15px; line-height: 1.3; color: #ffffff; font-weight: 800;">
+                    ${m.p1} <span style="color:#f1c40f; font-size: 1.6rem; vertical-align: middle; margin: 0 8px;">⚔️</span><br>${m.p2}
                 </h3>
-                <p class="match-info" style="font-size: 1.6rem; line-height: 1.5; margin: 0; color: #ecf0f1; text-align: left;">
-                    ${infoLine}
+                <p class="match-info" style="font-size: 1.6rem; line-height: 1.5; margin: 0; color: #ecf0f1;">
+                    🎯 <strong>${m.discipline} - Cat. ${m.cat}</strong> - <strong style="color: #ffffff; font-size: 1.8rem;">${m.target1} - ${m.target2}</strong>
                     ${refLine}
                 </p>
             </div>`;
@@ -196,7 +196,12 @@ window.loadFilteredMatches = function() {
     });
     
     matchList.innerHTML = html;
-    console.log("✅ loadFilteredMatches uitgevoerd, aantal matchen:", filtered.length);
+    
+    // ✅ Reset de focus index en highlight de eerste match voor de presenter
+    window.matchListFocusIndex = 0;
+    if (typeof window.highlightMatch === 'function') {
+        window.highlightMatch(document.querySelectorAll('#matchList .match-card'));
+    }
 };
 
 
