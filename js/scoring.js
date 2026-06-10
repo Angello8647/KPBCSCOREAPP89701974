@@ -368,20 +368,27 @@ window.updateBallSelectionPage = function() {
 window.selectWhitePlayer = function(playerNum) {
     state.selectedWhitePlayer = playerNum;
     
+    // ✅ FIX: Verwijder 'selected' van alle ballen
     document.querySelectorAll('.ball-option').forEach(el => el.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
     
+    // ✅ FIX: Gebruik de playerNum parameter, niet event.currentTarget
     const ball1 = document.getElementById('whiteBall1');
     const ball2 = document.getElementById('whiteBall2');
     
+    // Reset beide ballen
+    ball1.classList.remove('selected', 'yellow');
+    ball2.classList.remove('selected', 'yellow');
+    
+    // Voeg 'selected' toe aan de juiste bal
     if (playerNum === 1) {
-        ball1.classList.remove('yellow');
+        ball1.classList.add('selected');
         ball2.classList.add('yellow');
     } else {
-        ball2.classList.remove('yellow');
+        ball2.classList.add('selected');
         ball1.classList.add('yellow');
     }
     
+    // Activeer start knop
     const startBtn = document.getElementById('startMatchBtn');
     if (startBtn) {
         startBtn.disabled = false;
