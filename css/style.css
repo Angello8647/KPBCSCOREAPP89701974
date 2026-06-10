@@ -1426,68 +1426,79 @@
 }
 
 
-/* ========== MATCH OVERZICHT: BEURTEN & TSG ========== */
+/* ========== MATCH OVERZICHT: STATS IN HORIZONTALE RIJ ========== */
 
-/* TSG blokje (extra stat) */
-.summary-stat.tsg-stat .summary-value {
-    color: #3498db !important; /* Blauw voor TSG */
-    font-size: clamp(2.5rem, 5vw, 4rem) !important;
-}
-
-/* Horizontale beurten container */
-.summary-turns-container {
+/* Stats container: grid layout voor horizontale plaatsing */
+.summary-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 kolommen: Score, Beurten, Hoogste, Gemiddelde, TSG */
+    gap: 15px;
     width: 100%;
-    margin-top: 25px;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    margin: 20px 0;
 }
 
-.summary-turns-title {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    color: #bdc3c7;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.summary-turns-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Individueel beurt-blokje */
-.summary-turn {
+/* Individueel stat-blokje */
+.summary-stat {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 55px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.85);
-    border: 2px solid rgba(0, 0, 0, 0.15);
-    transition: all 0.2s ease;
+    padding: 15px 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
 }
 
-.summary-turn-number {
-    font-size: 0.75rem;
-    color: #7f8c8d;
+.summary-label {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: #bdc3c7 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     font-weight: 600;
-    margin-bottom: 2px;
+    margin-bottom: 8px;
+    line-height: 1.2;
 }
 
-.summary-turn-score {
-    font-size: 1.4rem;
-    font-weight: 900;
-    color: #2c3e50;
+.summary-value {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: bold;
+    color: #ffffff !important;
     line-height: 1;
+}
+
+/* TSG specifiek: blauwe kleur */
+.summary-stat.tsg-stat .summary-value {
+    color: #3498db !important;
+}
+
+/* Eindscore: groen als gewonnen */
+.summary-stat.score-stat.won .summary-value {
+    color: #2ecc71 !important;
+}
+
+/* Responsive: op tablets 3 kolommen */
+@media (max-width: 1024px) {
+    .summary-stats-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 kolommen op tablets */
+    }
+}
+
+/* Responsive: op mobiel 2 kolommen */
+@media (max-width: 650px) {
+    .summary-stats-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 kolommen op mobiel */
+        gap: 10px;
+    }
+    .summary-stat {
+        padding: 12px 8px;
+    }
+    .summary-label {
+        font-size: 0.85rem;
+    }
+    .summary-value {
+        font-size: 1.8rem;
+    }
 }
 
 /* ✅ HOOGSTE REEKS: Groen */
