@@ -30,20 +30,30 @@ function updateScoringPage() {
     p1Card.innerHTML = `<h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3><div class="turns-scroll-container"><div class="turns-list">${renderTurns(state.player1.turns)}</div></div>`;
     p2Card.innerHTML = `<h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3><div class="turns-scroll-container"><div class="turns-list">${renderTurns(state.player2.turns)}</div></div>`;
 
-    // 3. Middenblok: Beurt info
+    // 3. Middenblok: Beurt info (DYNAMISCHE KLEUR)
     let currentBeurt = state.currentPlayer === 1 ? state.player1.beurtNummer : state.player2.beurtNummer;
     if (state.matchEnded) currentBeurt = Math.max(1, currentBeurt - 1);
     
-    const currentColor = (state.currentPlayer === 1 && state.player1.isWhite) || (state.currentPlayer === 2 && state.player2.isWhite) ? 'Wit' : 'Geel';
+    // Bepaal of de huidige speler wit of geel heeft
+    const isWhite = (state.currentPlayer === 1 && state.player1.isWhite) || (state.currentPlayer === 2 && state.player2.isWhite);
+    
+    // Kies de kleur en een subtiele gloed (glow) voor extra diepte
+    const textColor = isWhite ? '#ffffff' : '#f1c40f';
+    const glowColor = isWhite ? 'rgba(255, 255, 255, 0.4)' : 'rgba(241, 196, 15, 0.4)';
+    
+    // Extra info (alleen tonen als het relevant is)
     let extraInfo = '';
-    if (state.isNabeurt) extraInfo = '<div style="margin-top:15px;font-size:1.2rem;color:#ffcc00;font-weight:bold;">⚠️ NABEURT</div>';
-    else if (state.firstToTarget === 1) extraInfo = '<div style="margin-top:15px;font-size:1.2rem;color:#ffcc00;font-weight:bold;">✅ Laatste beurt voor speler 2</div>';
+    if (state.isNabeurt) {
+        extraInfo = '<div style="margin-top:15px; font-size:1.3rem; color:#ffcc00; font-weight:bold; text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);">⚠️ NABEURT</div>';
+    } else if (state.firstToTarget === 1) {
+        extraInfo = '<div style="margin-top:15px; font-size:1.3rem; color:#2ecc71; font-weight:bold; text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);">✅ Laatste beurt voor speler 2</div>';
+    }
 
+    // Update de HTML: Alleen het beurtnummer in de juiste kleur, geen badge meer
     document.getElementById('currentPlayerDisplay').innerHTML = `
         <div style="text-align:center;">
-            <div style="font-size:5rem;font-weight:900;color:white;line-height:1;">B ${currentBeurt}</div>
-            <div style="margin-top:15px;">
-                <span style="background:${currentColor === 'Wit' ? 'white' : '#f1c40f'}; color:black; font-size:1.5rem; font-weight:bold; padding:10px 40px; border-radius:50px; display:inline-block;">${currentColor}</span>
+            <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
+                B ${currentBeurt}
             </div>
             ${extraInfo}
         </div>`;
