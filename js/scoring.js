@@ -595,3 +595,81 @@ function initPresenterControls() {
         }
     });
 }
+
+
+// ==========================================
+// MATCH SAMENVATTING RENDEREN (Pagina 6)
+// ==========================================
+function renderMatchSummary() {
+    if (!state.currentMatch) return;
+
+    // Helper voor gemiddelde berekening
+    const calcAvg = (score, turns) => {
+        if (!turns || turns === 0) return "0,00";
+        return (score / turns).toFixed(2).replace('.', ',');
+    };
+
+    // --- Speler 1 (Wit) ---
+    const p1Name = state.currentMatch.p1;
+    const p1Score = state.player1.score;
+    const p1Turns = state.player1.turns.length;
+    const p1Highest = state.player1.highestSeries;
+    const p1Avg = calcAvg(p1Score, p1Turns);
+    const p1Target = state.player1.target;
+    const p1Won = p1Score >= p1Target;
+
+    // --- Speler 2 (Geel) ---
+    const p2Name = state.currentMatch.p2;
+    const p2Score = state.player2.score;
+    const p2Turns = state.player2.turns.length;
+    const p2Highest = state.player2.highestSeries;
+    const p2Avg = calcAvg(p2Score, p2Turns);
+    const p2Target = state.player2.target;
+    const p2Won = p2Score >= p2Target;
+
+    // HTML genereren voor Speler 1
+    const html1 = `
+        <div class="summary-player-name">${p1Name} ⚪</div>
+        <div class="summary-stat">
+            <div class="summary-label">Eindscore</div>
+            <div class="summary-value" style="color: ${p1Won ? '#2ecc71' : '#ffffff'}">${p1Score}</div>
+        </div>
+        <div class="summary-stat">
+            <div class="summary-label">Aantal Beurten</div>
+            <div class="summary-value">${p1Turns}</div>
+        </div>
+        <div class="summary-stat">
+            <div class="summary-label">Hoogste Reeks</div>
+            <div class="summary-value">${p1Highest}</div>
+        </div>
+        <div class="summary-stat">
+            <div class="summary-label">Gemiddelde</div>
+            <div class="summary-value">${p1Avg}</div>
+        </div>
+    `;
+
+    // HTML genereren voor Speler 2
+    const html2 = `
+        <div class="summary-player-name">${p2Name} 🟡</div>
+        <div class="summary-stat">
+            <div class="summary-label">Eindscore</div>
+            <div class="summary-value" style="color: ${p2Won ? '#2ecc71' : '#ffffff'}">${p2Score}</div>
+        </div>
+        <div class="summary-stat">
+            <div class="summary-label">Aantal Beurten</div>
+            <div class="summary-value">${p2Turns}</div>
+        </div>
+        <div class="summary-stat">
+            <div class="summary-label">Hoogste Reeks</div>
+            <div class="summary-value">${p2Highest}</div>
+        </div>
+        <div class="summary-stat">
+            <div class="summary-label">Gemiddelde</div>
+            <div class="summary-value">${p2Avg}</div>
+        </div>
+    `;
+
+    // Injecteren in de DOM
+    document.getElementById('summaryPlayer1').innerHTML = html1;
+    document.getElementById('summaryPlayer2').innerHTML = html2;
+}
