@@ -1,6 +1,33 @@
 // js/scoring.js - SCHONE VERSIE (GEEN DUBBELE FUNCTIES)
 
 // ==========================================
+// 📡 MATCH STATUS UPDATEN NAAR SERVER
+// ==========================================
+async function updateMatchStatusOnServer(matchId, status) {
+    try {
+        console.log(`📡 Stuur signaal: Match ${matchId} is nu '${status}'`);
+        
+        const response = await fetch("https://kpbc.pythonanywhere.com/api/match-status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                match_id: matchId,
+                status: status
+            })
+        });
+
+        if (response.ok) {
+            console.log(`✅ Server bevestigd: Match ${matchId} is ${status}`);
+        } else {
+            console.error("❌ Server fout:", await response.text());
+        }
+    } catch (error) {
+        console.error("❌ Netwerkfout (match gaat lokaal door):", error);
+    }
+}
+
+
+// ==========================================
 // SCORE SCHERM UPDATES
 // ==========================================
 function updateScoringPage() {
