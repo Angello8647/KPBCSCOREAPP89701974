@@ -539,16 +539,14 @@ function initPresenterControls() {
                 event.preventDefault();
                 if (typeof window.syncAndGoToMatches === 'function') {
                     window.syncAndGoToMatches();
-                } else if (typeof window.goToPage2 === 'function') {
-                    window.goToPage2();
                 }
                 return;
             }
             return;
         }
 
-        // ✅ PAGINA 2: Door matchen navigeren + selecteren (DIRECTE AANROEP)
-        if (activePage.id === 'page2') {
+        // ✅ PAGINA 11: Door matchen navigeren + selecteren (NIEUWE APP!)
+        if (activePage.id === 'page11') {
             const cards = document.querySelectorAll('#matchList .match-card');
             if (cards.length > 0) {
                 window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, cards.length - 1));
@@ -652,32 +650,6 @@ function initPresenterControls() {
             }
         }
     });
-}
-
-// ✅ Helper: Highlight de gefocuste match op Pagina 2
-function highlightMatch(cards) {
-    cards.forEach(c => c.classList.remove('focused'));
-    if (cards[window.matchListFocusIndex]) {
-        cards[window.matchListFocusIndex].classList.add('focused');
-        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-}
-
-// ✅ Helper: Datum wijzigen met +/- dagen
-function changeDateByDays(days) {
-    const dateInput = document.getElementById('dateSelect');
-    if (!dateInput) return;
-    if (!dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
-    
-    const currentDate = new Date(dateInput.value);
-    currentDate.setDate(currentDate.getDate() + days);
-    
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    
-    dateInput.value = `${year}-${month}-${day}`;
-    state.selectedDate = dateInput.value;
 }
 
 
