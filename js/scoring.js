@@ -503,15 +503,13 @@ function enableScoreButtons() {
 window.highlightMatch = function(cards) {
     if (!cards || cards.length === 0) return;
     
-    // Zorg dat de index een geldig getal is
     if (typeof window.matchListFocusIndex !== 'number') {
         window.matchListFocusIndex = 0;
     }
     
-    // Verwijder 'focused' van alle kaarten
     cards.forEach(c => c.classList.remove('focused'));
     
-    Voeg 'focused' toe aan de huidige kaart en scroll ernaartoe
+    // Voeg 'focused' toe aan de huidige kaart en scroll ernaartoe
     if (cards[window.matchListFocusIndex]) {
         cards[window.matchListFocusIndex].classList.add('focused');
         cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
