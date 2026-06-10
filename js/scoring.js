@@ -75,7 +75,6 @@ function updateCurrentScoreDisplay() {
     const p1NeededCell = document.getElementById('p1NeededCell');
     const p2NeededCell = document.getElementById('p2NeededCell');
     
-    // ✅ NIEUW: Totaal cellen ophalen voor dimming
     const p1TotalCell = document.getElementById('p1TotalCell');
     const p2TotalCell = document.getElementById('p2TotalCell');
 
@@ -83,18 +82,22 @@ function updateCurrentScoreDisplay() {
     if (p1CurrentEl) p1CurrentEl.textContent = state.currentInput;
     if (p2CurrentEl) p2CurrentEl.textContent = state.currentInput;
 
-    // === 3. "NOG NODIG" BEREKENEN ===
+    // === 3. "NOG NODIG" BEREKENEN (rekening houdend met huidige invoer) ===
     const n1 = Math.max(0, state.player1.target - state.player1.score - (state.currentPlayer === 1 ? state.currentInput : 0));
     const n2 = Math.max(0, state.player2.target - state.player2.score - (state.currentPlayer === 2 ? state.currentInput : 0));
     
     if (p1NeededEl) p1NeededEl.textContent = n1;
     if (p2NeededEl) p2NeededEl.textContent = n2;
 
-    // === 4. TOTAAL SCORES UPDATEN ===
-    if (p1TotalCell) document.getElementById('p1TotalVal').textContent = state.player1.score;
-    if (p2TotalCell) document.getElementById('p2TotalVal').textContent = state.player2.score;
+    // === 4. ✅ TOTAAL SCORES LIVE UPDATEN (met huidige invoer meegerekend) ===
+    // Als speler aan de beurt is, tel de huidige invoer op bij zijn totaal
+    const p1DisplayScore = state.player1.score + (state.currentPlayer === 1 ? state.currentInput : 0);
+    const p2DisplayScore = state.player2.score + (state.currentPlayer === 2 ? state.currentInput : 0);
+    
+    if (p1TotalCell) document.getElementById('p1TotalVal').textContent = p1DisplayScore;
+    if (p2TotalCell) document.getElementById('p2TotalVal').textContent = p2DisplayScore;
 
-    // === 5. BAL-KLEUREN & TURN-HIDDEN (voor huidige beurt cellen) ===
+    // === 5. BAL-KLEUREN & TURN-HIDDEN ===
     p1CurrentCell.className = 'score-cell current-turn-cell';
     p2CurrentCell.className = 'score-cell current-turn-cell';
     
@@ -107,15 +110,11 @@ function updateCurrentScoreDisplay() {
     }
 
     // === 6. DIMMING LOGICA (Nog nodig + Totaalscore) ===
-    // Nog nodig cellen: dimmen als speler niet aan de beurt is
     if (p1NeededCell) p1NeededCell.classList.toggle('dimmed', state.currentPlayer !== 1);
     if (p2NeededCell) p2NeededCell.classList.toggle('dimmed', state.currentPlayer !== 2);
-    
-    // Nog nodig cellen: rood bij ≤5 punten (danger zone)
     if (p1NeededCell) p1NeededCell.classList.toggle('danger', n1 <= 5 && n1 > 0);
     if (p2NeededCell) p2NeededCell.classList.toggle('danger', n2 <= 5 && n2 > 0);
     
-    // ✅ NIEUW: Totaalscore cellen ook dimmen als speler niet aan de beurt is
     if (p1TotalCell) p1TotalCell.classList.toggle('dimmed', state.currentPlayer !== 1);
     if (p2TotalCell) p2TotalCell.classList.toggle('dimmed', state.currentPlayer !== 2);
 
