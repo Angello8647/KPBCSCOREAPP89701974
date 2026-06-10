@@ -545,12 +545,12 @@ function initPresenterControls() {
             return;
         }
 
-        // ✅ PAGINA 11: Door matchen navigeren + selecteren (NIEUWE APP!)
+        // ✅ PAGINA 11: Door matchen navigeren + selecteren (GEBRUIKT .click() zoals oude code)
         if (activePage.id === 'page11') {
             const cards = document.querySelectorAll('#matchList .match-card');
             if (cards.length > 0) {
                 window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, cards.length - 1));
-
+        
                 if (key === 'PageDown' || key === 'ArrowDown') {
                     event.preventDefault();
                     window.matchListFocusIndex = Math.min(window.matchListFocusIndex + 1, cards.length - 1);
@@ -561,13 +561,8 @@ function initPresenterControls() {
                     highlightMatch(cards);
                 } else if (key === 'Tab' || key === 'Enter') {
                     event.preventDefault();
-                    // ✅ DIRECTE AANROEP: Haal de match op uit de state en roep selectMatch aan
-                    const filtered = state.matches.filter(m => m.date === state.selectedDate && !m.completed);
-                    const matchToSelect = filtered[window.matchListFocusIndex];
-                    
-                    if (matchToSelect && typeof window.selectMatch === 'function') {
-                        window.selectMatch(matchToSelect.id);
-                    }
+                    // ✅ GEBRUIK .click() zoals in de oude code - dit triggert de onclick handler
+                    cards[window.matchListFocusIndex].click();
                 }
             }
             return;
