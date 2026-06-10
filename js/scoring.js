@@ -17,12 +17,14 @@ async function updateMatchStatusOnServer(matchId, status) {
         });
 
         if (response.ok) {
-            console.log(`✅ Server bevestigd: Match ${matchId} is ${status}`);
+            const data = await response.json();
+            console.log(`✅ Server bevestigd:`, data);
         } else {
             console.error("❌ Server fout:", await response.text());
         }
     } catch (error) {
-        console.error("❌ Netwerkfout (match gaat lokaal door):", error);
+        // Foutafhandeling zodat de app niet crasht als het internet even wegvalt
+        console.error("❌ Netwerkfout (match gaat lokaal gewoon door):", error);
     }
 }
 
