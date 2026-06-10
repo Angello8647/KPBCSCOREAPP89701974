@@ -1431,7 +1431,7 @@
 }
 
 
-/* 🏁 MATCH SAMENVATTING PAGINA (Pagina 6) - Perfecte versie */
+/* 🏁 MATCH SAMENVATTING PAGINA (Pagina 6) - Twee rijen layout */
 #page6.active {
     display: flex !important;
     flex-direction: column;
@@ -1463,7 +1463,7 @@
     border-radius: 16px;
     background: linear-gradient(135deg, #2c3e50, #34495e);
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    overflow-y: auto !important; /* ✅ Scrollbaar als het niet past */
+    overflow-y: auto !important;
     overflow-x: hidden !important;
     color: #ffffff;
 }
@@ -1476,13 +1476,13 @@
     line-height: 1.2;
 }
 
-/* ✅ STATS IN HORIZONTALE RIJ (5 kolommen) */
+/* ✅ STATS GRID: 3 kolommen per rij */
 .summary-stats-grid {
     display: grid !important;
-    grid-template-columns: repeat(5, 1fr) !important;
-    gap: 10px !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
     width: 100% !important;
-    margin: 15px 0 !important;
+    margin: 12px 0 !important;
 }
 
 .summary-stat {
@@ -1490,36 +1490,33 @@
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 12px 8px !important;
+    padding: 15px 10px !important;
     background: rgba(0, 0, 0, 0.2) !important;
-    border-radius: 10px !important;
+    border-radius: 12px !important;
     border: 2px solid rgba(255, 255, 255, 0.1) !important;
     text-align: center !important;
 }
 
 .summary-label {
-    font-size: clamp(0.75rem, 1.5vw, 0.9rem) !important;
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem) !important;
     color: #bdc3c7 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
     font-weight: 600 !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 8px !important;
     line-height: 1.2 !important;
 }
 
 .summary-value {
-    font-size: clamp(1.5rem, 3vw, 2.2rem) !important;
+    font-size: clamp(2rem, 4vw, 2.8rem) !important;
     font-weight: bold !important;
     color: #ffffff !important;
     line-height: 1 !important;
 }
 
+/* TSG blauw */
 .summary-stat.tsg-stat .summary-value {
     color: #3498db !important;
-}
-
-.summary-stat.score-stat.won .summary-value {
-    color: #2ecc71 !important;
 }
 
 /* ✅ BEURTENLIJST HORIZONTAAL */
@@ -1632,15 +1629,8 @@
     justify-self: center;
 }
 
-/* Responsive: tablet */
-@media (max-width: 1024px) {
-    .summary-stats-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-    }
-}
-
 /* Responsive: mobiel */
-@media (max-width: 650px) {
+@media (max-width: 768px) {
     .match-summary-container {
         flex-direction: column;
         height: auto;
@@ -1651,23 +1641,16 @@
         max-height: none;
     }
     .summary-stats-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
         gap: 8px !important;
     }
     .summary-stat {
-        padding: 10px 6px !important;
+        padding: 12px 6px !important;
     }
     .summary-label {
-        font-size: 0.7rem !important;
+        font-size: 0.75rem !important;
     }
     .summary-value {
-        font-size: 1.4rem !important;
-    }
-    .summary-turn {
-        min-width: 45px;
-        padding: 6px 8px;
-    }
-    .summary-turn-score {
-        font-size: 1.1rem;
+        font-size: 1.6rem !important;
     }
 }
