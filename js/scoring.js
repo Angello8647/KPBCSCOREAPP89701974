@@ -600,7 +600,6 @@ function initPresenterControls() {
     });
 }
 
-
 // ==========================================
 // MATCH SAMENVATTING RENDEREN (Pagina 6)
 // ==========================================
@@ -677,25 +676,27 @@ function renderMatchSummary() {
     // HTML genereren voor Speler 1
     const html1 = `
         <div class="summary-player-name">${p1Name} ⚪</div>
-        <div class="summary-stat">
-            <div class="summary-label">Eindscore</div>
-            <div class="summary-value" style="color: ${p1Won ? '#2ecc71' : '#ffffff'}">${p1Score}</div>
-        </div>
-        <div class="summary-stat">
-            <div class="summary-label">Aantal Beurten</div>
-            <div class="summary-value">${p1Turns}</div>
-        </div>
-        <div class="summary-stat">
-            <div class="summary-label">Hoogste Reeks</div>
-            <div class="summary-value">${p1Highest}</div>
-        </div>
-        <div class="summary-stat">
-            <div class="summary-label">Gemiddelde</div>
-            <div class="summary-value">${p1Avg}</div>
-        </div>
-        <div class="summary-stat tsg-stat">
-            <div class="summary-label">TSG (vóór match)</div>
-            <div class="summary-value">${p1TSG}</div>
+        <div class="summary-stats-grid">
+            <div class="summary-stat score-stat ${p1Won ? 'won' : ''}">
+                <div class="summary-label">Eindscore</div>
+                <div class="summary-value">${p1Score}</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-label">Beurten</div>
+                <div class="summary-value">${p1Turns}</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-label">Hoogste</div>
+                <div class="summary-value">${p1Highest}</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-label">Gemiddelde</div>
+                <div class="summary-value">${p1Avg}</div>
+            </div>
+            <div class="summary-stat tsg-stat">
+                <div class="summary-label">TSG</div>
+                <div class="summary-value">${p1TSG}</div>
+            </div>
         </div>
         <div class="summary-turns-container">
             <div class="summary-turns-title">📊 Alle Beurten</div>
@@ -706,25 +707,27 @@ function renderMatchSummary() {
     // HTML genereren voor Speler 2
     const html2 = `
         <div class="summary-player-name">${p2Name} 🟡</div>
-        <div class="summary-stat">
-            <div class="summary-label">Eindscore</div>
-            <div class="summary-value" style="color: ${p2Won ? '#2ecc71' : '#ffffff'}">${p2Score}</div>
-        </div>
-        <div class="summary-stat">
-            <div class="summary-label">Aantal Beurten</div>
-            <div class="summary-value">${p2Turns}</div>
-        </div>
-        <div class="summary-stat">
-            <div class="summary-label">Hoogste Reeks</div>
-            <div class="summary-value">${p2Highest}</div>
-        </div>
-        <div class="summary-stat">
-            <div class="summary-label">Gemiddelde</div>
-            <div class="summary-value">${p2Avg}</div>
-        </div>
-        <div class="summary-stat tsg-stat">
-            <div class="summary-label">TSG (vóór match)</div>
-            <div class="summary-value">${p2TSG}</div>
+        <div class="summary-stats-grid">
+            <div class="summary-stat score-stat ${p2Won ? 'won' : ''}">
+                <div class="summary-label">Eindscore</div>
+                <div class="summary-value">${p2Score}</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-label">Beurten</div>
+                <div class="summary-value">${p2Turns}</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-label">Hoogste</div>
+                <div class="summary-value">${p2Highest}</div>
+            </div>
+            <div class="summary-stat">
+                <div class="summary-label">Gemiddelde</div>
+                <div class="summary-value">${p2Avg}</div>
+            </div>
+            <div class="summary-stat tsg-stat">
+                <div class="summary-label">TSG</div>
+                <div class="summary-value">${p2TSG}</div>
+            </div>
         </div>
         <div class="summary-turns-container">
             <div class="summary-turns-title">📊 Alle Beurten</div>
