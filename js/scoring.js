@@ -302,11 +302,7 @@ function endMatch() {
     updateScoringPage();
     updateHeaderButtons();
     
-    // Toon samenvatting na korte vertraging (of ga terug naar menu voor nu)
-    setTimeout(() => {
-        alert(`Match voltooid! Winnaar: ${state.currentMatch.winner}`);
-        showPage(1); // Terug naar hoofdmenu
-    }, 1000);
+    
 }
 
 function updateHeaderButtons() {
