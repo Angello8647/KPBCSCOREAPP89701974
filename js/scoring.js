@@ -175,6 +175,23 @@ function updateCurrentScoreDisplay() {
 }
 
 // ==========================================
+// 🗣️ SPRAAKFEEDBACK VOOR PUNTEN
+// ==========================================
+function playScoreSound(score) {
+    if ('speechSynthesis' in window) {
+        // Annuleer lopende spraak om overlapping te voorkomen bij snel klikken
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(String(score));
+        utterance.lang = 'nl-NL'; // Spreek uit in het Nederlands
+        utterance.rate = 1.1;     // Iets sneller dan standaard
+        utterance.pitch = 1.0;    // Normale toonhoogte
+        
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+// ==========================================
 // SCORE ACTIES
 // ==========================================
 window.changeScore = function(delta) {
