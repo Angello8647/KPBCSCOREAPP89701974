@@ -606,19 +606,13 @@ function initPresenterControls() {
 function renderMatchSummary() {
     if (!state.currentMatch) return;
 
-    // Helper voor gemiddelde berekening
-    const calcAvg = (score, turns) => {
-        if (!turns || turns === 0) return "0,00";
-        return (score / turns).toFixed(2).replace('.', ',');
-    };
-
-    // Helper voor TSG ophalen uit state.players
+    const calcAvg = (score, turns) => (!turns || turns === 0) ? "0,00" : (score / turns).toFixed(2).replace('.', ',');
+    
     const getTSG = (playerName) => {
         const player = state.players.find(p => p.name === playerName);
         return player ? (player.tsg || player.fixedTSG || '−') : '−';
     };
 
-    // Helper voor horizontale beurtenlijst met kleurtjes
     const renderTurnsHorizontal = (turns) => {
         if (!turns || turns.length === 0) {
             return '<div style="color: #7f8c8d; text-align: center; padding: 10px;">Geen beurten gespeeld</div>';
@@ -631,12 +625,9 @@ function renderMatchSummary() {
             let classes = 'summary-turn';
             let displayScore = score;
             
-            // Hoogste reeks → groen
             if (score === highest && highest > 0) {
                 classes += ' highest';
-            }
-            // 0 punten → rood
-            else if (score === 0) {
+            } else if (score === 0) {
                 classes += ' zero';
                 displayScore = '-';
             }
@@ -649,8 +640,7 @@ function renderMatchSummary() {
             `;
         });
         
-        html += '</div>';
-        return html;
+        return html + '</div>';
     };
 
     // --- Speler 1 (Wit) ---
@@ -660,7 +650,6 @@ function renderMatchSummary() {
     const p1Highest = state.player1.highestSeries;
     const p1Avg = calcAvg(p1Score, p1Turns);
     const p1Target = state.player1.target;
-    const p1Won = p1Score >= p1Target;
     const p1TSG = getTSG(p1Name);
 
     // --- Speler 2 (Geel) ---
@@ -670,14 +659,14 @@ function renderMatchSummary() {
     const p2Highest = state.player2.highestSeries;
     const p2Avg = calcAvg(p2Score, p2Turns);
     const p2Target = state.player2.target;
-    const p2Won = p2Score >= p2Target;
     const p2TSG = getTSG(p2Name);
 
     // HTML genereren voor Speler 1
     const html1 = `
         <div class="summary-player-name">${p1Name} ⚪</div>
+        
         <div class="summary-stats-grid">
-            <div class="summary-stat score-stat ${p1Won ? 'won' : ''}">
+            <div class="summary-stat">
                 <div class="summary-label">Eindscore</div>
                 <div class="summary-value">${p1Score}</div>
             </div>
@@ -689,6 +678,13 @@ function renderMatchSummary() {
                 <div class="summary-label">Hoogste</div>
                 <div class="summary-value">${p1Highest}</div>
             </div>
+        </div>
+        
+        <div class="summary-stats-grid">
+            <div class="summary-stat">
+                <div class="summary-label">Target</div>
+                <div class="summary-value">${p1Target}</div>
+            </div>
             <div class="summary-stat">
                 <div class="summary-label">Gemiddelde</div>
                 <div class="summary-value">${p1Avg}</div>
@@ -698,6 +694,7 @@ function renderMatchSummary() {
                 <div class="summary-value">${p1TSG}</div>
             </div>
         </div>
+        
         <div class="summary-turns-container">
             <div class="summary-turns-title">📊 Alle Beurten</div>
             ${renderTurnsHorizontal(state.player1.turns)}
@@ -707,8 +704,9 @@ function renderMatchSummary() {
     // HTML genereren voor Speler 2
     const html2 = `
         <div class="summary-player-name">${p2Name} 🟡</div>
+        
         <div class="summary-stats-grid">
-            <div class="summary-stat score-stat ${p2Won ? 'won' : ''}">
+            <div class="summary-stat">
                 <div class="summary-label">Eindscore</div>
                 <div class="summary-value">${p2Score}</div>
             </div>
@@ -720,6 +718,13 @@ function renderMatchSummary() {
                 <div class="summary-label">Hoogste</div>
                 <div class="summary-value">${p2Highest}</div>
             </div>
+        </div>
+        
+        <div class="summary-stats-grid">
+            <div class="summary-stat">
+                <div class="summary-label">Target</div>
+                <div class="summary-value">${p2Target}</div>
+            </div>
             <div class="summary-stat">
                 <div class="summary-label">Gemiddelde</div>
                 <div class="summary-value">${p2Avg}</div>
@@ -729,13 +734,13 @@ function renderMatchSummary() {
                 <div class="summary-value">${p2TSG}</div>
             </div>
         </div>
+        
         <div class="summary-turns-container">
             <div class="summary-turns-title">📊 Alle Beurten</div>
             ${renderTurnsHorizontal(state.player2.turns)}
         </div>
     `;
 
-    // Injecteren in de DOM
     document.getElementById('summaryPlayer1').innerHTML = html1;
     document.getElementById('summaryPlayer2').innerHTML = html2;
 }
