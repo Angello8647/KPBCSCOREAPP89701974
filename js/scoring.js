@@ -568,7 +568,7 @@ function initPresenterControls() {
             }
             if (key === 'Tab' || key === 'Enter') {
                 event.preventDefault();
-                if (typeof window.goToPage2 === 'function') window.goToPage2();
+                window.syncAndGoToMatches();  // ✅ DIRECT DE JUISTE FUNCTIE
                 return;
             }
             return;
