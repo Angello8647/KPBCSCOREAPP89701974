@@ -1424,3 +1424,101 @@
     .match-summary-container { flex-direction: column; height: auto; gap: 15px; }
     .summary-half { padding: 20px 10px; }
 }
+
+
+/* ========== MATCH OVERZICHT: BEURTEN & TSG ========== */
+
+/* TSG blokje (extra stat) */
+.summary-stat.tsg-stat .summary-value {
+    color: #3498db !important; /* Blauw voor TSG */
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
+}
+
+/* Horizontale beurten container */
+.summary-turns-container {
+    width: 100%;
+    margin-top: 25px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-turns-title {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: #bdc3c7;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.summary-turns-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Individueel beurt-blokje */
+.summary-turn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 55px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.summary-turn-number {
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.summary-turn-score {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #2c3e50;
+    line-height: 1;
+}
+
+/* ✅ HOOGSTE REEKS: Groen */
+.summary-turn.highest {
+    background: rgba(46, 204, 113, 0.25) !important;
+    border: 2px solid #2ecc71 !important;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+}
+.summary-turn.highest .summary-turn-score {
+    color: #27ae60 !important;
+}
+
+/* ✅ 0 PUNTEN: Rood */
+.summary-turn.zero {
+    background: rgba(231, 76, 60, 0.15) !important;
+    border: 2px solid rgba(231, 76, 60, 0.4) !important;
+}
+.summary-turn.zero .summary-turn-score {
+    color: #c0392b !important;
+}
+
+/* Scrollbaar als het te veel beurten zijn */
+@media (max-width: 768px) {
+    .summary-turns-list {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 8px;
+    }
+    .summary-turn {
+        flex-shrink: 0;
+        min-width: 50px;
+    }
+}
