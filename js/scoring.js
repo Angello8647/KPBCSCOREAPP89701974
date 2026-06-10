@@ -5,106 +5,99 @@
 // ==========================================
 function updateScoringPage() {
     if (!state.currentMatch) return;
-
-    // 1. Header update
-    document.getElementById('headerTarget1').textContent = state.player1.target;
-    document.getElementById('headerTarget2').textContent = state.player2.target;
-    document.getElementById('headerName1').textContent = state.currentMatch.p1;
-    document.getElementById('headerName2').textContent = state.currentMatch.p2;
-
-    // 2. Spelerkaarten & Beurtenlijst
-    const p1Card = document.getElementById('player1Card');
-    const p2Card = document.getElementById('player2Card');
     
-    if (p1Card && p2Card) {
-        p1Card.className = `player-card ${state.player1.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 1 ? 'player-active' : 'player-inactive'}`;
-        p2Card.className = `player-card ${state.player2.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 2 ? 'player-active' : 'player-inactive'}`;
+    const p1c = document.getElementById('player1Card');
+    const p2c = document.getElementById('player2Card');
+    if (!p1c || !p2c) return;
 
-        // Helper functie voor beurt-weergave (lokaal gedefinieerd, dus altijd bereikbaar)
-        const renderTurns = (turns, player) => {
-            if (!turns || turns.length === 0) {
-                return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
-            }
-            
-            const minBeurten = 56;
-            const totalToShow = Math.max(minBeurten, turns.length);
-            const highest = player.highestSeries || 0;
-            let html = '';
-            
-            for (let i = 1; i <= totalToShow; i++) {
-                const isPlayed = i <= turns.length;
-                let scoreDisplay = '−';
-                let classes = 'turn-row';
-                
-                if (isPlayed) {
-                    const score = turns[i - 1];
-                    
-                    if (score === 0) {
-                        scoreDisplay = '-';
-                        classes += ' played zero-turn';
-                    } else {
-                        scoreDisplay = score;
-                        classes += ' played';
-                        
-                        // ✅ Markeer als hoogste reeks
-                        if (score === highest && highest > 0) {
-                            classes += ' highest-series';
-                        }
-                    }
-                    
-                    // Subtiel accent voor de allerlaatste beurt (als het niet de hoogste reeks is)
-                    if (i === turns.length && score !== highest) {
-                        classes += ' latest-turn';
-                    }
-                } else {
-                    classes += ' pending';
-                }
-                
-                html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
-            }
-            return html;
-        };
-
-        // ✅ HTML opbouwen met de CORRECTE variabelen (p1Card / p2Card)
-        p1Card.innerHTML = `
-            <div><h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3></div>
-            <div class="turns-scroll-container">
-                <div class="turns-list">${renderTurns(state.player1.turns, state.player1)}</div>
-            </div>`;
-
-        p2Card.innerHTML = `
-            <div><h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3></div>
-            <div class="turns-scroll-container">
-                <div class="turns-list">${renderTurns(state.player2.turns, state.player2)}</div>
-            </div>`;
+    // 1. Reset ALLE classes en stel basis kleur in
+    p1c.className = 'player-card ' + (state.player1.isWhite ? 'player-white' : 'player-yellow');
+    p2c.className = 'player-card ' + (state.player2.isWhite ? 'player-white' : 'player-yellow');
+    
+    // 2. Voeg active/inactive toe op basis van huidige speler
+    if (state.currentPlayer === 1) {
+        p1c.classList.add('player-active');
+        p2c.classList.add('player-inactive');
+    } else {
+        p2c.classList.add('player-active');
+        p1c.classList.add('player-inactive');
     }
 
-    // 3. Middenblok: Beurt info (DYNAMISCHE KLEUR)
-    let currentBeurt = state.currentPlayer === 1 ? state.player1.beurtNummer : state.player2.beurtNummer;
-    if (state.matchEnded) currentBeurt = Math.max(1, currentBeurt - 1);
+    // 3. Render beurtenlijst (56 beurten, B1 bovenaan, hoogste reeks groen, 0 rood)
+    const renderTurns = (turns, player) => {
+        if (!turns || turns.length === 0) {
+            return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
+        }
+        const minBeurten = 56;
+        const totalToShow = Math.max(minBeurten, turns.length);
+        const highest = player.highestSeries || 0;
+        let html = '';
+        
+        for (let i = 1; i <= totalToShow; i++) {
+            const isPlayed = i <= turns.length;
+            let scoreDisplay = '−';
+            let classes = 'turn-row';
+            
+            if (isPlayed) {
+                const score = turns[i - 1];
+                if (score === 0) {
+                    scoreDisplay = '-';
+                    classes += ' played zero-turn';
+                } else {
+                    scoreDisplay = score;
+                    classes += ' played';
+                    if (score === highest && highest > 0) {
+                        classes += ' highest-series';
+                    }
+                }
+                if (i === turns.length && score !== highest) {
+                    classes += ' latest-turn';
+                }
+            } else {
+                classes += ' pending';
+            }
+            html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
+        }
+        return html;
+    };
+
+    p1c.innerHTML = `
+        <div><h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3></div>
+        <div class="turns-scroll-container">
+            <div class="turns-list">${renderTurns(state.player1.turns, state.player1)}</div>
+        </div>`;
+
+    p2c.innerHTML = `
+        <div><h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3></div>
+        <div class="turns-scroll-container">
+            <div class="turns-list">${renderTurns(state.player2.turns, state.player2)}</div>
+        </div>`;
+
+    // 4. Middenblok update
+    let cb = state.currentPlayer === 1 ? state.player1.beurtNummer : state.player2.beurtNummer;
+    if (state.matchEnded) cb = Math.max(1, cb - 1);
     
     const isWhite = (state.currentPlayer === 1 && state.player1.isWhite) || (state.currentPlayer === 2 && state.player2.isWhite);
     const textColor = isWhite ? '#ffffff' : '#f1c40f';
     const glowColor = isWhite ? 'rgba(255, 255, 255, 0.4)' : 'rgba(241, 196, 15, 0.4)';
     
-    let extraInfo = '';
-    if (state.isNabeurt) {
-        extraInfo = '<div style="margin-top:15px; font-size:1.3rem; color:#ffcc00; font-weight:bold; text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);">⚠️ NABEURT</div>';
-    } else if (state.firstToTarget === 1) {
-        extraInfo = '<div style="margin-top:15px; font-size:1.3rem; color:#2ecc71; font-weight:bold; text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);">✅ Laatste beurt voor speler 2</div>';
-    }
+    let ei = '';
+    if (state.isNabeurt) ei = '<div style="margin-top:15px;font-size:1.3rem;color:#ffcc00;font-weight:bold;text-shadow:0 0 10px rgba(255,204,0,0.5);">⚠️ NABEURT</div>';
+    else if (state.firstToTarget === 1) ei = '<div style="margin-top:15px;font-size:1.3rem;color:#2ecc71;font-weight:bold;text-shadow:0 0 10px rgba(46,204,113,0.5);">✅ Laatste beurt voor speler 2</div>';
 
     document.getElementById('currentPlayerDisplay').innerHTML = `
         <div style="text-align:center;">
-            <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
-                B ${currentBeurt}
-            </div>
-            ${extraInfo}
+            <div style="font-size:6.5rem;font-weight:900;color:${textColor};line-height:1;text-shadow:0 0 25px ${glowColor};transition:color 0.3s ease;">B ${cb}</div>
+            ${ei}
         </div>`;
 
-    // 4. Update alle cijfers en stats
+    // 5. Updates aanroepen
+    updateSideScoreDisplays();
     updateCurrentScoreDisplay();
     updateHeaderButtons();
+    
+    const ub = document.getElementById('undoBtn');
+    if (ub) ub.disabled = !lastStateBeforeAdd;
 }
 
 function updateCurrentScoreDisplay() {
@@ -179,33 +172,29 @@ function updateCurrentScoreDisplay() {
 // SCORE ACTIES
 // ==========================================
 window.changeScore = function(delta) {
-    if(state.matchEnded) return; // Match afgelopen, doe niets
-
+    if (state.matchEnded) return;
+    
     const p = state.currentPlayer === 1 ? state.player1 : state.player2;
     const pot = state.currentInput + delta;
-
-    // ✅ VERWIJDERD: De checks die voorkwamen dat je boven het target kwam.
+    
+    // ✅ VERWIJDERD: De check die voorkwam dat je boven het target kwam.
     // Je mag nu gewoon vrij door scoren boven het target!
-
-    // Zorg dat de invoer niet onder 0 kan gaan
     state.currentInput = Math.max(0, pot);
-
-    if (delta > 0) {
-        // playScoreSound(state.currentInput); // (Optioneel, als je deze functie hebt)
+    
+    if (delta > 0 && typeof playScoreSound === 'function') {
+        playScoreSound(state.currentInput);
     }
-
+    
     updateCurrentScoreDisplay();
     updateStaticNeededValues();
 }
 
 window.addScore = function() {
-    if(state.matchEnded) return;
+    if (state.matchEnded) return;
 
     const score = state.currentInput;
     const p = state.currentPlayer === 1 ? state.player1 : state.player2;
     const t = p.target;
-
-    // ✅ VERWIJDERD: De check die blokkeerde als target al bereikt was.
 
     // Sla state op voor undo
     lastStateBeforeAdd = {
@@ -220,23 +209,25 @@ window.addScore = function() {
         currentInput: state.currentInput
     };
 
-    // Score toevoegen aan totaal
+    // Score toevoegen
     p.score += score;
     p.turns.push(score);
-    if(score > p.highestSeries) p.highestSeries = score;
+    if (score > p.highestSeries) p.highestSeries = score;
     p.beurtNummer++;
 
-    // ✅ HIER CHECKEN WE PAS OF HET TARGET BEREIKT IS (na het toevoegen van de score)
+    // ✅ CHECK OF TARGET BEREIKT IS (na toevoegen score, ZONDER te blokkeren)
     const reached = p.score >= t;
 
-    if(reached && state.firstToTarget === null) {
+    if (reached && state.firstToTarget === null) {
         state.firstToTarget = state.currentPlayer;
-        if(state.currentPlayer === 1) { 
+        if (state.currentPlayer === 1) { 
             // Speler 1 (Wit) heeft target bereikt → Geel krijgt nabeurt
             state.isNabeurt = true;
             state.currentPlayer = 2; 
             state.isFirstPlayerInRound = false;
             state.currentInput = 0;
+            
+            // ✅ FORCEEER DIRECTE UI UPDATE
             updateCurrentScoreDisplay();
             updateSideScoreDisplays();
             updateScoringPage();
@@ -248,13 +239,13 @@ window.addScore = function() {
         }
     }
 
-    if(state.isNabeurt) {
+    if (state.isNabeurt) {
         endMatch();
         return;
     }
 
-    // Wissel van speler (normale beurtwissel)
-    if(state.isFirstPlayerInRound) {
+    // Normale beurtwissel
+    if (state.isFirstPlayerInRound) {
         state.currentPlayer = 2;
         state.isFirstPlayerInRound = false;
     } else {
@@ -265,7 +256,7 @@ window.addScore = function() {
 
     state.currentInput = 0;
 
-    // Backup maken (bestaande logica behouden)
+    // Backup maken
     backupMatchSilently({
         matchId: state.currentMatch.id, player1: state.currentMatch.p1, player2: state.currentMatch.p2,
         date: state.currentMatch.date, p1Score: state.player1.score, p2Score: state.player2.score,
@@ -274,6 +265,7 @@ window.addScore = function() {
         firstToTarget: state.firstToTarget, completed: state.matchEnded
     });
 
+    // ✅ FORCEEER DIRECTE UI UPDATE (Dit zorgt dat de andere speler direct oplicht!)
     updateCurrentScoreDisplay();
     updateSideScoreDisplays();
     updateScoringPage();
