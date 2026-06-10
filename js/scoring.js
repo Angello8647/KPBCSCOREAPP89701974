@@ -350,6 +350,9 @@ window.undoLastAdd = function() {
 function endMatch() {
     state.matchEnded = true;
     state.currentMatch.completed = true;
+
+    // ✅ STUUR SIGNAAL NAAR SERVER
+    updateMatchStatusOnServer(state.currentMatch.id, "voltooid");
     
     state.currentMatch.p1Score = state.player1.score;
     state.currentMatch.p2Score = state.player2.score;
