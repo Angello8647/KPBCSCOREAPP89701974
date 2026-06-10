@@ -613,6 +613,47 @@ function renderMatchSummary() {
         return (score / turns).toFixed(2).replace('.', ',');
     };
 
+    // Helper voor TSG ophalen uit state.players
+    const getTSG = (playerName) => {
+        const player = state.players.find(p => p.name === playerName);
+        return player ? (player.tsg || player.fixedTSG || '−') : '−';
+    };
+
+    // Helper voor horizontale beurtenlijst met kleurtjes
+    const renderTurnsHorizontal = (turns) => {
+        if (!turns || turns.length === 0) {
+            return '<div style="color: #7f8c8d; text-align: center; padding: 10px;">Geen beurten gespeeld</div>';
+        }
+        
+        const highest = Math.max(...turns);
+        let html = '<div class="summary-turns-list">';
+        
+        turns.forEach((score, index) => {
+            let classes = 'summary-turn';
+            let displayScore = score;
+            
+            // Hoogste reeks → groen
+            if (score === highest && highest > 0) {
+                classes += ' highest';
+            }
+            // 0 punten → rood
+            else if (score === 0) {
+                classes += ' zero';
+                displayScore = '-';
+            }
+            
+            html += `
+                <div class="${classes}">
+                    <div class="summary-turn-number">B${index + 1}</div>
+                    <div class="summary-turn-score">${displayScore}</div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        return html;
+    };
+
     // --- Speler 1 (Wit) ---
     const p1Name = state.currentMatch.p1;
     const p1Score = state.player1.score;
@@ -621,6 +662,7 @@ function renderMatchSummary() {
     const p1Avg = calcAvg(p1Score, p1Turns);
     const p1Target = state.player1.target;
     const p1Won = p1Score >= p1Target;
+    const p1TSG = getTSG(p1Name);
 
     // --- Speler 2 (Geel) ---
     const p2Name = state.currentMatch.p2;
@@ -630,6 +672,7 @@ function renderMatchSummary() {
     const p2Avg = calcAvg(p2Score, p2Turns);
     const p2Target = state.player2.target;
     const p2Won = p2Score >= p2Target;
+    const p2TSG = getTSG(p2Name);
 
     // HTML genereren voor Speler 1
     const html1 = `
@@ -649,6 +692,14 @@ function renderMatchSummary() {
         <div class="summary-stat">
             <div class="summary-label">Gemiddelde</div>
             <div class="summary-value">${p1Avg}</div>
+        </div>
+        <div class="summary-stat tsg-stat">
+            <div class="summary-label">TSG (vóór match)</div>
+            <div class="summary-value">${p1TSG}</div>
+        </div>
+        <div class="summary-turns-container">
+            <div class="summary-turns-title">📊 Alle Beurten</div>
+            ${renderTurnsHorizontal(state.player1.turns)}
         </div>
     `;
 
@@ -670,6 +721,14 @@ function renderMatchSummary() {
         <div class="summary-stat">
             <div class="summary-label">Gemiddelde</div>
             <div class="summary-value">${p2Avg}</div>
+        </div>
+        <div class="summary-stat tsg-stat">
+            <div class="summary-label">TSG (vóór match)</div>
+            <div class="summary-value">${p2TSG}</div>
+        </div>
+        <div class="summary-turns-container">
+            <div class="summary-turns-title">📊 Alle Beurten</div>
+            ${renderTurnsHorizontal(state.player2.turns)}
         </div>
     `;
 
