@@ -161,26 +161,30 @@ window.loadFilteredMatches = function() {
     const sortedKeys = Object.keys(grouped).sort();
     
     // ✅ GROTERE HOOFDTITEL
-    let html = `<div class="matches-list-title" style="font-size: 2.2rem; margin-bottom: 30px; font-weight: bold; color: #ffffff;">${filtered.length} matchen voor ${dayName} ${dateStr}</div>`;
+    let html = `<div class="matches-list-title" style="font-size: 2.0rem; margin-bottom: 30px; font-weight: bold; color: #ffffff;">${filtered.length} matchen voor ${dayName} ${dateStr}</div>`;
     
     sortedKeys.forEach(key => {
         const group = grouped[key];
         
-        // ✅ GROTERE GROEPSTITEL (TAFEL & TIJD)
+        // ✅ ⚪🟡🔴 IN PLAATS VAN 🎱 BIJ DE TAFEL/TIJD KOP
         html += `<div style="margin-bottom: 40px; background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; border-left: 6px solid #3498db;">`;
-        html += `<h3 style="color: #f1c40f; margin: 0 0 25px 0; font-size: 2.2rem; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
-                     ⚪🟡🔴 ${group.displayTitle} <span style="color: #95a5a6; font-size: 0.7em;">(${group.matches.length} matchen)</span>
+        html += `<h3 style="color: #f1c40f; margin: 0 0 25px 0; font-size: 2.0rem; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
+                    ⚪🟡🔴 ${group.displayTitle} <span style="color: #95a5a6; font-size: 0.7em;">(${group.matches.length} matchen)</span>
                  </h3>`;
         
         // ✅ RUIMERE GRID VOOR DE KAARTEN
-        html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">`;
+        html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 35px;">`;
         
         group.matches.forEach(m => {
             const refLine = m.referee ? `<br>👔 Scheids: <strong>${m.referee}</strong>` : '';
-            const discCatLine = `<br> ⚪🟡🔴 <strong>${m.discipline} - Cat. ${m.cat}</strong>`;
+            const discCatLine = `<br>⚪🟡 <strong>${m.discipline} - Cat. ${m.cat}</strong>`;
             
-            // ✅ 2X GROTERE TEKST IN DE KAARTJES
-            html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 30px; border-radius: 15px; background: #34495e; border: 2px solid #2c3e50;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.4)'; this.style.borderColor='#3498db'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#2c3e50'">
+            // ✅ NIEUWE HOVER STIJL: Dikke rand + Glow effect
+            // Let op: border: 5px solid #2c3e50; is de rusttoestand.
+            html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: all 0.3s ease; padding: 30px; border-radius: 15px; background: #34495e; border: 5px solid #2c3e50; box-shadow: 0 5px 15px rgba(0,0,0,0.3);" 
+                onmouseover="this.style.transform='scale(1.03) translateY(-8px)'; this.style.borderColor='#00a8ff'; this.style.borderWidth='10px'; this.style.boxShadow='0 0 30px rgba(0, 168, 255, 0.6)';" 
+                onmouseout="this.style.transform='scale(1) translateY(0)'; this.style.borderColor='#2c3e50'; this.style.borderWidth='5px'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)';">
+                
                 <h3 style="font-size: 2.4rem; margin-bottom: 20px; line-height: 1.2; color: #ffffff; font-weight: 800;">
                     ${m.p1} <span style="color:#f1c40f; font-size: 1.8rem; vertical-align: middle;">⚔️</span> ${m.p2}
                 </h3>
