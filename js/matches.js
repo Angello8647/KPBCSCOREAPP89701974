@@ -122,21 +122,23 @@ async function fetchMatchesFromAPI() {
     }
 }
 
-function loadFilteredMatches() {
+window.loadFilteredMatches = function() {
     const matchList = document.getElementById('matchList');
     const title = document.getElementById('matchListTitle');
     
     if (!matchList) return;
 
-    const displayDate = formatDateDisplay(state.selectedDate);
-    const dayOfWeek = getDayOfWeek(state.selectedDate);
+    const d = new Date(state.selectedDate);
+    const days = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag'];
+    const dayName = days[d.getDay()];
+    const dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
     
-    if (title) title.textContent = `Matchen - ${dayOfWeek} ${displayDate}`;
+    if (title) title.textContent = `Matchen - ${dayName} ${dateStr}`;
     
     const filtered = state.matches.filter(m => m.date === state.selectedDate && !m.completed);
     
     if (filtered.length === 0) {
-        matchList.innerHTML = `<div class="no-matches"><p>Geen matchen gevonden voor ${dayOfWeek} ${displayDate}</p></div>`;
+        matchList.innerHTML = `<div class="no-matches" style="font-size: 1.5rem; padding: 40px;"><p>Geen matchen gevonden voor ${dayName} ${dateStr}</p></div>`;
         return;
     }
     
@@ -157,29 +159,33 @@ function loadFilteredMatches() {
     });
     
     const sortedKeys = Object.keys(grouped).sort();
-    let html = `<div class="matches-list-title">${filtered.length} matchen voor ${dayOfWeek} ${displayDate}</div>`;
+    
+    // ✅ GROTERE HOOFDTITEL
+    let html = `<div class="matches-list-title" style="font-size: 2.2rem; margin-bottom: 30px; font-weight: bold; color: #ffffff;">${filtered.length} matchen voor ${dayName} ${dateStr}</div>`;
     
     sortedKeys.forEach(key => {
         const group = grouped[key];
         
-        html += `<div style="margin-bottom: 30px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border-left: 4px solid #3498db;">`;
-        html += `<h3 style="color: #f1c40f; margin: 0 0 15px 0; font-size: 1.2em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                    ⚪🟡🔴  ${group.displayTitle} <span style="color: #95a5a6; font-size: 0.8em;">(${group.matches.length} matchen)</span>
+        // ✅ GROTERE GROEPSTITEL (TAFEL & TIJD)
+        html += `<div style="margin-bottom: 40px; background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; border-left: 6px solid #3498db;">`;
+        html += `<h3 style="color: #f1c40f; margin: 0 0 25px 0; font-size: 2.2rem; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
+                     ⚪🟡🔴 ${group.displayTitle} <span style="color: #95a5a6; font-size: 0.7em;">(${group.matches.length} matchen)</span>
                  </h3>`;
         
-        html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">`;
+        // ✅ RUIMERE GRID VOOR DE KAARTEN
+        html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">`;
         
         group.matches.forEach(m => {
-            const refLine = m.referee ? `<br>👔 Scheids: ${m.referee}` : '';
-            const discCatLine = `<br>⚪🟡🔴  ${m.discipline} - Cat. ${m.cat}`;
+            const refLine = m.referee ? `<br>👔 Scheids: <strong>${m.referee}</strong>` : '';
+            const discCatLine = `<br> ⚪🟡🔴 <strong>${m.discipline} - Cat. ${m.cat}</strong>`;
             
-            // ⚠️ BELANGRIJK: window.selectMatch met aanhalingstekens rond '${m.id}'
-            html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                <h3 style="font-size: 1.05em; margin-bottom: 8px; line-height: 1.3;">
-                    ${m.p1} <span style="color:#95a5a6; font-size: 0.9em;">vs</span> ${m.p2}
+            // ✅ 2X GROTERE TEKST IN DE KAARTJES
+            html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 30px; border-radius: 15px; background: #34495e; border: 2px solid #2c3e50;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.4)'; this.style.borderColor='#3498db'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='#2c3e50'">
+                <h3 style="font-size: 2.4rem; margin-bottom: 20px; line-height: 1.2; color: #ffffff; font-weight: 800;">
+                    ${m.p1} <span style="color:#f1c40f; font-size: 1.8rem; vertical-align: middle;">⚔️</span> ${m.p2}
                 </h3>
-                <p class="match-info" style="font-size: 0.9em; line-height: 1.4; margin: 0;">
-                    🎯 <strong>${m.target1}</strong> - <strong>${m.target2}</strong>
+                <p class="match-info" style="font-size: 1.8rem; line-height: 1.6; margin: 0; color: #ecf0f1;">
+                    🎯 <strong style="color: #2ecc71; font-size: 2rem;">${m.target1}</strong> - <strong style="color: #2ecc71; font-size: 2rem;">${m.target2}</strong>
                     ${discCatLine}
                     ${refLine}
                 </p>
@@ -191,7 +197,7 @@ function loadFilteredMatches() {
     
     matchList.innerHTML = html;
     console.log("✅ loadFilteredMatches uitgevoerd, aantal matchen:", filtered.length);
-}
+};
 
 
 // ============================================
