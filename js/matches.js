@@ -182,10 +182,10 @@ window.loadFilteredMatches = function() {
                 onmouseover="this.style.transform='scale(1.02) translateY(-6px)'; this.style.borderColor='#00a8ff'; this.style.borderWidth='6px'; this.style.boxShadow='0 0 25px rgba(0, 168, 255, 0.5)'; this.style.background='#3d566e';" 
                 onmouseout="this.style.transform='scale(1) translateY(0)'; this.style.borderColor='#2c3e50'; this.style.borderWidth='3px'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'; this.style.background='#34495e';">
                 
-                <h3 style="font-size: 2.15rem; margin-bottom: 15px; line-height: 1.2; color: #ffffff; font-weight: 800; text-align: center;">
+                <h3 style="font-size: 2.15rem; margin-bottom: 15px; line-height: 1.2; color: #ffffff; font-weight: 800; text-align: left;">
                     ${m.p1} <span style="color:#f1c40f; font-size: 1.6rem; vertical-align: middle;">⚔️</span><br>${m.p2}
                 </h3>
-                <p class="match-info" style="font-size: 1.6rem; line-height: 1.5; margin: 0; color: #ecf0f1; text-align: center;">
+                <p class="match-info" style="font-size: 1.6rem; line-height: 1.5; margin: 0; color: #ecf0f1; text-align: left;">
                     ${infoLine}
                     ${refLine}
                 </p>
