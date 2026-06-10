@@ -788,3 +788,15 @@ function renderMatchSummary() {
     document.getElementById('summaryPlayer1').innerHTML = html1;
     document.getElementById('summaryPlayer2').innerHTML = html2;
 }
+
+
+// ==========================================
+// ✅ HELPER: Highlight de gefocuste match voor presenter navigatie
+// ==========================================
+function highlightMatch(cards) {
+    cards.forEach(c => c.classList.remove('focused'));
+    if (cards[window.matchListFocusIndex]) {
+        cards[window.matchListFocusIndex].classList.add('focused');
+        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+}
