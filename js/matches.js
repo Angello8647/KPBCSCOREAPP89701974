@@ -164,14 +164,14 @@ function loadFilteredMatches() {
         
         html += `<div style="margin-bottom: 30px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border-left: 4px solid #3498db;">`;
         html += `<h3 style="color: #f1c40f; margin: 0 0 15px 0; font-size: 1.2em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                    🎱 ${group.displayTitle} <span style="color: #95a5a6; font-size: 0.8em;">(${group.matches.length} matchen)</span>
+                    ⚪🟡🔴  ${group.displayTitle} <span style="color: #95a5a6; font-size: 0.8em;">(${group.matches.length} matchen)</span>
                  </h3>`;
         
         html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">`;
         
         group.matches.forEach(m => {
             const refLine = m.referee ? `<br>👔 Scheids: ${m.referee}` : '';
-            const discCatLine = `<br>🎱 ${m.discipline} - Cat. ${m.cat}`;
+            const discCatLine = `<br>⚪🟡🔴  ${m.discipline} - Cat. ${m.cat}`;
             
             // ⚠️ BELANGRIJK: window.selectMatch met aanhalingstekens rond '${m.id}'
             html += `<div class="match-card" onclick="window.selectMatch('${m.id}')" style="margin: 0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
