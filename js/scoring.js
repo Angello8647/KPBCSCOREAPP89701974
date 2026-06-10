@@ -19,18 +19,23 @@ function updateScoringPage() {
     p1Card.className = `player-card ${state.player1.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 1 ? 'player-active' : 'player-inactive'}`;
     p2Card.className = `player-card ${state.player2.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 2 ? 'player-active' : 'player-inactive'}`;
 
-    // Helper voor beurt-weergave: toon standaard 56 beurten, dynamisch uitbreidend
+    // Helper voor beurt-weergave: B1 bovenaan, vult naar beneden
     const renderTurns = (turns, playerName) => {
         const minBeurten = 56;
         const totalToShow = Math.max(minBeurten, turns.length);
         
         let html = '';
-        // Van B(totalToShow) naar B1 (nieuwste bovenaan, chronologisch van boven naar beneden)
-        for (let i = totalToShow; i >= 1; i--) {
+        // Van B1 naar B(totalToShow) (B1 staat bovenaan)
+        for (let i = 1; i <= totalToShow; i++) {
             const isPlayed = i <= turns.length;
             const score = isPlayed ? turns[i - 1] : '−';
             const className = isPlayed ? 'turn-row played' : 'turn-row pending';
-            html += `<div class="${className}"><span>B${i}: ${score}</span></div>`;
+            
+            // Geef de laatst gespeelde beurt een extra accent (blauwe rand)
+            const isLastPlayed = (i === turns.length && turns.length > 0);
+            const extraClass = isLastPlayed ? ' last-played' : '';
+            
+            html += `<div class="${className}${extraClass}"><span>B${i}: ${score}</span></div>`;
         }
         return html;
     };
