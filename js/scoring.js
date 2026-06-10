@@ -506,39 +506,108 @@ function initPresenterControls() {
         if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
 
         const key = event.key;
+        const code = event.code;
         const now = Date.now();
 
-        // ✅ PAGINA 1: Datum aanpassen + Matchen ophalen
-        if (activePage.id === 'page1') {
-            const dateInput = document.getElementById('dateSelect');
-            if (!dateInput) return;
+        // 🚫 BLOKKEER ESCAPE OP SCORE-SCHERM
+        if (activePage.id === 'page5' && (key === 'Escape' || code === 'Escape')) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+        }
 
+        // ============================================
+        // ✅ PAGINA 1: Datum wijzigen + Matchen ophalen
+        // ============================================
+        if (activePage.id === 'page1') {
             // Pijl Omhoog / PageUp = Datum +1 dag
             if (key === 'ArrowUp' || key === 'PageUp') {
                 event.preventDefault();
                 changeDateByDays(1);
                 return;
             }
-
             // Pijl Omlaag / PageDown = Datum -1 dag
             if (key === 'ArrowDown' || key === 'PageDown') {
                 event.preventDefault();
                 changeDateByDays(-1);
                 return;
             }
-
             // Tab of Enter = Matchen Ophalen
             if (key === 'Tab' || key === 'Enter') {
                 event.preventDefault();
                 if (typeof window.syncAndGoToMatches === 'function') {
                     window.syncAndGoToMatches();
+                } else if (typeof window.goToPage2 === 'function') {
+                    window.goToPage2();
                 }
                 return;
             }
             return;
         }
 
+        // ============================================
+        // ✅ PAGINA 2: Door matchen navigeren + selecteren
+        // ============================================
+        if (activePage.id === 'page2') {
+            const cards = document.querySelectorAll('#matchList .match-card');
+            if (cards.length === 0) return;
+
+            // Zorg dat index binnen bereik blijft
+            window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, cards.length - 1));
+
+            // Pijl Omlaag / PageDown = volgende match
+            if (key === 'ArrowDown' || key === 'PageDown') {
+                event.preventDefault();
+                window.matchListFocusIndex = Math.min(window.matchListFocusIndex + 1, cards.length - 1);
+                highlightMatch(cards);
+                return;
+            }
+            // Pijl Omhoog / PageUp = vorige match
+            if (key === 'ArrowUp' || key === 'PageUp') {
+                event.preventDefault();
+                window.matchListFocusIndex = Math.max(window.matchListFocusIndex - 1, 0);
+                highlightMatch(cards);
+                return;
+            }
+            // Tab of Enter = geselecteerde match openen
+            if (key === 'Tab' || key === 'Enter') {
+                event.preventDefault();
+                cards[window.matchListFocusIndex].click();
+                return;
+            }
+            return;
+        }
+
+        // ============================================
+        // ✅ PAGINA 4: Witte bal kiezen + match starten
+        // ============================================
+        if (activePage.id === 'page4') {
+            // Pijl Omhoog / PageUp = Speler 1 speelt met wit
+            if (key === 'ArrowUp' || key === 'PageUp') {
+                event.preventDefault();
+                if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(1);
+                return;
+            }
+            // Pijl Omlaag / PageDown = Speler 2 speelt met wit
+            if (key === 'ArrowDown' || key === 'PageDown') {
+                event.preventDefault();
+                if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(2);
+                return;
+            }
+            // Tab of Enter = Match starten
+            if (key === 'Tab' || key === 'Enter') {
+                event.preventDefault();
+                if (typeof window.startMatch === 'function' && state.selectedWhitePlayer) {
+                    window.startMatch();
+                }
+                return;
+            }
+            return;
+        }
+
+        // ============================================
         // ✅ PAGINA 5: SCORING (bestaande logica)
+        // ============================================
         if (activePage.id === 'page5') {
             if (!state.currentMatch || state.matchEnded) return;
 
@@ -548,7 +617,6 @@ function initPresenterControls() {
                 pageUpStartTime = Date.now();
                 return;
             }
-
             // PageDown = -1 (met cooldown)
             if (key === 'PageDown' || key === 'ArrowDown') {
                 event.preventDefault();
@@ -558,21 +626,20 @@ function initPresenterControls() {
                 }
                 return;
             }
-
             // 'b'/'B' = UNDO
-            if (key === 'b' || key === 'B') {
+            if (key === 'b' || key === 'B' || code === 'KeyB') {
                 event.preventDefault();
                 if (typeof window.undoLastAdd === 'function') window.undoLastAdd();
                 lastScoreTime = now;
                 return;
             }
-
             // Tab of Enter = Einde beurt
             if (key === 'Tab' || key === 'Enter') {
                 event.preventDefault();
                 if (now - lastTabTime < 500) return;
                 lastTabTime = now;
                 if (typeof window.addScore === 'function') window.addScore();
+                return;
             }
             return;
         }
@@ -608,20 +675,38 @@ function initPresenterControls() {
     });
 }
 
-// ✅ Helper functie om datum te wijzigen met +/- dagen
+// ============================================
+// ✅ Helper: Highlight de gefocuste match op Pagina 2
+// ============================================
+function highlightMatch(cards) {
+    cards.forEach(c => c.classList.remove('focused'));
+    if (cards[window.matchListFocusIndex]) {
+        cards[window.matchListFocusIndex].classList.add('focused');
+        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+}
+
+// ============================================
+// ✅ Helper: Datum wijzigen met +/- dagen (voor Pagina 1)
+// ============================================
 function changeDateByDays(days) {
     const dateInput = document.getElementById('dateSelect');
-    if (!dateInput || !dateInput.value) return;
-
+    if (!dateInput) return;
+    
+    // Als er geen datum is, gebruik vandaag
+    if (!dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    
     const currentDate = new Date(dateInput.value);
     currentDate.setDate(currentDate.getDate() + days);
-
+    
     // Format als YYYY-MM-DD
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const day = String(currentDate.getDate()).padStart(2, '0');
     const newDateStr = `${year}-${month}-${day}`;
-
+    
     dateInput.value = newDateStr;
     state.selectedDate = newDateStr;
 }
