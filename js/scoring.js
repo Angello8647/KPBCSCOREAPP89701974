@@ -64,8 +64,15 @@ function updateScoringPage() {
         return html;
     };
 
-    p1Card.innerHTML = `<h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3><div class="turns-scroll-container"><div class="turns-list">${renderTurns(state.player1.turns)}</div></div>`;
-    p2Card.innerHTML = `<h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3><div class="turns-scroll-container"><div class="turns-list">${renderTurns(state.player2.turns)}</div></div>`;
+    p1c.innerHTML = `<div><h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3></div>
+    <div class="turns-scroll-container">
+    <div class="turns-list">${renderTurns(state.player1.turns, state.player1)}</div>
+    </div>`;
+    
+    p2c.innerHTML = `<div><h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3></div>
+    <div class="turns-scroll-container">
+    <div class="turns-list">${renderTurns(state.player2.turns, state.player2)}</div>
+    </div>`;
 
     // 3. Middenblok: Beurt info (DYNAMISCHE KLEUR)
     let currentBeurt = state.currentPlayer === 1 ? state.player1.beurtNummer : state.player2.beurtNummer;
