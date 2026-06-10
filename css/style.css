@@ -1655,10 +1655,13 @@
     }
 }
 
-/* Focus state voor match selectie op Pagina 2 */
+/* ✅ Focus state voor presenter navigatie (pijltjes) */
 .match-card.focused {
-    border: 3px solid #3498db !important;
-    background: rgba(52, 152, 219, 0.15) !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: all 0.2s ease;
+    border: 4px solid #3498db !important;
+    background: rgba(52, 152, 219, 0.25) !important;
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.6), 0 4px 12px rgba(0,0,0,0.3) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    transition: all 0.2s ease !important;
+    z-index: 10 !important;
+    position: relative !important;
 }
