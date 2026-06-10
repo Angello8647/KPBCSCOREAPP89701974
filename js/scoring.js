@@ -19,12 +19,20 @@ function updateScoringPage() {
     p1Card.className = `player-card ${state.player1.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 1 ? 'player-active' : 'player-inactive'}`;
     p2Card.className = `player-card ${state.player2.isWhite ? 'player-white' : 'player-yellow'} ${state.currentPlayer === 2 ? 'player-active' : 'player-inactive'}`;
 
-    const renderTurns = (turns) => {
-        if (!turns || turns.length === 0) return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
-        // Keer de array om zodat de nieuwste beurt bovenaan staat
-        return [...turns].reverse().map((t, i) => 
-            `<div class="turn-row"><span>B${turns.length - i}: ${t}</span></div>`
-        ).join('');
+    // Helper voor beurt-weergave: toon standaard 56 beurten, dynamisch uitbreidend
+    const renderTurns = (turns, playerName) => {
+        const minBeurten = 56;
+        const totalToShow = Math.max(minBeurten, turns.length);
+        
+        let html = '';
+        // Van B(totalToShow) naar B1 (nieuwste bovenaan, chronologisch van boven naar beneden)
+        for (let i = totalToShow; i >= 1; i--) {
+            const isPlayed = i <= turns.length;
+            const score = isPlayed ? turns[i - 1] : '−';
+            const className = isPlayed ? 'turn-row played' : 'turn-row pending';
+            html += `<div class="${className}"><span>B${i}: ${score}</span></div>`;
+        }
+        return html;
     };
 
     p1Card.innerHTML = `<h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3><div class="turns-scroll-container"><div class="turns-list">${renderTurns(state.player1.turns)}</div></div>`;
