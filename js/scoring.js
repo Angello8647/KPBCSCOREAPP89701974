@@ -497,45 +497,88 @@ function initPresenterControls() {
     let pageUpStartTime = null;
     let lastScoreTime = 0;
     const COOLDOWN = 300;
+    let lastTabTime = 0;
+    window.matchListFocusIndex = 0;
 
     document.addEventListener('keydown', function(event) {
         const activePage = document.querySelector('.page.active');
-        if (!activePage || activePage.id !== 'page5') return;
+        if (!activePage) return;
         if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
-        if (state.matchEnded) return;
 
         const key = event.key;
         const now = Date.now();
 
-        if (key === 'PageUp' || key === 'ArrowUp') {
-            event.preventDefault();
-            pageUpStartTime = Date.now();
-            return;
-        }
+        // ✅ PAGINA 1: Datum aanpassen + Matchen ophalen
+        if (activePage.id === 'page1') {
+            const dateInput = document.getElementById('dateSelect');
+            if (!dateInput) return;
 
-        if (key === 'PageDown' || key === 'ArrowDown') {
-            event.preventDefault();
-            if (now - lastScoreTime >= COOLDOWN) {
-                changeScore(-1);
-                lastScoreTime = now;
+            // Pijl Omhoog / PageUp = Datum +1 dag
+            if (key === 'ArrowUp' || key === 'PageUp') {
+                event.preventDefault();
+                changeDateByDays(1);
+                return;
+            }
+
+            // Pijl Omlaag / PageDown = Datum -1 dag
+            if (key === 'ArrowDown' || key === 'PageDown') {
+                event.preventDefault();
+                changeDateByDays(-1);
+                return;
+            }
+
+            // Tab of Enter = Matchen Ophalen
+            if (key === 'Tab' || key === 'Enter') {
+                event.preventDefault();
+                if (typeof window.syncAndGoToMatches === 'function') {
+                    window.syncAndGoToMatches();
+                }
+                return;
             }
             return;
         }
 
-        if (key === 'b' || key === 'B') {
-            event.preventDefault();
-            undoLastAdd();
-            lastScoreTime = now;
-            return;
-        }
+        // ✅ PAGINA 5: SCORING (bestaande logica)
+        if (activePage.id === 'page5') {
+            if (!state.currentMatch || state.matchEnded) return;
 
-        if (key === 'Tab' || key === 'Enter') {
-            event.preventDefault();
-            addScore();
-            lastScoreTime = now;
+            // PageUp: start timer voor long-press detectie
+            if (key === 'PageUp' || key === 'ArrowUp') {
+                event.preventDefault();
+                pageUpStartTime = Date.now();
+                return;
+            }
+
+            // PageDown = -1 (met cooldown)
+            if (key === 'PageDown' || key === 'ArrowDown') {
+                event.preventDefault();
+                if (now - lastScoreTime >= COOLDOWN) {
+                    if (typeof window.changeScore === 'function') window.changeScore(-1);
+                    lastScoreTime = now;
+                }
+                return;
+            }
+
+            // 'b'/'B' = UNDO
+            if (key === 'b' || key === 'B') {
+                event.preventDefault();
+                if (typeof window.undoLastAdd === 'function') window.undoLastAdd();
+                lastScoreTime = now;
+                return;
+            }
+
+            // Tab of Enter = Einde beurt
+            if (key === 'Tab' || key === 'Enter') {
+                event.preventDefault();
+                if (now - lastTabTime < 500) return;
+                lastTabTime = now;
+                if (typeof window.addScore === 'function') window.addScore();
+            }
+            return;
         }
     });
 
+    // 🔼 KEYUP: beslis bij PageUp loslaten (alleen voor Pagina 5)
     document.addEventListener('keyup', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage || activePage.id !== 'page5') return;
@@ -543,17 +586,21 @@ function initPresenterControls() {
         if (event.key === 'PageUp' || event.key === 'ArrowUp') {
             event.preventDefault();
             if (pageUpStartTime === null) return;
-            
+
             const holdDuration = Date.now() - pageUpStartTime;
             pageUpStartTime = null;
 
             if (holdDuration >= 2000) {
-                if (state.player1.turns.length === 0 && state.player2.turns.length === 0) {
-                    showPage(1);
+                // Lang ingedrukt: terug naar home (alleen als 0 beurten)
+                const p1T = state.player1.turns?.length || 0;
+                const p2T = state.player2.turns?.length || 0;
+                if (p1T === 0 && p2T === 0) {
+                    if (typeof window.showPage === 'function') window.showPage(1);
                 }
             } else {
+                // Kort ingedrukt: +1 punt
                 if (Date.now() - lastScoreTime >= COOLDOWN) {
-                    changeScore(1);
+                    if (typeof window.changeScore === 'function') window.changeScore(1);
                     lastScoreTime = Date.now();
                 }
             }
@@ -561,6 +608,23 @@ function initPresenterControls() {
     });
 }
 
+// ✅ Helper functie om datum te wijzigen met +/- dagen
+function changeDateByDays(days) {
+    const dateInput = document.getElementById('dateSelect');
+    if (!dateInput || !dateInput.value) return;
+
+    const currentDate = new Date(dateInput.value);
+    currentDate.setDate(currentDate.getDate() + days);
+
+    // Format als YYYY-MM-DD
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const newDateStr = `${year}-${month}-${day}`;
+
+    dateInput.value = newDateStr;
+    state.selectedDate = newDateStr;
+}
 // ==========================================
 // MATCH SAMENVATTING RENDEREN (Pagina 6)
 // ==========================================
