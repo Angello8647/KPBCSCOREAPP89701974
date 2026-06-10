@@ -1151,6 +1151,23 @@
 #p2TotalCell { background: #f1c40f !important; color: black !important; border: 3px solid #3182ce !important; }
 #p1TotalCell .cell-value, #p2TotalCell .cell-value { font-size: 6.5rem !important; color: #000 !important; }
 
+/* ✅ TOTAAL CELLEN: Sta dimming toe als speler NIET aan de beurt is */
+#p1TotalCell.dimmed, #p2TotalCell.dimmed {
+    opacity: 0.4 !important;
+    transform: scale(0.96) !important;
+    filter: grayscale(0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* ✅ TOTAAL CELLEN: Houd de actieve speler helder */
+#p1TotalCell.active-player, #p2TotalCell.active-player {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    filter: none !important;
+    transition: all 0.3s ease !important;
+}
+
+
 /* --- Bedieningsknoppen & Statistieken --- */
 .score-controls {
     display: flex !important; align-items: center !important; width: 100% !important;
