@@ -52,16 +52,16 @@ function updateScoringPage() {
     let abbr = "??";
     let colorClass = "";
 
-    // Bepaal de afkorting op basis van de discipline
-    if (disc.includes("vrij")) {
-        abbr = "VS";
-        colorClass = "badge-vs";
+    // ✅ FIX: Check "drie" EERST, want "Driebanden" bevat ook "band"
+    if (disc.includes("drie") || disc.includes("3")) {
+        abbr = "DB";
+        colorClass = "badge-db";
     } else if (disc.includes("band")) {
         abbr = "BS";
         colorClass = "badge-bs";
-    } else if (disc.includes("drie") || disc.includes("3")) {
-        abbr = "DB";
-        colorClass = "badge-db";
+    } else if (disc.includes("vrij")) {
+        abbr = "VS";
+        colorClass = "badge-vs";
     }
 
     // Update het HTML element met de nieuwe gekleurde box
