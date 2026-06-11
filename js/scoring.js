@@ -45,6 +45,31 @@ function updateScoringPage() {
     const btnName = document.getElementById('currentPlayerBtnName');
     if (btnName) btnName.textContent = cn;
 
+    // ✅ 2. DYNAMISCHE DISCIPLINE BADGE (vervangt het zwaardje)
+    const disc = (state.currentMatch.discipline || "").toLowerCase();
+    const cat = state.currentMatch.cat || "?";
+    
+    let abbr = "??";
+    let colorClass = "";
+
+    // Bepaal de afkorting op basis van de discipline
+    if (disc.includes("vrij")) {
+        abbr = "VS";
+        colorClass = "badge-vs";
+    } else if (disc.includes("band")) {
+        abbr = "BS";
+        colorClass = "badge-bs";
+    } else if (disc.includes("drie") || disc.includes("3")) {
+        abbr = "DB";
+        colorClass = "badge-db";
+    }
+
+    // Update het HTML element met de nieuwe gekleurde box
+    const badgeElement = document.getElementById('headerDisciplineBadge');
+    if (badgeElement) {
+        badgeElement.innerHTML = `<span class="discipline-badge ${colorClass}">${abbr}-${cat}</span>`;
+    }
+
     // 2. Spelerkaarten & Beurtenlijst
     const p1Card = document.getElementById('player1Card');
     const p2Card = document.getElementById('player2Card');
