@@ -1667,7 +1667,7 @@
 }
 
 /* ==========================================
-   ✅ HEADER FIX: MAX-WIDTH 300PX VERNIETIGD
+   ✅ HEADER FIX: PUNTEN 2X GROTER
    ========================================== */
 
 /* 1. Hoofdcontainer */
@@ -1682,7 +1682,7 @@
     box-sizing: border-box !important;
 }
 
-/* 2. Knoppen: Vast formaat */
+/* 2. Knoppen: Vast formaat (blijft hetzelfde) */
 #headerLeftBtn, 
 #headerRightBtn {
     width: 115px !important;
@@ -1702,12 +1702,12 @@
     line-height: 1.2 !important;
 }
 
-/* 3. Middenblok: Forceer volle breedte, vernietig max-width */
+/* 3. Middenblok: Forceer volle breedte */
 .header-match-info {
     flex: 1 1 auto !important;
     width: 100% !important;
     min-width: 0 !important;
-    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
+    max-width: none !important;
     margin: 0 !important;
     padding: 0 15px !important;
     display: flex !important;
@@ -1716,11 +1716,11 @@
     gap: 15px !important;
 }
 
-/* 4. Speler zijdes: Vul de ruimte, vernietig max-width */
+/* 4. Speler zijdes */
 .header-player-side {
     flex: 1 !important;
     width: 100% !important;
-    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
+    max-width: none !important;
     margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
@@ -1729,12 +1729,13 @@
     gap: 15px !important;
 }
 
-/* 5. De tekst: Laat hem nu eindelijk groeien! */
+/* 5. De tekst: Namen en PUNTEN (2X GROTER!) */
 .header-name {
-    font-size: clamp(1.5rem, 4vw, 3.5rem) !important;
+    /* Iets groter gemaakt om in verhouding te blijven met de enorme punten */
+    font-size: clamp(2rem, 5vw, 4rem) !important;
     font-weight: 900 !important;
-    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
-    width: auto !important;          /* Laat de breedte zich aanpassen aan de tekst */
+    max-width: none !important;
+    width: auto !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
@@ -1743,17 +1744,20 @@
 }
 
 .header-target {
-    font-size: clamp(1.2rem, 3vw, 2.5rem) !important;
+    /* ✅ HIER: 2x zo groot als hiervoor (was 1.2rem-2.5rem, nu 2.5rem-5.5rem) */
+    font-size: clamp(2.5rem, 6vw, 5.5rem) !important;
     font-weight: 900 !important;
-    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
+    max-width: none !important;
     width: auto !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
+    color: #f1c40f !important; /* Houd het mooi geel */
 }
 
 .header-vs {
-    font-size: clamp(1.5rem, 3vw, 2.5rem) !important;
+    /* Zwaardje ook groter gemaakt om bij de nieuwe punten te passen */
+    font-size: clamp(2.5rem, 6vw, 5rem) !important;
     margin: 0 15px !important;
     flex-shrink: 0 !important;
 }
