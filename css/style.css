@@ -1780,12 +1780,13 @@
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
-    color: #dfe6e9 !important;  
+    color: #3073ba !important;  
 }
 
 #page5 .header-vs {
-    font-size: clamp(2.5rem, 6vw, 5rem) !important;
+    /* ✅ 15% kleiner gemaakt voor een betere verhouding */
+    font-size: clamp(2.125rem, 5.1vw, 4.25rem) !important;
     margin: 0 15px !important;
     flex-shrink: 0 !important;
-    color: #95a5a6 !important;
+    color: #95a5a6 !important; /* Zacht grijs, zodat het niet de show steelt */
 }
