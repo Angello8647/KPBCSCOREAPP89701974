@@ -389,7 +389,7 @@ function updateHeaderButtons() {
             bottomUndoBtn.style.backgroundColor = '#2ecc71'; // Groen voor hoofdmenu
         } else {
             bottomUndoBtn.disabled = !window.lastStateBeforeAdd;
-            bottomUndoBtn.textContent = '↩️ Ongedaan';
+            bottomUndoBtn.textContent = '↩️';
             bottomUndoBtn.onclick = () => window.undoLastAdd();
             bottomUndoBtn.style.backgroundColor = ''; // Reset naar CSS standaard
         }
