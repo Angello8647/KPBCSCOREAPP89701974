@@ -1665,3 +1665,20 @@
     z-index: 10 !important;
     position: relative !important;
 }
+
+/* ✅ Maak de 'Einde beurt' knop compacter voor meer ruimte voor spelersnamen */
+#headerLeftBtn {
+    max-width: 115px !important; /* Ongeveer 3 cm breed */
+    min-width: 90px !important;
+    padding: 8px 4px !important; /* Minder ruimte aan de zijkanten van de tekst */
+    font-size: 0.85rem !important; /* Iets compactere lettergrootte */
+    white-space: nowrap !important; /* Voorkomt dat de tekst op 2 regels breekt */
+    line-height: 1.2 !important;
+}
+
+/* ✅ Zorg dat het middenblok (de namen) de overige ruimte netjes opvult */
+.header-match-info {
+    flex: 1 !important; /* Neemt alle beschikbare ruimte in het midden */
+    overflow: hidden; /* Voorkomt dat het uit de randen loopt */
+    padding: 0 10px; /* Beetje ademruimte rond de namen */
+}
