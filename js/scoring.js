@@ -357,7 +357,7 @@ function endMatch() {
     state.currentMatch.completed = true;
 
     // ✅ STUUR SIGNAAL NAAR SERVER
-    updateMatchStatusOnServer(state.currentMatch.id, "voltooid");
+    updateMatchStatusOnServer(state.currentMatch.id, "gespeeld");
     
     state.currentMatch.p1Score = state.player1.score;
     state.currentMatch.p2Score = state.player2.score;
