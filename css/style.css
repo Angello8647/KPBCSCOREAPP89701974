@@ -1761,3 +1761,52 @@
     margin: 0 15px !important;
     flex-shrink: 0 !important;
 }
+
+/* ==========================================
+   ✅ SCORE BLOKKEN: 1.5X GROTER (MEER RUIMTE)
+   ========================================== */
+
+/* 1. De container: geef de blokken ruimte om te ademen */
+.scoring-row-container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: stretch !important; /* Zorgt dat alle blokken even hoog zijn */
+    gap: 20px !important;            /* Meer ruimte tussen de blokken (was waarschijnlijk kleiner) */
+    width: 100% !important;
+    padding: 20px 30px !important;   /* Meer ruimte aan de randen van het scherm */
+    box-sizing: border-box !important;
+}
+
+/* 2. De individuele blokken (Nog te spelen, Beurt, Totaal) */
+.score-cell {
+    min-height: 150px !important;    /* ✅ Maak de blokken aanzienlijk hoger (1.5x gevoel) */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 25px 15px !important;   /* ✅ Meer binnenruimte, waardoor het blok 'voller' oogt */
+    border-radius: 15px !important;  /* Iets rondere hoeken voor een moderner, groter uiterlijk */
+    flex: 1 !important;              /* Verdeel de beschikbare breedte eerlijk */
+}
+
+/* 3. Het middelste blok (Huidige beurt) mag net iets breder zijn voor nadruk */
+#currentPlayerDisplay {
+    flex: 1.2 !important;            /* 20% breder dan de zijblokken */
+    min-height: 150px !important;
+}
+
+/* 4. De tekst IN de blokken: vastzetten zodat het niet meegroeit, maar mooi centraal blijft */
+.score-cell .cell-value {
+    font-size: 2.8rem !important;    /* Een comfortabele, vaste grootte (niet te klein, niet te groot) */
+    font-weight: 900 !important;
+    line-height: 1.1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Optioneel: Zorg dat de labels (als die er zijn) ook netjes staan */
+.score-cell .cell-label {
+    font-size: 1rem !important;
+    opacity: 0.8;
+    margin-bottom: 5px !important;
+}
