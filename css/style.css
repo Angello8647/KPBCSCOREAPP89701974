@@ -1666,23 +1666,24 @@
     position: relative !important;
 }
 
-/* ✅ Maak de 'Einde beurt' knop hoger, maar compact in de breedte */
-#headerLeftBtn {
+/* ✅ Maak BEIDE knoppen ('Einde beurt' en 'Ongedaan') identiek in formaat */
+#headerLeftBtn, 
+#headerRightBtn {
     max-width: 115px !important;       /* Maximaal ~3 cm breed */
-    min-height: 60px !important;       /* Maak de knop duidelijk hoger */
+    min-height: 60px !important;       /* Duidelijke, goed klikbare hoogte */
     padding: 12px 5px !important;      /* Ruimte boven/onder, weinig aan de zijkanten */
-    font-size: 0.95rem !important;     /* Iets groter voor goede leesbaarheid */
+    font-size: 0.95rem !important;     /* Goede leesbaarheid */
     font-weight: bold !important;
     
-    /* Perfecte centrering van de tekst, zodat hij nooit uit de knop valt */
+    /* Perfecte centrering van de tekst en het icoontje */
     display: flex !important;
     align-items: center !important;    /* Verticaal gecentreerd */
     justify-content: center !important;/* Horizontaal gecentreerd */
     text-align: center !important;
     
-    /* Zorgt dat padding en borders binnen de opgegeven breedte/hoogte blijven */
+    /* Zorgt dat padding en borders binnen de opgegeven afmetingen blijven */
     box-sizing: border-box !important; 
-    white-space: normal !important;    /* Mag breken naar 2 regels als het echt moet, maar past normaal op 1 regel */
+    white-space: normal !important;    /* Tekst mag netjes breken als het moet */
     line-height: 1.2 !important;
 }
 
@@ -1693,4 +1694,5 @@
     padding: 0 10px; 
     display: flex;
     align-items: center; /* Zorgt dat de namen verticaal mooi uitgelijnd zijn met de knoppen */
+    justify-content: center; /* Namen mooi in het midden van de beschikbare ruimte */
 }
