@@ -98,14 +98,32 @@ function updateScoringPage() {
             return html;
         };
 
+        // ✅ 1. Haal de discipline en categorie op
+        const disc = state.currentMatch.discipline || "";
+        const cat = state.currentMatch.cat || "";
+        // Maak een subtiele tekst, bijv: "Vrijspel • Cat. 2"
+        const matchInfo = (disc && cat) ? `<span class="match-info-badge">${disc} • ${cat}</span>` : "";
+
+        // ✅ 2. Update Speler 1 kaart
         p1Card.innerHTML = `
-            <div><h3>${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}</h3></div>
+            <div>
+                <h3>
+                    ${state.currentMatch.p1} ${state.player1.isWhite ? '⚪' : '🟡'}
+                    ${matchInfo} <!-- Hier wordt de info toegevoegd -->
+                </h3>
+            </div>
             <div class="turns-scroll-container">
                 <div class="turns-list">${renderTurns(state.player1.turns, state.player1)}</div>
             </div>`;
 
+        // ✅ 3. Update Speler 2 kaart
         p2Card.innerHTML = `
-            <div><h3>${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}</h3></div>
+            <div>
+                <h3>
+                    ${state.currentMatch.p2} ${state.player2.isWhite ? '⚪' : '🟡'}
+                    ${matchInfo} <!-- Hier wordt de info toegevoegd -->
+                </h3>
+            </div>
             <div class="turns-scroll-container">
                 <div class="turns-list">${renderTurns(state.player2.turns, state.player2)}</div>
             </div>`;
