@@ -1667,31 +1667,29 @@
 }
 
 /* ==========================================
-   ✅ HEADER LAYOUT: MAXIMALE RUIMTE VOOR NAMEN
+   ✅ HEADER: DYNAMISCH SCHALENDE NAMEN
    ========================================== */
 
-/* 1. De hoofdcontainer: volle breedte, geen beperkende marges */
+/* 1. De hoofdcontainer: volle breedte */
 .header {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     width: 100% !important;
-    max-width: 100vw !important;
-    padding: 10px 15px !important; /* Minimale, nette rand aan het scherm */
+    padding: 10px !important;
     box-sizing: border-box !important;
-    gap: 15px !important; /* Ruimte tussen de knoppen en het middenblok */
 }
 
-/* 2. De knoppen: VAST FORMAAT. Ze mogen NOOIT krimpen. */
+/* 2. De knoppen: VAST FORMAAT (ze mogen NOOIT krimpen) */
 #headerLeftBtn, 
 #headerRightBtn {
-    width: 115px !important;       /* Exact ~3 cm breed */
+    width: 115px !important;
     min-width: 115px !important;
     max-width: 115px !important;
-    height: 60px !important;       /* Hoogte behouden */
+    height: 60px !important;
     min-height: 60px !important;
     
-    /* DEZE REGEL IS CRUCIAAL: verbiedt de knop om smaller te worden dan 115px */
+    /* CRUCIAAL: Verbiedt de knop om smaller te worden */
     flex-shrink: 0 !important; 
     
     display: flex !important;
@@ -1699,57 +1697,56 @@
     justify-content: center !important;
     text-align: center !important;
     padding: 5px !important;
-    font-size: 0.9rem !important;
+    font-size: 1rem !important;
     font-weight: bold !important;
-    line-height: 1.1 !important;
+    line-height: 1.2 !important;
     box-sizing: border-box !important;
-    word-wrap: break-word !important;
 }
 
-/* 3. Het middenblok: NEEM ALLE OVERGEBLEVEN RUIMTE (de 4/5) */
+/* 3. Het middenblok: NEEM ALLE OVERGEBLEVEN RUIMTE */
 .header-match-info {
-    flex: 1 1 auto !important;     /* Groei zoveel mogelijk */
-    width: 100% !important;        /* Forceer volle breedte van de overgebleven ruimte */
-    min-width: 0 !important;       /* Cruciaal voor flexbox: laat tekst wél wrappen als het moet */
+    flex: 1 !important;            /* Groei zoveel mogelijk */
+    width: 100% !important;        
+    min-width: 0 !important;       /* Cruciaal voor flexbox */
     
     display: flex !important;
     align-items: center !important;
-    justify-content: space-evenly !important; /* Verdeel de 2 spelers mooi over deze brede ruimte */
-    padding: 0 !important;
+    justify-content: space-between !important; /* Duw P1 naar links, P2 naar rechts */
+    padding: 0 20px !important;    /* Ademruimte van de knoppen */
+    gap: 15px !important;
 }
 
-/* 4. De individuele spelerblokken (links en rechts in het midden) */
+/* 4. De individuele spelerblokken (verdelen de ruimte eerlijk) */
 .header-player-side {
     display: flex !important;
-    flex-direction: row !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 10px !important;          /* Ruimte tussen het target en de naam */
-    flex: 1 !important;            /* Elke speler krijgt de helft van het middenblok */
+    flex: 1 !important;            /* Elke speler krijgt 50% van het middenblok */
+    gap: 15px !important;          /* Ruimte tussen target en naam */
 }
 
-/* 5. De namen zelf: GROOT en leesbaar, nu we de ruimte hebben! */
+/* 5. DE MAGIE: Dynamische tekstgrootte die meeschaalt met het scherm! */
 .header-name {
-    font-size: 1.8rem !important;  /* VEEL groter dan hiervoor */
-    font-weight: 800 !important;
+    /* clamp(minimum, gewenst-op-schermbreedte, maximum) */
+    font-size: clamp(1.5rem, 4vw, 3.5rem) !important;
+    font-weight: 900 !important;
     color: #ffffff !important;
-    white-space: normal !important; /* Mag netjes op een 2e regel vallen bij extreem lange namen */
-    word-break: break-word !important;
-    line-height: 1.2 !important;
-    text-align: center !important;
+    white-space: nowrap !important; /* Houd de naam op 1 regel, hij schaalt immers mee */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important; /* Alleen '...' als de naam echt absurd lang is */
 }
 
-/* 6. De target-punten naast de naam */
 .header-target {
-    font-size: 1.5rem !important;
-    font-weight: bold !important;
-    color: #f1c40f !important;     /* Geel, zoals in de rest van de app */
+    font-size: clamp(1.2rem, 3vw, 2.5rem) !important;
+    font-weight: 900 !important;
+    color: #f1c40f !important;
     white-space: nowrap !important;
 }
 
-/* Het zwaardje in het midden */
+/* Het zwaardje in het midden mag niet krimpen */
 .header-vs {
-    font-size: 1.5rem !important;
+    font-size: clamp(1.5rem, 3vw, 2.5rem) !important;
     color: #95a5a6 !important;
-    margin: 0 10px !important;
+    flex-shrink: 0 !important;
+    padding: 0 10px !important;
 }
