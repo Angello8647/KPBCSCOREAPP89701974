@@ -101,7 +101,7 @@
     <!-- PAGINA 5: Scoring -->
     <div id="page5" class="page">
         <div class="header">
-            <button id="headerLeftBtn" class="action-btn confirm-btn">Einde beurt</button>
+            <!-- Knoppen zijn hier verwijderd -->
             <div class="header-match-info">
                 <div class="header-player-side left">
                     <span class="header-target" id="headerTarget1">0</span>
@@ -113,7 +113,6 @@
                     <span class="header-target" id="headerTarget2">0</span>
                 </div>
             </div>
-            <button id="headerRightBtn" class="action-btn undo-btn" disabled>↩️ Ongedaan</button>
         </div>
 
         <div id="matchEndedAlert" class="match-ended" style="display: none;"></div>
@@ -128,7 +127,12 @@
             <div class="score-cell total-cell" id="p1TotalCell">
                 <div class="cell-value" id="p1TotalVal">0</div>
             </div>
-            <div class="score-cell center-info" id="currentPlayerDisplay"></div>
+            
+            <!-- ✅ AANGEPAST: Klikbaar gemaakt voor 'Einde Beurt' -->
+            <div class="score-cell center-info clickable-turn" id="currentPlayerDisplay" onclick="window.addScore()" title="Klik hier of druk op Tab/Enter om de beurt te beëindigen">
+                <!-- De inhoud (B1, 'Einde beurt? Klik hier') wordt hier automatisch door JavaScript ingevuld -->
+            </div>
+            
             <div class="score-cell total-cell" id="p2TotalCell">
                 <div class="cell-value" id="p2TotalVal">0</div>
             </div>
