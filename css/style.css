@@ -1667,23 +1667,22 @@
 }
 
 /* ==========================================
-   ✅ HEADER NUCLEAIRE RESET: GEEN GATEN MEER
+   ✅ HEADER FIX: MAX-WIDTH 300PX VERNIETIGD
    ========================================== */
 
-/* 1. Hoofdcontainer: Volledige breedte, geen marges */
+/* 1. Hoofdcontainer */
 .header {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     width: 100% !important;
     max-width: 100vw !important;
-    margin: 0 !important;          /* VERWIJDER ALLE MARGES */
-    padding: 10px !important;      /* Minimale, nette rand */
+    margin: 0 !important;
+    padding: 10px !important;
     box-sizing: border-box !important;
-    gap: 0 !important;
 }
 
-/* 2. Knoppen: Vast formaat, geen marges die duwen */
+/* 2. Knoppen: Vast formaat */
 #headerLeftBtn, 
 #headerRightBtn {
     width: 115px !important;
@@ -1691,9 +1690,9 @@
     max-width: 115px !important;
     height: 60px !important;
     min-height: 60px !important;
-    margin: 0 !important;          /* CRUCIAAL: Geen marges */
+    margin: 0 !important;
     padding: 5px !important;
-    flex-shrink: 0 !important;     /* Mag NOOIT krimpen */
+    flex-shrink: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1703,51 +1702,58 @@
     line-height: 1.2 !important;
 }
 
-/* 3. Middenblok: Forceer volle breedte, verwijder ALLE beperkingen */
+/* 3. Middenblok: Forceer volle breedte, vernietig max-width */
 .header-match-info {
     flex: 1 1 auto !important;
     width: 100% !important;
     min-width: 0 !important;
-    max-width: none !important;    /* VERWIJDER eventuele max-width van elders */
-    margin: 0 !important;          /* CRUCIAAL: Geen marges */
-    padding: 0 10px !important;    /* Alleen 10px lucht aan de zijkanten van de knoppen */
+    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
+    margin: 0 !important;
+    padding: 0 15px !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important; /* Duw P1, zwaard en P2 uit elkaar */
-    gap: 10px !important;
+    justify-content: space-between !important;
+    gap: 15px !important;
 }
 
-/* 4. Speler zijdes: Vul de ruimte eerlijk op */
+/* 4. Speler zijdes: Vul de ruimte, vernietig max-width */
 .header-player-side {
-    flex: 1 !important;            /* Elke kant krijgt exact 50% van de middenruimte */
+    flex: 1 !important;
     width: 100% !important;
-    margin: 0 !important;          /* CRUCIAAL: Geen marges */
+    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
+    margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important; /* Houd target en naam bij elkaar in het midden van hun helft */
-    gap: 10px !important;          /* Kleine ruimte tussen target en naam */
+    justify-content: center !important;
+    gap: 15px !important;
 }
 
-/* 5. De tekst: Laat hem groeien in de ruimte die hij nu WÉL krijgt */
+/* 5. De tekst: Laat hem nu eindelijk groeien! */
 .header-name {
     font-size: clamp(1.5rem, 4vw, 3.5rem) !important;
     font-weight: 900 !important;
+    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
+    width: auto !important;          /* Laat de breedte zich aanpassen aan de tekst */
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
 }
 
 .header-target {
     font-size: clamp(1.2rem, 3vw, 2.5rem) !important;
     font-weight: 900 !important;
+    max-width: none !important;      /* ✅ KILL DE 300PX LIMIER */
+    width: auto !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
 }
 
 .header-vs {
-    font-size: 2rem !important;
-    margin: 0 15px !important;     /* Beetje lucht rond het zwaard */
+    font-size: clamp(1.5rem, 3vw, 2.5rem) !important;
+    margin: 0 15px !important;
     flex-shrink: 0 !important;
 }
