@@ -391,7 +391,7 @@ function updateHeaderButtons() {
     leftBtn.innerHTML = `Einde beurt ${currentName}`;
     leftBtn.onclick = () => addScore();
     
-    rightBtn.innerHTML = '↩️ laatste actie ongedaan maken';
+    rightBtn.innerHTML = '↩️ laatste actie terugdraaien';
     rightBtn.onclick = () => undoLastAdd();
     rightBtn.disabled = !window.lastStateBeforeAdd;
 }
