@@ -353,10 +353,12 @@ window.undoLastAdd = function() {
 };
 
 function endMatch() {
+    console.log("🔥 END MATCH FUNCTIE AANGEROEPEN!"); // ✅ VOEG DEZE REGEL TOE
+    
     state.matchEnded = true;
     state.currentMatch.completed = true;
-
-    // ✅ STUUR SIGNAAL NAAR SERVER
+    
+    // ✅ STUUR SIGNAAL NAAR SERVER DAT MATCH GESPEELD IS
     updateMatchStatusOnServer(state.currentMatch.id, "gespeeld");
     
     state.currentMatch.p1Score = state.player1.score;
