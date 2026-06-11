@@ -1829,3 +1829,48 @@
 .undo-btn-bottom:active {
     transform: scale(0.95) !important;
 }
+
+
+/* ==========================================
+   ✅ DYNAMISCHE DISCIPLINE BADGE (MIDDEN HEADER)
+   ========================================== */
+
+/* De container (vervangt het oude gedrag van het zwaardje) */
+#page5 .header-vs {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 15px !important;
+    flex-shrink: 0 !important;
+}
+
+/* De daadwerkelijke gekleurde box */
+.discipline-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 16px !important;
+    border-radius: 8px !important;
+    font-size: clamp(1.2rem, 2.5vw, 2rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: 1px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 3px solid currentColor !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+}
+
+/* 🎨 KLEUREN PER DISCIPLINE */
+.badge-vs {
+    color: #3498db !important;
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.5) !important;
+}
+
+.badge-bs {
+    color: #f39c12 !important;
+    text-shadow: 0 0 10px rgba(243, 156, 18, 0.5) !important;
+}
+
+.badge-db {
+    color: #9b59b6 !important;
+    text-shadow: 0 0 10px rgba(155, 89, 182, 0.5) !important;
+}
