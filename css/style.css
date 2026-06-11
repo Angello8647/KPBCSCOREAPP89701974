@@ -1790,3 +1790,42 @@
     flex-shrink: 0 !important;
     color: #95a5a6 !important; /* Zacht grijs, zodat het niet de show steelt */
 }
+
+
+/* ==========================================
+   ✅ ONDERSTE 'ONGEDAAN' KNOP (ALTIJD ACTIEF, SUBTIEL)
+   ========================================== */
+.undo-btn-bottom {
+    /* Exact dezelfde afmetingen als de + en - knoppen */
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    
+    /* ✅ Subtiele, kalme kleur (Zacht Teal/Zeegroen - geen grijs!) */
+    background: #26a69a !important; 
+    color: #ffffff !important;
+    
+    /* Emoji grootte en perfecte centrering */
+    font-size: 2.2rem !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+    opacity: 1 !important; /* Altijd 100% zichtbaar */
+}
+
+/* Hover effect: wordt net iets donkerder voor visuele feedback */
+.undo-btn-bottom:hover {
+    background: #00897b !important; 
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3) !important;
+}
+
+/* Klik-effect */
+.undo-btn-bottom:active {
+    transform: scale(0.95) !important;
+}
