@@ -127,9 +127,12 @@ function updateScoringPage() {
     }
 
     document.getElementById('currentPlayerDisplay').innerHTML = `
-        <div style="text-align:center;">
+        <div style="text-align:center; pointer-events: none;">
             <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
                 B ${currentBeurt}
+            </div>
+            <div style="margin-top:15px; font-size:1.1rem; color:#bdc3c7; font-weight:bold; text-transform: uppercase; letter-spacing: 1px;">
+                Einde beurt? Klik hier
             </div>
             ${extraInfo}
         </div>`;
@@ -376,24 +379,21 @@ function endMatch() {
 }
 
 function updateHeaderButtons() {
-    const leftBtn = document.getElementById('headerLeftBtn');
-    const rightBtn = document.getElementById('headerRightBtn');
-    if (!leftBtn || !rightBtn) return;
-
-    if (state.matchEnded) {
-        leftBtn.innerHTML = '🏠 Hoofdmenu';
-        leftBtn.onclick = () => showPage(1);
-        rightBtn.disabled = true;
-        return;
+    // We beheren nu de knop onderaan in plaats van in de header
+    const bottomUndoBtn = document.getElementById('bottomUndoBtn');
+    if (bottomUndoBtn) {
+        if (state.matchEnded) {
+            bottomUndoBtn.disabled = true;
+            bottomUndoBtn.textContent = '🏠 Hoofdmenu';
+            bottomUndoBtn.onclick = () => window.showPage(1);
+            bottomUndoBtn.style.backgroundColor = '#2ecc71'; // Groen voor hoofdmenu
+        } else {
+            bottomUndoBtn.disabled = !window.lastStateBeforeAdd;
+            bottomUndoBtn.textContent = '↩️ Ongedaan';
+            bottomUndoBtn.onclick = () => window.undoLastAdd();
+            bottomUndoBtn.style.backgroundColor = ''; // Reset naar CSS standaard
+        }
     }
-
-    const currentName = state.currentPlayer === 1 ? state.currentMatch.p1 : state.currentMatch.p2;
-    leftBtn.innerHTML = `Einde beurt ${currentName}`;
-    leftBtn.onclick = () => addScore();
-    
-    rightBtn.innerHTML = '↩️ laatste actie terugdraaien';
-    rightBtn.onclick = () => undoLastAdd();
-    rightBtn.disabled = !window.lastStateBeforeAdd;
 }
 
 // ==========================================
