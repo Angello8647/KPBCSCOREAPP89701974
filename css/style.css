@@ -1667,146 +1667,49 @@
 }
 
 /* ==========================================
-   ✅ HEADER FIX: PUNTEN 2X GROTER
+   ✅ SCORE BLOKKEN: GROTER, TEKST GROOT HOUDEN
    ========================================== */
 
-/* 1. Hoofdcontainer */
-.header {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    max-width: 100vw !important;
-    margin: 0 !important;
-    padding: 10px !important;
-    box-sizing: border-box !important;
-}
-
-/* 2. Knoppen: Vast formaat (blijft hetzelfde) */
-#headerLeftBtn, 
-#headerRightBtn {
-    width: 115px !important;
-    min-width: 115px !important;
-    max-width: 115px !important;
-    height: 60px !important;
-    min-height: 60px !important;
-    margin: 0 !important;
-    padding: 5px !important;
-    flex-shrink: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    box-sizing: border-box !important;
-    font-size: 1rem !important;
-    line-height: 1.2 !important;
-}
-
-/* 3. Middenblok: Forceer volle breedte */
-.header-match-info {
-    flex: 1 1 auto !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 15px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 15px !important;
-}
-
-/* 4. Speler zijdes */
-.header-player-side {
-    flex: 1 !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 15px !important;
-}
-
-/* 5. De tekst: Namen en PUNTEN (2X GROTER!) */
-.header-name {
-    /* Iets groter gemaakt om in verhouding te blijven met de enorme punten */
-    font-size: clamp(2rem, 5vw, 4rem) !important;
-    font-weight: 900 !important;
-    max-width: none !important;
-    width: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-}
-
-.header-target {
-    /* ✅ HIER: 2x zo groot als hiervoor (was 1.2rem-2.5rem, nu 2.5rem-5.5rem) */
-    font-size: clamp(2.5rem, 6vw, 5.5rem) !important;
-    font-weight: 900 !important;
-    max-width: none !important;
-    width: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
-    color: #f1c40f !important; /* Houd het mooi geel */
-}
-
-.header-vs {
-    /* Zwaardje ook groter gemaakt om bij de nieuwe punten te passen */
-    font-size: clamp(2.5rem, 6vw, 5rem) !important;
-    margin: 0 15px !important;
-    flex-shrink: 0 !important;
-}
-
-/* ==========================================
-   ✅ SCORE BLOKKEN: 1.5X GROTER (MEER RUIMTE)
-   ========================================== */
-
-/* 1. De container: geef de blokken ruimte om te ademen */
+/* 1. De container: meer ruimte tussen de blokken */
 .scoring-row-container {
     display: flex !important;
     justify-content: space-between !important;
     align-items: stretch !important; /* Zorgt dat alle blokken even hoog zijn */
-    gap: 20px !important;            /* Meer ruimte tussen de blokken (was waarschijnlijk kleiner) */
+    gap: 30px !important;            /* ✅ Meer ruimte TUSSEN de blokken */
     width: 100% !important;
-    padding: 20px 30px !important;   /* Meer ruimte aan de randen van het scherm */
+    padding: 20px 40px !important;   /* ✅ Meer ruimte aan de zijkanten van het scherm */
     box-sizing: border-box !important;
 }
 
-/* 2. De individuele blokken (Nog te spelen, Beurt, Totaal) */
+/* 2. De individuele blokken: 1.5x groter gevoel door hoogte en padding */
 .score-cell {
-    min-height: 150px !important;    /* ✅ Maak de blokken aanzienlijk hoger (1.5x gevoel) */
+    min-height: 160px !important;    /* ✅ Duidelijk hoger dan standaard */
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 25px 15px !important;   /* ✅ Meer binnenruimte, waardoor het blok 'voller' oogt */
-    border-radius: 15px !important;  /* Iets rondere hoeken voor een moderner, groter uiterlijk */
-    flex: 1 !important;              /* Verdeel de beschikbare breedte eerlijk */
+    padding: 35px 20px !important;   /* ✅ Meer binnenruimte = massiever blok */
+    border-radius: 15px !important;
+    flex: 1 !important;              /* Eerlijke verdeling van de breedte */
 }
 
-/* 3. Het middelste blok (Huidige beurt) mag net iets breder zijn voor nadruk */
+/* 3. Het middelste blok (Huidige beurt) mag net iets meer aandacht krijgen */
 #currentPlayerDisplay {
-    flex: 1.2 !important;            /* 20% breder dan de zijblokken */
-    min-height: 150px !important;
+    flex: 1.3 !important;            /* 30% breder dan de zijblokken */
+    min-height: 160px !important;
 }
 
-/* 4. De tekst IN de blokken: vastzetten zodat het niet meegroeit, maar mooi centraal blijft */
+/* 4. DE TEKST: Geen geforceerde verkleining! */
 .score-cell .cell-value {
-    font-size: 2.8rem !important;    /* Een comfortabele, vaste grootte (niet te klein, niet te groot) */
-    font-weight: 900 !important;
+    /* ✅ GEEN font-size hier ingesteld! Hierdoor behoudt het zijn oorspronkelijke, grote formaat. */
     line-height: 1.1 !important;
     margin: 0 !important;
     padding: 0 !important;
-}
-
-/* Optioneel: Zorg dat de labels (als die er zijn) ook netjes staan */
-.score-cell .cell-label {
-    font-size: 1rem !important;
-    opacity: 0.8;
-    margin-bottom: 5px !important;
+    
+    /* Zorg dat de tekst perfect in het midden van het grotere blok zweeft */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
 }
