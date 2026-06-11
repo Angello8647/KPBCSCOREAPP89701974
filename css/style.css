@@ -1713,3 +1713,73 @@
     width: 100% !important;
     height: 100% !important;
 }
+
+
+/* ==========================================
+   ✅ HEADER: GECENTREERD (GEEN KNOPPEN MEER)
+   ========================================== */
+.header {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 15px !important;
+}
+
+/* ==========================================
+   ✅ MIDDELSTE BLOK: KLIKBAAR GEMAAKT
+   ========================================== */
+.clickable-turn {
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border: 3px solid transparent !important;
+    position: relative !important;
+}
+
+/* Hover effect: licht op en wordt iets groter */
+.clickable-turn:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: #f1c40f !important; /* Gele rand bij hover */
+    transform: scale(1.03) !important;
+    box-shadow: 0 0 20px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Click effect: wordt iets kleiner (feedback dat hij ingedrukt is) */
+.clickable-turn:active {
+    transform: scale(0.97) !important;
+}
+
+/* ==========================================
+   ✅ ONDERSTE 'ONGEDAAN' KNOP
+   ========================================== */
+.undo-btn-bottom {
+    /* Zorgt dat hij even groot is als de + en - knoppen */
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important; /* Ronde knop, net als de score knoppen */
+    border: none !important;
+    background: #e67e22 !important; /* Oranje kleur voor 'voorzichtig/ongedaan' */
+    color: #ffffff !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+}
+
+.undo-btn-bottom:hover:not(:disabled) {
+    background: #d35400 !important;
+    transform: scale(1.05) !important;
+}
+
+.undo-btn-bottom:disabled {
+    background: #34495e !important; /* Donkergrijs als hij uit staat */
+    color: #7f8c8d !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
