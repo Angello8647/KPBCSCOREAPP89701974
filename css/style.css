@@ -1856,7 +1856,7 @@
     letter-spacing: 2px !important;
     background: rgba(0, 0, 0, 0.5) !important;
     border: 4px solid currentColor !important; /* Dikkere border */
-    box-shadow: 0 6px 20px rgba(0,0,0,0.5) !important;
+    box-shadow: none !important;
 }
 
 /* 🎨 KLEUREN PER DISCIPLINE (ZONDER GLOED, MAXIMALE LEESBAARHEID) */
