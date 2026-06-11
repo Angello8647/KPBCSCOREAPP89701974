@@ -1871,6 +1871,6 @@
 }
 
 .badge-db {
-    color: #9b59b6 !important; /* Koningspaars voor Driebanden */
-    text-shadow: none !important; /* ✅ Geen wazige gloed */
+    color: #1abc9c !important; /* ✅ Cyaan/Turkoois voor Driebanden - geen paars meer! */
+    text-shadow: none !important;
 }
