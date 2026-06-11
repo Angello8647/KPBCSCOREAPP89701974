@@ -1844,33 +1844,33 @@
     flex-shrink: 0 !important;
 }
 
-/* De daadwerkelijke gekleurde box */
+/* De daadwerkelijke gekleurde box - 1.5x GROTER */
 .discipline-badge {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 6px 16px !important;
-    border-radius: 8px !important;
-    font-size: clamp(1.2rem, 2.5vw, 2rem) !important;
+    padding: 10px 24px !important; /* Meer padding voor groter effect */
+    border-radius: 10px !important;
+    font-size: clamp(1.8rem, 3.75vw, 3rem) !important; /* 1.5x groter */
     font-weight: 900 !important;
-    letter-spacing: 1px !important;
+    letter-spacing: 2px !important;
     background: rgba(0, 0, 0, 0.5) !important;
-    border: 3px solid currentColor !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+    border: 4px solid currentColor !important; /* Dikkere border */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5) !important;
 }
 
-/* 🎨 KLEUREN PER DISCIPLINE */
+/* 🎨 KLEUREN PER DISCIPLINE (ZONDER GLOED, MAXIMALE LEESBAARHEID) */
 .badge-vs {
-    color: #3498db !important;
-    text-shadow: 0 0 10px rgba(52, 152, 219, 0.5) !important;
+    color: #3498db !important; /* Helder Blauw voor Vrijspel */
+    text-shadow: none !important; /* ✅ Geen wazige gloed */
 }
 
 .badge-bs {
-    color: #f39c12 !important;
-    text-shadow: 0 0 10px rgba(243, 156, 18, 0.5) !important;
+    color: #f39c12 !important; /* Warm Oranje voor Bandstoten */
+    text-shadow: none !important; /* ✅ Geen wazige gloed */
 }
 
 .badge-db {
-    color: #9b59b6 !important;
-    text-shadow: 0 0 10px rgba(155, 89, 182, 0.5) !important;
+    color: #9b59b6 !important; /* Koningspaars voor Driebanden */
+    text-shadow: none !important; /* ✅ Geen wazige gloed */
 }
