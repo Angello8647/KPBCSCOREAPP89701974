@@ -1666,33 +1666,69 @@
     position: relative !important;
 }
 
-/* ✅ Maak BEIDE knoppen ('Einde beurt' en 'Ongedaan') identiek in formaat */
-#headerLeftBtn, 
-#headerRightBtn {
-    max-width: 115px !important;       /* Maximaal ~3 cm breed */
-    min-height: 60px !important;       /* Duidelijke, goed klikbare hoogte */
-    padding: 12px 5px !important;      /* Ruimte boven/onder, weinig aan de zijkanten */
-    font-size: 0.95rem !important;     /* Goede leesbaarheid */
-    font-weight: bold !important;
-    
-    /* Perfecte centrering van de tekst en het icoontje */
+/* ==========================================
+   ✅ HEADER LAYOUT: KNOPPEN & NAMEN FIX
+   ========================================== */
+
+/* 1. Zorg dat de hele header hoog genoeg is voor de knoppen */
+.header {
     display: flex !important;
-    align-items: center !important;    /* Verticaal gecentreerd */
-    justify-content: center !important;/* Horizontaal gecentreerd */
-    text-align: center !important;
-    
-    /* Zorgt dat padding en borders binnen de opgegeven afmetingen blijven */
-    box-sizing: border-box !important; 
-    white-space: normal !important;    /* Tekst mag netjes breken als het moet */
-    line-height: 1.2 !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 70px !important; /* Ruimte voor 60px knoppen + ademruimte */
+    padding: 5px 10px !important;
+    box-sizing: border-box !important;
 }
 
-/* ✅ Zorg dat het middenblok (de namen) de overige ruimte netjes opvult */
+/* 2. Forceer BEIDE knoppen naar exact dezelfde afmetingen */
+#headerLeftBtn, 
+#headerRightBtn {
+    height: 60px !important;       /* Forceer exacte hoogte */
+    min-height: 60px !important;
+    width: 115px !important;       /* Forceer exacte breedte (~3 cm) */
+    max-width: 115px !important;
+    
+    /* Flexbox voor perfecte centrering van tekst/icoon */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    
+    /* CRUCIAAL: Voorkom dat de knop smaller of smaller wordt door de omgeving */
+    flex-shrink: 0 !important; 
+    
+    padding: 5px !important;
+    font-size: 0.9rem !important;
+    font-weight: bold !important;
+    line-height: 1.1 !important;
+    box-sizing: border-box !important;
+    word-wrap: break-word !important;
+}
+
+/* 3. Het middenblok: geef het alle ruimte, maar laat het niet crashen */
 .header-match-info {
-    flex: 1 !important; 
-    overflow: hidden; 
-    padding: 0 10px; 
-    display: flex;
-    align-items: center; /* Zorgt dat de namen verticaal mooi uitgelijnd zijn met de knoppen */
-    justify-content: center; /* Namen mooi in het midden van de beschikbare ruimte */
+    flex: 1 !important;            /* Neemt alle overgebleven ruimte */
+    min-width: 0 !important;       /* CRUCIAAL: laat flex-kinderen wél krimpen/wrappen */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 15px !important;
+    overflow: visible !important;  /* Override eventuele 'hidden' van elders */
+}
+
+/* 4. De namen zelf: verbied afkappen en forceer leesbaarheid */
+.header-name {
+    white-space: normal !important; /* Sta toe dat lange namen op 2 regels komen */
+    overflow: visible !important;   /* Verbied '...' (ellipsis) */
+    text-overflow: clip !important;
+    font-size: 1.1rem !important;   /* Zorg dat de tekst groot genoeg blijft */
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+}
+
+/* Zorg ook dat de target-punten naast de naam netjes blijven */
+.header-target {
+    white-space: nowrap !important;
+    margin: 0 5px !important;
 }
