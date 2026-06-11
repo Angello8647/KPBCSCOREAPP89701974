@@ -1666,19 +1666,31 @@
     position: relative !important;
 }
 
-/* ✅ Maak de 'Einde beurt' knop compacter voor meer ruimte voor spelersnamen */
+/* ✅ Maak de 'Einde beurt' knop hoger, maar compact in de breedte */
 #headerLeftBtn {
-    max-width: 115px !important; /* Ongeveer 3 cm breed */
-    min-width: 90px !important;
-    padding: 8px 4px !important; /* Minder ruimte aan de zijkanten van de tekst */
-    font-size: 0.85rem !important; /* Iets compactere lettergrootte */
-    white-space: nowrap !important; /* Voorkomt dat de tekst op 2 regels breekt */
+    max-width: 115px !important;       /* Maximaal ~3 cm breed */
+    min-height: 60px !important;       /* Maak de knop duidelijk hoger */
+    padding: 12px 5px !important;      /* Ruimte boven/onder, weinig aan de zijkanten */
+    font-size: 0.95rem !important;     /* Iets groter voor goede leesbaarheid */
+    font-weight: bold !important;
+    
+    /* Perfecte centrering van de tekst, zodat hij nooit uit de knop valt */
+    display: flex !important;
+    align-items: center !important;    /* Verticaal gecentreerd */
+    justify-content: center !important;/* Horizontaal gecentreerd */
+    text-align: center !important;
+    
+    /* Zorgt dat padding en borders binnen de opgegeven breedte/hoogte blijven */
+    box-sizing: border-box !important; 
+    white-space: normal !important;    /* Mag breken naar 2 regels als het echt moet, maar past normaal op 1 regel */
     line-height: 1.2 !important;
 }
 
 /* ✅ Zorg dat het middenblok (de namen) de overige ruimte netjes opvult */
 .header-match-info {
-    flex: 1 !important; /* Neemt alle beschikbare ruimte in het midden */
-    overflow: hidden; /* Voorkomt dat het uit de randen loopt */
-    padding: 0 10px; /* Beetje ademruimte rond de namen */
+    flex: 1 !important; 
+    overflow: hidden; 
+    padding: 0 10px; 
+    display: flex;
+    align-items: center; /* Zorgt dat de namen verticaal mooi uitgelijnd zijn met de knoppen */
 }
