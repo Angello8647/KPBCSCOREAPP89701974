@@ -1088,12 +1088,28 @@ window.resetPage1State = function() {
    ✅ PLAYER SELECTIE MODAL LOGICA
    ========================================================================= */
 
-// Mock data voor testen (Vervang dit later door je echte spelerslijst)
-const mockPlayers = [
-    "Arthur DEVOS", "Ives DELABARRE", "Marc DECANCQ", "Marnik DEBEUF",
-    "Jan JANSSEN", "Piet PEETERS", "Karel SMIT", "Lukas DE VRIES",
-    "Thomas VAN DEN BERG", "Dirk JANSSENS", "Wim VERSTRAETE", "Bram MAES"
-];
+// ✅ HAAL ECHTE SPELERS OP UIT STATE.PLAYERS
+function getPlayerNames() {
+    // Check of er spelers zijn geladen
+    if (!state.players || state.players.length === 0) {
+        console.warn("⚠️ Geen spelers geladen in state.players");
+        return [];
+    }
+    
+    // Haal alle unieke namen op (een speler kan meerdere stats hebben)
+    const uniqueNames = new Set();
+    state.players.forEach(player => {
+        if (player.name && player.name.trim()) {
+            uniqueNames.add(player.name.trim());
+        }
+    });
+    
+    // Converteer naar array en sorteer alfabetisch
+    const sortedNames = Array.from(uniqueNames).sort((a, b) => a.localeCompare(b));
+    
+    console.log(`✅ ${sortedNames.length} unieke spelersnamen geladen voor modal`);
+    return sortedNames;
+}
 
 let currentPlayerSlot = 1; // 1 of 2
 let currentSearchString = "";
