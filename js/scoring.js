@@ -1510,12 +1510,7 @@ window.updateTeamButtons = function() {
     const startBtn = document.getElementById('btnStartFriendlyMatch');
     if (startBtn) startBtn.disabled = !allComplete;
 };
-// 4. Finale start actie (Placeholder voor nu)
-window.startFriendlyMatchFinal = function() {
-    console.log("✅ Match startklaar!", state.friendlyMatch);
-    alert("🎱 Match configuratie compleet! (Hier komt de overstap naar het scorebord)");
-    // Hier voegen we later de logica toe om naar het scorebord te gaan
-};
+
 
 
 
