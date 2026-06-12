@@ -2538,20 +2538,24 @@
 .modal-btn.danger { background: #e74c3c !important; } /* Rood voor Terug */
 .modal-btn.danger:hover { background: #c0392b !important; }
 
-/* Zoekinterface Layout */
+/* Zoekinterface Layout - FIX: ECHT naast elkaar */
 .search-layout {
     display: flex !important;
+    flex-direction: row !important; /* ✅ Forceer horizontale layout */
     gap: 30px !important;
     flex: 1 !important;
-    overflow: hidden !important; /* Voorkomt dat het uit de modal breekt */
+    overflow: hidden !important;
+    align-items: stretch !important; /* Zorg dat beide panelen even hoog zijn */
 }
 
-/* A-Z Grid */
+/* A-Z Grid - Linker paneel */
 .alphabet-grid {
     display: grid !important;
     grid-template-columns: repeat(6, 1fr) !important; /* 6 kolommen */
     gap: 10px !important;
-    flex: 1 !important;
+    flex: 0 0 40% !important; /* ✅ Vaste breedte: 40% van de ruimte */
+    max-width: 400px !important; /* Maar niet breder dan dit */
+    align-content: start !important;
 }
 
 .alpha-btn {
@@ -2575,15 +2579,15 @@
     transform: scale(1.1);
 }
 
-/* Dynamische Lijst */
+/* Dynamische Lijst - Rechter paneel */
 .player-list-container {
-    flex: 1.5 !important;
+    flex: 1 !important; /* ✅ Neemt de resterende 60% in */
     background: rgba(0,0,0,0.3) !important;
     border-radius: 12px !important;
     overflow-y: auto !important; /* Scrollbaar als de lijst lang is */
     border: 2px solid rgba(255,255,255,0.1) !important;
+    min-width: 0 !important; /* Voorkomt overflow problemen */
 }
-
 .player-list-item {
     padding: 15px 20px !important;
     font-size: 1.3rem !important;
