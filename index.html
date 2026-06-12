@@ -423,6 +423,65 @@
         </div>
     </div>
 
+    <!-- PAGINA: Vriendschappelijke Match Configuratie (Bestaande code, met kleine toevoeging) -->
+    <div id="pageFriendly" class="page">
+        <!-- ... (jouw bestaande header en config-secties hier) ... -->
+        
+        <!-- ✅ NIEUW: Placeholder om gekozen spelers te tonen -->
+        <div class="config-section hidden" id="step3PlayersDisplay">
+            <h2 class="config-title">Gekozen Spelers</h2>
+            <div class="chosen-players-display">
+                <div class="chosen-player" id="displayPlayer1">Speler 1: Nog niet gekozen</div>
+                <div class="chosen-player" id="displayPlayer2">Speler 2: Nog niet gekozen</div>
+            </div>
+        </div>
+
+    </div> <!-- Einde pageFriendly -->
+
+
+    <!-- ✅ DE PLAYER SELECTIE MODAL (POPUP) -->
+    <div id="playerSelectModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="modalTitle" class="modal-title">Speler instellen</h2>
+            
+            <!-- Keuze 1: Clublid of Gast -->
+            <div id="modalInitialChoice" class="modal-choice-buttons">
+                <button class="modal-btn primary" onclick="window.showPlayerSearch()">👤 Clublid</button>
+                <button class="modal-btn secondary" onclick="window.selectGuest()">🎒 Gast</button>
+            </div>
+
+            <!-- Keuze 2: Zoekinterface (Verborgen tot 'Clublid' gekozen is) -->
+            <div id="modalSearchInterface" class="hidden">
+                <div class="search-layout">
+                    <!-- Links: A-Z Grid -->
+                    <div class="alphabet-grid" id="alphabetGrid">
+                        <!-- Wordt gevuld door JavaScript -->
+                    </div>
+                    
+                    <!-- Rechts: Dynamische Lijst -->
+                    <div class="player-list-container">
+                        <div class="player-list" id="playerList">
+                            <!-- Wordt gevuld door JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="modal-btn secondary" onclick="window.clearSearchLetter()">⌫ Wissen</button>
+                    <button class="modal-btn danger" onclick="window.resetPlayerModal()">⬅️ Terug naar keuze</button>
+                </div>
+            </div>
+
+            <button class="modal-close-btn" onclick="window.closePlayerModal()">✕ Annuleren</button>
+        </div>
+    </div>
+
+
+
+
+
+    
+
     
     <script src="js/state.js"></script>
     <script src="js/utils.js"></script>
