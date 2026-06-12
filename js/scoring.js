@@ -1142,17 +1142,39 @@ let isGuestMode = false;
 
 // 1. Open de modal (start altijd in Clublid modus)
 window.openPlayerSelection = function(playerNum) {
+    console.log(`🔧 openPlayerSelection aangeroepen voor speler ${playerNum}`);
+    
     currentPlayerSlot = playerNum;
     currentSearchString = "";
     
     const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
     const icon = icons[playerNum] || "👤";
     
-    document.getElementById('modalTitle').textContent = `Speler ${playerNum} (${icon}) instellen`;
-    document.getElementById('playerSelectModal').classList.remove('hidden');
+    const titleEl = document.getElementById('modalTitle');
+    if (titleEl) {
+        titleEl.textContent = `Speler ${playerNum} (${icon}) instellen`;
+        console.log(`✅ Titel ingesteld: ${titleEl.textContent}`);
+    } else {
+        console.error('❌ modalTitle element niet gevonden!');
+    }
+    
+    const modal = document.getElementById('playerSelectModal');
+    if (modal) {
+        console.log(`📦 Modal classes voor remove: ${modal.className}`);
+        modal.classList.remove('hidden');
+        console.log(`📦 Modal classes na remove: ${modal.className}`);
+        console.log(`👁️ Modal display: ${window.getComputedStyle(modal).display}`);
+    } else {
+        console.error('❌ playerSelectModal element niet gevonden!');
+    }
     
     // Start standaard in Clublid modus
-    window.setMode('club');
+    if (typeof window.setMode === 'function') {
+        window.setMode('club');
+        console.log('✅ setMode("club") aangeroepen');
+    } else {
+        console.error('❌ window.setMode functie niet gevonden!');
+    }
 };
 
 // 2. Schakel tussen Modus (De kern van de nieuwe flow)
