@@ -1571,3 +1571,152 @@ window.setBtnState = function(btnId, isDisabled, isActive, activeClass) {
         }
     }
 };
+
+
+/* =========================================================================
+   ✅ PAGINA 13: VRIENDSCHAPPELIJKE BAL SELECTIE (GEÏSOLEERD)
+   ========================================================================= */
+
+// 1. Bereid de pagina voor op basis van het aantal spelers
+window.prepareFriendlyBallSelection = function() {
+    const fm = state.friendlyMatch;
+    if (!fm || !fm.numPlayers) return;
+
+    const container = document.getElementById('friendlyBallOptions');
+    const title = document.getElementById('friendlyBallTitle');
+    const subtitle = document.getElementById('friendlyBallSubtitle');
+    const startBtn = document.getElementById('friendlyStartMatchBtn');
+    
+    // Reset
+    container.innerHTML = '';
+    startBtn.disabled = true;
+    startBtn.classList.add('disabled-btn');
+    window.friendlyColorAssignments = {};
+
+    if (fm.numPlayers === 2) {
+        title.textContent = "Kies Witte Bal";
+        subtitle.innerHTML = "Wie speelt met de witte bal?<br><small>(De ander krijgt automatisch de gele bal)</small>";
+        container.innerHTML = `
+            <div class="ball-option" onclick="window.selectFriendlyWhite(1)">
+                <div class="ball-circle white"><div>${fm.players[1]}</div></div>
+            </div>
+            <div class="ball-option" onclick="window.selectFriendlyWhite(2)">
+                <div class="ball-circle white"><div>${fm.players[2]}</div></div>
+            </div>
+        `;
+    } 
+    else if (fm.numPlayers === 4) {
+        title.textContent = "Kies Team Kleuren";
+        subtitle.innerHTML = "Welk team speelt met welke bal?<br><small>(Klik op het team)</small>";
+        
+        const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        
+        container.innerHTML = `
+            <div class="ball-option" onclick="window.selectFriendlyWhite('T1')">
+                <div class="ball-circle white" style="font-size: 1rem;"><div>Team 1<br><small>${fm.players[t1Keys[0]]} & ${fm.players[t1Keys[1]]}</small></div></div>
+            </div>
+            <div class="ball-option" onclick="window.selectFriendlyWhite('T2')">
+                <div class="ball-circle white" style="font-size: 1rem;"><div>Team 2<br><small>${fm.players[t2Keys[0]]} & ${fm.players[t2Keys[1]]}</small></div></div>
+            </div>
+        `;
+    } 
+    else if (fm.numPlayers === 3) {
+        title.textContent = "Wijs Unieke Kleuren Toe";
+        subtitle.innerHTML = "Klik op de gewenste kleur voor elke speler<br><small>(Elke kleur ⚪🟡🔴 mag maar 1x)</small>";
+        
+        let html = '<div class="player-color-assignment">';
+        for (let i = 1; i <= 3; i++) {
+            html += `
+            <div class="player-color-row" data-player="${i}">
+                <div class="player-color-name">${fm.players[i]}</div>
+                <div class="player-color-choices">
+                    <div class="color-dot white" onclick="window.assignFriendlyColor(${i}, 'wit', this)" title="Witte Bal">⚪</div>
+                    <div class="color-dot yellow" onclick="window.assignFriendlyColor(${i}, 'geel', this)" title="Gele Bal">🟡</div>
+                    <div class="color-dot red" onclick="window.assignFriendlyColor(${i}, 'rood', this)" title="Rode Bal">🔴</div>
+                </div>
+            </div>`;
+        }
+        html += '</div>';
+        container.innerHTML = html;
+    }
+};
+
+// 2. Logica voor 2 of 4 spelers/teams
+window.selectFriendlyWhite = function(identifier) {
+    state.friendlyMatch.whiteBallOwner = identifier;
+    
+    // Visuele feedback
+    document.querySelectorAll('#friendlyBallOptions .ball-option').forEach(opt => opt.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    
+    // Activeer startknop
+    const startBtn = document.getElementById('friendlyStartMatchBtn');
+    startBtn.disabled = false;
+    startBtn.classList.remove('disabled-btn');
+};
+
+// 3. Logica voor 3 spelers (Slimme wissel)
+window.assignFriendlyColor = function(playerNum, color, element) {
+    const assignments = window.friendlyColorAssignments || {};
+    
+    // Kijk of iemand anders deze kleur al heeft
+    const existingOwner = Object.keys(assignments).find(p => assignments[p] === color && p != playerNum);
+    
+    if (existingOwner) {
+        // Wissel de kleuren (zeer gebruiksvriendelijk!)
+        const oldColorOfCurrent = assignments[playerNum];
+        assignments[existingOwner] = oldColorOfCurrent;
+        assignments[playerNum] = color;
+    } else {
+        assignments[playerNum] = color;
+    }
+    
+    state.friendlyMatch.colorAssignments = assignments;
+    window.updateFriendly3PlayerUI();
+};
+
+// 4. Update UI voor 3 spelers
+window.updateFriendly3PlayerUI = function() {
+    const assignments = state.friendlyMatch.colorAssignments || {};
+    const isComplete = Object.keys(assignments).length === 3;
+    
+    document.querySelectorAll('.player-color-row').forEach(row => {
+        const pNum = row.getAttribute('data-player');
+        const chosenColor = assignments[pNum];
+        
+        row.querySelectorAll('.color-dot').forEach(dot => {
+            dot.classList.remove('active');
+            dot.style.opacity = '0.3';
+        });
+        
+        if (chosenColor) {
+            const activeDot = row.querySelector(`.color-dot.${chosenColor}`);
+            if (activeDot) {
+                activeDot.classList.add('active');
+                activeDot.style.opacity = '1';
+            }
+        }
+    });
+
+    const startBtn = document.getElementById('friendlyStartMatchBtn');
+    if (isComplete) {
+        startBtn.disabled = false;
+        startBtn.classList.remove('disabled-btn');
+    } else {
+        startBtn.disabled = true;
+        startBtn.classList.add('disabled-btn');
+    }
+};
+
+// 5. Finale start van de vriendschappelijke match
+window.startFriendlyMatchFromBallSelection = function() {
+    console.log("🚀 VRIENDSCHAPPELIJKE MATCH GESTART!", state.friendlyMatch);
+    
+    // HIER KOMT STRAKS DE NAVIGATIE NAAR HET ECHTE SCOREBORD
+    // Bijvoorbeeld: showPage(5); 
+    
+    alert("✅ Match configuratie compleet en opgeslagen in state!\n\nKlaar om door te schakelen naar het scorebord.");
+};
+
+
