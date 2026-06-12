@@ -1535,18 +1535,18 @@ window.resetPlayerModal = function() {
     window.setMode('club');
 };
 
-// 12. Finale start actie (wordt aangeroepen als alles ingevuld is)
+/* =========================================================================
+   ✅ FINALE START ACTIE (NAAR PAGINA 13)
+   ========================================================================= */
+
 window.startFriendlyMatchFinal = function() {
-    console.log("✅ Match startklaar!", state.friendlyMatch);
+    console.log("✅ Configuratie compleet, voorbereiden Pagina 13...");
     
-    // Hier komt later de logica om naar het echte scorebord te gaan.
-    // Voor nu tonen we een bevestiging:
-    alert("🎱 Configuratie compleet!\n\nSpelers: " + 
-          Object.values(state.friendlyMatch.players).join(", ") + 
-          "\n\nKlaar om te starten!");
-          
-    // Voorbeeld van hoe je later naar het scorebord zou gaan:
-    // window.showPage(5); // Ga naar pagina 5 (Scoring)
+    // 1. Bereid de nieuwe, veilige pagina voor met de juiste data
+    window.prepareFriendlyBallSelection();
+    
+    // 2. Navigeer naar Pagina 13 (Vriendschappelijke Bal Selectie)
+    showPage(13); 
 };
 
 // Helper functie om knop states te zetten
