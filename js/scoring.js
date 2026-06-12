@@ -1138,12 +1138,18 @@ window.selectGuest = function() {
 
 // 3. Toon zoekinterface
 window.showPlayerSearch = function() {
+    // ✅ Check of er spelers zijn
+    if (!state.players || state.players.length === 0) {
+        alert("⚠️ Geen spelers geladen!\n\nGa eerst naar 'Beheer Matchen' en klik op '🔄 Sync met Planning App' om de spelerslijst op te halen.");
+        return;
+    }
+    
     document.getElementById('modalInitialChoice').classList.add('hidden');
     document.getElementById('modalSearchInterface').classList.remove('hidden');
     
     window.renderAlphabetGrid();
     window.renderPlayerList();
-    window.updateSearchDisplay();
+    window.updateSearchDisplay(); // ✅ Toon het (lege) invoervak
 };
 
 // 4. Render A-Z Grid
