@@ -1311,15 +1311,24 @@ window.renderPlayerList = function() {
     });
 };
 
-// 8. Bevestig gastnaam
+// 8. Bevestig naam (werkt voor ZOWEL Clublid als Gast)
 window.confirmTypedName = function() {
     if (currentSearchString.trim() === "") {
-        alert("⚠️ Voer eerst een naam in!");
+        alert("⚠️ Voer eerst een naam in!\n\nKlik op een naam uit de lijst of typ een naam met de letters.");
         return;
     }
+    
+    // ✅ Check of deze naam al gekozen is
+    if (state.friendlyMatch && state.friendlyMatch.players) {
+        const alreadyChosen = Object.values(state.friendlyMatch.players);
+        if (alreadyChosen.includes(currentSearchString.trim())) {
+            alert(`⚠️ "${currentSearchString.trim()}" is al gekozen als een andere speler!\n\nKies een andere speler.`);
+            return;
+        }
+    }
+    
     window.finalizePlayerSelection(currentSearchString.trim());
 };
-
 // 9. Finaliseer keuze
 window.finalizePlayerSelection = function(playerName) {
     console.log(`✅ Speler ${currentPlayerSlot} gekozen: ${playerName}`);
