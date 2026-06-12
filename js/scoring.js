@@ -1512,3 +1512,21 @@ window.startFriendlyMatchFinal = function() {
     // Voorbeeld van hoe je later naar het scorebord zou gaan:
     // window.showPage(5); // Ga naar pagina 5 (Scoring)
 };
+
+// Helper functie om knop states te zetten
+window.setBtnState = function(btnId, isDisabled, isActive, activeClass) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+
+    if (isDisabled) {
+        btn.classList.add('disabled');
+        btn.classList.remove(activeClass);
+    } else {
+        btn.classList.remove('disabled');
+        if (isActive) {
+            btn.classList.add(activeClass);
+        } else {
+            btn.classList.remove(activeClass);
+        }
+    }
+};
