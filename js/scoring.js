@@ -1079,3 +1079,138 @@ window.resetPage1State = function() {
     window.resetFriendlyConfig(); 
 };
 
+
+/* =========================================================================
+   ✅ PLAYER SELECTIE MODAL LOGICA
+   ========================================================================= */
+
+// Mock data voor testen (Vervang dit later door je echte spelerslijst)
+const mockPlayers = [
+    "Arthur DEVOS", "Ives DELABARRE", "Marc DECANCQ", "Marnik DEBEUF",
+    "Jan JANSSEN", "Piet PEETERS", "Karel SMIT", "Lukas DE VRIES",
+    "Thomas VAN DEN BERG", "Dirk JANSSENS", "Wim VERSTRAETE", "Bram MAES"
+];
+
+let currentPlayerSlot = 1; // 1 of 2
+let currentSearchString = "";
+
+// 1. Open de modal voor een specifieke speler
+window.openPlayerSelection = function(playerNum) {
+    currentPlayerSlot = playerNum;
+    currentSearchString = "";
+    
+    const icon = playerNum === 1 ? "🧙‍♂️" : "👷‍♂️";
+    document.getElementById('modalTitle').textContent = `Speler ${playerNum} (${icon}) instellen`;
+    
+    // Reset naar initiële keuze
+    document.getElementById('modalInitialChoice').classList.remove('hidden');
+    document.getElementById('modalSearchInterface').classList.add('hidden');
+    
+    // Toon modal
+    document.getElementById('playerSelectModal').classList.remove('hidden');
+};
+
+// 2. Kies Gast
+window.selectGuest = function() {
+    const guestName = `Gast ${currentPlayerSlot}`;
+    window.finalizePlayerSelection(guestName);
+};
+
+// 3. Toon zoekinterface
+window.showPlayerSearch = function() {
+    document.getElementById('modalInitialChoice').classList.add('hidden');
+    document.getElementById('modalSearchInterface').classList.remove('hidden');
+    
+    window.renderAlphabetGrid();
+    window.renderPlayerList();
+};
+
+// 4. Render A-Z Grid
+window.renderAlphabetGrid = function() {
+    const grid = document.getElementById('alphabetGrid');
+    grid.innerHTML = '';
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
+    for (let char of alphabet) {
+        const btn = document.createElement('button');
+        btn.className = 'alpha-btn';
+        btn.textContent = char;
+        btn.onclick = () => window.addSearchLetter(char);
+        grid.appendChild(btn);
+    }
+};
+
+// 5. Voeg letter toe aan zoekopdracht
+window.addSearchLetter = function(letter) {
+    currentSearchString += letter;
+    window.renderPlayerList();
+};
+
+// 6. Wis laatste letter
+window.clearSearchLetter = function() {
+    currentSearchString = currentSearchString.slice(0, -1);
+    window.renderPlayerList();
+};
+
+// 7. Render de gefilterde spelerslijst
+window.renderPlayerList = function() {
+    const listContainer = document.getElementById('playerList');
+    listContainer.innerHTML = '';
+    
+    // Filter spelers op basis van huidige zoekstring
+    const filtered = mockPlayers.filter(player => 
+        player.toUpperCase().startsWith(currentSearchString)
+    );
+    
+    if (filtered.length === 0) {
+        listContainer.innerHTML = '<div class="player-list-item" style="color: #95a5a6; text-align: center;">Geen resultaten</div>';
+        return;
+    }
+    
+    filtered.forEach(player => {
+        const item = document.createElement('div');
+        item.className = 'player-list-item';
+        // Highlight de getypte letters
+        const regex = new RegExp(`^(${currentSearchString})`, 'i');
+        item.innerHTML = player.replace(regex, '<span style="color: #2ecc71; font-weight: 900;">$1</span>');
+        
+        item.onclick = () => window.finalizePlayerSelection(player);
+        listContainer.appendChild(item);
+    });
+};
+
+// 8. Finaliseer keuze en sluit modal
+window.finalizePlayerSelection = function(playerName) {
+    // Sla op in state
+    state.friendlyMatch = state.friendlyMatch || {};
+    if (currentPlayerSlot === 1) {
+        state.friendlyMatch.player1 = playerName;
+        document.getElementById('displayPlayer1').textContent = `🧙‍♂️ ${playerName}`;
+    } else {
+        state.friendlyMatch.player2 = playerName;
+        document.getElementById('displayPlayer2').textContent = `👷‍♂️ ${playerName}`;
+    }
+    
+    // Toon het display blok op de hoofdpagina
+    document.getElementById('step3PlayersDisplay').classList.remove('hidden');
+    
+    window.closePlayerModal();
+    
+    // Als speler 1 net gekozen is, open direct de modal voor speler 2
+    if (currentPlayerSlot === 1 && !state.friendlyMatch.player2) {
+        setTimeout(() => window.openPlayerSelection(2), 300);
+    }
+};
+
+// 9. Reset modal naar begin
+window.resetPlayerModal = function() {
+    currentSearchString = "";
+    document.getElementById('modalInitialChoice').classList.remove('hidden');
+    document.getElementById('modalSearchInterface').classList.add('hidden');
+};
+
+// 10. Sluit modal volledig
+window.closePlayerModal = function() {
+    document.getElementById('playerSelectModal').classList.add('hidden');
+};
+
