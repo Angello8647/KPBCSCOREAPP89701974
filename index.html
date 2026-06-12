@@ -359,11 +359,64 @@
             <h1>🍻 Vriendschappelijke Match Instellen</h1>
         </div>
         
-        <div class="selection-container" style="margin-top: 50px;">
-            <p style="font-size: 1.5rem; text-align: center; color: #bdc3c7; line-height: 1.6;">
-                Hier komt het scherm om spelers, discipline en target in te stellen.<br>
-                <span style="color: #2ecc71; font-weight: bold;">(We bouwen dit straks samen in!)</span>
-            </p>
+        <div class="friendly-config-container">
+            
+            <!-- STAP 1: Aantal Spelers -->
+            <div class="config-section" id="step1Players">
+                <h2 class="config-title">Stap 1: Kies aantal spelers</h2>
+                <div class="config-options">
+                    <div class="config-card" data-players="2" onclick="window.selectPlayers(2)">
+                        <div class="card-icon">👥</div>
+                        <div class="card-label">2 Spelers</div>
+                    </div>
+                    <div class="config-card" data-players="3" onclick="window.selectPlayers(3)">
+                        <div class="card-icon">👥👥</div>
+                        <div class="card-label">3 Spelers</div>
+                    </div>
+                    <div class="config-card" data-players="4" onclick="window.selectPlayers(4)">
+                        <div class="card-icon">👥👥👥</div>
+                        <div class="card-label">4 Spelers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAP 2: Speltype (verschijnt pas na stap 1) -->
+            <div class="config-section hidden" id="step2GameType">
+                <h2 class="config-title">Stap 2: Kies speltype</h2>
+                <div class="config-options">
+                    <div class="config-card" data-gametype="triatlon-small" onclick="window.selectGameType('triatlon-small')">
+                        <div class="card-icon">🏃</div>
+                        <div class="card-label">Kleine Triatlon</div>
+                        <div class="card-sublabel">20 - 10 - 5</div>
+                    </div>
+                    <div class="config-card" data-gametype="triatlon-large" onclick="window.selectGameType('triatlon-large')">
+                        <div class="card-icon">🏋️</div>
+                        <div class="card-label">Grote Triatlon</div>
+                        <div class="card-sublabel">40 - 20 - 10</div>
+                    </div>
+                    <div class="config-card" data-gametype="dubbeltje" onclick="window.selectGameType('dubbeltje')">
+                        <div class="card-icon">🎲</div>
+                        <div class="card-label">Dubbeltje op zen Kant</div>
+                        <div class="card-sublabel">Speciaal spel</div>
+                    </div>
+                    <div class="config-card" data-gametype="vrijspel" onclick="window.selectGameType('vrijspel')">
+                        <div class="card-icon">🎯</div>
+                        <div class="card-label">Vrijspel</div>
+                        <div class="card-sublabel">Klassiek</div>
+                    </div>
+                    <div class="config-card" data-gametype="bandstoten" onclick="window.selectGameType('bandstoten')">
+                        <div class="card-icon">📐</div>
+                        <div class="card-label">Bandstoten</div>
+                        <div class="card-sublabel">1 Band</div>
+                    </div>
+                    <div class="config-card" data-gametype="driebanden" onclick="window.selectGameType('driebanden')">
+                        <div class="card-icon">💥</div>
+                        <div class="card-label">Driebanden</div>
+                        <div class="card-sublabel">3 Banden</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
