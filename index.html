@@ -354,9 +354,11 @@
 
     <!-- PAGINA: Vriendschappelijke Match Configuratie -->
     <div id="pageFriendly" class="page">
-        <div class="header">
+        <!-- NIEUWE HEADER LAYOUT: Terug (links) | Reset (midden) | Titel (rechts) -->
+        <div class="header friendly-header">
             <button class="back-btn" onclick="window.showPage(1)">⬅️ Terug</button>
-            <h1>🍻 Vriendschappelijke Match Instellen</h1>
+            <button class="header-reset-btn" onclick="window.resetFriendlyConfig()" title="Keuzes wissen en opnieuw beginnen">🔄 Reset</button>
+            <h1>🍻 Vriendschappelijke Match</h1>
         </div>
         
         <div class="friendly-config-container">
@@ -376,14 +378,13 @@
                     <div class="config-card" data-players="4" onclick="window.selectPlayers(4)">
                         <div class="card-icon">🧙‍♂️👷‍♂️👮‍♂️👨‍🚀</div>
                         <div class="card-label">4 Spelers</div>
-                    </div>
-                </div>
+                    </div</div>
             </div>
 
-            <!-- STAP 2: Speltype (verschijnt pas na stap 1) -->
+            <!-- STAP 2: Speltype (1 lijn, compact) -->
             <div class="config-section hidden" id="step2GameType">
                 <h2 class="config-title">Stap 2: Kies speltype</h2>
-                <div class="config-options">
+                <div class="config-options single-line-options">
                     <div class="config-card" data-gametype="triatlon-small" onclick="window.selectGameType('triatlon-small')">
                         <div class="card-icon">🏃</div>
                         <div class="card-label">Kleine Triatlon</div>
@@ -396,8 +397,8 @@
                     </div>
                     <div class="config-card" data-gametype="dubbeltje" onclick="window.selectGameType('dubbeltje')">
                         <div class="card-icon">🎲</div>
-                        <div class="card-label">Dubbeltje op zen Kant</div>
-                        <div class="card-sublabel">Speciaal spel</div>
+                        <div class="card-label">Dubbeltje</div>
+                        <div class="card-sublabel">Op z'n kant</div>
                     </div>
                     <div class="config-card" data-gametype="vrijspel" onclick="window.selectGameType('vrijspel')">
                         <div class="card-icon">🎯</div>
