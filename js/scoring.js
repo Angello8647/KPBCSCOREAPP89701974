@@ -930,27 +930,52 @@ window.startFriendlyMatch = function() {
     console.log("🍻 Navigatie naar Vriendschappelijke Match configuratie");
 };
 
-// ✅ MODUS SELECTIE: DIM HET ANDERE VAK EN VOER DAARNA DE ACTIE UIT
+// ✅ 1. RESET FUNCTIE: Zorgt dat alles normaal is bij terugkeer naar Pagina 1
+window.resetPage1State = function() {
+    const officialContainer = document.getElementById('containerOfficial');
+    const friendlyContainer = document.getElementById('containerFriendly');
+    
+    if (officialContainer) officialContainer.classList.remove('inactive-mode');
+    if (friendlyContainer) friendlyContainer.classList.remove('inactive-mode');
+};
+
+// ✅ 2. HOVER LOGICA: Dim het andere vak ZODRA je over een knop gaat
+document.addEventListener("DOMContentLoaded", function() {
+    const btnOfficial = document.querySelector('#containerOfficial .next-btn');
+    const btnFriendly = document.querySelector('#containerFriendly .friendly-btn');
+    const contOfficial = document.getElementById('containerOfficial');
+    const contFriendly = document.getElementById('containerFriendly');
+
+    if (btnOfficial && btnFriendly && contOfficial && contFriendly) {
+        // Hover over Officiële knop -> dim Vriendschappelijk vak
+        btnOfficial.addEventListener('mouseenter', () => contFriendly.classList.add('inactive-mode'));
+        btnOfficial.addEventListener('mouseleave', () => contFriendly.classList.remove('inactive-mode'));
+
+        // Hover over Vriendschappelijke knop -> dim Officieel vak
+        btnFriendly.addEventListener('mouseenter', () => contOfficial.classList.add('inactive-mode'));
+        btnFriendly.addEventListener('mouseleave', () => contOfficial.classList.remove('inactive-mode'));
+    }
+});
+
+// ✅ 3. KLIK LOGICA: Dim definitief en voer actie uit
 window.selectMode = function(mode) {
+    // Eerst alles resetten om 'stuck' states te voorkomen
+    window.resetPage1State();
+
     const officialContainer = document.getElementById('containerOfficial');
     const friendlyContainer = document.getElementById('containerFriendly');
     
     if (mode === 'official') {
-        // 1. Visueel: Activeer officieel, dim vriendelijk
         officialContainer.classList.remove('inactive-mode');
-        friendlyContainer.classList.add('inactive-mode');
+        friendlyContainer.classList.add('inactive-mode'); // Blijf gedimd tijdens actie
         
-        // 2. Actie: Roep je bestaande functie aan (als die bestaat)
         if (typeof syncAndGoToMatches === 'function') {
             syncAndGoToMatches();
         }
-        
     } else if (mode === 'friendly') {
-        // 1. Visueel: Activeer vriendelijk, dim officieel
         friendlyContainer.classList.remove('inactive-mode');
-        officialContainer.classList.add('inactive-mode');
+        officialContainer.classList.add('inactive-mode'); // Blijf gedimd tijdens actie
         
-        // 2. Actie: Roep je bestaande functie aan (als die bestaat)
         if (typeof window.startFriendlyMatch === 'function') {
             window.startFriendlyMatch();
         }
