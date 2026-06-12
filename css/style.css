@@ -2004,3 +2004,34 @@
 #page1 .friendly-btn:active {
     box-shadow: 0 0 25px rgba(0, 210, 211, 0.7) !important; /* Cyaan gloed */
 }
+/* ==========================================
+   ✅ PAGINA 1: MODUS SELECTIE (DIMMEN) & KNOPPEN
+   ========================================== */
+
+/* Soepele overgang voor beide kaders */
+#containerOfficial,
+#containerFriendly {
+    transition: all 0.4s ease !important;
+}
+
+/* Het NIET-gekozen vak: gedimd, grijs en wazig (in de schaduw) */
+.inactive-mode {
+    opacity: 0.25 !important;
+    pointer-events: none !important; /* Voorkomt per ongeluk klikken */
+    filter: grayscale(0.8) blur(1px) !important; /* Het 'in de schaduw' effect */
+}
+
+/* Dikke, opvallende rand bij gekozen/focus (zoals besproken) */
+#page1 .next-btn,
+#page1 .friendly-btn {
+    border: 5px solid transparent !important;
+    transition: all 0.2s ease !important;
+    outline: none !important;
+}
+
+#page1 .next-btn:hover, #page1 .next-btn:focus, #page1 .next-btn:active,
+#page1 .friendly-btn:hover, #page1 .friendly-btn:focus, #page1 .friendly-btn:active {
+    border-color: #00d2d3 !important; /* Helder Cyaan */
+    transform: translateY(-3px) !important;
+    box-shadow: 0 0 25px rgba(0, 210, 211, 0.7) !important;
+}
