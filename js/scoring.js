@@ -1068,10 +1068,15 @@ window.selectGameType = function(gameType) {
     state.friendlyMatch.gameType = gameType;
     
     console.log(`✅ Speltype gekozen: ${gameType}`);
+    
+    // ✅ NIEUW: Verberg Stap 1 (Aantal spelers) voor meer ruimte
+    const step1 = document.getElementById('step1Players');
+    if (step1) step1.classList.add('hidden');
+    
     // ✅ NIEUW: Open direct de speler-selectie modal voor Speler 1
     setTimeout(() => {
         window.openPlayerSelection(1);
-    }, 500); // Korte delay voor een mooi effect
+    }, 200);
 };
 
 // 3. RESET KNOP (Deze maakt nu écht alles schoon)
