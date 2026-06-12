@@ -2636,3 +2636,42 @@
     font-weight: 700 !important;
     color: #ffffff !important;
 }
+
+/* ✅ NIEUW: Het invoervak in de modal */
+.search-input-display {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 2px solid #2ecc71 !important; /* Groene rand */
+    border-radius: 10px !important;
+    padding: 15px 25px !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 2rem !important;
+    font-weight: 900 !important;
+    color: #ffffff !important;
+    min-height: 60px !important;
+}
+
+.search-label {
+    color: #95a5a6 !important;
+    font-size: 1.2rem !important;
+    margin-right: 15px !important;
+    font-weight: 500 !important;
+}
+
+.search-text {
+    color: #2ecc71 !important; /* De getypte letters zijn felgroen */
+    letter-spacing: 3px !important;
+}
+
+.cursor {
+    animation: blink 1s infinite !important;
+    color: #2ecc71 !important;
+    margin-left: 5px !important;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
