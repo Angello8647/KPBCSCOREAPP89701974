@@ -983,74 +983,100 @@ window.selectMode = function(mode) {
 };
 
 
-// ✅ VRIENDSCHAPPELIJKE MATCH: SPELERS SELECTIE
+/* =========================================================================
+   ✅ VRIENDSCHAPPELIJKE MATCH: CONFIGURATIE LOGICA (GEUPDATE & WATERDICHT)
+   ========================================================================= */
+
+// 1. SPELERS KIEZEN
 window.selectPlayers = function(numPlayers) {
-    // 1. Verwijder 'selected' van alle spelers-kaarten
+    // A. Reset alle spelers-kaartjes eerst
     document.querySelectorAll('#step1Players .config-card').forEach(card => {
-        card.classList.remove('selected');
+        card.classList.remove('selected', 'dimmed');
     });
     
-    // 2. Markeer de gekozen kaart
+    // B. Markeer de gekozen kaart
     const selectedCard = document.querySelector(`#step1Players .config-card[data-players="${numPlayers}"]`);
     if (selectedCard) {
         selectedCard.classList.add('selected');
     }
     
-    // 3. Dim de andere kaarten
+    // C. Dim ALLEEN de andere spelers-kaartjes (niet de speltype-kaartjes!)
     document.querySelectorAll('#step1Players .config-card').forEach(card => {
         if (card !== selectedCard) {
             card.classList.add('dimmed');
-        } else {
-            card.classList.remove('dimmed');
         }
     });
+
+    // D. CRUCIAAL: Zorg dat Stap 2 (Speltype) NOOIT gedimd is als hij verschijnt
+    document.querySelectorAll('#step2GameType .config-card').forEach(card => {
+        card.classList.remove('dimmed', 'selected');
+    });
     
-    // 4. Toon stap 2 (speltype)
+    // E. Toon Stap 2
     const step2 = document.getElementById('step2GameType');
     if (step2) {
         step2.classList.remove('hidden');
-        // Scroll naar stap 2 voor betere UX
-        setTimeout(() => {
-            step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 300);
     }
     
-    // 5. Sla op in state
+    // F. Sla op in state
     state.friendlyMatch = state.friendlyMatch || {};
     state.friendlyMatch.numPlayers = numPlayers;
-    
-    console.log(`✅ Aantal spelers gekozen: ${numPlayers}`);
 };
 
-// ✅ VRIENDSCHAPPELIJKE MATCH: SPELTYPE SELECTIE
+// 2. SPELTYPE KIEZEN
 window.selectGameType = function(gameType) {
-    // 1. Verwijder 'selected' van alle speltype-kaarten
+    // A. Reset alle speltype-kaartjes
     document.querySelectorAll('#step2GameType .config-card').forEach(card => {
-        card.classList.remove('selected');
+        card.classList.remove('selected', 'dimmed');
     });
     
-    // 2. Markeer de gekozen kaart
+    // B. Markeer de gekozen kaart
     const selectedCard = document.querySelector(`#step2GameType .config-card[data-gametype="${gameType}"]`);
     if (selectedCard) {
         selectedCard.classList.add('selected');
     }
     
-    // 3. Dim de andere kaarten
+    // C. Dim de andere speltype-kaartjes
     document.querySelectorAll('#step2GameType .config-card').forEach(card => {
         if (card !== selectedCard) {
             card.classList.add('dimmed');
-        } else {
-            card.classList.remove('dimmed');
         }
     });
     
-    // 4. Sla op in state
+    // D. Sla op in state
     state.friendlyMatch = state.friendlyMatch || {};
     state.friendlyMatch.gameType = gameType;
     
     console.log(`✅ Speltype gekozen: ${gameType}`);
+};
+
+// 3. RESET KNOP (Deze maakt nu écht alles schoon)
+window.resetFriendlyConfig = function() {
+    console.log("🔄 Reset knop geactiveerd!");
     
-    // 5. Hier kunnen we later de volgende stap toevoegen (spelers namen invoeren, target instellen, etc.)
+    // Verwijder ALLE selecties en schaduwen van ALLE kaartjes op deze pagina
+    document.querySelectorAll('#pageFriendly .config-card').forEach(card => {
+        card.classList.remove('selected', 'dimmed');
+    });
+    
+    // Verberg Stap 2 weer
+    const step2 = document.getElementById('step2GameType');
+    if (step2) {
+        step2.classList.add('hidden');
+    }
+    
+    // Wis de data
+    state.friendlyMatch = null;
+    
+    // Scroll naar boven
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// 4. ZORG DAT RESET OOK Werkt als we via "Terug" naar Pagina 1 gaan
+const originalResetPage1State = window.resetPage1State;
+window.resetPage1State = function() {
+    if (originalResetPage1State) originalResetPage1State();
+    window.resetFriendlyConfig(); 
 };
 
 // ✅ RESET: Als we terug gaan naar pagina 1, reset ook de friendly match state
