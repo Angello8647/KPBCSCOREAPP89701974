@@ -1302,3 +1302,146 @@ window.finalizePlayerSelection = function(playerName) {
 window.closePlayerModal = function() {
     document.getElementById('playerSelectModal').classList.add('hidden');
 };
+
+
+/* =========================================================================
+   ✅ SMART DISABLE: TEAM INDDELING LOGICA
+   ========================================================================= */
+
+// Roep deze functie aan nadat de 4e speler is gekozen
+window.showTeamSetup = function() {
+    const players = state.friendlyMatch.players;
+    if (!players || Object.keys(players).length !== 4) return;
+
+    // Initialiseer state voor teams en volgorde als die nog niet bestaat
+    if (!state.friendlyMatch.teams) state.friendlyMatch.teams = {};
+    if (!state.friendlyMatch.orders) state.friendlyMatch.orders = {};
+
+    const container = document.getElementById('teamSetupRows');
+    container.innerHTML = '';
+
+    const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
+
+    // Bouw de 4 rijen
+    for (let i = 1; i <= 4; i++) {
+        const playerName = players[i] || `Speler ${i}`;
+        const row = document.createElement('div');
+        row.className = 'team-setup-row';
+        row.id = `teamRow${i}`;
+        row.innerHTML = `
+            <div class="player-name-label">${icons[i]} ${playerName}</div>
+            <div class="toggle-group">
+                <button class="toggle-btn" id="t1-btn-${i}" onclick="window.assignTeam(${i}, 1)">Team 1</button>
+                <button class="toggle-btn" id="t2-btn-${i}" onclick="window.assignTeam(${i}, 2)">Team 2</button>
+            </div>
+            <div class="toggle-group">
+                <button class="toggle-btn" id="o1-btn-${i}" onclick="window.assignOrder(${i}, 1)">1e</button>
+                <button class="toggle-btn" id="o2-btn-${i}" onclick="window.assignOrder(${i}, 2)">2e</button>
+            </div>
+        `;
+        container.appendChild(row);
+    }
+
+    document.getElementById('step4TeamSetup').classList.remove('hidden');
+    window.updateTeamButtons(); // Pas direct de Smart Disable regels toe
+};
+
+// 1. Wijs team toe
+window.assignTeam = function(playerNum, teamNum) {
+    state.friendlyMatch.teams[playerNum] = teamNum;
+    // Reset volgorde als team verandert, om conflicten te voorkomen
+    state.friendlyMatch.orders[playerNum] = null; 
+    window.updateTeamButtons();
+};
+
+// 2. Wijs volgorde toe
+window.assignOrder = function(playerNum, orderNum) {
+    state.friendlyMatch.orders[playerNum] = orderNum;
+    window.updateTeamButtons();
+};
+
+// 3. DE SMART DISABLE LOGICA (Het brein)
+window.updateTeamButtons = function() {
+    const teams = state.friendlyMatch.teams;
+    const orders = state.friendlyMatch.orders;
+    let allComplete = true;
+
+    // Tel hoeveel spelers er in elk team zitten, en of ze al een "1e" hebben
+    let t1Count = 0, t2Count = 0;
+    let t1HasFirst = false, t2HasFirst = false;
+
+    for (let i = 1; i <= 4; i++) {
+        if (teams[i] === 1) t1Count++;
+        if (teams[i] === 2) t2Count++;
+        if (teams[i] === 1 && orders[i] === 1) t1HasFirst = true;
+        if (teams[i] === 2 && orders[i] === 1) t2HasFirst = true;
+    }
+
+    // Evalueer elke speler
+    for (let i = 1; i <= 4; i++) {
+        const currentTeam = teams[i];
+        const currentOrder = orders[i];
+        const row = document.getElementById(`teamRow${i}`);
+
+        // Check of deze rij volledig is (voor de groene rand en startknop)
+        if (currentTeam && currentOrder) {
+            row.classList.add('complete');
+        } else {
+            row.classList.remove('complete');
+            allComplete = false;
+        }
+
+        // --- TEAM KNOPPEN ---
+        // Team 1 is disabled als het vol is (2) EN deze speler zit er niet in
+        const disableT1 = (t1Count >= 2 && currentTeam !== 1);
+        window.setBtnState(`t1-btn-${i}`, disableT1, currentTeam === 1, 'active-team-1');
+
+        // Team 2 is disabled als het vol is (2) EN deze speler zit er niet in
+        const disableT2 = (t2Count >= 2 && currentTeam !== 2);
+        window.setBtnState(`t2-btn-${i}`, disableT2, currentTeam === 2, 'active-team-2');
+
+        // --- VOLGORDE KNOPPEN ---
+        if (!currentTeam) {
+            // Geen team gekozen? Dan mogen volgorde knoppen niet
+            window.setBtnState(`o1-btn-${i}`, true, false, 'active-order');
+            window.setBtnState(`o2-btn-${i}`, true, false, 'active-order');
+        } else {
+            // Mag deze speler "1e" zijn in hun gekozen team?
+            const teamHasFirst = (currentTeam === 1) ? t1HasFirst : t2HasFirst;
+            const canBeFirst = !teamHasFirst || currentOrder === 1;
+            
+            window.setBtnState(`o1-btn-${i}`, !canBeFirst, currentOrder === 1, 'active-order');
+            // "2e" mag altijd als er een team is gekozen (het is de enige overgebleven optie als 1e bezet is)
+            window.setBtnState(`o2-btn-${i}`, false, currentOrder === 2, 'active-order');
+        }
+    }
+
+    // Activeer de startknop alleen als alles ingevuld is
+    const startBtn = document.getElementById('btnStartFriendlyMatch');
+    if (startBtn) startBtn.disabled = !allComplete;
+};
+
+// Helper functie om knop states te zetten
+window.setBtnState = function(btnId, isDisabled, isActive, activeClass) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+
+    if (isDisabled) {
+        btn.classList.add('disabled');
+        btn.classList.remove(activeClass);
+    } else {
+        btn.classList.remove('disabled');
+        if (isActive) {
+            btn.classList.add(activeClass);
+        } else {
+            btn.classList.remove(activeClass);
+        }
+    }
+};
+
+// 4. Finale start actie (Placeholder voor nu)
+window.startFriendlyMatchFinal = function() {
+    console.log("✅ Match startklaar!", state.friendlyMatch);
+    alert("🎱 Match configuratie compleet! (Hier komt de overstap naar het scorebord)");
+    // Hier voegen we later de logica toe om naar het scorebord te gaan
+};
