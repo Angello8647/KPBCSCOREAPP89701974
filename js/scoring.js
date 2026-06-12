@@ -1486,3 +1486,40 @@ window.startFriendlyMatchFinal = function() {
     alert("🎱 Match configuratie compleet! (Hier komt de overstap naar het scorebord)");
     // Hier voegen we later de logica toe om naar het scorebord te gaan
 };
+
+
+
+/* =========================================================================
+   ✅ ONTBREKENDE MODAL & START FUNCTIES (PLAK DIT HELEMAAL ONDERAAN)
+   ========================================================================= */
+
+// 10. Sluit modal volledig
+window.closePlayerModal = function() {
+    const modal = document.getElementById('playerSelectModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+};
+
+// 11. Reset modal naar begin (voor de "Terug" knop in de modal)
+window.resetPlayerModal = function() {
+    currentSearchString = "";
+    window.updateSearchDisplay();
+    
+    // Ga terug naar Clublid modus
+    window.setMode('club');
+};
+
+// 12. Finale start actie (wordt aangeroepen als alles ingevuld is)
+window.startFriendlyMatchFinal = function() {
+    console.log("✅ Match startklaar!", state.friendlyMatch);
+    
+    // Hier komt later de logica om naar het echte scorebord te gaan.
+    // Voor nu tonen we een bevestiging:
+    alert("🎱 Configuratie compleet!\n\nSpelers: " + 
+          Object.values(state.friendlyMatch.players).join(", ") + 
+          "\n\nKlaar om te starten!");
+          
+    // Voorbeeld van hoe je later naar het scorebord zou gaan:
+    // window.showPage(5); // Ga naar pagina 5 (Scoring)
+};
