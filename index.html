@@ -497,7 +497,33 @@
         </div>
     </div>
 
+    <!-- PAGINA 13: Vriendschappelijke Bal Selectie (Geïsoleerd van Competitie) -->
+    <div id="page13" class="page">
+        <div class="header">
+            <div>
+                <button class="home-btn" onclick="showPage(1)">🏠 Hoofdmenu</button>
+                <!-- ⚠️ PAS '12' AAN NAAR HET JUISTE NUMMER VAN JE VRIENDSCHAPPELIJKE SETUP PAGINA -->
+                <button class="back-btn" onclick="showPage(12)">← Terug naar Setup</button>
+            </div>
+            <h1 id="friendlyBallTitle">Kies Bal Kleuren</h1>
+            <div style="width: 70px;"></div>
+        </div>
+        
+        <div class="ball-selection-container">
+            <div class="ball-selection-title" id="friendlyBallSubtitle">
+                Wie speelt met welke bal?<br><small>(Klik op de optie)</small>
+            </div>
+            
+            <!-- Hier injecteren we dynamisch de spelers of teams -->
+            <div id="friendlyBallOptions" class="ball-options-grid">
+                <!-- Wordt gevuld door JavaScript -->
+            </div>
 
+            <button id="friendlyStartMatchBtn" class="start-match-btn disabled-btn" onclick="window.startFriendlyMatchFromBallSelection()" disabled>
+                🍻 Start Vriendschappelijke Match
+            </button>
+        </div>
+    </div>
 
 
     
