@@ -440,7 +440,7 @@
 
                 <div style="text-align: center; margin-top: 40px;">
                     <button id="btnStartFriendlyMatch" class="modal-btn primary" style="padding: 15px 50px; font-size: 1.3rem;" onclick="window.startFriendlyMatchFinal()" disabled>
-                        🎱 Start Vriendschappelijke Match
+                        🍻 Start Vriendschappelijke Match
                     </button>
                 </div>
             </div>
@@ -519,11 +519,18 @@
                 <!-- Wordt gevuld door JavaScript -->
             </div>
 
-            <button id="friendlyStartMatchBtn" class="start-match-btn disabled-btn" onclick="window.startFriendlyMatchFromBallSelection()" disabled>
-                🍻 Start Vriendschappelijke Match
-            </button>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                <!-- ✅ NIEUW: Reset knop -->
+                <button class="modal-btn secondary" style="padding: 12px 30px; font-size: 1.1rem;" onclick="window.resetFriendlyBallSelection()">
+                    🔄 Reset Kleuren
+                </button>
+                
+                <!-- Bestaande start knop -->
+                <button id="friendlyStartMatchBtn" class="start-match-btn disabled-btn" onclick="window.startFriendlyMatchFromBallSelection()" disabled>
+                    🍻 Start Vriendschappelijke Match
+                </button>
+            </div>
         </div>
-    </div>
 
 
     
