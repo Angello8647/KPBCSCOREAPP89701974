@@ -2720,6 +2720,24 @@
 }
 .modal-close-btn:hover { color: #ffffff !important; }
 
+
+/* ✅ MODUS INDICATIE: Duidelijke gekleurde randen */
+.mode-active-club {
+    border: 3px solid #2ecc71 !important;
+    background: rgba(46, 204, 113, 0.2) !important;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4) !important;
+    transform: scale(1.05);
+}
+
+.mode-active-guest {
+    border: 3px solid #3498db !important;
+    background: rgba(52, 152, 219, 0.2) !important;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.4) !important;
+    transform: scale(1.05);
+}
+
+
+
 /* Display van gekozen spelers op hoofdpagina */
 .chosen-players-display {
     display: flex !important;
