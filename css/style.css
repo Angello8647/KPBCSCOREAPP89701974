@@ -2486,6 +2486,11 @@
     backdrop-filter: blur(5px) !important;
 }
 
+/* ✅ ALGEMENE HIDDEN CLASS: Verbergt elk element */
+.hidden {
+    display: none !important;
+}
+
 .modal-overlay.hidden {
     display: none !important;
 }
