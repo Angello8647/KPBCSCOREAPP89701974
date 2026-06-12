@@ -1279,28 +1279,47 @@ window.confirmTypedName = function() {
 window.finalizePlayerSelection = function(playerName) {
     console.log(`✅ Speler ${currentPlayerSlot} gekozen: ${playerName}`);
     
+    // Sla op in state
     state.friendlyMatch = state.friendlyMatch || {};
     if (!state.friendlyMatch.players) state.friendlyMatch.players = {};
     state.friendlyMatch.players[currentPlayerSlot] = playerName;
     
+    // Update de display met het juiste icoontje
     const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
     const displayEl = document.getElementById(`displayPlayer${currentPlayerSlot}`);
     if (displayEl) displayEl.textContent = `${icons[currentPlayerSlot]} ${playerName}`;
     
+    // Toon het display blok
     document.getElementById('step3PlayersDisplay').classList.remove('hidden');
+    
+    // Sluit de modal
     window.closePlayerModal();
     
+    // Bepaal of we door moeten naar de volgende speler
     const totalPlayers = state.friendlyMatch.numPlayers || 2;
+    
     if (currentPlayerSlot < totalPlayers) {
-        setTimeout(() => window.openPlayerSelection(currentPlayerSlot + 1), 600);
+        // ✅ Nog niet alle spelers gekozen? Open de volgende
+        setTimeout(() => {
+            console.log(`🔄 Open nu modal voor Speler ${currentPlayerSlot + 1}`);
+            window.openPlayerSelection(currentPlayerSlot + 1);
+        }, 600);
+        
     } else {
+        // ✅ Alle spelers zijn gekozen!
         console.log(`🎉 Alle ${totalPlayers} spelers zijn gekozen!`);
+        
+        // Als er 4 spelers zijn, toon nu de team indeling
+        if (totalPlayers === 4) {
+            setTimeout(() => {
+                window.showTeamSetup();
+                document.getElementById('step4TeamSetup').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 500);
+        }
     }
-};
-
-// 10. Sluit modal
-window.closePlayerModal = function() {
-    document.getElementById('playerSelectModal').classList.add('hidden');
 };
 
 
