@@ -1915,3 +1915,49 @@
     cursor: pointer !important;
     filter: invert(0.5) !important; /* Maakt het standaard icoontje iets donderder en duidelijker */
 }
+
+/* ==========================================
+   ✅ TWEEDE KADER: VRIJE WEDSTRIJD & INFO
+   ========================================== */
+
+/* Zorg voor ruimte tussen kader 1 en kader 2 */
+.friendly-container {
+    margin-top: 40px !important;
+    padding-top: 30px !important;
+    border-top: 2px dashed rgba(255, 255, 255, 0.15) !important; /* Subtiele stippellijn als scheiding */
+}
+
+/* De blauwe knop voor vrije match */
+.friendly-btn {
+    background: #3498db !important; /* Helder blauw */
+    width: 100% !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+    display: block !important;
+    transition: all 0.2s ease !important;
+}
+
+.friendly-btn:hover {
+    background: #2980b9 !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4) !important;
+}
+
+/* De rode Terug-knop in de header */
+.back-btn {
+    background: #e74c3c !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    margin-right: 20px !important;
+}
+
+.back-btn:hover {
+    background: #c0392b !important;
+    transform: scale(1.05) !important;
+}
