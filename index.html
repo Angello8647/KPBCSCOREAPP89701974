@@ -449,33 +449,33 @@
                 <button class="modal-btn secondary" onclick="window.selectGuest()">🎒 Gast</button>
             </div>
 
-            <!-- Keuze 2: Zoekinterface (Verborgen tot 'Clublid' gekozen is) -->
+            <!-- Keuze 2: Zoekinterface (Wordt gebruikt voor ZOWEL Clublid als Gast) -->
             <div id="modalSearchInterface" class="hidden">
                 
-                <!-- ✅ NIEUW: Duidelijk invoervak dat laat zien wat je typt -->
+                <!-- Invoervak -->
                 <div class="search-input-display">
-                    <span class="search-label">Zoeken:</span>
+                    <span class="search-label">Naam:</span>
                     <span id="currentSearchText" class="search-text"></span>
                     <span class="cursor">|</span>
                 </div>
 
                 <div class="search-layout">
-                    <!-- Links: A-Z Grid -->
-                    <div class="alphabet-grid" id="alphabetGrid">
-                        <!-- Wordt gevuld door JavaScript -->
-                    </div>
+                    <!-- Links: A-Z Grid + Spatie (Wordt dynamisch gevuld) -->
+                    <div class="alphabet-grid" id="alphabetGrid"></div>
                     
-                    <!-- Rechts: Dynamische Lijst -->
+                    <!-- Rechts: Dynamische Lijst (of hint voor gasten) -->
                     <div class="player-list-container">
-                        <div class="player-list" id="playerList">
-                            <!-- Wordt gevuld door JavaScript -->
-                        </div>
+                        <div class="player-list" id="playerList"></div>
                     </div>
                 </div>
                 
                 <div class="modal-actions">
                     <button class="modal-btn secondary" onclick="window.clearSearchLetter()">⌫ Wissen</button>
-                    <button class="modal-btn danger" onclick="window.resetPlayerModal()">⬅️ Terug naar keuze</button>
+                    
+                    <!-- ✅ NIEUW: Alleen zichtbaar als we een Gast aan het invoeren zijn -->
+                    <button id="btnConfirmGuest" class="modal-btn primary hidden" onclick="window.confirmTypedName()">✅ Gebruik deze naam</button>
+                    
+                    <button class="modal-btn danger" onclick="window.resetPlayerModal()">⬅️ Terug naar keuze</button
                 </div>
             </div>
 
