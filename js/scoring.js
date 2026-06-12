@@ -981,3 +981,90 @@ window.selectMode = function(mode) {
         }
     }
 };
+
+
+// ✅ VRIENDSCHAPPELIJKE MATCH: SPELERS SELECTIE
+window.selectPlayers = function(numPlayers) {
+    // 1. Verwijder 'selected' van alle spelers-kaarten
+    document.querySelectorAll('#step1Players .config-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // 2. Markeer de gekozen kaart
+    const selectedCard = document.querySelector(`#step1Players .config-card[data-players="${numPlayers}"]`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+    }
+    
+    // 3. Dim de andere kaarten
+    document.querySelectorAll('#step1Players .config-card').forEach(card => {
+        if (card !== selectedCard) {
+            card.classList.add('dimmed');
+        } else {
+            card.classList.remove('dimmed');
+        }
+    });
+    
+    // 4. Toon stap 2 (speltype)
+    const step2 = document.getElementById('step2GameType');
+    if (step2) {
+        step2.classList.remove('hidden');
+        // Scroll naar stap 2 voor betere UX
+        setTimeout(() => {
+            step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    }
+    
+    // 5. Sla op in state
+    state.friendlyMatch = state.friendlyMatch || {};
+    state.friendlyMatch.numPlayers = numPlayers;
+    
+    console.log(`✅ Aantal spelers gekozen: ${numPlayers}`);
+};
+
+// ✅ VRIENDSCHAPPELIJKE MATCH: SPELTYPE SELECTIE
+window.selectGameType = function(gameType) {
+    // 1. Verwijder 'selected' van alle speltype-kaarten
+    document.querySelectorAll('#step2GameType .config-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // 2. Markeer de gekozen kaart
+    const selectedCard = document.querySelector(`#step2GameType .config-card[data-gametype="${gameType}"]`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+    }
+    
+    // 3. Dim de andere kaarten
+    document.querySelectorAll('#step2GameType .config-card').forEach(card => {
+        if (card !== selectedCard) {
+            card.classList.add('dimmed');
+        } else {
+            card.classList.remove('dimmed');
+        }
+    });
+    
+    // 4. Sla op in state
+    state.friendlyMatch = state.friendlyMatch || {};
+    state.friendlyMatch.gameType = gameType;
+    
+    console.log(`✅ Speltype gekozen: ${gameType}`);
+    
+    // 5. Hier kunnen we later de volgende stap toevoegen (spelers namen invoeren, target instellen, etc.)
+};
+
+// ✅ RESET: Als we terug gaan naar pagina 1, reset ook de friendly match state
+const originalResetPage1State = window.resetPage1State;
+window.resetPage1State = function() {
+    if (originalResetPage1State) originalResetPage1State();
+    
+    // Reset friendly match configuratie
+    document.querySelectorAll('#pageFriendly .config-card').forEach(card => {
+        card.classList.remove('selected', 'dimmed');
+    });
+    
+    const step2 = document.getElementById('step2GameType');
+    if (step2) step2.classList.add('hidden');
+    
+    state.friendlyMatch = null;
+};
