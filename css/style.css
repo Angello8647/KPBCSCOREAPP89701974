@@ -2035,3 +2035,95 @@
     transform: translateY(-3px) !important;
     box-shadow: 0 0 25px rgba(41, 128, 185, 0.7) !important; /* Matchende donkerblauwe gloed */
 }
+
+
+
+/* ==========================================
+   ✅ VRIENDSCHAPPELIJKE MATCH: CONFIGURATIE BLOKJES
+   ========================================== */
+
+.friendly-config-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.config-section {
+    margin-bottom: 60px;
+    transition: all 0.4s ease;
+}
+
+.config-section.hidden {
+    display: none;
+}
+
+.config-title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 900;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.config-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+/* De individuele blokjes */
+.config-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 4px solid transparent;
+    border-radius: 15px;
+    padding: 30px 40px;
+    min-width: 200px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover effect: oplichtende rand */
+.config-card:hover {
+    border-color: #2980b9;
+    background: rgba(41, 128, 185, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.4);
+}
+
+/* Gekozen state: dikke rand en glow */
+.config-card.selected {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.15);
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.6);
+    transform: scale(1.05);
+}
+
+/* Schaduw voor niet-gekozen blokjes bij hover op een ander */
+.config-card.dimmed {
+    opacity: 0.3;
+    filter: grayscale(0.8);
+    pointer-events: none;
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.card-label {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.card-sublabel {
+    font-size: 1rem;
+    color: #bdc3c7;
+    font-weight: 500;
+}
