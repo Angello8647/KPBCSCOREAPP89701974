@@ -1874,3 +1874,44 @@
     color: #1abc9c !important; /* ✅ Cyaan/Turkoois voor Driebanden - geen paars meer! */
     text-shadow: none !important;
 }
+
+/* ==========================================
+   ✅ PAGINA 1: DATUM SELECTIE GROTER MAKEN
+   ========================================== */
+
+/* 1. De titel "Selecteer Datum" groter en duidelijker */
+#page1 .selection-title {
+    font-size: clamp(2rem, 5vw, 3rem) !important; /* Schaalt mooi mee met het scherm */
+    font-weight: 900 !important;
+    margin-bottom: 25px !important;
+    color: #ffffff !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    text-align: center !important;
+}
+
+/* 2. Het datum invoerveld zelf flink vergroten */
+#page1 #dateSelect,
+#page1 .date-input {
+    font-size: clamp(1.5rem, 4vw, 2.5rem) !important; /* Grote, leesbare cijfers */
+    font-weight: 700 !important;
+    padding: 15px 25px !important; /* Groter klikbaar oppervlak voor de muis/presenter */
+    text-align: center !important;
+    border-radius: 12px !important;
+    border: 3px solid #34495e !important; /* Duidelijke, stevige rand */
+    background-color: #ecf0f1 !important; /* Lichte achtergrond voor maximaal contrast */
+    color: #2c3e50 !important; /* Donkere tekst voor optimale leesbaarheid */
+    width: 100% !important;
+    max-width: 400px !important; /* Niet te breed, maar groot genoeg */
+    margin: 0 auto 30px auto !important; /* Mooi gecentreerd met ruimte eronder */
+    display: block !important;
+    cursor: pointer !important;
+}
+
+/* 3. Het kalender-icoontje rechts in het vak ook groter maken (voor Chrome/Raspberry Pi) */
+#page1 #dateSelect::-webkit-calendar-picker-indicator {
+    width: 40px !important;
+    height: 40px !important;
+    cursor: pointer !important;
+    filter: invert(0.5) !important; /* Maakt het standaard icoontje iets donderder en duidelijker */
+}
