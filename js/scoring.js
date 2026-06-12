@@ -1183,21 +1183,30 @@ window.clearSearchLetter = function() {
     window.renderPlayerList();
 };
 
-// 7. Render de gefilterde spelerslijst
+// 7. Render de gefilterde spelerslijst (met ECHTE data)
 window.renderPlayerList = function() {
     const listContainer = document.getElementById('playerList');
     listContainer.innerHTML = '';
     
+    // ✅ Haal de echte spelerslijst op
+    const allPlayers = getPlayerNames();
+    
+    if (allPlayers.length === 0) {
+        listContainer.innerHTML = '<div class="player-list-item" style="color: #e74c3c; text-align: center;">⚠️ Geen spelers geladen<br><small>Sync eerst de spelers via Beheer Matchen</small></div>';
+        return;
+    }
+    
     // Filter spelers op basis van huidige zoekstring
-    const filtered = mockPlayers.filter(player => 
+    const filtered = allPlayers.filter(player => 
         player.toUpperCase().startsWith(currentSearchString)
     );
     
     if (filtered.length === 0) {
-        listContainer.innerHTML = '<div class="player-list-item" style="color: #95a5a6; text-align: center;">Geen resultaten</div>';
+        listContainer.innerHTML = '<div class="player-list-item" style="color: #95a5a6; text-align: center;">Geen resultaten voor "' + currentSearchString + '"</div>';
         return;
     }
     
+    // Toon gefilterde lijst
     filtered.forEach(player => {
         const item = document.createElement('div');
         item.className = 'player-list-item';
