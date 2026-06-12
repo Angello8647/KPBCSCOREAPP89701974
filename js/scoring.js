@@ -1021,12 +1021,18 @@ window.buildPlayersDisplay = function(numPlayers) {
     const container = document.getElementById('chosenPlayersContainer');
     if (!container) return;
     
-    const icons = ["🧙‍♂️", "👷‍♂️", "👮‍♂️", "👨‍🚀"]; // De emoji's die je gebruikt
-    let html = '';
+    // ✅ Expliciete toewijzing van icoon aan speler-nummer
+    const icons = {
+        1: "🧙‍♂️",
+        2: "👷‍♂️",
+        3: "👮‍♂️",
+        4: "👨‍🚀"
+    };
     
+    let html = '';
     for (let i = 1; i <= numPlayers; i++) {
         html += `<div class="chosen-player" id="displayPlayer${i}">
-                    ${icons[i-1]} Speler ${i}: Nog niet gekozen
+                    ${icons[i]} Speler ${i}: Nog niet gekozen
                  </div>`;
     }
     
@@ -1239,7 +1245,7 @@ window.renderPlayerList = function() {
     });
 };
 
-// 8. Finaliseer keuze en sluit modal (AANGEPAST)
+// 8. Finaliseer keuze en sluit modal
 window.finalizePlayerSelection = function(playerName) {
     console.log(`✅ Speler ${currentPlayerSlot} gekozen: ${playerName}`);
     
@@ -1248,11 +1254,12 @@ window.finalizePlayerSelection = function(playerName) {
     if (!state.friendlyMatch.players) state.friendlyMatch.players = {};
     state.friendlyMatch.players[currentPlayerSlot] = playerName;
     
-    // Update de display
-    const icons = ["🧙‍♂️", "👷‍♂️", "👮‍♂️", "👨‍🚀"];
+    // ✅ Gebruik dezelfde expliciete toewijzing
+    const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
     const displayEl = document.getElementById(`displayPlayer${currentPlayerSlot}`);
+    
     if (displayEl) {
-        displayEl.textContent = `${icons[currentPlayerSlot-1]} ${playerName}`;
+        displayEl.textContent = `${icons[currentPlayerSlot]} ${playerName}`;
     }
     
     // Toon het display blok
@@ -1261,7 +1268,7 @@ window.finalizePlayerSelection = function(playerName) {
     // Sluit de modal
     window.closePlayerModal();
     
-    // ✅ NIEUW: Ga door naar volgende speler als we nog niet klaar zijn
+    // Ga door naar volgende speler als we nog niet klaar zijn
     const totalPlayers = state.friendlyMatch.numPlayers || 2;
     if (currentPlayerSlot < totalPlayers) {
         setTimeout(() => {
@@ -1270,7 +1277,6 @@ window.finalizePlayerSelection = function(playerName) {
         }, 600);
     } else {
         console.log(`🎉 Alle ${totalPlayers} spelers zijn gekozen!`);
-        // Hier kunnen we later de volgende stap toevoegen (target instellen, etc.)
     }
 };
 
