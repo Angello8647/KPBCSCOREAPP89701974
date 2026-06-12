@@ -1679,7 +1679,7 @@ window.assignFriendlyColor = function(playerNum, color, element) {
     console.log(`✅ Speler ${playerNum} heeft nu de ${color} bal`);
 };
 
-// 4. Update UI voor 3 spelers (Maakt de visuele staat 100% duidelijk)
+// 4. Update UI voor 3 spelers (Nu met de juiste class-namen)
 window.updateFriendly3PlayerUI = function() {
     const assignments = state.friendlyMatch.colorAssignments || {};
     const isComplete = Object.keys(assignments).length === 3;
@@ -1689,16 +1689,19 @@ window.updateFriendly3PlayerUI = function() {
         dot.classList.remove('active', 'disabled');
     });
 
-    // 2. Markeer gekozen ballen als ACTIVE (gloeiend & groot)
+    // 2. Markeer gekozen ballen als ACTIVE
     Object.entries(assignments).forEach(([pNum, color]) => {
         const row = document.querySelector(`.player-color-row[data-player="${pNum}"]`);
         if (row) {
+            // ✅ FIX: Zoekt nu naar .color-dot.white (wat overeenkomt met de HTML!)
             const activeDot = row.querySelector(`.color-dot.${color}`);
-            if (activeDot) activeDot.classList.add('active');
+            if (activeDot) {
+                activeDot.classList.add('active');
+            }
         }
     });
 
-    // 3. ✅ LOCK-OUT: Maak bezette kleuren grijs/onzichtbaar voor de andere spelers
+    // 3. ✅ LOCK-OUT: Maak bezette kleuren grijs voor de andere spelers
     Object.values(assignments).forEach(takenColor => {
         document.querySelectorAll(`.color-dot.${takenColor}`).forEach(dot => {
             if (!dot.classList.contains('active')) {
@@ -1717,7 +1720,6 @@ window.updateFriendly3PlayerUI = function() {
         startBtn.classList.add('disabled-btn');
     }
 };
-
 // 5. Finale start van de vriendschappelijke match
 window.startFriendlyMatchFromBallSelection = function() {
     console.log("🚀 VRIENDSCHAPPELIJKE MATCH GESTART!", state.friendlyMatch);
