@@ -1239,33 +1239,38 @@ window.renderPlayerList = function() {
     });
 };
 
-// 8. Finaliseer keuze en sluit modal
+// 8. Finaliseer keuze en sluit modal (AANGEPAST)
 window.finalizePlayerSelection = function(playerName) {
     console.log(`✅ Speler ${currentPlayerSlot} gekozen: ${playerName}`);
     
     // Sla op in state
     state.friendlyMatch = state.friendlyMatch || {};
-    if (currentPlayerSlot === 1) {
-        state.friendlyMatch.player1 = playerName;
-        document.getElementById('displayPlayer1').textContent = `🧙‍♂️ ${playerName}`;
-    } else {
-        state.friendlyMatch.player2 = playerName;
-        document.getElementById('displayPlayer2').textContent = `👷‍♂️ ${playerName}`;
+    if (!state.friendlyMatch.players) state.friendlyMatch.players = {};
+    state.friendlyMatch.players[currentPlayerSlot] = playerName;
+    
+    // Update de display
+    const icons = ["🧙‍♂️", "👷‍♂️", "👮‍♂️", "👨‍🚀"];
+    const displayEl = document.getElementById(`displayPlayer${currentPlayerSlot}`);
+    if (displayEl) {
+        displayEl.textContent = `${icons[currentPlayerSlot-1]} ${playerName}`;
     }
     
-    // Toon het display blok op de hoofdpagina
+    // Toon het display blok
     document.getElementById('step3PlayersDisplay').classList.remove('hidden');
     
     // Sluit de modal
     window.closePlayerModal();
     
-    // ✅ FIX: Als speler 1 net gekozen is, open direct de modal voor speler 2
-    if (currentPlayerSlot === 1 && !state.friendlyMatch.player2) {
-        // Wacht iets langer zodat de modal volledig gesloten is
+    // ✅ NIEUW: Ga door naar volgende speler als we nog niet klaar zijn
+    const totalPlayers = state.friendlyMatch.numPlayers || 2;
+    if (currentPlayerSlot < totalPlayers) {
         setTimeout(() => {
-            console.log("🔄 Open nu modal voor Speler 2");
-            window.openPlayerSelection(2);
-        }, 600); // ✅ Langere delay (600ms i.p.v. 300ms)
+            console.log(`🔄 Open nu modal voor Speler ${currentPlayerSlot + 1}`);
+            window.openPlayerSelection(currentPlayerSlot + 1);
+        }, 600);
+    } else {
+        console.log(`🎉 Alle ${totalPlayers} spelers zijn gekozen!`);
+        // Hier kunnen we later de volgende stap toevoegen (target instellen, etc.)
     }
 };
 
