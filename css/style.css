@@ -1961,3 +1961,42 @@
     background: #c0392b !important;
     transform: scale(1.05) !important;
 }
+
+
+/* ==========================================
+   ✅ PAGINA 1 KNOPPEN: DUIDELIJKE RAND BIJ 'GEKOZEN' (FOCUS/HOVER)
+   ========================================== */
+
+/* 1. Basis: reserveer ruimte voor een 3px rand, zodat de knop niet 'verspringt' */
+#page1 .next-btn,
+#page1 .friendly-btn {
+    border: 3px solid transparent !important; 
+    transition: all 0.2s ease !important;
+    outline: none !important; /* Verwijder de lelijke standaard browser blauwe lijn */
+}
+
+/* 2. De 'GEKOZEN' staat: Wanneer de knop de focus heeft (presenter Tab), 
+   erover gehovert wordt (muis), of ingedrukt wordt */
+#page1 .next-btn:hover,
+#page1 .next-btn:focus,
+#page1 .next-btn:active,
+#page1 .friendly-btn:hover,
+#page1 .friendly-btn:focus,
+#page1 .friendly-btn:active {
+    border-color: #ffffff !important; /* Duidelijke, dikke witte rand */
+    transform: translateY(-3px) !important; /* Knop lift iets op voor 3D-effect */
+}
+
+/* 3. Specifieke kleur-gloed voor de GROENE knop (Officiële Matchen) */
+#page1 .next-btn:hover,
+#page1 .next-btn:focus,
+#page1 .next-btn:active {
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.6) !important; /* Groene gloed */
+}
+
+/* 4. Specifieke kleur-gloed voor de BLAUWE knop (Vriendschappelijke Match) */
+#page1 .friendly-btn:hover,
+#page1 .friendly-btn:focus,
+#page1 .friendly-btn:active {
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.6) !important; /* Blauwe gloed */
+}
