@@ -1177,24 +1177,19 @@ window.openPlayerSelection = function(playerNum) {
     }
 };
 
-// 2. Schakel tussen Modus (De kern van de nieuwe flow)
+// 2. Schakel tussen Modus
 window.setMode = function(mode) {
-    currentSearchString = ""; // Wis bij wisselen van modus
+    currentSearchString = "";
     window.updateSearchDisplay();
     
     const btnClub = document.getElementById('btnModeClub');
     const btnGuest = document.getElementById('btnModeGuest');
-    const btnConfirm = document.getElementById('btnConfirmGuest');
     
     if (mode === 'club') {
         isGuestMode = false;
         
-        // Update knop stijlen
         btnClub.classList.add('mode-active-club');
         btnGuest.classList.remove('mode-active-guest');
-        
-        // Verberg gast-bevestiging
-        btnConfirm.classList.add('hidden');
         
         // Toon spelerslijst
         window.renderPlayerList();
@@ -1202,12 +1197,8 @@ window.setMode = function(mode) {
     } else if (mode === 'guest') {
         isGuestMode = true;
         
-        // Update knop stijlen
         btnGuest.classList.add('mode-active-guest');
         btnClub.classList.remove('mode-active-club');
-        
-        // Toon gast-bevestiging
-        btnConfirm.classList.remove('hidden');
         
         // Toon hint in plaats van spelerslijst
         document.getElementById('playerList').innerHTML = 
