@@ -2466,3 +2466,169 @@
     transform: scale(1.05) !important;
     box-shadow: 0 8px 20px rgba(0,0,0,0.5) !important;
 }
+
+
+/* =========================================================================
+   ✅ PLAYER SELECTIE MODAL (POPUP)
+   ========================================================================= */
+
+.modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.85) !important; /* Donkere, afleidingsvrije achtergrond */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 9999 !important; /* Altijd bovenop alles */
+    backdrop-filter: blur(5px) !important;
+}
+
+.modal-overlay.hidden {
+    display: none !important;
+}
+
+.modal-content {
+    background: #2c3e50 !important;
+    border: 2px solid #34495e !important;
+    border-radius: 20px !important;
+    padding: 40px !important;
+    width: 90vw !important;
+    max-width: 1000px !important;
+    max-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7) !important;
+}
+
+.modal-title {
+    text-align: center !important;
+    font-size: 2.5rem !important;
+    color: #ffffff !important;
+    margin-bottom: 30px !important;
+}
+
+/* Grote keuze knoppen */
+.modal-choice-buttons {
+    display: flex !important;
+    gap: 30px !important;
+    justify-content: center !important;
+    margin-bottom: 20px !important;
+}
+
+.modal-btn {
+    padding: 20px 40px !important;
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    border-radius: 12px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    color: #ffffff !important;
+}
+
+.modal-btn.primary { background: #2ecc71 !important; } /* Groen voor Clublid */
+.modal-btn.primary:hover { background: #27ae60 !important; transform: scale(1.05); }
+
+.modal-btn.secondary { background: #3498db !important; } /* Blauw voor Gast/Wissen */
+.modal-btn.secondary:hover { background: #2980b9 !important; transform: scale(1.05); }
+
+.modal-btn.danger { background: #e74c3c !important; } /* Rood voor Terug */
+.modal-btn.danger:hover { background: #c0392b !important; }
+
+/* Zoekinterface Layout */
+.search-layout {
+    display: flex !important;
+    gap: 30px !important;
+    flex: 1 !important;
+    overflow: hidden !important; /* Voorkomt dat het uit de modal breekt */
+}
+
+/* A-Z Grid */
+.alphabet-grid {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important; /* 6 kolommen */
+    gap: 10px !important;
+    flex: 1 !important;
+}
+
+.alpha-btn {
+    background: rgba(255,255,255,0.1) !important;
+    border: 2px solid rgba(255,255,255,0.2) !important;
+    color: #ffffff !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.1s ease !important;
+    aspect-ratio: 1 !important; /* Maakt ze vierkant */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.alpha-btn:hover, .alpha-btn:active {
+    background: #2ecc71 !important;
+    border-color: #2ecc71 !important;
+    transform: scale(1.1);
+}
+
+/* Dynamische Lijst */
+.player-list-container {
+    flex: 1.5 !important;
+    background: rgba(0,0,0,0.3) !important;
+    border-radius: 12px !important;
+    overflow-y: auto !important; /* Scrollbaar als de lijst lang is */
+    border: 2px solid rgba(255,255,255,0.1) !important;
+}
+
+.player-list-item {
+    padding: 15px 20px !important;
+    font-size: 1.3rem !important;
+    color: #ecf0f1 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    cursor: pointer !important;
+    transition: background 0.2s ease !important;
+}
+
+.player-list-item:hover {
+    background: rgba(46, 204, 113, 0.3) !important; /* Groene highlight bij hover */
+    font-weight: 700 !important;
+}
+
+.modal-actions {
+    display: flex !important;
+    gap: 15px !important;
+    justify-content: center !important;
+    margin-top: 20px !important;
+}
+
+.modal-close-btn {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #95a5a6 !important;
+    font-size: 2rem !important;
+    cursor: pointer !important;
+}
+.modal-close-btn:hover { color: #ffffff !important; }
+
+/* Display van gekozen spelers op hoofdpagina */
+.chosen-players-display {
+    display: flex !important;
+    gap: 30px !important;
+    justify-content: center !important;
+}
+.chosen-player {
+    background: rgba(46, 204, 113, 0.1) !important;
+    border: 2px solid #2ecc71 !important;
+    padding: 20px 40px !important;
+    border-radius: 12px !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+}
