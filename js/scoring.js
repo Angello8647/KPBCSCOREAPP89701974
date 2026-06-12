@@ -1127,6 +1127,7 @@ window.showPlayerSearch = function() {
     
     window.renderAlphabetGrid();
     window.renderPlayerList();
+    window.updateSearchDisplay();
 };
 
 // 4. Render A-Z Grid
