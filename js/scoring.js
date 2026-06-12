@@ -1260,7 +1260,7 @@ window.clearSearchLetter = function() {
     if (!isGuestMode) window.renderPlayerList();
 };
 
-// 7. Render de gefilterde spelerslijst
+// 7. Render de gefilterde spelerslijst (MET DUBBELE-CONTROLE)
 window.renderPlayerList = function() {
     const listContainer = document.getElementById('playerList');
     listContainer.innerHTML = '';
@@ -1271,10 +1271,26 @@ window.renderPlayerList = function() {
         return;
     }
     
-    const filtered = allPlayers.filter(player => player.toUpperCase().startsWith(currentSearchString));
+    // ✅ NIEUW: Haal al gekozen spelers op
+    const alreadyChosen = [];
+    if (state.friendlyMatch && state.friendlyMatch.players) {
+        Object.values(state.friendlyMatch.players).forEach(name => {
+            if (name) alreadyChosen.push(name);
+        });
+    }
+    
+    const filtered = allPlayers.filter(player => {
+        // Filter op zoekstring EN niet al gekozen
+        const matchesSearch = player.toUpperCase().startsWith(currentSearchString);
+        const notChosenYet = !alreadyChosen.includes(player);
+        return matchesSearch && notChosenYet;
+    });
     
     if (filtered.length === 0) {
-        listContainer.innerHTML = '<div class="player-list-item" style="color: #95a5a6; text-align: center;">Geen resultaten voor "' + currentSearchString + '"</div>';
+        const msg = alreadyChosen.length > 0 
+            ? 'Geen beschikbare spelers voor "' + currentSearchString + '"<br><small>(Sommige zijn al gekozen)</small>'
+            : 'Geen resultaten voor "' + currentSearchString + '"';
+        listContainer.innerHTML = `<div class="player-list-item" style="color: #95a5a6; text-align: center;">${msg}</div>`;
         return;
     }
     
@@ -1283,7 +1299,14 @@ window.renderPlayerList = function() {
         item.className = 'player-list-item';
         const regex = new RegExp(`^(${currentSearchString})`, 'i');
         item.innerHTML = player.replace(regex, '<span style="color: #2ecc71; font-weight: 900;">$1</span>');
-        item.onclick = () => window.finalizePlayerSelection(player);
+        
+        // ✅ NIEUW: Klikken zet naam in zoekbalk, sluit NIET direct
+        item.onclick = () => {
+            currentSearchString = player;
+            window.updateSearchDisplay();
+            console.log(`📝 Naam in zoekbalk gezet: ${player}`);
+        };
+        
         listContainer.appendChild(item);
     });
 };
