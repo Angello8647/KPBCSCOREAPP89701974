@@ -2103,11 +2103,12 @@
     transform: scale(1.05);
 }
 
-/* Schaduw voor niet-gekozen blokjes bij hover op een ander */
+/* Schaduw voor niet-gekozen blokjes */
 .config-card.dimmed {
-    opacity: 0.3;
-    filter: grayscale(0.8);
-    pointer-events: none;
+    opacity: 0.3 !important;
+    filter: grayscale(0.8) !important;
+    pointer-events: none !important; /* Zorgt dat je er niet per ongeluk op klikt */
+    transition: all 0.3s ease !important;
 }
 
 .card-icon {
