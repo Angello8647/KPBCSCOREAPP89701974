@@ -914,3 +914,18 @@ function renderMatchSummary() {
     document.getElementById('summaryPlayer2').innerHTML = html2;
 }
 
+// ✅ NAVIGATIE NAAR VRIENDSCHAPPELIJKE MATCH PAGINA
+window.startFriendlyMatch = function() {
+    // 1. Verberg alle pagina's
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // 2. Toon de vriendschappelijke configuratiepagina
+    const friendlyPage = document.getElementById('pageFriendly');
+    if (friendlyPage) {
+        friendlyPage.classList.add('active');
+    }
+    
+    console.log("🍻 Navigatie naar Vriendschappelijke Match configuratie");
+};
