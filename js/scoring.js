@@ -1079,25 +1079,38 @@ window.selectGameType = function(gameType) {
     }, 200);
 };
 
-// 3. RESET KNOP (Deze maakt nu écht alles schoon)
+// 3. RESET KNOP LOGICA (100% Waterdicht)
 window.resetFriendlyConfig = function() {
     console.log("🔄 Reset knop geactiveerd!");
     
-    // Verwijder ALLE selecties en schaduwen van ALLE kaartjes op deze pagina
+    // 1. Verwijder ALLE selecties en schaduwen van ALLE kaartjes op de pagina
     document.querySelectorAll('#pageFriendly .config-card').forEach(card => {
         card.classList.remove('selected', 'dimmed');
     });
     
-    // Verberg Stap 2 weer
+    // 2. Verberg Stap 2, Stap 3 en Stap 4 expliciet
     const step2 = document.getElementById('step2GameType');
-    if (step2) {
-        step2.classList.add('hidden');
+    if (step2) step2.classList.add('hidden');
+    
+    const step3 = document.getElementById('step3PlayersDisplay');
+    if (step3) step3.classList.add('hidden');
+    
+    const step4 = document.getElementById('step4TeamSetup');
+    if (step4) step4.classList.add('hidden');
+    
+    // 3. Zorg dat Stap 1 weer ZICHTBAAR en AANKLIKBAR wordt
+    const step1 = document.getElementById('step1Players');
+    if (step1) {
+        step1.classList.remove('hidden');
+        step1.style.display = ''; // ✅ Verwijder de geforceerde inline 'display: none'
+        console.log("✅ Stap 1 is weer zichtbaar en aanklikbaar gemaakt");
     }
     
-    // Wis de data
+    // 4. Wis de data volledig uit de state
     state.friendlyMatch = null;
+    console.log("🗑️ Friendly match state gewist");
     
-    // Scroll naar boven
+    // 5. Scroll netjes naar boven voor de beste gebruikerservaring
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
