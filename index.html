@@ -20,11 +20,28 @@
             </div>
         </div>
     
+        <!-- KADER 1: Officiële Matchen -->
         <div class="selection-container">
             <div class="selection-title">Selecteer Datum</div>
             <input type="date" id="dateSelect" class="date-input">
-            <!-- VERANDERD: Directe sync knop -->
-            <button class="next-btn" onclick="syncAndGoToMatches()" style="background: #2ecc71;">🔄 Matchen Ophalen</button>
+            <button class="next-btn" onclick="syncAndGoToMatches()" style="background: #2ecc71;">
+                🔄 Officiële Matchen Ophalen
+            </button>
+        </div>
+    
+        <!-- KADER 2: Vrije Wedstrijd & Info (NIEUW) -->
+        <div class="selection-container friendly-container">
+            <div class="selection-title">Vrije Wedstrijd & Info</div>
+            
+            <!-- Knop 1: Vriendschappelijke match (voor nu) -->
+            <button class="next-btn friendly-btn" onclick="window.startFriendlyMatch()">
+                🎱 Vriendschappelijke Match Starten
+            </button>
+            
+            <!-- Knop 2: Placeholder voor later (Stand bekijken) -->
+            <!-- <button class="next-btn standings-btn" onclick="window.showStandings()">
+                📊 Stand Bekijken
+            </button> -->
         </div>
     </div>
     
