@@ -354,10 +354,12 @@
 
     <!-- PAGINA: Vriendschappelijke Match Configuratie -->
     <div id="pageFriendly" class="page">
-        <!-- NIEUWE HEADER LAYOUT: Terug (links) | Reset (midden) | Titel (rechts) -->
-        <div class="header friendly-header">
+        <div class="header" id="friendlyHeader">
             <button class="back-btn" onclick="window.showPage(1)">⬅️ Terug</button>
-            <button class="header-reset-btn" onclick="window.resetFriendlyConfig()" title="Keuzes wissen en opnieuw beginnen">🔄 Reset</button>
+            
+            <!-- ✅ NIEUW: Uniek ID toegevoegd voor maximale CSS kracht -->
+            <button id="friendlyResetBtn" onclick="window.resetFriendlyConfig()">🔄 Reset</button>
+            
             <h1>🍻 Vriendschappelijke Match</h1>
         </div>
         
