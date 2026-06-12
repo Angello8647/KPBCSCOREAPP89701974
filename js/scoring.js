@@ -1079,18 +1079,3 @@ window.resetPage1State = function() {
     window.resetFriendlyConfig(); 
 };
 
-// ✅ RESET: Als we terug gaan naar pagina 1, reset ook de friendly match state
-const originalResetPage1State = window.resetPage1State;
-window.resetPage1State = function() {
-    if (originalResetPage1State) originalResetPage1State();
-    
-    // Reset friendly match configuratie
-    document.querySelectorAll('#pageFriendly .config-card').forEach(card => {
-        card.classList.remove('selected', 'dimmed');
-    });
-    
-    const step2 = document.getElementById('step2GameType');
-    if (step2) step2.classList.add('hidden');
-    
-    state.friendlyMatch = null;
-};
