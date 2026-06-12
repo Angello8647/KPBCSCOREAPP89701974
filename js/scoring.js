@@ -1144,15 +1144,25 @@ window.renderAlphabetGrid = function() {
     }
 };
 
+// ✅ NIEUW: Update het invoervak
+window.updateSearchDisplay = function() {
+    const display = document.getElementById('currentSearchText');
+    if (display) {
+        display.textContent = currentSearchString;
+    }
+};
+
 // 5. Voeg letter toe aan zoekopdracht
 window.addSearchLetter = function(letter) {
     currentSearchString += letter;
+    window.updateSearchDisplay(); // ✅ Update het scherm
     window.renderPlayerList();
 };
 
 // 6. Wis laatste letter
 window.clearSearchLetter = function() {
     currentSearchString = currentSearchString.slice(0, -1);
+    window.updateSearchDisplay(); // ✅ Update het scherm
     window.renderPlayerList();
 };
 
