@@ -987,41 +987,55 @@ window.selectMode = function(mode) {
    ✅ VRIENDSCHAPPELIJKE MATCH: CONFIGURATIE LOGICA (GEUPDATE & WATERDICHT)
    ========================================================================= */
 
-// 1. SPELERS KIEZEN
+// 1. SPELERS KIEZEN (AANGEPAST)
 window.selectPlayers = function(numPlayers) {
-    // A. Reset alle spelers-kaartjes eerst
+    // Reset alle spelers-kaartjes
     document.querySelectorAll('#step1Players .config-card').forEach(card => {
         card.classList.remove('selected', 'dimmed');
     });
     
-    // B. Markeer de gekozen kaart
     const selectedCard = document.querySelector(`#step1Players .config-card[data-players="${numPlayers}"]`);
-    if (selectedCard) {
-        selectedCard.classList.add('selected');
-    }
+    if (selectedCard) selectedCard.classList.add('selected');
     
-    // C. Dim ALLEEN de andere spelers-kaartjes (niet de speltype-kaartjes!)
     document.querySelectorAll('#step1Players .config-card').forEach(card => {
-        if (card !== selectedCard) {
-            card.classList.add('dimmed');
-        }
+        if (card !== selectedCard) card.classList.add('dimmed');
     });
 
-    // D. CRUCIAAL: Zorg dat Stap 2 (Speltype) NOOIT gedimd is als hij verschijnt
     document.querySelectorAll('#step2GameType .config-card').forEach(card => {
         card.classList.remove('dimmed', 'selected');
     });
     
-    // E. Toon Stap 2
     const step2 = document.getElementById('step2GameType');
-    if (step2) {
-        step2.classList.remove('hidden');
-    }
+    if (step2) step2.classList.remove('hidden');
     
-    // F. Sla op in state
+    // ✅ NIEUW: Bouw de spelers-display dynamisch op
+    window.buildPlayersDisplay(numPlayers);
+    
     state.friendlyMatch = state.friendlyMatch || {};
     state.friendlyMatch.numPlayers = numPlayers;
 };
+
+
+// ✅ NIEUW: Bouw de display voor het gekozen aantal spelers
+window.buildPlayersDisplay = function(numPlayers) {
+    const container = document.getElementById('chosenPlayersContainer');
+    if (!container) return;
+    
+    const icons = ["🧙‍♂️", "👷‍♂️", "👮‍♂️", "👨‍🚀"]; // De emoji's die je gebruikt
+    let html = '';
+    
+    for (let i = 1; i <= numPlayers; i++) {
+        html += `<div class="chosen-player" id="displayPlayer${i}">
+                    ${icons[i-1]} Speler ${i}: Nog niet gekozen
+                 </div>`;
+    }
+    
+    container.innerHTML = html;
+    
+    // Verberg het blok voorlopig (totdat er minstens 1 speler gekozen is)
+    document.getElementById('step3PlayersDisplay').classList.add('hidden');
+};
+
 
 // 2. SPELTYPE KIEZEN
 window.selectGameType = function(gameType) {
