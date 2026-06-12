@@ -2717,3 +2717,24 @@
     50% { opacity: 0; }
 }
 
+
+/* ✅ HARDE HIDDEN CLASS: Zorgt dat elementen écht verdwijnen */
+.hidden {
+    display: none !important;
+}
+
+/* ✅ STYLING VOOR DE NIEUWE SPATIE-KNOP IN HET A-Z RASTER */
+.alpha-btn.space-bar {
+    grid-column: span 3 !important; /* Maakt de knop 3 kolommen breed (als een echte spatiebalk) */
+    background: rgba(46, 204, 113, 0.2) !important; /* Subtiel groen */
+    border-color: #2ecc71 !important;
+    color: #2ecc71 !important;
+    font-size: 1.1rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px !important;
+}
+
+.alpha-btn.space-bar:hover, .alpha-btn.space-bar:active {
+    background: #2ecc71 !important;
+    color: #ffffff !important;
+}
