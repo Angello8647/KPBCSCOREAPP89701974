@@ -1638,7 +1638,7 @@ window.prepareFriendlyBallSelection = function() {
         html += '</div>';
         container.innerHTML = html;
     }
-
+};
 // 2. Logica voor 2 of 4 spelers/teams
 window.selectFriendlyWhite = function(identifier, element) {
     state.friendlyMatch.whiteBallOwner = identifier;
