@@ -2137,7 +2137,7 @@
 /* 1. Maak de hoofdcontainer veel breder */
 .friendly-config-container {
     width: 95vw !important;          /* Gebruik 95% van de schermbreedte */
-    max-width: 1600px !important;    /* Maar niet oneindig breed op reusachtige schermen */
+    max-width: 2000px !important;    /* Maar niet oneindig breed op reusachtige schermen */
     margin: 0 auto !important;
     padding: 40px 20px !important;
 }
