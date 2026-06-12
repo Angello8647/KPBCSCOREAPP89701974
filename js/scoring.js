@@ -1592,14 +1592,14 @@ window.prepareFriendlyBallSelection = function() {
         title.textContent = "Kies Witte Bal";
         subtitle.innerHTML = "Wie speelt met de witte bal?<br><small>(De ander krijgt automatisch de gele bal)</small>";
         container.innerHTML = `
-            <div class="ball-option" onclick="window.selectFriendlyWhite(1)">
+            <div class="ball-option" onclick="window.selectFriendlyWhite(1, this)">
                 <div class="ball-circle white"><div>${fm.players[1]}</div></div>
             </div>
-            <div class="ball-option" onclick="window.selectFriendlyWhite(2)">
+            <div class="ball-option" onclick="window.selectFriendlyWhite(2, this)">
                 <div class="ball-circle white"><div>${fm.players[2]}</div></div>
             </div>
         `;
-    } 
+    }
     else if (fm.numPlayers === 4) {
         title.textContent = "Kies Team Kleuren";
         subtitle.innerHTML = "Welk team speelt met welke bal?<br><small>(Klik op het team)</small>";
@@ -1608,14 +1608,14 @@ window.prepareFriendlyBallSelection = function() {
         const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
         
         container.innerHTML = `
-            <div class="ball-option" onclick="window.selectFriendlyWhite('T1')">
+            <div class="ball-option" onclick="window.selectFriendlyWhite('T1', this)">
                 <div class="ball-circle white" style="font-size: 1rem;"><div>Team 1<br><small>${fm.players[t1Keys[0]]} & ${fm.players[t1Keys[1]]}</small></div></div>
             </div>
-            <div class="ball-option" onclick="window.selectFriendlyWhite('T2')">
+            <div class="ball-option" onclick="window.selectFriendlyWhite('T2', this)">
                 <div class="ball-circle white" style="font-size: 1rem;"><div>Team 2<br><small>${fm.players[t2Keys[0]]} & ${fm.players[t2Keys[1]]}</small></div></div>
             </div>
         `;
-    } 
+    }
     else if (fm.numPlayers === 3) {
         title.textContent = "Wijs Unieke Kleuren Toe";
         subtitle.innerHTML = "Klik op de gewenste kleur voor elke speler<br><small>(Elke kleur ⚪🟡🔴 mag maar 1x)</small>";
