@@ -2738,3 +2738,24 @@
     background: #2ecc71 !important;
     color: #ffffff !important;
 }
+
+/* ✅ HARDE HIDDEN CLASS */
+.hidden {
+    display: none !important;
+}
+
+/* ✅ STYLING VOOR DE SPATIE-KNOP */
+.alpha-btn.space-bar {
+    grid-column: span 3 !important;
+    background: rgba(46, 204, 113, 0.2) !important;
+    border-color: #2ecc71 !important;
+    color: #2ecc71 !important;
+    font-size: 1.1rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px !important;
+}
+
+.alpha-btn.space-bar:hover, .alpha-btn.space-bar:active {
+    background: #2ecc71 !important;
+    color: #ffffff !important;
+}
