@@ -2863,7 +2863,7 @@
 }
 
 /* =========================================================================
-   ✅ PAGINA 13: 3 SPELERS KLEUR TOEWIJZING (SCHONE VERSIE)
+   ✅ PAGINA 13: 3 SPELERS KLEUR TOEWIJZING (ULTIEME, SCHONE VERSIE)
    ========================================================================= */
 
 /* --- Layout van de rijen --- */
@@ -2913,18 +2913,18 @@
     justify-content: center;
     font-size: 1.5rem;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s ease;
     border: 3px solid rgba(255, 255, 255, 0.3);
-    /* Standaard: half in de schaduw */
     opacity: 0.4; 
-    filter: grayscale(0.8);
+    filter: grayscale(1); /* Helemaal grijs in rust */
     box-shadow: inset -2px -2px 5px rgba(0,0,0,0.3);
+    position: relative;
 }
 
-/* Echte biljart-kleuren (3D effect) */
-.color-dot.white { background: radial-gradient(circle at 30% 30%, #ffffff, #bdc3c7); color: #333; }
-.color-dot.yellow { background: radial-gradient(circle at 30% 30%, #f1c40f, #d4ac0d); color: #333; }
-.color-dot.red { background: radial-gradient(circle at 30% 30%, #e74c3c, #c0392b); color: #fff; }
+/* Helder biljart-kleuren (Zonder gradients voor maximale rand-compatibiliteit) */
+.color-dot.white { background: #ecf0f1; color: #333; }
+.color-dot.yellow { background: #f1c40f; color: #333; }
+.color-dot.red { background: #e74c3c; color: #fff; }
 
 /* Hover effect (alleen als hij niet disabled of active is) */
 .color-dot:hover:not(.disabled):not(.active) {
@@ -2933,15 +2933,16 @@
     filter: grayscale(0);
 }
 
-/* ✅ GEKOZEN: Felle gloed, groene rand, extra groot (Dit is wat je miste!) */
+/* ✅ GEKOZEN: ONMISKENBAAR (Dikke groene rand + Enorme gloed) */
 .color-dot.active {
     opacity: 1 !important;
-    filter: grayscale(0) !important;
+    filter: none !important; /* Verwijdert alle grijs volledig */
     transform: scale(1.25) !important;
-    border-color: #2ecc71 !important; /* Dikke groene rand */
-    box-shadow: 0 0 25px rgba(46, 204, 113, 0.9), inset 0 0 8px rgba(255,255,255,0.6) !important; /* Groene gloed */
+    border: 4px solid #2ecc71 !important; /* Forceer de dikke groene rand */
+    outline: 2px solid #2ecc71 !important; /* Dubbele zekerheid voor de rand */
+    box-shadow: 0 0 20px #2ecc71, 0 0 40px rgba(46, 204, 113, 0.6) !important; /* Felle groene gloed */
+    z-index: 10 !important;
     cursor: default;
-    pointer-events: auto !important;
 }
 
 /* ✅ LOCK-OUT: Bijna onzichtbaar, grijs, plat en NIET klikbaar */
