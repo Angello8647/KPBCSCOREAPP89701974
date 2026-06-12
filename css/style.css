@@ -2173,33 +2173,38 @@
     transform: scale(1.05);
 }
 
-/* 2. Forceer Stap 2 (Speltype) op 1 lijn */
+/* ==========================================
+   ✅ STAP 2: SPELTYPE OP 1 LIJN (GROTER & GELIJKMATIG)
+   ========================================== */
+
 .single-line-options {
-    flex-wrap: nowrap !important; /* Verbied afbreken naar 2e rij */
-    gap: 15px !important; /* Iets kleinere tussenruimte om 6 blokken te laten passen */
-    overflow-x: auto !important; /* Als het scherm té smal is, kan je horizontaal scrollen */
-    padding-bottom: 10px !important;
+    display: flex !important;
+    flex-wrap: nowrap !important; /* ✅ VERBIEDT absoluut een 2e rij */
+    gap: 12px !important; /* Beetje ruimte, maar niet te veel zodat ze groter kunnen zijn */
+    width: 100% !important;
     justify-content: center !important;
 }
 
-/* Maak de kaartjes iets compacter zodat 6 erop passen */
+/* De kaartjes verdelen de ruimte perfect over 6 gelijke kolommen */
 .single-line-options .config-card {
-    flex: 1 !important; /* Verdeel ruimte eerlijk */
-    min-width: 130px !important; /* Minimale breedte zodat tekst leesbaar blijft */
-    max-width: 180px !important;
-    padding: 20px 10px !important; /* Minder padding dan bij de spelers-keuze */
+    flex: 1 1 0 !important; /* ✅ DE MAGIE: Groeit en krimpt gelijkmatig, forceert gelijke breedte */
+    min-width: 140px !important; /* Iets groter minimum dan hiervoor */
+    max-width: 220px !important; /* Ruimte om echt groot te worden op brede schermen */
+    padding: 25px 10px !important; /* Meer verticale ruimte voor een 'groter' gevoel */
 }
 
+/* Icoontjes en tekst aanpassen voor de nieuwe, grotere verhoudingen */
 .single-line-options .card-icon {
-    font-size: 2.2rem !important;
-    margin-bottom: 10px !important;
+    font-size: 2.5rem !important; /* Groter icoon */
+    margin-bottom: 12px !important;
 }
 
 .single-line-options .card-label {
-    font-size: 1.1rem !important;
-    margin-bottom: 5px !important;
+    font-size: 1.15rem !important; /* Duidelijk leesbare titel */
+    margin-bottom: 6px !important;
+    line-height: 1.2 !important;
 }
 
 .single-line-options .card-sublabel {
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
 }
