@@ -21,27 +21,23 @@
         </div>
     
         <!-- KADER 1: Officiële Matchen -->
-        <div class="selection-container">
+        <div class="selection-container" id="containerOfficial">
             <div class="selection-title">Selecteer Datum</div>
             <input type="date" id="dateSelect" class="date-input">
-            <button class="next-btn" onclick="syncAndGoToMatches()" style="background: #2ecc71;">
+            <!-- LET OP: onclick is nu window.selectMode('official') -->
+            <button class="next-btn" onclick="window.selectMode('official')" style="background: #2ecc71;">
                 🏆 Officiële Matchen Ophalen
             </button>
         </div>
     
-        <!-- KADER 2: Vrije Wedstrijd & Info (NIEUW) -->
-        <div class="selection-container friendly-container">
+        <!-- KADER 2: Vrije Wedstrijd & Info -->
+        <div class="selection-container friendly-container" id="containerFriendly">
             <div class="selection-title">Vrije Wedstrijd & Info</div>
             
-            <!-- Knop 1: Vriendschappelijke match (voor nu) -->
-            <button class="next-btn friendly-btn" onclick="window.startFriendlyMatch()">
+            <!-- LET OP: onclick is nu window.selectMode('friendly') -->
+            <button class="next-btn friendly-btn" onclick="window.selectMode('friendly')">
                 🍻 Vriendschappelijke Match Starten
             </button>
-            
-            <!-- Knop 2: Placeholder voor later (Stand bekijken) -->
-            <!-- <button class="next-btn standings-btn" onclick="window.showStandings()">
-                📊 Stand Bekijken
-            </button> -->
         </div>
     </div>
     
