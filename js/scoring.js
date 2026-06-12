@@ -1638,22 +1638,30 @@ window.prepareFriendlyBallSelection = function() {
 };
 
 // 2. Logica voor 2 of 4 spelers/teams
-window.selectFriendlyWhite = function(identifier) {
+window.selectFriendlyWhite = function(identifier, element) {
     state.friendlyMatch.whiteBallOwner = identifier;
     
-    // Visuele feedback
+    // ✅ FIX: Gebruik 'element' parameter in plaats van 'event'
     document.querySelectorAll('#friendlyBallOptions .ball-option').forEach(opt => opt.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
+    if (element) {
+        element.closest('.ball-option').classList.add('selected');
+    }
     
     // Activeer startknop
     const startBtn = document.getElementById('friendlyStartMatchBtn');
     startBtn.disabled = false;
     startBtn.classList.remove('disabled-btn');
+    
+    console.log(`✅ Witte bal gekozen: ${identifier}`);
 };
 
 // 3. Logica voor 3 spelers (Slimme wissel)
 window.assignFriendlyColor = function(playerNum, color, element) {
-    const assignments = window.friendlyColorAssignments || {};
+    // ✅ FIX: Initialiseer de assignments correct
+    if (!state.friendlyMatch.colorAssignments) {
+        state.friendlyMatch.colorAssignments = {};
+    }
+    const assignments = state.friendlyMatch.colorAssignments;
     
     // Kijk of iemand anders deze kleur al heeft
     const existingOwner = Object.keys(assignments).find(p => assignments[p] === color && p != playerNum);
@@ -1667,8 +1675,8 @@ window.assignFriendlyColor = function(playerNum, color, element) {
         assignments[playerNum] = color;
     }
     
-    state.friendlyMatch.colorAssignments = assignments;
     window.updateFriendly3PlayerUI();
+    console.log(`✅ Kleur toegewezen: Speler ${playerNum} = ${color}`);
 };
 
 // 4. Update UI voor 3 spelers
