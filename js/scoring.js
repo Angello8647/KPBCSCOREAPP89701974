@@ -1048,6 +1048,10 @@ window.selectGameType = function(gameType) {
     state.friendlyMatch.gameType = gameType;
     
     console.log(`✅ Speltype gekozen: ${gameType}`);
+    // ✅ NIEUW: Open direct de speler-selectie modal voor Speler 1
+    setTimeout(() => {
+        window.openPlayerSelection(1);
+    }, 500); // Korte delay voor een mooi effect
 };
 
 // 3. RESET KNOP (Deze maakt nu écht alles schoon)
