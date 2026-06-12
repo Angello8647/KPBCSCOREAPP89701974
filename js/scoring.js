@@ -1139,7 +1139,10 @@ window.openPlayerSelection = function(playerNum) {
     currentPlayerSlot = playerNum;
     currentSearchString = "";
     
-    const icon = playerNum === 1 ? "🧙‍♂️" : "👷‍♂️";
+    // ✅ Gebruik dezelfde expliciete icoon-toewijzing
+    const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
+    const icon = icons[playerNum] || "👤"; // Fallback naar 👤 als het nummer niet bestaat
+    
     document.getElementById('modalTitle').textContent = `Speler ${playerNum} (${icon}) instellen`;
     
     // Reset naar initiële keuze
