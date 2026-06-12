@@ -23,8 +23,14 @@ window.showPage = function(pageNum) {
             d.value = new Date().toISOString().split('T')[0];
             state.selectedDate = d.value;
         }
+        
+        // ✅ RESET: Verwijder alle schaduwen van de kaders
+        if (typeof window.resetPage1State === 'function') {
+            window.resetPage1State();
+        }
     } 
     else if (actualPageNum === 2) {
+
         // PAGINA 2: Matchen lijst (handmatige matches)
         if (typeof window.loadFilteredMatches === 'function') {
             window.loadFilteredMatches();
