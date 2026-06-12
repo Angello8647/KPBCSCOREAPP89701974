@@ -352,14 +352,11 @@
         </div>
     </div>
 
-    <!-- PAGINA: Vriendschappelijke Match Configuratie -->
+    <!-- PAGINA: Vriendschappelijke Match Configuratie (SAMENGEVOEGD & SCHOON) -->
     <div id="pageFriendly" class="page">
         <div class="header" id="friendlyHeader">
             <button class="back-btn" onclick="window.showPage(1)">⬅️ Terug</button>
-            
-            <!-- ✅ NIEUW: Uniek ID toegevoegd voor maximale CSS kracht -->
             <button id="friendlyResetBtn" onclick="window.resetFriendlyConfig()">🔄 Reset</button>
-            
             <h1>🍻 Vriendschappelijke Match</h1>
         </div>
         
@@ -380,10 +377,11 @@
                     <div class="config-card" data-players="4" onclick="window.selectPlayers(4)">
                         <div class="card-icon">🧙‍♂️👷‍♂️👮‍♂️👨‍🚀</div>
                         <div class="card-label">4 Spelers</div>
-                    </div</div>
+                    </div>
+                </div>
             </div>
 
-            <!-- STAP 2: Speltype (1 lijn, compact) -->
+            <!-- STAP 2: Speltype -->
             <div class="config-section hidden" id="step2GameType">
                 <h2 class="config-title">Stap 2: Kies speltype</h2>
                 <div class="config-options single-line-options">
@@ -420,21 +418,15 @@
                 </div>
             </div>
 
-        </div>
-    </div>
-
-    <!-- PAGINA: Vriendschappelijke Match Configuratie (Bestaande code, met kleine toevoeging) -->
-    <div id="pageFriendly" class="page">
-        <!-- ... (jouw bestaande header en config-secties hier) ... -->
-        
-        <!-- STAP 3: Gekozen Spelers (Dynamisch gevuld) -->
+            <!-- STAP 3: Gekozen Spelers (Dynamisch gevuld) -->
             <div class="config-section hidden" id="step3PlayersDisplay">
                 <h2 class="config-title">Gekozen Spelers</h2>
                 <div class="chosen-players-display" id="chosenPlayersContainer">
                     <!-- Wordt dynamisch gevuld door JavaScript -->
                 </div>
             </div>
-        <!-- STAP 4: Team Indeling (Alleen zichtbaar bij 4 spelers) -->
+
+            <!-- STAP 4: Team Indeling (Alleen zichtbaar bij 4 spelers) -->
             <div class="config-section hidden" id="step4TeamSetup">
                 <h2 class="config-title">Stap 4: Team Indeling & Volgorde</h2>
                 <p style="text-align: center; color: #bdc3c7; margin-bottom: 20px; font-size: 1.1rem;">
@@ -448,15 +440,16 @@
 
                 <div style="text-align: center; margin-top: 40px;">
                     <button id="btnStartFriendlyMatch" class="modal-btn primary" style="padding: 15px 50px; font-size: 1.3rem;" onclick="window.startFriendlyMatchFinal()" disabled>
-                        🍻 Start Vriendschappelijke Match
+                        🎱 Start Vriendschappelijke Match
                     </button>
-                </div
+                </div>
             </div>
 
+        </div> <!-- Einde friendly-config-container -->
     </div> <!-- Einde pageFriendly -->
 
 
-    <!-- ✅ DE UNIFIED PLAYER SELECTIE MODAL -->
+    <!-- ✅ DE UNIFIED PLAYER SELECTIE MODAL (Blijft hieronder staan, buiten alle pagina's) -->
     <div id="playerSelectModal" class="modal-overlay hidden">
         <div class="modal-content">
             <h2 id="modalTitle" class="modal-title">Speler instellen</h2>
@@ -502,7 +495,6 @@
             </div>
         </div>
     </div>
-
 
 
 
