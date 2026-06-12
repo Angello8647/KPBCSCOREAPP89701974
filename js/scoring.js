@@ -1730,4 +1730,29 @@ window.startFriendlyMatchFromBallSelection = function() {
     alert("✅ Match configuratie compleet en opgeslagen in state!\n\nKlaar om door te schakelen naar het scorebord.");
 };
 
-
+// 6. Reset alle kleurkeuzes op Pagina 13
+window.resetFriendlyBallSelection = function() {
+    console.log("🔄 Reset bal kleur selectie...");
+    
+    // 1. Wis de state
+    if (state.friendlyMatch) {
+        state.friendlyMatch.whiteBallOwner = null;
+        state.friendlyMatch.colorAssignments = {};
+    }
+    
+    // 2. Verwijder alle visuele selecties
+    document.querySelectorAll('#friendlyBallOptions .ball-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.classList.remove('active', 'disabled');
+    });
+    
+    // 3. Deactiveer de startknop
+    const startBtn = document.getElementById('friendlyStartMatchBtn');
+    startBtn.disabled = true;
+    startBtn.classList.add('disabled-btn');
+    
+    console.log("✅ Reset compleet. Alle kleuren zijn gewist.");
+};
