@@ -1658,53 +1658,65 @@ window.selectFriendlyWhite = function(identifier, element) {
     console.log(`✅ Witte bal gekozen: ${identifier}`);
 };
 
-// 3. Logica voor 3 spelers (Slimme wissel)
+// 3. Logica voor 3 spelers (Strikte "Lock-out" zonder wisselen)
 window.assignFriendlyColor = function(playerNum, color, element) {
-    // ✅ FIX: Initialiseer de assignments correct
     if (!state.friendlyMatch.colorAssignments) {
         state.friendlyMatch.colorAssignments = {};
     }
     const assignments = state.friendlyMatch.colorAssignments;
-    
-    // Kijk of iemand anders deze kleur al heeft
-    const existingOwner = Object.keys(assignments).find(p => assignments[p] === color && p != playerNum);
-    
-    if (existingOwner) {
-        // Wissel de kleuren (zeer gebruiksvriendelijk!)
-        const oldColorOfCurrent = assignments[playerNum];
-        assignments[existingOwner] = oldColorOfCurrent;
-        assignments[playerNum] = color;
-    } else {
-        assignments[playerNum] = color;
+
+    // Check of deze kleur AL door iemand anders is gekozen
+    const isTaken = Object.values(assignments).includes(color);
+
+    if (isTaken) {
+        // Kleur is al in gebruik, doe niets (de knop zou al grijs/unclickable moeten zijn)
+        console.log(`⚠️ Kleur ${color} is al gekozen door een andere speler!`);
+        return;
     }
+
+    // Wijs de kleur toe aan deze speler
+    assignments[playerNum] = color;
     
+    // Update de visuele weergave
     window.updateFriendly3PlayerUI();
-    console.log(`✅ Kleur toegewezen: Speler ${playerNum} = ${color}`);
+    console.log(`✅ Speler ${playerNum} heeft nu de ${color} bal`);
 };
 
-// 4. Update UI voor 3 spelers
+// 4. Update UI voor 3 spelers (Zorgt voor de schaduw/grijs logica)
 window.updateFriendly3PlayerUI = function() {
     const assignments = state.friendlyMatch.colorAssignments || {};
     const isComplete = Object.keys(assignments).length === 3;
-    
-    document.querySelectorAll('.player-color-row').forEach(row => {
-        const pNum = row.getAttribute('data-player');
+
+    // 1. Reset ALLE ballen eerst naar de basisstaat (half in de schaduw)
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.classList.remove('active', 'disabled');
+        dot.style.pointerEvents = 'auto'; // Maak weer klikbaar (tenzij we het hierna uitzetten)
+    });
+
+    // 2. Markeer de gekozen ballen als 'active' (helemaal uit de schadlf)
+    Object.keys(assignments).forEach(pNum => {
         const chosenColor = assignments[pNum];
-        
-        row.querySelectorAll('.color-dot').forEach(dot => {
-            dot.classList.remove('active');
-            dot.style.opacity = '0.3';
-        });
-        
-        if (chosenColor) {
+        const row = document.querySelector(`.player-color-row[data-player="${pNum}"]`);
+        if (row) {
             const activeDot = row.querySelector(`.color-dot.${chosenColor}`);
             if (activeDot) {
                 activeDot.classList.add('active');
-                activeDot.style.opacity = '1';
             }
         }
     });
 
+    // 3. ✅ DE LOCK-OUT: Maak gekozen kleuren grijs en onklikbaar voor de ANDERE spelers
+    Object.values(assignments).forEach(takenColor => {
+        // Zoek alle ballen van deze kleur die NIET de 'active' class hebben
+        document.querySelectorAll(`.color-dot.${takenColor}`).forEach(dot => {
+            if (!dot.classList.contains('active')) {
+                dot.classList.add('disabled');
+                dot.style.pointerEvents = 'none'; // ✅ Maakt de muis-klik onmogelijk
+            }
+        });
+    });
+
+    // 4. Activeer de startknop alleen als alle 3 de spelers een unieke kleur hebben
     const startBtn = document.getElementById('friendlyStartMatchBtn');
     if (isComplete) {
         startBtn.disabled = false;
