@@ -929,3 +929,30 @@ window.startFriendlyMatch = function() {
     
     console.log("🍻 Navigatie naar Vriendschappelijke Match configuratie");
 };
+
+// ✅ MODUS SELECTIE: DIM HET ANDERE VAK EN VOER DAARNA DE ACTIE UIT
+window.selectMode = function(mode) {
+    const officialContainer = document.getElementById('containerOfficial');
+    const friendlyContainer = document.getElementById('containerFriendly');
+    
+    if (mode === 'official') {
+        // 1. Visueel: Activeer officieel, dim vriendelijk
+        officialContainer.classList.remove('inactive-mode');
+        friendlyContainer.classList.add('inactive-mode');
+        
+        // 2. Actie: Roep je bestaande functie aan (als die bestaat)
+        if (typeof syncAndGoToMatches === 'function') {
+            syncAndGoToMatches();
+        }
+        
+    } else if (mode === 'friendly') {
+        // 1. Visueel: Activeer vriendelijk, dim officieel
+        friendlyContainer.classList.remove('inactive-mode');
+        officialContainer.classList.add('inactive-mode');
+        
+        // 2. Actie: Roep je bestaande functie aan (als die bestaat)
+        if (typeof window.startFriendlyMatch === 'function') {
+            window.startFriendlyMatch();
+        }
+    }
+};
