@@ -1134,48 +1134,95 @@ function getPlayerNames() {
 let currentPlayerSlot = 1; // 1 of 2
 let currentSearchString = "";
 
+// ✅ VARIABELEN VOOR MODUS
+let isGuestMode = false; // Houdt bij of we een gast of clublid aan het invoeren zijn
+
+/* =========================================================================
+   ✅ PLAYER SELECTIE MODAL LOGICA (VOLLEDIGE HERSCHREVEN VERSIE)
+   ========================================================================= */
+
 // 1. Open de modal voor een specifieke speler
 window.openPlayerSelection = function(playerNum) {
     currentPlayerSlot = playerNum;
     currentSearchString = "";
+    isGuestMode = false; // Reset modus
     
-    // ✅ Gebruik dezelfde expliciete icoon-toewijzing
     const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
-    const icon = icons[playerNum] || "👤"; // Fallback naar 👤 als het nummer niet bestaat
+    const icon = icons[playerNum] || "👤";
     
     document.getElementById('modalTitle').textContent = `Speler ${playerNum} (${icon}) instellen`;
     
-    // Reset naar initiële keuze
-    document.getElementById('modalInitialChoice').classList.remove('hidden');
-    document.getElementById('modalSearchInterface').classList.add('hidden');
+    // Toon initiële keuze, verberg de rest
+    const initialChoice = document.getElementById('modalInitialChoice');
+    initialChoice.classList.remove('hidden');
+    initialChoice.style.display = 'flex'; // Forceer zichtbaarheid
+    
+    const searchInterface = document.getElementById('modalSearchInterface');
+    searchInterface.classList.add('hidden');
+    searchInterface.style.display = 'none'; // Forceer verbergen
+    
+    // Verberg de "Gebruik deze naam" knop
+    document.getElementById('btnConfirmGuest').classList.add('hidden');
     
     // Toon modal
     document.getElementById('playerSelectModal').classList.remove('hidden');
 };
 
-// 2. Kies Gast
+// 2. Kies Gast (gebruikt hetzelfde A-Z raster, maar met andere logica)
 window.selectGuest = function() {
-    const guestName = `Gast ${currentPlayerSlot}`;
-    window.finalizePlayerSelection(guestName);
+    isGuestMode = true;
+    currentSearchString = "";
+    
+    // VERBERG de keuze-knoppen definitief
+    const initialChoice = document.getElementById('modalInitialChoice');
+    initialChoice.classList.add('hidden');
+    initialChoice.style.display = 'none';
+    
+    // Toon zoekinterface
+    const searchInterface = document.getElementById('modalSearchInterface');
+    searchInterface.classList.remove('hidden');
+    searchInterface.style.display = 'flex';
+    
+    // Toon de "Gebruik deze naam" knop
+    document.getElementById('btnConfirmGuest').classList.remove('hidden');
+    
+    window.renderAlphabetGrid();
+    window.updateSearchDisplay();
+    
+    // Toon een hint in plaats van de spelerslijst
+    document.getElementById('playerList').innerHTML = 
+        '<div class="player-list-item" style="color: #95a5a6; text-align: center; font-style: italic; padding: 40px 20px;">Type de naam van de gast met de letters en de groene spatiebalk...</div>';
 };
 
-// 3. Toon zoekinterface
+// 3. Toon zoekinterface (voor Clublid)
 window.showPlayerSearch = function() {
-    // ✅ Check of er spelers zijn
     if (!state.players || state.players.length === 0) {
         alert("⚠️ Geen spelers geladen!\n\nGa eerst naar 'Beheer Matchen' en klik op '🔄 Sync met Planning App' om de spelerslijst op te halen.");
         return;
     }
     
-    document.getElementById('modalInitialChoice').classList.add('hidden');
-    document.getElementById('modalSearchInterface').classList.remove('hidden');
+    isGuestMode = false;
+    currentSearchString = "";
+    
+    // VERBERG de keuze-knoppen definitief
+    const initialChoice = document.getElementById('modalInitialChoice');
+    initialChoice.classList.add('hidden');
+    initialChoice.style.display = 'none';
+    
+    // Toon zoekinterface
+    const searchInterface = document.getElementById('modalSearchInterface');
+    searchInterface.classList.remove('hidden');
+    searchInterface.style.display = 'flex';
+    
+    // Verberg de "Gebruik deze naam" knop (want we klikken een naam uit de lijst)
+    document.getElementById('btnConfirmGuest').classList.add('hidden');
     
     window.renderAlphabetGrid();
     window.renderPlayerList();
-    window.updateSearchDisplay(); // ✅ Toon het (lege) invoervak
+    window.updateSearchDisplay();
 };
 
-// 4. Render A-Z Grid
+// 4. Render A-Z Grid + SPATIE
 window.renderAlphabetGrid = function() {
     const grid = document.getElementById('alphabetGrid');
     grid.innerHTML = '';
@@ -1188,9 +1235,16 @@ window.renderAlphabetGrid = function() {
         btn.onclick = () => window.addSearchLetter(char);
         grid.appendChild(btn);
     }
+    
+    // NIEUW: Voeg een brede SPATIE knop toe onderaan het raster
+    const spaceBtn = document.createElement('button');
+    spaceBtn.className = 'alpha-btn space-bar';
+    spaceBtn.textContent = '⎵ SPATIE';
+    spaceBtn.onclick = () => window.addSearchLetter(' ');
+    grid.appendChild(spaceBtn);
 };
 
-// ✅ NIEUW: Update het invoervak
+// 5. Update het invoervak
 window.updateSearchDisplay = function() {
     const display = document.getElementById('currentSearchText');
     if (display) {
@@ -1198,26 +1252,33 @@ window.updateSearchDisplay = function() {
     }
 };
 
-// 5. Voeg letter toe aan zoekopdracht
+// 6. Voeg letter toe aan zoekopdracht
 window.addSearchLetter = function(letter) {
     currentSearchString += letter;
-    window.updateSearchDisplay(); // ✅ Update het scherm
-    window.renderPlayerList();
+    window.updateSearchDisplay();
+    
+    // Alleen filteren als we in Clublid modus zijn
+    if (!isGuestMode) {
+        window.renderPlayerList();
+    }
 };
 
-// 6. Wis laatste letter
+// 7. Wis laatste letter
 window.clearSearchLetter = function() {
     currentSearchString = currentSearchString.slice(0, -1);
-    window.updateSearchDisplay(); // ✅ Update het scherm
-    window.renderPlayerList();
+    window.updateSearchDisplay();
+    
+    // Alleen filteren als we in Clublid modus zijn
+    if (!isGuestMode) {
+        window.renderPlayerList();
+    }
 };
 
-// 7. Render de gefilterde spelerslijst (met ECHTE data)
+// 8. Render de gefilterde spelerslijst (met ECHTE data)
 window.renderPlayerList = function() {
     const listContainer = document.getElementById('playerList');
     listContainer.innerHTML = '';
     
-    // ✅ Haal de echte spelerslijst op
     const allPlayers = getPlayerNames();
     
     if (allPlayers.length === 0) {
@@ -1225,7 +1286,6 @@ window.renderPlayerList = function() {
         return;
     }
     
-    // Filter spelers op basis van huidige zoekstring
     const filtered = allPlayers.filter(player => 
         player.toUpperCase().startsWith(currentSearchString)
     );
@@ -1235,11 +1295,9 @@ window.renderPlayerList = function() {
         return;
     }
     
-    // Toon gefilterde lijst
     filtered.forEach(player => {
         const item = document.createElement('div');
         item.className = 'player-list-item';
-        // Highlight de getypte letters
         const regex = new RegExp(`^(${currentSearchString})`, 'i');
         item.innerHTML = player.replace(regex, '<span style="color: #2ecc71; font-weight: 900;">$1</span>');
         
@@ -1248,16 +1306,23 @@ window.renderPlayerList = function() {
     });
 };
 
-// 8. Finaliseer keuze en sluit modal
+// 9. Bevestig de handmatig getypte gastnaam
+window.confirmTypedName = function() {
+    if (currentSearchString.trim() === "") {
+        alert("⚠️ Voer eerst een naam in!");
+        return;
+    }
+    window.finalizePlayerSelection(currentSearchString.trim());
+};
+
+// 10. Finaliseer keuze en sluit modal
 window.finalizePlayerSelection = function(playerName) {
     console.log(`✅ Speler ${currentPlayerSlot} gekozen: ${playerName}`);
     
-    // Sla op in state
     state.friendlyMatch = state.friendlyMatch || {};
     if (!state.friendlyMatch.players) state.friendlyMatch.players = {};
     state.friendlyMatch.players[currentPlayerSlot] = playerName;
     
-    // ✅ Gebruik dezelfde expliciete toewijzing
     const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
     const displayEl = document.getElementById(`displayPlayer${currentPlayerSlot}`);
     
@@ -1265,13 +1330,10 @@ window.finalizePlayerSelection = function(playerName) {
         displayEl.textContent = `${icons[currentPlayerSlot]} ${playerName}`;
     }
     
-    // Toon het display blok
     document.getElementById('step3PlayersDisplay').classList.remove('hidden');
     
-    // Sluit de modal
     window.closePlayerModal();
     
-    // Ga door naar volgende speler als we nog niet klaar zijn
     const totalPlayers = state.friendlyMatch.numPlayers || 2;
     if (currentPlayerSlot < totalPlayers) {
         setTimeout(() => {
@@ -1283,15 +1345,25 @@ window.finalizePlayerSelection = function(playerName) {
     }
 };
 
-// 9. Reset modal naar begin
+// 11. Reset modal naar begin
 window.resetPlayerModal = function() {
     currentSearchString = "";
-    document.getElementById('modalInitialChoice').classList.remove('hidden');
-    document.getElementById('modalSearchInterface').classList.add('hidden');
+    isGuestMode = false;
+    
+    const initialChoice = document.getElementById('modalInitialChoice');
+    initialChoice.classList.remove('hidden');
+    initialChoice.style.display = 'flex';
+    
+    const searchInterface = document.getElementById('modalSearchInterface');
+    searchInterface.classList.add('hidden');
+    searchInterface.style.display = 'none';
+    
+    document.getElementById('btnConfirmGuest').classList.add('hidden');
 };
 
-// 10. Sluit modal volledig
+// 12. Sluit modal volledig
 window.closePlayerModal = function() {
     document.getElementById('playerSelectModal').classList.add('hidden');
+    document.getElementById('modalSearchInterface').style.display = 'none';
+    document.getElementById('btnConfirmGuest').classList.add('hidden');
 };
-
