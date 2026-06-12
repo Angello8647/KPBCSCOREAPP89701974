@@ -2753,3 +2753,35 @@
     font-weight: 700 !important;
     color: #ffffff !important;
 }
+
+
+/* =========================================================================
+   ✅ FIX: DUIDELIJKE RANDEN VOOR ACTIEVE MODUS (CLUBLID / GAST)
+   ========================================================================= */
+
+/* Forceer de groene rand voor Clublid */
+#btnModeClub.mode-active-club {
+    border: 3px solid #2ecc71 !important; /* ✅ Dwing de rand af */
+    background: rgba(46, 204, 113, 0.3) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.6) !important; /* Groene gloed */
+    transform: scale(1.05);
+}
+
+/* Forceer de blauwe rand voor Gast */
+#btnModeGuest.mode-active-guest {
+    border: 3px solid #3498db !important; /* ✅ Dwing de rand af */
+    background: rgba(52, 152, 219, 0.3) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.6) !important; /* Blauwe gloed */
+    transform: scale(1.05);
+}
+
+/* Zorg dat de NIET-actieve knop er ook echt 'normaal' uitziet (geen restjes) */
+#btnModeClub:not(.mode-active-club),
+#btnModeGuest:not(.mode-active-guest) {
+    border: 2px solid transparent !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important;
+    transform: scale(1);
+}
