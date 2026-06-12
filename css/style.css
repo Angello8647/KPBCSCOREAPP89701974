@@ -2127,3 +2127,78 @@
     color: #bdc3c7;
     font-weight: 500;
 }
+
+
+/* ==========================================
+   ✅ VRIENDSCHAPPELIJKE MATCH: HEADER & 1-LIJNS LAYOUT
+   ========================================== */
+
+/* 1. Header met 3 kolommen: Links (Terug), Midden (Reset), Rechts (Titel) */
+.friendly-header {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr !important;
+    align-items: center !important;
+    padding: 15px 30px !important;
+}
+
+.friendly-header .back-btn {
+    justify-self: start !important;
+}
+
+.friendly-header h1 {
+    justify-self: end !important;
+    text-align: right !important;
+    margin: 0 !important;
+    font-size: clamp(1.5rem, 3vw, 2.2rem) !important;
+}
+
+/* De nieuwe Reset knop in de header */
+.header-reset-btn {
+    justify-self: center !important;
+    background: rgba(230, 126, 34, 0.15) !important;
+    border: 2px solid #e67e22 !important;
+    color: #e67e22 !important;
+    padding: 8px 20px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.header-reset-btn:hover {
+    background: #e67e22 !important;
+    color: #ffffff !important;
+    transform: scale(1.05);
+}
+
+/* 2. Forceer Stap 2 (Speltype) op 1 lijn */
+.single-line-options {
+    flex-wrap: nowrap !important; /* Verbied afbreken naar 2e rij */
+    gap: 15px !important; /* Iets kleinere tussenruimte om 6 blokken te laten passen */
+    overflow-x: auto !important; /* Als het scherm té smal is, kan je horizontaal scrollen */
+    padding-bottom: 10px !important;
+    justify-content: center !important;
+}
+
+/* Maak de kaartjes iets compacter zodat 6 erop passen */
+.single-line-options .config-card {
+    flex: 1 !important; /* Verdeel ruimte eerlijk */
+    min-width: 130px !important; /* Minimale breedte zodat tekst leesbaar blijft */
+    max-width: 180px !important;
+    padding: 20px 10px !important; /* Minder padding dan bij de spelers-keuze */
+}
+
+.single-line-options .card-icon {
+    font-size: 2.2rem !important;
+    margin-bottom: 10px !important;
+}
+
+.single-line-options .card-label {
+    font-size: 1.1rem !important;
+    margin-bottom: 5px !important;
+}
+
+.single-line-options .card-sublabel {
+    font-size: 0.85rem !important;
+}
