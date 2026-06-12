@@ -1358,28 +1358,31 @@ window.finalizePlayerSelection = function(playerName) {
     // Sluit de modal
     window.closePlayerModal();
     
-    // Bepaal of we door moeten naar de volgende speler
     const totalPlayers = state.friendlyMatch.numPlayers || 2;
     
     if (currentPlayerSlot < totalPlayers) {
-        // ✅ Nog niet alle spelers gekozen? Open de volgende
+        // Nog niet alle spelers gekozen? Open de volgende
         setTimeout(() => {
             console.log(`🔄 Open nu modal voor Speler ${currentPlayerSlot + 1}`);
             window.openPlayerSelection(currentPlayerSlot + 1);
         }, 600);
         
     } else {
-        // ✅ Alle spelers zijn gekozen!
+        // Alle spelers zijn gekozen!
         console.log(`🎉 Alle ${totalPlayers} spelers zijn gekozen!`);
         
-        // Als er 4 spelers zijn, toon nu de team indeling
         if (totalPlayers === 4) {
+            // 4 spelers: toon team indeling (Stap 4)
             setTimeout(() => {
                 window.showTeamSetup();
-                document.getElementById('step4TeamSetup').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
+                document.getElementById('step4TeamSetup').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 500);
+        } else {
+            // ✅ NIEUW: 2 of 3 spelers: ga DIRECT naar Pagina 13 (Bal Selectie)
+            setTimeout(() => {
+                console.log(`🎱 Ga naar Pagina 13 voor ${totalPlayers} spelers`);
+                window.prepareFriendlyBallSelection();
+                showPage(13);
             }, 500);
         }
     }
