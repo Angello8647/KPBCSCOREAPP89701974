@@ -2225,3 +2225,192 @@
     color: #bdc3c7 !important;
     font-weight: 500 !important;
 }
+
+
+/* ==========================================
+   ✅ VRIENDSCHAPPELIJKE MATCH: CONFIGURATIE BLOKJES
+   ========================================== */
+
+.friendly-config-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.config-section {
+    margin-bottom: 60px;
+    transition: all 0.4s ease;
+}
+
+.config-section.hidden {
+    display: none;
+}
+
+.config-title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 900;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.config-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+/* De individuele blokjes */
+.config-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 4px solid transparent;
+    border-radius: 15px;
+    padding: 30px 40px;
+    min-width: 200px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover effect: oplichtende rand */
+.config-card:hover {
+    border-color: #2980b9;
+    background: rgba(41, 128, 185, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.4);
+}
+
+/* Gekozen state: dikke rand en glow */
+.config-card.selected {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.15);
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.6);
+    transform: scale(1.05);
+}
+
+/* Schaduw voor niet-gekozen blokjes */
+.config-card.dimmed {
+    opacity: 0.3 !important;
+    filter: grayscale(0.8) !important;
+    pointer-events: none !important; /* Zorgt dat je er niet per ongeluk op klikt */
+    transition: all 0.3s ease !important;
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.card-label {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.card-sublabel {
+    font-size: 1rem;
+    color: #bdc3c7;
+    font-weight: 500;
+}
+
+
+/* ==========================================
+   ✅ VRIENDSCHAPPELIJKE MATCH: VOLLEDIGE BREEDTE & 1 LIJN
+   ========================================== */
+
+/* 1. Maak de hoofdcontainer veel breder */
+.friendly-config-container {
+    width: 95vw !important;          /* Gebruik 95% van de schermbreedte */
+    max-width: 2000px !important;    /* Maar niet oneindig breed op reusachtige schermen */
+    margin: 0 auto !important;
+    padding: 40px 20px !important;
+}
+
+.config-section {
+    margin-bottom: 60px !important;
+    transition: all 0.4s ease !important;
+}
+
+.config-section.hidden {
+    display: none !important;
+}
+
+.config-title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem) !important;
+    font-weight: 900 !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    margin-bottom: 30px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+}
+
+/* 2. De magische 1-rij layout voor de speltypen */
+.single-line-options {
+    display: flex !important;
+    flex-wrap: nowrap !important;    /* ✅ VERBIEDT absoluut een 2e rij */
+    gap: 15px !important;            /* Ruimte tussen de blokken */
+    width: 100% !important;
+    justify-content: stretch !important; /* Forceer uitrekken naar de randen */
+}
+
+/* 3. De blokjes zelf: perfecte gelijke verdeling */
+.single-line-options .config-card {
+    flex: 1 1 0 !important;          /* ✅ DE MAGIE: Verdeel ruimte perfect gelijk over 6 kolommen */
+    min-width: 0 !important;         /* Sta toe dat ze krimpen als het scherm smaller is */
+    max-width: none !important;      /* ✅ VERWIJDER DE LIMiet: Laat ze zo groot worden als de ruimte toelaat */
+    
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 4px solid transparent !important;
+    border-radius: 15px !important;
+    padding: 25px 10px !important;   /* Ruimte binnen het blokje */
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Hover en Gekozen states (blijven hetzelfde, maar nu op de grotere blokken) */
+.single-line-options .config-card:hover {
+    border-color: #2980b9 !important;
+    background: rgba(41, 128, 185, 0.1) !important;
+    transform: translateY(-5px) !important;
+    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.4) !important;
+}
+
+.single-line-options .config-card.selected {
+    border-color: #2ecc71 !important;
+    background: rgba(46, 204, 113, 0.15) !important;
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.6) !important;
+    transform: scale(1.03) !important;
+}
+
+.single-line-options .config-card.dimmed {
+    opacity: 0.3 !important;
+    filter: grayscale(0.8) !important;
+    pointer-events: none !important;
+}
+
+/* 4. Tekst en iconen schalen mooi mee in de bredere blokken */
+.single-line-options .card-icon {
+    font-size: 2.8rem !important;
+    margin-bottom: 12px !important;
+}
+
+.single-line-options .card-label {
+    font-size: 1.25rem !important;   /* Iets groter voor betere leesbaarheid */
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    margin-bottom: 8px !important;
+    line-height: 1.2 !important;
+}
+
+.single-line-options .card-sublabel {
+    font-size: 1rem !important;
+    color: #bdc3c7 !important;
+    font-weight: 500 !important;
+}
