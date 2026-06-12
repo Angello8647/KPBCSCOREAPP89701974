@@ -1629,16 +1629,15 @@ window.prepareFriendlyBallSelection = function() {
             <div class="player-color-row" data-player="${i}">
                 <div class="player-color-name">${fm.players[i]}</div>
                 <div class="player-color-choices">
-                    <div class="color-dot white" onclick="window.assignFriendlyColor(${i}, 'wit', this)" title="Witte Bal">⚪</div>
-                    <div class="color-dot yellow" onclick="window.assignFriendlyColor(${i}, 'geel', this)" title="Gele Bal">🟡</div>
-                    <div class="color-dot red" onclick="window.assignFriendlyColor(${i}, 'rood', this)" title="Rode Bal">🔴</div>
+                    <div class="color-dot white" onclick="window.assignFriendlyColor(${i}, 'white', event)" title="Witte Bal">⚪</div>
+                    <div class="color-dot yellow" onclick="window.assignFriendlyColor(${i}, 'yellow', event)" title="Gele Bal">🟡</div>
+                    <div class="color-dot red" onclick="window.assignFriendlyColor(${i}, 'red', event)" title="Rode Bal">🔴</div>
                 </div>
             </div>`;
         }
         html += '</div>';
         container.innerHTML = html;
     }
-};
 
 // 2. Logica voor 2 of 4 spelers/teams
 window.selectFriendlyWhite = function(identifier, element) {
