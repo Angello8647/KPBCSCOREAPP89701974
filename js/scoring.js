@@ -1401,24 +1401,28 @@ window.assignOrder = function(playerNum, orderNum) {
     window.updateTeamButtons();
 };
 
-// 3. DE SMART DISABLE LOGICA (Het brein)
+// 3. DE SMART DISABLE LOGICA (100% Waterdicht)
 window.updateTeamButtons = function() {
     const teams = state.friendlyMatch.teams;
     const orders = state.friendlyMatch.orders;
     let allComplete = true;
 
-    // Tel hoeveel spelers er in elk team zitten, en of ze al een "1e" hebben
+    // 1. Tel en check bezette plekken per team én per positie
     let t1Count = 0, t2Count = 0;
-    let t1HasFirst = false, t2HasFirst = false;
+    let t1HasFirst = false, t1HasSecond = false;
+    let t2HasFirst = false, t2HasSecond = false;
 
     for (let i = 1; i <= 4; i++) {
         if (teams[i] === 1) t1Count++;
         if (teams[i] === 2) t2Count++;
+        
         if (teams[i] === 1 && orders[i] === 1) t1HasFirst = true;
+        if (teams[i] === 1 && orders[i] === 2) t1HasSecond = true;
         if (teams[i] === 2 && orders[i] === 1) t2HasFirst = true;
+        if (teams[i] === 2 && orders[i] === 2) t2HasSecond = true;
     }
 
-    // Evalueer elke speler
+    // 2. Evalueer elke speler en pas de knoppen aan
     for (let i = 1; i <= 4; i++) {
         const currentTeam = teams[i];
         const currentOrder = orders[i];
@@ -1447,39 +1451,24 @@ window.updateTeamButtons = function() {
             window.setBtnState(`o1-btn-${i}`, true, false, 'active-order');
             window.setBtnState(`o2-btn-${i}`, true, false, 'active-order');
         } else {
-            // Mag deze speler "1e" zijn in hun gekozen team?
+            // Bepaal of de plekken in het gekozen team al bezet zijn
             const teamHasFirst = (currentTeam === 1) ? t1HasFirst : t2HasFirst;
+            const teamHasSecond = (currentTeam === 1) ? t1HasSecond : t2HasSecond;
+
+            // Mag "1e" zijn? Alleen als het team nog geen "1e" heeft, OF als deze speler al de "1e" is.
             const canBeFirst = !teamHasFirst || currentOrder === 1;
-            
             window.setBtnState(`o1-btn-${i}`, !canBeFirst, currentOrder === 1, 'active-order');
-            // "2e" mag altijd als er een team is gekozen (het is de enige overgebleven optie als 1e bezet is)
-            window.setBtnState(`o2-btn-${i}`, false, currentOrder === 2, 'active-order');
+
+            // ✅ FIX: Mag "2e" zijn? Alleen als het team nog geen "2e" heeft, OF als deze speler al de "2e" is.
+            const canBeSecond = !teamHasSecond || currentOrder === 2;
+            window.setBtnState(`o2-btn-${i}`, !canBeSecond, currentOrder === 2, 'active-order');
         }
     }
 
-    // Activeer de startknop alleen als alles ingevuld is
+    // 3. Activeer de startknop alleen als alles ingevuld is
     const startBtn = document.getElementById('btnStartFriendlyMatch');
     if (startBtn) startBtn.disabled = !allComplete;
 };
-
-// Helper functie om knop states te zetten
-window.setBtnState = function(btnId, isDisabled, isActive, activeClass) {
-    const btn = document.getElementById(btnId);
-    if (!btn) return;
-
-    if (isDisabled) {
-        btn.classList.add('disabled');
-        btn.classList.remove(activeClass);
-    } else {
-        btn.classList.remove('disabled');
-        if (isActive) {
-            btn.classList.add(activeClass);
-        } else {
-            btn.classList.remove(activeClass);
-        }
-    }
-};
-
 // 4. Finale start actie (Placeholder voor nu)
 window.startFriendlyMatchFinal = function() {
     console.log("✅ Match startklaar!", state.friendlyMatch);
