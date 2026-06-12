@@ -1185,6 +1185,8 @@ window.renderPlayerList = function() {
 
 // 8. Finaliseer keuze en sluit modal
 window.finalizePlayerSelection = function(playerName) {
+    console.log(`✅ Speler ${currentPlayerSlot} gekozen: ${playerName}`);
+    
     // Sla op in state
     state.friendlyMatch = state.friendlyMatch || {};
     if (currentPlayerSlot === 1) {
@@ -1198,11 +1200,16 @@ window.finalizePlayerSelection = function(playerName) {
     // Toon het display blok op de hoofdpagina
     document.getElementById('step3PlayersDisplay').classList.remove('hidden');
     
+    // Sluit de modal
     window.closePlayerModal();
     
-    // Als speler 1 net gekozen is, open direct de modal voor speler 2
+    // ✅ FIX: Als speler 1 net gekozen is, open direct de modal voor speler 2
     if (currentPlayerSlot === 1 && !state.friendlyMatch.player2) {
-        setTimeout(() => window.openPlayerSelection(2), 300);
+        // Wacht iets langer zodat de modal volledig gesloten is
+        setTimeout(() => {
+            console.log("🔄 Open nu modal voor Speler 2");
+            window.openPlayerSelection(2);
+        }, 600); // ✅ Langere delay (600ms i.p.v. 300ms)
     }
 };
 
