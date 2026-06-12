@@ -1964,39 +1964,43 @@
 
 
 /* ==========================================
-   ✅ PAGINA 1 KNOPPEN: DUIDELIJKE RAND BIJ 'GEKOZEN' (FOCUS/HOVER)
+   ✅ PAGINA 1 KNOPPEN: DIKKE, OPVALLENDE RAND BIJ 'GEKOZEN'
    ========================================== */
 
-/* 1. Basis: reserveer ruimte voor een 3px rand, zodat de knop niet 'verspringt' */
+/* 1. Basis: reserveer ruimte voor een 5px rand, zodat de knop niet 'verspringt' */
 #page1 .next-btn,
 #page1 .friendly-btn {
-    border: 3px solid transparent !important; 
+    border: 5px solid transparent !important; /* ✅ Dikker dan hiervoor (was 3px) */
     transition: all 0.2s ease !important;
-    outline: none !important; /* Verwijder de lelijke standaard browser blauwe lijn */
+    outline: none !important; /* Verwijder de standaard browser lijn */
 }
 
-/* 2. De 'GEKOZEN' staat: Wanneer de knop de focus heeft (presenter Tab), 
-   erover gehovert wordt (muis), of ingedrukt wordt */
+/* 2. De 'GEKOZEN' staat: Focus (presenter Tab), Hover (muis), of Active (ingedrukt) */
 #page1 .next-btn:hover,
 #page1 .next-btn:focus,
 #page1 .next-btn:active,
 #page1 .friendly-btn:hover,
 #page1 .friendly-btn:focus,
 #page1 .friendly-btn:active {
-    border-color: #ffffff !important; /* Duidelijke, dikke witte rand */
+    /* ✅ Helder Cyaan als randkleur (past bij de Driebanden badge) */
+    border-color: #00d2d3 !important; 
+    
+    /* 💡 ALTERNATIEF: Wil je liever Goud/Geel omdat dat nóg meer opvalt? 
+       Verander de regel hierboven dan in: border-color: #f1c40f !important; */
+    
     transform: translateY(-3px) !important; /* Knop lift iets op voor 3D-effect */
 }
 
-/* 3. Specifieke kleur-gloed voor de GROENE knop (Officiële Matchen) */
+/* 3. De gloed aanpassen aan de nieuwe randkleur (voor de groene knop) */
 #page1 .next-btn:hover,
 #page1 .next-btn:focus,
 #page1 .next-btn:active {
-    box-shadow: 0 0 20px rgba(46, 204, 113, 0.6) !important; /* Groene gloed */
+    box-shadow: 0 0 25px rgba(0, 210, 211, 0.7) !important; /* Cyaan gloed */
 }
 
-/* 4. Specifieke kleur-gloed voor de BLAUWE knop (Vriendschappelijke Match) */
+/* 4. De gloed aanpassen aan de nieuwe randkleur (voor de blauwe knop) */
 #page1 .friendly-btn:hover,
 #page1 .friendly-btn:focus,
 #page1 .friendly-btn:active {
-    box-shadow: 0 0 20px rgba(52, 152, 219, 0.6) !important; /* Blauwe gloed */
+    box-shadow: 0 0 25px rgba(0, 210, 211, 0.7) !important; /* Cyaan gloed */
 }
