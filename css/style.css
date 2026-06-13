@@ -3179,7 +3179,7 @@
 }
 
 /* =========================================================================
-   ✅ PAGINA 14: VISUELE FEEDBACK (STRIKT GEÏSOLEERD & MATCHT COMPETITIE STIJL)
+   ✅ PAGINA 14: VISUELE FEEDBACK & CELLEN STYLING (STRIKT GEÏSOLEERD)
    ========================================================================= */
 
 /* 1. Algemene actieve speler schaal (subtiel omhoog) */
@@ -3197,7 +3197,7 @@
 }
 #page14 #friendlyP1CurrentCell.active-player .cell-value,
 #page14 #friendlyP1CurrentCell.active-player .cell-label {
-    color: #2c3e50 !important; /* Donkere tekst voor maximaal contrast */
+    color: #2c3e50 !important;
 }
 
 /* 3. HUIDIG blok Speler 2 (Rechts) als hij aan de beurt is */
@@ -3208,20 +3208,56 @@
 }
 #page14 #friendlyP2CurrentCell.active-player .cell-value,
 #page14 #friendlyP2CurrentCell.active-player .cell-label {
-    color: #2c3e50 !important; /* Donkere tekst voor maximaal contrast */
+    color: #2c3e50 !important;
 }
 
-/* 4. Dimmen van de tegenstander (alle blokken) */
+/* 4. Totaalpunten Speler 1 (Witte achtergrond, zwarte letters) */
+#page14 #friendlyP1TotalCell { 
+    background: white !important; 
+    color: black !important; 
+    border: 3px solid #3182ce !important; 
+}
+#page14 #friendlyP1TotalCell .cell-value { 
+    font-size: 6.5rem !important; 
+    color: #000 !important; 
+}
+#page14 #friendlyP1TotalCell .cell-label {
+    color: #3182ce !important;
+}
+
+/* 5. Totaalpunten Speler 2 (Gele achtergrond, zwarte letters) */
+#page14 #friendlyP2TotalCell { 
+    background: #f1c40f !important; 
+    color: black !important; 
+    border: 3px solid #3182ce !important; 
+}
+#page14 #friendlyP2TotalCell .cell-value { 
+    font-size: 6.5rem !important; 
+    color: #000 !important; 
+}
+#page14 #friendlyP2TotalCell .cell-label {
+    color: #000 !important;
+}
+
+/* 6. Dimmen van de tegenstander (alle blokken) */
 #page14 .score-cell.dimmed {
-    opacity: 0.3 !important;
-    filter: grayscale(0.6) !important;
+    opacity: 0.4 !important;
+    filter: grayscale(0.4) !important;
     transform: scale(0.96) !important;
     transition: all 0.3s ease !important;
 }
 
-/* 5. HUIDIG blok volledig verbergen voor de speler die NIET aan de beurt is */
+/* 7. HUIDIG blok volledig verbergen voor de speler die NIET aan de beurt is */
 #page14 .score-cell.turn-hidden {
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
+}
+
+/* 8. Totaal cellen: Houd de actieve speler helder (override dimmed) */
+#page14 #friendlyP1TotalCell.active-player, 
+#page14 #friendlyP2TotalCell.active-player {
+    opacity: 1 !important;
+    transform: scale(1.03) !important;
+    filter: none !important;
 }
