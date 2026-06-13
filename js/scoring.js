@@ -1801,3 +1801,109 @@ window.resetFriendlyBallSelection = function() {
     
     console.log("✅ Reset compleet. Alle kleuren zijn gewist.");
 };
+
+
+/* =========================================================================
+   ✅ PAGINA 14: VRIENDSCHAPPELIJK SCOREBORD LOGICA (STAP 2: STATE & UPDATE)
+   ========================================================================= */
+
+// 1. Initialiseer de beurt-logica wanneer Pagina 14 wordt geopend
+window.initFriendlyScoring = function() {
+    const fm = state.friendlyMatch;
+    if (!fm) return;
+
+    // Bepaal de limieten op basis van het speltype
+    if (fm.gameType === 'dubbeltje') {
+        fm.limits = { vrijspel: 3, bandstoten: 2, driebanden: 1 };
+    } else if (fm.gameType === 'triatlon-small') {
+        fm.limits = { vrijspel: 99, bandstoten: 99, driebanden: 99 }; // Geen limiet, alleen fase-overgang
+    } else if (fm.gameType === 'triatlon-large') {
+        fm.limits = { vrijspel: 99, bandstoten: 99, driebanden: 99 };
+    } else {
+        // Standaard voor 1-tegen-1 (vrijspel, bandstoten, driebanden)
+        fm.limits = { vrijspel: 99, bandstoten: 99, driebanden: 99 };
+    }
+
+    // ZORG DAT DEZE VARIABELEN BESTAAN (voor team-wissel logica)
+    if (!fm.turnState) {
+        fm.turnState = {
+            activeSide: 'left', // 'left' (Team 1) of 'right' (Team 2)
+            currentRun: 0,      // Aantal punten in deze beurt
+            phase: 'vrijspel',  // 'vrijspel', 'bandstoten', 'driebanden'
+            leftPlayerIndex: 1, // Index van speler die nu aan de beurt is (1 of 2)
+            rightPlayerIndex: 1 // Index van speler die nu aan de beurt is (1 of 2)
+        };
+    }
+
+    // Update de UI voor het eerst
+    window.updateFriendlyUI();
+};
+
+// 2. De Motor: Update de hele UI op basis van de state
+window.updateFriendlyUI = function() {
+    const fm = state.friendlyMatch;
+    const ts = fm.turnState;
+    const isTeam = fm.numPlayers === 4;
+
+    // --- A. Bepaal wie er getoond moet worden ---
+    // Links (Team 1)
+    let leftName = "";
+    let leftLimit = fm.limits[ts.phase];
+    let leftTotal = 0;
+    
+    // Rechts (Team 2)
+    let rightName = "";
+    let rightLimit = fm.limits[ts.phase];
+    let rightTotal = 0;
+
+    if (isTeam) {
+        // Team logica: Haal namen op basis van de actieve index
+        const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        
+        // Helper voor voornamen (zoals besproken)
+        const getFirstName = (fullName) => fullName.split(' ')[0];
+
+        const leftPName = fm.players[t1Keys[ts.leftPlayerIndex - 1]];
+        const rightPName = fm.players[t2Keys[ts.rightPlayerIndex - 1]];
+
+        leftName = ts.activeSide === 'left' ? `👤 ${getFirstName(leftPName)}` : `⏳ ${getFirstName(leftPName)}`;
+        rightName = ts.activeSide === 'right' ? `👤 ${getFirstName(rightPName)}` : `⏳ ${getFirstName(rightPName)}`;
+        
+        // TODO: Totale score per team ophalen (komt in stap 4)
+        leftTotal = 0; 
+        rightTotal = 0;
+    } else {
+        // 2 of 3 spelers logica (Individueel)
+        leftName = ts.activeSide === 'left' ? `👤 ${fm.players[1]}` : `⏳ ${fm.players[1]}`;
+        rightName = ts.activeSide === 'right' ? `👤 ${fm.players[2]}` : `⏳ ${fm.players[2]}`;
+    }
+
+    // --- B. Update de Header ---
+    document.getElementById('friendlyHeaderName1').textContent = leftName;
+    document.getElementById('friendlyHeaderTarget1').textContent = ts.activeSide === 'left' ? (leftLimit - ts.currentRun) : leftLimit;
+    
+    document.getElementById('friendlyHeaderName2').textContent = rightName;
+    document.getElementById('friendlyHeaderTarget2').textContent = ts.activeSide === 'right' ? (rightLimit - ts.currentRun) : rightLimit;
+
+    // Discipline in het midden (Hoofdletters)
+    const phaseText = ts.phase === 'vrijspel' ? 'VRIJSPEL' : (ts.phase === 'bandstoten' ? 'BANDSTOTEN' : 'DRIEBANDEN');
+    document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
+
+    // --- C. Update de Score Cellen ---
+    document.getElementById('friendlyP1NeededVal').textContent = leftLimit;
+    document.getElementById('friendlyP1CurrentVal').textContent = ts.activeSide === 'left' ? ts.currentRun : 0;
+    document.getElementById('friendlyP1TotalVal').textContent = leftTotal;
+
+    document.getElementById('friendlyP2NeededVal').textContent = rightLimit;
+    document.getElementById('friendlyP2CurrentVal').textContent = ts.activeSide === 'right' ? ts.currentRun : 0;
+    document.getElementById('friendlyP2TotalVal').textContent = rightTotal;
+
+    // --- D. Visuele feedback (Active Turn Highlight) ---
+    const centerInfo = document.getElementById('friendlyCenterInfo');
+    if (ts.activeSide === 'left') {
+        centerInfo.innerHTML = `<div class="cell-value" style="font-size: 1.5rem; color: #2ecc71; font-weight: 800;">BEZIG</div><div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(Klik bij MISS)</div>`;
+    } else {
+        centerInfo.innerHTML = `<div class="cell-value" style="font-size: 1.5rem; color: #f1c40f; font-weight: 800;">WACHTEN</div><div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(Tegenstander is aan zet)</div>`;
+    }
+};
