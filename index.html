@@ -531,7 +531,63 @@
         </div>
     </div>
 
+    <!-- PAGINA 14: Vriendschappelijk Scorebord -->
+    <div id="page14" class="page">
+        <div class="header">
+            <div>
+                <button class="home-btn" onclick="showPage(1)">🏠 Hoofdmenu</button>
+                <button class="back-btn" onclick="window.endFriendlyMatch()" style="background: rgba(231, 76, 60, 0.2); color: #e74c3c;">🛑 Stop Match</button>
+            </div>
+            <h1 id="friendlyMatchTitle">Vriendschappelijke Match</h1>
+            <div style="width: 70px;"></div>
+        </div>
 
+        <!-- DYNAMISCHE HEADER: Toont wie er ligt en de resterende beurten -->
+        <div class="friendly-score-header">
+            <!-- LINKER KANT (Team 1 / Speler 1) -->
+            <div class="friendly-player-panel left-panel" id="panelLeft">
+                <div class="player-status-badge">AAN TAFEL</div>
+                <div class="player-name" id="friendlyLeftName">Naam Speler</div>
+                <div class="player-discipline" id="friendlyLeftDiscipline">Vrijspel</div>
+                <div class="player-limit-counter">
+                    Nog <span id="friendlyLeftLimit" style="color: #2ecc71; font-weight: 900; font-size: 1.4rem;">3</span> beurten
+                </div>
+            </div>
+
+            <!-- RECHTER KANT (Team 2 / Speler 2) -->
+            <div class="friendly-player-panel right-panel" id="panelRight">
+                <div class="player-status-badge waiting">VOLGENDE BEURT</div>
+                <div class="player-name" id="friendlyRightName">Naam Speler</div>
+                <div class="player-discipline" id="friendlyRightDiscipline">Vrijspel</div>
+                <div class="player-limit-counter">
+                    Nog <span id="friendlyRightLimit" style="color: #f1c40f; font-weight: 900; font-size: 1.4rem;">3</span> beurten
+                </div>
+            </div>
+        </div>
+
+        <!-- SCORE BLOKKEN (Identiek aan competitie, maar met dynamische ID's) -->
+        <div class="friendly-score-container">
+            <!-- Links -->
+            <div class="score-block" id="scoreBlockLeft">
+                <div class="score-display" id="friendlyScoreLeft">0</div>
+                <div class="score-controls">
+                    <button class="score-btn minus" onclick="window.friendlyScore(-1)">-1</button>
+                    <button class="score-btn plus" onclick="window.friendlyScore(1)">+1</button>
+                    <button class="score-btn miss" onclick="window.friendlyMiss()">MISS</button>
+                </div>
+            </div>
+
+            <!-- Rechts -->
+            <div class="score-block" id="scoreBlockRight">
+                <div class="score-display" id="friendlyScoreRight">0</div>
+                <div class="score-controls">
+                    <button class="score-btn minus" onclick="window.friendlyScore(-1)">-1</button>
+                    <button class="score-btn plus" onclick="window.friendlyScore(1)">+1</button>
+                    <button class="score-btn miss" onclick="window.friendlyMiss()">MISS</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
 
     
