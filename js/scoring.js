@@ -1762,10 +1762,11 @@ window.updateFriendly3PlayerUI = function() {
 window.startFriendlyMatchFromBallSelection = function() {
     console.log("🚀 VRIENDSCHAPPELIJKE MATCH GESTART!", state.friendlyMatch);
     
-    // HIER KOMT STRAKS DE NAVIGATIE NAAR HET ECHTE SCOREBORD
-    // Bijvoorbeeld: showPage(5); 
+    // Navigeer naar Pagina 14 (Vriendschappelijk Scorebord)
+    showPage(14);
     
-    alert("✅ Match configuratie compleet en opgeslagen in state!\n\nKlaar om door te schakelen naar het scorebord.");
+    // Initialiseer de scoring logica
+    window.initFriendlyScoring();
 };
 
 // 6. Reset alle kleurkeuzes op Pagina 13
