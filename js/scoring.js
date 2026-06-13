@@ -1804,79 +1804,74 @@ window.resetFriendlyBallSelection = function() {
 
 
 /* =========================================================================
-   ✅ PAGINA 14: VRIENDSCHAPPELIJK SCOREBORD LOGICA (STAP 2: STATE & UPDATE)
+   ✅ PAGINA 14: VRIENDSCHAPPELIJK SCOREBORD - COMPLETE LOGICA
    ========================================================================= */
 
-// 1. Initialiseer de beurt-logica wanneer Pagina 14 wordt geopend
+// 1. INIT: Wordt aangeroepen wanneer Pagina 14 wordt geopend
 window.initFriendlyScoring = function() {
     const fm = state.friendlyMatch;
     if (!fm) return;
 
-    // Bepaal de limieten op basis van het speltype
+    // A. Bepaal de limieten per fase op basis van speltype
     if (fm.gameType === 'dubbeltje') {
         fm.limits = { vrijspel: 3, bandstoten: 2, driebanden: 1 };
+        fm.thresholds = { vrijspel: 40, bandstoten: 20, driebanden: 10 };
     } else if (fm.gameType === 'triatlon-small') {
-        fm.limits = { vrijspel: 99, bandstoten: 99, driebanden: 99 }; // Geen limiet, alleen fase-overgang
+        fm.limits = { vrijspel: 99, bandstoten: 99, driebanden: 99 };
+        fm.thresholds = { vrijspel: 20, bandstoten: 10, driebanden: 5 };
     } else if (fm.gameType === 'triatlon-large') {
         fm.limits = { vrijspel: 99, bandstoten: 99, driebanden: 99 };
+        fm.thresholds = { vrijspel: 40, bandstoten: 20, driebanden: 10 };
     } else {
-        // Standaard voor 1-tegen-1 (vrijspel, bandstoten, driebanden)
+        // Vrijspel, bandstoten, driebanden (1-tegen-1)
         fm.limits = { vrijspel: 99, bandstoten: 99, driebanden: 99 };
+        fm.thresholds = { vrijspel: 999, bandstoten: 999, driebanden: 999 }; // Geen fase-overgang
     }
 
-    // ZORG DAT DEZE VARIABELEN BESTAAN (voor team-wissel logica)
+    // B. Initialiseer de turn state (als die nog niet bestaat)
     if (!fm.turnState) {
         fm.turnState = {
-            activeSide: 'left', // 'left' (Team 1) of 'right' (Team 2)
+            activeSide: 'left', // 'left' (Team 1/Speler 1) of 'right' (Team 2/Speler 2)
             currentRun: 0,      // Aantal punten in deze beurt
-            phase: 'vrijspel',  // 'vrijspel', 'bandstoten', 'driebanden'
-            leftPlayerIndex: 1, // Index van speler die nu aan de beurt is (1 of 2)
-            rightPlayerIndex: 1 // Index van speler die nu aan de beurt is (1 of 2)
+            phase: 'vrijspel',  // Huidige discipline
+            leftPlayerIndex: 1, // 1 of 2 (welke speler uit Team 1 ligt er?)
+            rightPlayerIndex: 1, // 1 of 2 (welke speler uit Team 2 ligt er?)
+            leftTotalScore: 0,  // Totale score Team 1/Speler 1
+            rightTotalScore: 0, // Totale score Team 2/Speler 2
+            leftPhaseScore: 0,  // Score in huidige fase (Team 1/Speler 1)
+            rightPhaseScore: 0, // Score in huidige fase (Team 2/Speler 2)
+            lastMissedBy: null  // 'left' of 'right' (om te weten wie er niet mag beginnen)
         };
     }
 
-    // Update de UI voor het eerst
+    // C. Update de UI voor het eerst
     window.updateFriendlyUI();
 };
 
-// 2. De Motor: Update de hele UI op basis van de state
+// 2. DE MOTOR: Update de hele UI op basis van de state
 window.updateFriendlyUI = function() {
     const fm = state.friendlyMatch;
     const ts = fm.turnState;
     const isTeam = fm.numPlayers === 4;
 
-    // --- A. Bepaal wie er getoond moet worden ---
-    // Links (Team 1)
-    let leftName = "";
-    let leftLimit = fm.limits[ts.phase];
-    let leftTotal = 0;
-    
-    // Rechts (Team 2)
-    let rightName = "";
-    let rightLimit = fm.limits[ts.phase];
-    let rightTotal = 0;
+    // --- A. Bepaal de namen en limieten ---
+    let leftName = "", rightName = "";
+    const leftLimit = fm.limits[ts.phase];
+    const rightLimit = fm.limits[ts.phase];
 
     if (isTeam) {
-        // Team logica: Haal namen op basis van de actieve index
         const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
         const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
         
-        // Helper voor voornamen (zoals besproken)
         const getFirstName = (fullName) => fullName.split(' ')[0];
-
         const leftPName = fm.players[t1Keys[ts.leftPlayerIndex - 1]];
         const rightPName = fm.players[t2Keys[ts.rightPlayerIndex - 1]];
 
-        leftName = ts.activeSide === 'left' ? `👤 ${getFirstName(leftPName)}` : `⏳ ${getFirstName(leftPName)}`;
-        rightName = ts.activeSide === 'right' ? `👤 ${getFirstName(rightPName)}` : `⏳ ${getFirstName(rightPName)}`;
-        
-        // TODO: Totale score per team ophalen (komt in stap 4)
-        leftTotal = 0; 
-        rightTotal = 0;
+        leftName = ts.activeSide === 'left' ? getFirstName(leftPName) : getFirstName(leftPName);
+        rightName = ts.activeSide === 'right' ? getFirstName(rightPName) : getFirstName(rightPName);
     } else {
-        // 2 of 3 spelers logica (Individueel)
-        leftName = ts.activeSide === 'left' ? `👤 ${fm.players[1]}` : `⏳ ${fm.players[1]}`;
-        rightName = ts.activeSide === 'right' ? `👤 ${fm.players[2]}` : `⏳ ${fm.players[2]}`;
+        leftName = fm.players[1];
+        rightName = fm.players[2];
     }
 
     // --- B. Update de Header ---
@@ -1886,24 +1881,151 @@ window.updateFriendlyUI = function() {
     document.getElementById('friendlyHeaderName2').textContent = rightName;
     document.getElementById('friendlyHeaderTarget2').textContent = ts.activeSide === 'right' ? (rightLimit - ts.currentRun) : rightLimit;
 
-    // Discipline in het midden (Hoofdletters)
     const phaseText = ts.phase === 'vrijspel' ? 'VRIJSPEL' : (ts.phase === 'bandstoten' ? 'BANDSTOTEN' : 'DRIEBANDEN');
     document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
 
     // --- C. Update de Score Cellen ---
     document.getElementById('friendlyP1NeededVal').textContent = leftLimit;
     document.getElementById('friendlyP1CurrentVal').textContent = ts.activeSide === 'left' ? ts.currentRun : 0;
-    document.getElementById('friendlyP1TotalVal').textContent = leftTotal;
+    document.getElementById('friendlyP1TotalVal').textContent = ts.leftTotalScore;
 
     document.getElementById('friendlyP2NeededVal').textContent = rightLimit;
     document.getElementById('friendlyP2CurrentVal').textContent = ts.activeSide === 'right' ? ts.currentRun : 0;
-    document.getElementById('friendlyP2TotalVal').textContent = rightTotal;
+    document.getElementById('friendlyP2TotalVal').textContent = ts.rightTotalScore;
 
-    // --- D. Visuele feedback (Active Turn Highlight) ---
+    // --- D. Update de Middenknop ---
     const centerInfo = document.getElementById('friendlyCenterInfo');
     if (ts.activeSide === 'left') {
         centerInfo.innerHTML = `<div class="cell-value" style="font-size: 1.5rem; color: #2ecc71; font-weight: 800;">BEZIG</div><div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(Klik bij MISS)</div>`;
     } else {
         centerInfo.innerHTML = `<div class="cell-value" style="font-size: 1.5rem; color: #f1c40f; font-weight: 800;">WACHTEN</div><div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(Tegenstander is aan zet)</div>`;
+    }
+};
+
+// 3. SCORE WIJZIGEN (+1 of -1)
+window.friendlyChangeScore = function(delta) {
+    const fm = state.friendlyMatch;
+    const ts = fm.turnState;
+
+    // Sla state op voor undo
+    window.lastFriendlyState = JSON.parse(JSON.stringify(fm));
+
+    // Update de score
+    ts.currentRun += delta;
+    if (ts.activeSide === 'left') {
+        ts.leftTotalScore += delta;
+        ts.leftPhaseScore += delta;
+    } else {
+        ts.rightTotalScore += delta;
+        ts.rightPhaseScore += delta;
+    }
+
+    // Check of het maximum is bereikt (bij dubbeltje)
+    const limit = fm.limits[ts.phase];
+    if (ts.currentRun >= limit) {
+        // Verplichte wissel naar partner
+        window.friendlySwitchToPartner();
+        return;
+    }
+
+    // Check of de fase-drempel is bereikt (bij triatlon)
+    const threshold = fm.thresholds[ts.phase];
+    const currentPhaseScore = ts.activeSide === 'left' ? ts.leftPhaseScore : ts.rightPhaseScore;
+    if (currentPhaseScore >= threshold && ts.phase !== 'driebanden') {
+        // Fase-overgang
+        window.friendlyAdvancePhase();
+        return;
+    }
+
+    // Update UI
+    window.updateFriendlyUI();
+};
+
+// 4. MISS / EINDE BEURT
+window.friendlyMiss = function() {
+    const fm = state.friendlyMatch;
+    const ts = fm.turnState;
+
+    // Sla state op voor undo
+    window.lastFriendlyState = JSON.parse(JSON.stringify(fm));
+
+    // Onthoud wie er miste
+    ts.lastMissedBy = ts.activeSide;
+
+    // Wissel naar tegenstander
+    ts.activeSide = ts.activeSide === 'left' ? 'right' : 'left';
+    ts.currentRun = 0;
+
+    // De speler die nu aan de beurt komt, is de PARTNER van degene die net miste
+    if (ts.activeSide === 'left') {
+        ts.leftPlayerIndex = ts.leftPlayerIndex === 1 ? 2 : 1;
+    } else {
+        ts.rightPlayerIndex = ts.rightPlayerIndex === 1 ? 2 : 1;
+    }
+
+    // Update UI
+    window.updateFriendlyUI();
+};
+
+// 5. WISSEL NAAR PARTNER (bij max punten of fase-overgang)
+window.friendlySwitchToPartner = function() {
+    const fm = state.friendlyMatch;
+    const ts = fm.turnState;
+
+    // Wissel binnen hetzelfde team
+    if (ts.activeSide === 'left') {
+        ts.leftPlayerIndex = ts.leftPlayerIndex === 1 ? 2 : 1;
+    } else {
+        ts.rightPlayerIndex = ts.rightPlayerIndex === 1 ? 2 : 1;
+    }
+
+    // Reset de run
+    ts.currentRun = 0;
+
+    // Update UI
+    window.updateFriendlyUI();
+};
+
+// 6. FASE-OVERGANG (Vrijspel → Bandstoten → Driebanden)
+window.friendlyAdvancePhase = function() {
+    const fm = state.friendlyMatch;
+    const ts = fm.turnState;
+
+    // Ga naar de volgende fase
+    if (ts.phase === 'vrijspel') {
+        ts.phase = 'bandstoten';
+    } else if (ts.phase === 'bandstoten') {
+        ts.phase = 'driebanden';
+    }
+
+    // Reset de fase-score
+    if (ts.activeSide === 'left') {
+        ts.leftPhaseScore = 0;
+    } else {
+        ts.rightPhaseScore = 0;
+    }
+
+    // Verplichte wissel naar partner
+    window.friendlySwitchToPartner();
+};
+
+// 7. UNDO
+window.friendlyUndo = function() {
+    if (!window.lastFriendlyState) return;
+    
+    state.friendlyMatch = window.lastFriendlyState;
+    window.lastFriendlyState = null;
+    
+    window.updateFriendlyUI();
+};
+
+// 8. MATCH STOPPEN
+window.endFriendlyMatch = function() {
+    if (confirm('Weet je zeker dat je deze vriendschappelijke match wilt stoppen?')) {
+        // Reset de state
+        state.friendlyMatch = null;
+        
+        // Ga terug naar hoofdmenu
+        showPage(1);
     }
 };
