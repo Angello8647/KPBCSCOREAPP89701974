@@ -3102,7 +3102,6 @@
 .score-btn.miss:hover { background: #7f8c8d; transform: scale(1.05); }
 
 
-
 /* =========================================================================
    ✅ MODAL: TARGET & GEMIDDELDE INFO STYLING
    ========================================================================= */
@@ -3157,7 +3156,6 @@
 .target-stat .value.yellow { color: #f1c40f; }
 .target-stat .value.red { color: #e74c3c; }
 
-/* Dropdown styling voor handmatige invoer */
 .target-select {
     width: 100%;
     padding: 8px 12px;
