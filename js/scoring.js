@@ -1328,37 +1328,56 @@ window.renderPlayerList = function() {
     });
 };
 
-// 8. Bevestig naam (werkt voor ZOWEL Clublid als Gast)
+// 8. Bevestig naam (met Target Validatie)
 window.confirmTypedName = function() {
     if (currentSearchString.trim() === "") {
         alert("⚠️ Voer eerst een naam in!\n\nKlik op een naam uit de lijst of typ een naam met de letters.");
         return;
     }
     
-    // ✅ Check of deze naam al gekozen is
+    // ✅ NIEUWE VALIDATIE: Target mag niet 0 zijn
+    if (window.tempPlayerTarget === 0) {
+        alert("⚠️ Het te spelen doel mag niet 0 zijn.\n\nKies een waarde uit het dropdown menu of controleer de naam.");
+        return;
+    }
+
+    // Check of deze naam al gekozen is (werkt nu met objecten)
     if (state.friendlyMatch && state.friendlyMatch.players) {
-        const alreadyChosen = Object.values(state.friendlyMatch.players);
-        if (alreadyChosen.includes(currentSearchString.trim())) {
+        const alreadyChosenNames = Object.values(state.friendlyMatch.players).map(p => typeof p === 'object' ? p.name : p);
+        if (alreadyChosenNames.includes(currentSearchString.trim())) {
             alert(`⚠️ "${currentSearchString.trim()}" is al gekozen als een andere speler!\n\nKies een andere speler.`);
             return;
         }
     }
     
-    window.finalizePlayerSelection(currentSearchString.trim());
+    // Roep finalize aan met de volledige data als object
+    window.finalizePlayerSelection({
+        name: currentSearchString.trim(),
+        target: window.tempPlayerTarget,
+        average: window.tempPlayerAverage,
+        isGuest: isGuestMode
+    });
 };
-// 9. Finaliseer keuze
-window.finalizePlayerSelection = function(playerName) {
-    console.log(`✅ Speler ${currentPlayerSlot} gekozen: ${playerName}`);
+
+// 9. Finaliseer keuze (Aangepast om object op te slaan)
+window.finalizePlayerSelection = function(playerData) {
+    // Veiligheid: ondersteun ook oude string-aanroepen
+    const name = typeof playerData === 'object' ? playerData.name : playerData;
+    const target = typeof playerData === 'object' ? playerData.target : 0;
+    const average = typeof playerData === 'object' ? playerData.average : 0;
+    const isGuest = typeof playerData === 'object' ? playerData.isGuest : false;
+
+    console.log(`✅ Speler ${currentPlayerSlot} bevestigd:`, name, `| Target:`, target);
     
-    // Sla op in state
+    // Sla op in state als OBJECT
     state.friendlyMatch = state.friendlyMatch || {};
     if (!state.friendlyMatch.players) state.friendlyMatch.players = {};
-    state.friendlyMatch.players[currentPlayerSlot] = playerName;
+    state.friendlyMatch.players[currentPlayerSlot] = { name, target, average, isGuest };
     
     // Update de display met het juiste icoontje
     const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
     const displayEl = document.getElementById(`displayPlayer${currentPlayerSlot}`);
-    if (displayEl) displayEl.textContent = `${icons[currentPlayerSlot]} ${playerName}`;
+    if (displayEl) displayEl.textContent = `${icons[currentPlayerSlot]} ${name}`;
     
     // Toon het display blok
     document.getElementById('step3PlayersDisplay').classList.remove('hidden');
@@ -1369,24 +1388,19 @@ window.finalizePlayerSelection = function(playerName) {
     const totalPlayers = state.friendlyMatch.numPlayers || 2;
     
     if (currentPlayerSlot < totalPlayers) {
-        // Nog niet alle spelers gekozen? Open de volgende
         setTimeout(() => {
             console.log(`🔄 Open nu modal voor Speler ${currentPlayerSlot + 1}`);
             window.openPlayerSelection(currentPlayerSlot + 1);
         }, 600);
-        
     } else {
-        // Alle spelers zijn gekozen!
         console.log(`🎉 Alle ${totalPlayers} spelers zijn gekozen!`);
         
         if (totalPlayers === 4) {
-            // 4 spelers: toon team indeling (Stap 4)
             setTimeout(() => {
                 window.showTeamSetup();
                 document.getElementById('step4TeamSetup').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 500);
         } else {
-            // ✅ NIEUW: 2 of 3 spelers: ga DIRECT naar Pagina 13 (Bal Selectie)
             setTimeout(() => {
                 console.log(`🎱 Ga naar Pagina 13 voor ${totalPlayers} spelers`);
                 window.prepareFriendlyBallSelection();
