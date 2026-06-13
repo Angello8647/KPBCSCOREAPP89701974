@@ -776,6 +776,9 @@ function initPresenterControls() {
 // ==========================================
 // MATCH SAMENVATTING RENDEREN (Pagina 6)
 // ==========================================
+// ==========================================
+// MATCH SAMENVATTING RENDEREN (Pagina 6)
+// ==========================================
 function renderMatchSummary() {
     if (!state.currentMatch) return;
 
@@ -832,88 +835,118 @@ function renderMatchSummary() {
     const p2Target = state.player2.target;
     const p2TSG = getTSG(p2Name);
 
+    // ✅ NIEUW: Check of dit een vriendschappelijke match is
+    const isFriendly = state.currentMatch.cat === 'Vriendschappelijk';
+    
+    // ✅ NIEUW: Bepaal winnaar alleen bij vriendschappelijke matches
+    let p1IsWinner = false;
+    let p2IsWinner = false;
+    let p1NameDisplay = `${p1Name} ⚪`;
+    let p2NameDisplay = `${p2Name} 🟡`;
+    let p1CardStyle = '';
+    let p2CardStyle = '';
+    
+    if (isFriendly && state.currentMatch.winner) {
+        const winner = state.currentMatch.winner;
+        p1IsWinner = (p1Name === winner);
+        p2IsWinner = (p2Name === winner);
+        
+        // Maak een duidelijke winnaars-badge
+        const winnerBadge = '<span style="display:inline-block; margin-left:10px; padding:4px 12px; background:#2ecc71; color:white; border-radius:20px; font-size:0.9rem; font-weight:900; box-shadow: 0 2px 8px rgba(46, 204, 113, 0.4);">🏆 WINNAAR</span>';
+        
+        if (p1IsWinner) p1NameDisplay += ` ${winnerBadge}`;
+        if (p2IsWinner) p2NameDisplay += ` ${winnerBadge}`;
+        
+        // Groene rand voor de winnaarskaart
+        if (p1IsWinner) p1CardStyle = 'style="border: 3px solid #2ecc71; box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);"';
+        if (p2IsWinner) p2CardStyle = 'style="border: 3px solid #2ecc71; box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);"';
+    }
+
     const html1 = `
-        <div class="summary-player-name">${p1Name} ⚪</div>
-        
-        <div class="summary-stats-grid">
-            <div class="summary-stat">
-                <div class="summary-label">Eindscore</div>
-                <div class="summary-value">${p1Score}</div>
+        <div class="summary-player-card" ${p1CardStyle}>
+            <div class="summary-player-name">${p1NameDisplay}</div>
+            
+            <div class="summary-stats-grid">
+                <div class="summary-stat">
+                    <div class="summary-label">Eindscore</div>
+                    <div class="summary-value">${p1Score}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-label">Beurten</div>
+                    <div class="summary-value">${p1Turns}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-label">Hoogste</div>
+                    <div class="summary-value">${p1Highest}</div>
+                </div>
             </div>
-            <div class="summary-stat">
-                <div class="summary-label">Beurten</div>
-                <div class="summary-value">${p1Turns}</div>
+            
+            <div class="summary-stats-grid">
+                <div class="summary-stat">
+                    <div class="summary-label">Target</div>
+                    <div class="summary-value">${p1Target}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-label">Gemiddelde</div>
+                    <div class="summary-value">${p1Avg}</div>
+                </div>
+                <div class="summary-stat tsg-stat">
+                    <div class="summary-label">TSG</div>
+                    <div class="summary-value">${p1TSG}</div>
+                </div>
             </div>
-            <div class="summary-stat">
-                <div class="summary-label">Hoogste</div>
-                <div class="summary-value">${p1Highest}</div>
+            
+            <div class="summary-turns-container">
+                <div class="summary-turns-title">📊 Alle Beurten</div>
+                ${renderTurnsHorizontal(state.player1.turns)}
             </div>
-        </div>
-        
-        <div class="summary-stats-grid">
-            <div class="summary-stat">
-                <div class="summary-label">Target</div>
-                <div class="summary-value">${p1Target}</div>
-            </div>
-            <div class="summary-stat">
-                <div class="summary-label">Gemiddelde</div>
-                <div class="summary-value">${p1Avg}</div>
-            </div>
-            <div class="summary-stat tsg-stat">
-                <div class="summary-label">TSG</div>
-                <div class="summary-value">${p1TSG}</div>
-            </div>
-        </div>
-        
-        <div class="summary-turns-container">
-            <div class="summary-turns-title">📊 Alle Beurten</div>
-            ${renderTurnsHorizontal(state.player1.turns)}
         </div>
     `;
 
     const html2 = `
-        <div class="summary-player-name">${p2Name} 🟡</div>
-        
-        <div class="summary-stats-grid">
-            <div class="summary-stat">
-                <div class="summary-label">Eindscore</div>
-                <div class="summary-value">${p2Score}</div>
+        <div class="summary-player-card" ${p2CardStyle}>
+            <div class="summary-player-name">${p2NameDisplay}</div>
+            
+            <div class="summary-stats-grid">
+                <div class="summary-stat">
+                    <div class="summary-label">Eindscore</div>
+                    <div class="summary-value">${p2Score}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-label">Beurten</div>
+                    <div class="summary-value">${p2Turns}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-label">Hoogste</div>
+                    <div class="summary-value">${p2Highest}</div>
+                </div>
             </div>
-            <div class="summary-stat">
-                <div class="summary-label">Beurten</div>
-                <div class="summary-value">${p2Turns}</div>
+            
+            <div class="summary-stats-grid">
+                <div class="summary-stat">
+                    <div class="summary-label">Target</div>
+                    <div class="summary-value">${p2Target}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-label">Gemiddelde</div>
+                    <div class="summary-value">${p2Avg}</div>
+                </div>
+                <div class="summary-stat tsg-stat">
+                    <div class="summary-label">TSG</div>
+                    <div class="summary-value">${p2TSG}</div>
+                </div>
             </div>
-            <div class="summary-stat">
-                <div class="summary-label">Hoogste</div>
-                <div class="summary-value">${p2Highest}</div>
+            
+            <div class="summary-turns-container">
+                <div class="summary-turns-title">📊 Alle Beurten</div>
+                ${renderTurnsHorizontal(state.player2.turns)}
             </div>
-        </div>
-        
-        <div class="summary-stats-grid">
-            <div class="summary-stat">
-                <div class="summary-label">Target</div>
-                <div class="summary-value">${p2Target}</div>
-            </div>
-            <div class="summary-stat">
-                <div class="summary-label">Gemiddelde</div>
-                <div class="summary-value">${p2Avg}</div>
-            </div>
-            <div class="summary-stat tsg-stat">
-                <div class="summary-label">TSG</div>
-                <div class="summary-value">${p2TSG}</div>
-            </div>
-        </div>
-        
-        <div class="summary-turns-container">
-            <div class="summary-turns-title">📊 Alle Beurten</div>
-            ${renderTurnsHorizontal(state.player2.turns)}
         </div>
     `;
 
     document.getElementById('summaryPlayer1').innerHTML = html1;
     document.getElementById('summaryPlayer2').innerHTML = html2;
 }
-
 // ✅ NAVIGATIE NAAR VRIENDSCHAPPELIJKE MATCH PAGINA
 window.startFriendlyMatch = function() {
     // 1. Verberg alle pagina's
