@@ -1867,18 +1867,22 @@ window.initFriendlyScoring = function() {
     // B. Initialiseer de turn state (als die nog niet bestaat)
     if (!fm.turnState) {
         fm.turnState = {
-            activeSide: 'left', // 'left' (Team 1/Speler 1) of 'right' (Team 2/Speler 2)
-            currentRun: 0,      // Aantal punten in deze beurt
-            phase: 'vrijspel',  // Huidige discipline
-            leftPlayerIndex: 1, // 1 of 2 (welke speler uit Team 1 ligt er?)
-            rightPlayerIndex: 1, // 1 of 2 (welke speler uit Team 2 ligt er?)
-            leftTotalScore: 0,  // Totale score Team 1/Speler 1
-            rightTotalScore: 0, // Totale score Team 2/Speler 2
-            leftPhaseScore: 0,  // Score in huidige fase (Team 1/Speler 1)
-            rightPhaseScore: 0, // Score in huidige fase (Team 2/Speler 2)
-            lastMissedBy: null, // 'left' of 'right' (om te weten wie er niet mag beginnen)
-            leftBeurtNummer: 1, // ✅ NIEUW: Beurt nummer voor links
-            rightBeurtNummer: 1 // ✅ NIEUW: Beurt nummer voor rechts
+            activeSide: 'left',
+            currentRun: 0,
+            phase: 'vrijspel',
+            leftPlayerIndex: 1,
+            rightPlayerIndex: 1,
+            leftTotalScore: 0,
+            rightTotalScore: 0,
+            leftPhaseScore: 0,
+            rightPhaseScore: 0,
+            lastMissedBy: null,
+            leftBeurtNummer: 1,
+            rightBeurtNummer: 1,
+            leftTurns: [],         // ✅ NIEUW: Lijst van voltooide beurten links
+            rightTurns: [],        // ✅ NIEUW: Lijst van voltooide beurten rechts
+            leftHighestSeries: 0,  // ✅ NIEUW: Hoogste reeks links
+            rightHighestSeries: 0  // ✅ NIEUW: Hoogste reeks rechts
         };
     }
 
