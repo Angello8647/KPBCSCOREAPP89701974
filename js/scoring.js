@@ -1890,46 +1890,75 @@ window.updateFriendlyUI = function() {
     const ts = fm.turnState;
     const isTeam = fm.numPlayers === 4;
 
-    // --- A. Bepaal de namen en limieten ---
+    // ✅ HULPFUNCTIE: Haal speler-data op (object of string)
+    const getPlayerData = (player) => {
+        if (typeof player === 'object' && player !== null) {
+            return player;
+        }
+        return { name: player, target: 0, average: 0 };
+    };
+
+    // --- A. Bepaal de namen, targets en gemiddelden ---
     let leftName = "", rightName = "";
-    const leftLimit = fm.limits[ts.phase];
-    const rightLimit = fm.limits[ts.phase];
+    let leftTarget = 0, rightTarget = 0;
+    let leftAvg = "0,000", rightAvg = "0,000";
 
     if (isTeam) {
         const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
         const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
         
-        const getFirstName = (fullName) => fullName.split(' ')[0];
-        const leftPName = fm.players[t1Keys[ts.leftPlayerIndex - 1]];
-        const rightPName = fm.players[t2Keys[ts.rightPlayerIndex - 1]];
+        const getFirstName = (fullName) => {
+            const name = typeof fullName === 'object' ? fullName.name : fullName;
+            return name.split(' ')[0];
+        };
 
-        leftName = ts.activeSide === 'left' ? getFirstName(leftPName) : getFirstName(leftPName);
-        rightName = ts.activeSide === 'right' ? getFirstName(rightPName) : getFirstName(rightPName);
+        const leftPData = getPlayerData(fm.players[t1Keys[ts.leftPlayerIndex - 1]]);
+        const rightPData = getPlayerData(fm.players[t2Keys[ts.rightPlayerIndex - 1]]);
+
+        leftName = getFirstName(leftPData.name);
+        rightName = getFirstName(rightPData.name);
+        leftTarget = leftPData.target || 0;
+        rightTarget = rightPData.target || 0;
+        leftAvg = leftPData.average ? leftPData.average.toFixed(3).replace('.', ',') : "0,000";
+        rightAvg = rightPData.average ? rightPData.average.toFixed(3).replace('.', ',') : "0,000";
     } else {
-        leftName = fm.players[1];
-        rightName = fm.players[2];
+        const leftPData = getPlayerData(fm.players[1]);
+        const rightPData = getPlayerData(fm.players[2]);
+        
+        leftName = leftPData.name;
+        rightName = rightPData.name;
+        leftTarget = leftPData.target || 0;
+        rightTarget = rightPData.target || 0;
+        leftAvg = leftPData.average ? leftPData.average.toFixed(3).replace('.', ',') : "0,000";
+        rightAvg = rightPData.average ? rightPData.average.toFixed(3).replace('.', ',') : "0,000";
     }
 
     // --- B. Update de Header ---
     document.getElementById('friendlyHeaderName1').textContent = leftName;
-    document.getElementById('friendlyHeaderTarget1').textContent = ts.activeSide === 'left' ? (leftLimit - ts.currentRun) : leftLimit;
+    document.getElementById('friendlyHeaderTarget1').textContent = leftTarget;
     
     document.getElementById('friendlyHeaderName2').textContent = rightName;
-    document.getElementById('friendlyHeaderTarget2').textContent = ts.activeSide === 'right' ? (rightLimit - ts.currentRun) : rightLimit;
+    document.getElementById('friendlyHeaderTarget2').textContent = rightTarget;
 
     const phaseText = ts.phase === 'vrijspel' ? 'VRIJSPEL' : (ts.phase === 'bandstoten' ? 'BANDSTOTEN' : 'DRIEBANDEN');
     document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
 
     // --- C. Update de Score Cellen ---
-    document.getElementById('friendlyP1NeededVal').textContent = leftLimit;
+    document.getElementById('friendlyP1NeededVal').textContent = leftTarget;
     document.getElementById('friendlyP1CurrentVal').textContent = ts.activeSide === 'left' ? ts.currentRun : 0;
     document.getElementById('friendlyP1TotalVal').textContent = ts.leftTotalScore;
 
-    document.getElementById('friendlyP2NeededVal').textContent = rightLimit;
+    document.getElementById('friendlyP2NeededVal').textContent = rightTarget;
     document.getElementById('friendlyP2CurrentVal').textContent = ts.activeSide === 'right' ? ts.currentRun : 0;
     document.getElementById('friendlyP2TotalVal').textContent = ts.rightTotalScore;
 
-    // --- D. Update de Middenknop ---
+    // --- D. Update de Statistieken (Gemiddelden) ---
+    const stat1El = document.getElementById('friendlyStat1');
+    const stat2El = document.getElementById('friendlyStat2');
+    if (stat1El) stat1El.textContent = leftAvg;
+    if (stat2El) stat2El.textContent = rightAvg;
+
+    // --- E. Update de Middenknop ---
     const centerInfo = document.getElementById('friendlyCenterInfo');
     if (ts.activeSide === 'left') {
         centerInfo.innerHTML = `<div class="cell-value" style="font-size: 1.5rem; color: #2ecc71; font-weight: 800;">BEZIG</div><div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(Klik bij MISS)</div>`;
