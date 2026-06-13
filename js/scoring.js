@@ -1584,12 +1584,17 @@ window.prepareFriendlyBallSelection = function() {
     const title = document.getElementById('friendlyBallTitle');
     const subtitle = document.getElementById('friendlyBallSubtitle');
     const startBtn = document.getElementById('friendlyStartMatchBtn');
+    const resetBtn = document.getElementById('btnResetFriendlyColors'); // ✅ NIEUW
     
-    // Reset
+    // Reset state
     container.innerHTML = '';
     startBtn.disabled = true;
     startBtn.classList.add('disabled-btn');
-    window.friendlyColorAssignments = {};
+    state.friendlyMatch.colorAssignments = {};
+    state.friendlyMatch.whiteBallOwner = null;
+
+    // ✅ STANDAARD: Verberg de reset knop
+    if (resetBtn) resetBtn.classList.add('hidden');
 
     if (fm.numPlayers === 2) {
         title.textContent = "Kies Witte Bal";
@@ -1623,6 +1628,9 @@ window.prepareFriendlyBallSelection = function() {
         title.textContent = "Wijs Unieke Kleuren Toe";
         subtitle.innerHTML = "Klik op de gewenste kleur voor elke speler<br><small>(Elke kleur ⚪🟡🔴 mag maar 1x)</small>";
         
+        // ✅ TOON de reset knop bij 3 spelers
+        if (resetBtn) resetBtn.classList.remove('hidden');
+
         let html = '<div class="player-color-assignment">';
         for (let i = 1; i <= 3; i++) {
             html += `
@@ -1639,6 +1647,7 @@ window.prepareFriendlyBallSelection = function() {
         container.innerHTML = html;
     }
 };
+
 // 2. Logica voor 2 of 4 spelers/teams
 window.selectFriendlyWhite = function(identifier, element) {
     state.friendlyMatch.whiteBallOwner = identifier;
