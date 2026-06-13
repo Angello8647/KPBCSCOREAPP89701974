@@ -1995,11 +1995,9 @@ window.friendlyChangeScore = function(delta) {
     if (ts.activeSide === 'left') {
         ts.leftTotalScore += delta;
         ts.leftPhaseScore += delta;
-        ts.leftBeurtNummer++; // ✅ NIEUW: Beurt-nummer verhogen
     } else {
         ts.rightTotalScore += delta;
         ts.rightPhaseScore += delta;
-        ts.rightBeurtNummer++; // ✅ NIEUW: Beurt-nummer verhogen
     }
 
     // Check of het maximum is bereikt (bij dubbeltje)
