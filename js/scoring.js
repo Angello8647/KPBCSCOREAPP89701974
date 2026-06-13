@@ -1980,6 +1980,39 @@ window.updateFriendlyUI = function() {
                 Einde beurt? Klik hier
             </div>
         </div>`;
+
+    // --- F. Visuele Feedback: Actieve speler highlighten, andere dimmen ---
+    const p1Cells = [
+        document.getElementById('friendlyP1CurrentCell'),
+        document.getElementById('friendlyP1TotalCell'),
+        document.getElementById('friendlyP1NeededCell')
+    ];
+    const p2Cells = [
+        document.getElementById('friendlyP2CurrentCell'),
+        document.getElementById('friendlyP2TotalCell'),
+        document.getElementById('friendlyP2NeededCell')
+    ];
+
+    // Eerst alle states resetten
+    [...p1Cells, ...p2Cells].forEach(el => {
+        if (el) el.classList.remove('active-player', 'dimmed', 'turn-hidden');
+    });
+
+    if (ts.activeSide === 'left') {
+        // Speler 1 is aan de beurt
+        p1Cells.forEach(el => el && el.classList.add('active-player'));
+        p2Cells.forEach(el => el && el.classList.add('dimmed'));
+        
+        // HUIDIG blok van speler 2 volledig verbergen
+        if (p2Cells[0]) p2Cells[0].classList.add('turn-hidden');
+    } else {
+        // Speler 2 is aan de beurt
+        p2Cells.forEach(el => el && el.classList.add('active-player'));
+        p1Cells.forEach(el => el && el.classList.add('dimmed'));
+        
+        // HUIDIG blok van speler 1 volledig verbergen
+        if (p1Cells[0]) p1Cells[0].classList.add('turn-hidden');
+    }
 };
 
 // 3. SCORE WIJZIGEN (+1 of -1)
