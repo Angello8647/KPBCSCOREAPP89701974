@@ -2032,48 +2032,46 @@ window.updateFriendlyUI = function() {
     document.getElementById('friendlyP2Highest').textContent = ts.rightHighestSeries;
     document.getElementById('friendlyP2TargetAvg').textContent = rightAvg;
 
-    // 3. Helper functie om de beurtenlijst te bouwen (4-koloms grid)
+
+    // 3. Helper functie om de beurtenlijst te bouwen (EXACTE KOPIE VAN COMPETITIE)
     const renderTurnsList = (turns, highestSeries) => {
         if (!turns || turns.length === 0) {
-            return '<div style="text-align:center; color:#95a5a6; padding:40px 20px; font-style:italic;">Nog geen beurten gespeeld</div>';
+            return '<div style="text-align:center;color:#95a5a6;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
         }
         
-        // Toon minstens 24 vakjes (8 rijen x 3 kolommen) voor een mooie scroll, of meer als er meer gespeeld zijn
-        const minTurns = 24; 
-        const totalToShow = Math.max(minTurns, turns.length);
+        const minBeurten = 56;
+        const totalToShow = Math.max(minBeurten, turns.length);
+        const highest = highestSeries || 0;
         let html = '';
         
         for (let i = 1; i <= totalToShow; i++) {
             const isPlayed = i <= turns.length;
             let scoreDisplay = '−';
-            let bg = 'transparent';
-            let color = '#95a5a6';
-            let weight = 'normal';
+            let classes = 'turn-row';
             
             if (isPlayed) {
                 const score = turns[i - 1];
+                
                 if (score === 0) {
                     scoreDisplay = '-';
-                    bg = 'rgba(231, 76, 60, 0.15)';
-                    color = '#e74c3c';
+                    classes += ' played zero-turn';
                 } else {
                     scoreDisplay = score;
-                    bg = 'rgba(46, 204, 113, 0.15)';
-                    color = '#ecf0f1';
+                    classes += ' played';
                     
-                    // Highlight de hoogste reeks
-                    if (score === highestSeries && highestSeries > 0) {
-                        color = '#2ecc71';
-                        weight = '900';
-                        bg = 'rgba(46, 204, 113, 0.3)';
+                    if (score === highest && highest > 0) {
+                        classes += ' highest-series';
                     }
                 }
+                
+                if (i === turns.length && score !== highest) {
+                    classes += ' latest-turn';
+                }
+            } else {
+                classes += ' pending';
             }
             
-            html += `<div style="background:${bg}; color:${color}; font-weight:${weight}; padding: 8px 4px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="font-size: 0.7rem; opacity: 0.7; margin-bottom: 2px; text-transform:uppercase;">B${i}</div>
-                <div style="font-size: 1.4rem; line-height: 1;">${scoreDisplay}</div>
-            </div>`;
+            html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
         }
         return html;
     };
