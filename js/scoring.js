@@ -2309,7 +2309,6 @@ window.friendlyUndo = function() {
     window.updateFriendlyUI();
 };
 
-// 8. MATCH STOPPEN
 // 5. MATCH EINDE & SAMENVATTING (HERGEBRUIKT PAGINA 6)
 window.endFriendlyMatch = function() {
     const fm = state.friendlyMatch;
@@ -2318,15 +2317,38 @@ window.endFriendlyMatch = function() {
     // 1. Markeer de match als beëindigd
     ts.matchEnded = true;
 
-    // 2. Bepaal de winnaar (volgens biljartregels)
-    let winnerName = fm.players[1].name; // Standaard: speler 1 wint als speler 2 de nabeurt niet haalt
-    
+    // 2. ✅ NIEUW: Bepaal de winnaar op basis van Rendement (Prestatie t.o.v. TSG)
+    let winnerName = "";
+
     if (ts.firstToTarget === 'right') {
-        // Speler 2 haalde als eerste het target
+        // REGEL 1: Speler 2 haalde als eerste het target → Directe winst, geen nabeurt voor Speler 1
         winnerName = fm.players[2].name;
-    } else if (ts.firstToTarget === 'left' && ts.rightTotalScore >= fm.players[2].target) {
-        // Speler 1 haalde als eerste het target, maar speler 2 haalde het ook in de nabeurt
-        winnerName = fm.players[2].name; // De inhaalder wint (of het is gelijk, maar we geven de overwinning aan de inhaalder)
+    } else {
+        // REGEL 2 & 3: Speler 1 haalde als eerste het target, Speler 2 heeft zijn nabeurt gehad.
+        // Nu vergelijken we het rendement.
+        
+        // Haal de TSG op (fallback naar 1.0 als er geen TSG bekend is om delen door 0 te voorkomen)
+        const tsg1 = fm.players[1].average ? parseFloat(fm.players[1].average) : 1.0;
+        const tsg2 = fm.players[2].average ? parseFloat(fm.players[2].average) : 1.0;
+
+        // Bereken het werkelijke gemiddelde (minimaal 1 beurt om delen door 0 te voorkomen)
+        const avg1 = ts.leftTotalScore / Math.max(1, ts.leftTurns.length);
+        const avg2 = ts.rightTotalScore / Math.max(1, ts.rightTurns.length);
+
+        // Bereken het rendement (Hoeveel % van hun eigen TSG hebben ze gehaald?)
+        const rendement1 = avg1 / tsg1;
+        const rendement2 = avg2 / tsg2;
+
+        console.log(`📊 Rendement Speler 1: ${(rendement1 * 100).toFixed(1)}%`);
+        console.log(`📊 Rendement Speler 2: ${(rendement2 * 100).toFixed(1)}%`);
+
+        if (rendement2 > rendement1) {
+            // Speler 2 speelde beter naar zijn eigen gemiddelde tijdens de nabeurt
+            winnerName = fm.players[2].name;
+        } else {
+            // Speler 1 behield zijn voorsprong of speelde beter naar zijn gemiddelde
+            winnerName = fm.players[1].name;
+        }
     }
 
     // 3. Bereid de data voor zodat we Pagina 6 (Competitie Samenvatting) kunnen hergebruiken
@@ -2380,7 +2402,6 @@ window.endFriendlyMatch = function() {
         }
     }, 600);
 };
-
 
 
 /* =========================================================================
