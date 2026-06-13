@@ -1606,7 +1606,7 @@ window.prepareFriendlyBallSelection = function() {
     const title = document.getElementById('friendlyBallTitle');
     const subtitle = document.getElementById('friendlyBallSubtitle');
     const startBtn = document.getElementById('friendlyStartMatchBtn');
-    const resetBtn = document.getElementById('btnResetFriendlyColors'); // ✅ NIEUW
+    const resetBtn = document.getElementById('btnResetFriendlyColors');
     
     // Reset state
     container.innerHTML = '';
@@ -1615,18 +1615,29 @@ window.prepareFriendlyBallSelection = function() {
     state.friendlyMatch.colorAssignments = {};
     state.friendlyMatch.whiteBallOwner = null;
 
-    // ✅ STANDAARD: Verberg de reset knop
     if (resetBtn) resetBtn.classList.add('hidden');
+
+    // ✅ HULPFUNCTIE: Haal de naam uit het object (of gebruik de string direct)
+    const getPlayerName = (player) => {
+        if (typeof player === 'object' && player !== null) {
+            return player.name;
+        }
+        return player;
+    };
 
     if (fm.numPlayers === 2) {
         title.textContent = "Kies Witte Bal";
         subtitle.innerHTML = "Wie speelt met de witte bal?<br><small>(De ander krijgt automatisch de gele bal)</small>";
+        
+        const p1Name = getPlayerName(fm.players[1]);
+        const p2Name = getPlayerName(fm.players[2]);
+        
         container.innerHTML = `
             <div class="ball-option" onclick="window.selectFriendlyWhite(1, this)">
-                <div class="ball-circle white"><div>${fm.players[1]}</div></div>
+                <div class="ball-circle white"><div>${p1Name}</div></div>
             </div>
             <div class="ball-option" onclick="window.selectFriendlyWhite(2, this)">
-                <div class="ball-circle white"><div>${fm.players[2]}</div></div>
+                <div class="ball-circle white"><div>${p2Name}</div></div>
             </div>
         `;
     }
@@ -1637,9 +1648,11 @@ window.prepareFriendlyBallSelection = function() {
         const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
         const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
         
-        // ✅ NIEUW: Helper functie om alleen de voornaam te tonen
-        const getFirstName = (fullName) => fullName.split(' ')[0];
-        
+        const getFirstName = (fullName) => {
+            const name = getPlayerName(fullName);
+            return name.split(' ')[0];
+        };
+
         const team1Name = `${getFirstName(fm.players[t1Keys[0]])} & ${getFirstName(fm.players[t1Keys[1]])}`;
         const team2Name = `${getFirstName(fm.players[t2Keys[0]])} & ${getFirstName(fm.players[t2Keys[1]])}`;
         
@@ -1656,14 +1669,14 @@ window.prepareFriendlyBallSelection = function() {
         title.textContent = "Wijs Unieke Kleuren Toe";
         subtitle.innerHTML = "Klik op de gewenste kleur voor elke speler<br><small>(Elke kleur ⚪🟡🔴 mag maar 1x)</small>";
         
-        // ✅ TOON de reset knop bij 3 spelers
         if (resetBtn) resetBtn.classList.remove('hidden');
 
         let html = '<div class="player-color-assignment">';
         for (let i = 1; i <= 3; i++) {
+            const pName = getPlayerName(fm.players[i]);
             html += `
             <div class="player-color-row" data-player="${i}">
-                <div class="player-color-name">${fm.players[i]}</div>
+                <div class="player-color-name">${pName}</div>
                 <div class="player-color-choices">
                     <div class="color-dot white" onclick="window.assignFriendlyColor(${i}, 'white', event)" title="Witte Bal">⚪</div>
                     <div class="color-dot yellow" onclick="window.assignFriendlyColor(${i}, 'yellow', event)" title="Gele Bal">🟡</div>
