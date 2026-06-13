@@ -1960,13 +1960,26 @@ window.updateFriendlyUI = function() {
     if (stat1El) stat1El.textContent = leftAvg;
     if (stat2El) stat2El.textContent = rightAvg;
 
-    // --- E. Update de Middenknop ---
+    // --- E. Update de Middenknop (B1, B2, etc.) ---
     const centerInfo = document.getElementById('friendlyCenterInfo');
-    if (ts.activeSide === 'left') {
-        centerInfo.innerHTML = `<div class="cell-value" style="font-size: 1.5rem; color: #2ecc71; font-weight: 800;">BEZIG</div><div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(Klik bij MISS)</div>`;
-    } else {
-        centerInfo.innerHTML = `<div class="cell-value" style="font-size: 1.5rem; color: #f1c40f; font-weight: 800;">WACHTEN</div><div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(Tegenstander is aan zet)</div>`;
-    }
+    
+    // Haal het huidige beurt nummer op
+    const currentBeurt = ts.activeSide === 'left' ? ts.leftBeurtNummer : ts.rightBeurtNummer;
+    
+    // Bepaal kleur (Wit voor links/speler 1, Geel voor rechts/speler 2)
+    const isWhite = ts.activeSide === 'left';
+    const textColor = isWhite ? '#ffffff' : '#f1c40f';
+    const glowColor = isWhite ? 'rgba(255, 255, 255, 0.4)' : 'rgba(241, 196, 15, 0.4)';
+    
+    centerInfo.innerHTML = `
+        <div style="text-align:center; pointer-events: none;">
+            <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
+                B ${currentBeurt}
+            </div>
+            <div style="margin-top:15px; font-size:1.1rem; color:#bdc3c7; font-weight:bold; text-transform: uppercase; letter-spacing: 1px;">
+                Einde beurt? Klik hier
+            </div>
+        </div>`;
 };
 
 // 3. SCORE WIJZIGEN (+1 of -1)
