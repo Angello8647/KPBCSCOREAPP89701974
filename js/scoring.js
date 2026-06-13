@@ -2029,6 +2029,13 @@ window.friendlyMiss = function() {
     // Sla state op voor undo
     window.lastFriendlyState = JSON.parse(JSON.stringify(fm));
 
+    // ✅ NIEUW: Verhoog het beurt-nummer van de speler die net heeft gemist
+    if (ts.activeSide === 'left') {
+        ts.leftBeurtNummer++;
+    } else {
+        ts.rightBeurtNummer++;
+    }
+
     // Onthoud wie er miste
     ts.lastMissedBy = ts.activeSide;
 
