@@ -1910,10 +1910,13 @@ window.initFriendlyScoring = function() {
             lastMissedBy: null,
             leftBeurtNummer: 1,
             rightBeurtNummer: 1,
-            leftTurns: [],         // ✅ NIEUW: Lijst van voltooide beurten links
-            rightTurns: [],        // ✅ NIEUW: Lijst van voltooide beurten rechts
-            leftHighestSeries: 0,  // ✅ NIEUW: Hoogste reeks links
-            rightHighestSeries: 0  // ✅ NIEUW: Hoogste reeks rechts
+            leftTurns: [],
+            rightTurns: [],
+            leftHighestSeries: 0,
+            rightHighestSeries: 0,
+            firstToTarget: null,    // ✅ NIEUW: 'left' of 'right' (wie haalde als eerste het target?)
+            isNabeurt: false,       // ✅ NIEUW: true als we in de nabeurt zitten
+            matchEnded: false       // ✅ NIEUW: true als de match voorbij is
         };
     }
 
