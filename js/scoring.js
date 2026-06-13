@@ -1945,12 +1945,12 @@ window.updateFriendlyUI = function() {
     const phaseText = ts.phase === 'vrijspel' ? 'VRIJSPEL' : (ts.phase === 'bandstoten' ? 'BANDSTOTEN' : 'DRIEBANDEN');
     document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
 
-    // --- C. Update de Score Cellen ---
-    document.getElementById('friendlyP1NeededVal').textContent = leftTarget;
+        // --- C. Update de Score Cellen ---
+    document.getElementById('friendlyP1NeededVal').textContent = Math.max(0, leftTarget - ts.leftTotalScore);
     document.getElementById('friendlyP1CurrentVal').textContent = ts.activeSide === 'left' ? ts.currentRun : 0;
     document.getElementById('friendlyP1TotalVal').textContent = ts.leftTotalScore;
 
-    document.getElementById('friendlyP2NeededVal').textContent = rightTarget;
+    document.getElementById('friendlyP2NeededVal').textContent = Math.max(0, rightTarget - ts.rightTotalScore);
     document.getElementById('friendlyP2CurrentVal').textContent = ts.activeSide === 'right' ? ts.currentRun : 0;
     document.getElementById('friendlyP2TotalVal').textContent = ts.rightTotalScore;
 
