@@ -2017,6 +2017,93 @@ window.updateFriendlyUI = function() {
         // HUIDIG blok van speler 1 volledig verbergen
         if (p1Cells[0]) p1Cells[0].classList.add('turn-hidden');
     }
+    // --- G. Update Statistieken & Spelerkaarten (Beurtenlijst) ---
+    
+    // 1. Bereken live gemiddelde (Totaal / Aantal voltooide beurten)
+    const leftPlayedAvg = ts.leftTurns.length > 0 ? (ts.leftTotalScore / ts.leftTurns.length).toFixed(2).replace('.', ',') : "0,00";
+    const rightPlayedAvg = ts.rightTurns.length > 0 ? (ts.rightTotalScore / ts.rightTurns.length).toFixed(2).replace('.', ',') : "0,00";
+
+    // 2. Update de 3 statistiek-blokken per kant
+    document.getElementById('friendlyP1PlayedAvg').textContent = leftPlayedAvg;
+    document.getElementById('friendlyP1Highest').textContent = ts.leftHighestSeries;
+    document.getElementById('friendlyP1TargetAvg').textContent = leftAvg; // De database average uit stap A
+
+    document.getElementById('friendlyP2PlayedAvg').textContent = rightPlayedAvg;
+    document.getElementById('friendlyP2Highest').textContent = ts.rightHighestSeries;
+    document.getElementById('friendlyP2TargetAvg').textContent = rightAvg;
+
+    // 3. Helper functie om de beurtenlijst te bouwen (4-koloms grid)
+    const renderTurnsList = (turns, highestSeries) => {
+        if (!turns || turns.length === 0) {
+            return '<div style="text-align:center; color:#95a5a6; padding:40px 20px; font-style:italic;">Nog geen beurten gespeeld</div>';
+        }
+        
+        // Toon minstens 24 vakjes (8 rijen x 3 kolommen) voor een mooie scroll, of meer als er meer gespeeld zijn
+        const minTurns = 24; 
+        const totalToShow = Math.max(minTurns, turns.length);
+        let html = '';
+        
+        for (let i = 1; i <= totalToShow; i++) {
+            const isPlayed = i <= turns.length;
+            let scoreDisplay = '−';
+            let bg = 'transparent';
+            let color = '#95a5a6';
+            let weight = 'normal';
+            
+            if (isPlayed) {
+                const score = turns[i - 1];
+                if (score === 0) {
+                    scoreDisplay = '-';
+                    bg = 'rgba(231, 76, 60, 0.15)';
+                    color = '#e74c3c';
+                } else {
+                    scoreDisplay = score;
+                    bg = 'rgba(46, 204, 113, 0.15)';
+                    color = '#ecf0f1';
+                    
+                    // Highlight de hoogste reeks
+                    if (score === highestSeries && highestSeries > 0) {
+                        color = '#2ecc71';
+                        weight = '900';
+                        bg = 'rgba(46, 204, 113, 0.3)';
+                    }
+                }
+            }
+            
+            html += `<div style="background:${bg}; color:${color}; font-weight:${weight}; padding: 8px 4px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="font-size: 0.7rem; opacity: 0.7; margin-bottom: 2px; text-transform:uppercase;">B${i}</div>
+                <div style="font-size: 1.4rem; line-height: 1;">${scoreDisplay}</div>
+            </div>`;
+        }
+        return html;
+    };
+
+    // 4. Update de Spelerkaarten zelf
+    const isLeftActive = ts.activeSide === 'left';
+    const isRightActive = ts.activeSide === 'right';
+
+    const p1Card = document.getElementById('friendlyPlayer1Card');
+    const p2Card = document.getElementById('friendlyPlayer2Card');
+
+    if (p1Card) {
+        p1Card.className = `player-card player-white ${isLeftActive ? 'player-active' : 'player-inactive'}`;
+        p1Card.innerHTML = `
+            <h3>${leftName} ⚪</h3>
+            <div class="turns-scroll-container">
+                <div class="turns-list">${renderTurnsList(ts.leftTurns, ts.leftHighestSeries)}</div>
+            </div>
+        `;
+    }
+
+    if (p2Card) {
+        p2Card.className = `player-card player-yellow ${isRightActive ? 'player-active' : 'player-inactive'}`;
+        p2Card.innerHTML = `
+            <h3>${rightName} 🟡</h3>
+            <div class="turns-scroll-container">
+                <div class="turns-list">${renderTurnsList(ts.rightTurns, ts.rightHighestSeries)}</div>
+            </div>
+        `;
+    }
 };
 
 // 3. SCORE WIJZIGEN (+1 of -1)
