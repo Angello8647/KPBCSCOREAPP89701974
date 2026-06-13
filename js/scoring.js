@@ -2058,6 +2058,7 @@ window.friendlyChangeScore = function(delta) {
     window.updateFriendlyUI();
 };
 
+
 // 4. MISS / EINDE BEURT
 window.friendlyMiss = function() {
     const fm = state.friendlyMatch;
@@ -2066,11 +2067,17 @@ window.friendlyMiss = function() {
     // Sla state op voor undo
     window.lastFriendlyState = JSON.parse(JSON.stringify(fm));
 
-    // ✅ NIEUW: Verhoog het beurt-nummer van de speler die net heeft gemist
+    // ✅ NIEUW: Sla de huidige reeks op in de beurtenlijst en update hoogste reeks VOORDAT we resetten
     if (ts.activeSide === 'left') {
-        ts.leftBeurtNummer++;
+        ts.leftTurns.push(ts.currentRun);
+        if (ts.currentRun > ts.leftHighestSeries) {
+            ts.leftHighestSeries = ts.currentRun;
+        }
     } else {
-        ts.rightBeurtNummer++;
+        ts.rightTurns.push(ts.currentRun);
+        if (ts.currentRun > ts.rightHighestSeries) {
+            ts.rightHighestSeries = ts.currentRun;
+        }
     }
 
     // Onthoud wie er miste
@@ -2078,7 +2085,7 @@ window.friendlyMiss = function() {
 
     // Wissel naar tegenstander
     ts.activeSide = ts.activeSide === 'left' ? 'right' : 'left';
-    ts.currentRun = 0;
+    ts.currentRun = 0; // Reset huidige beurt score
 
     // De speler die nu aan de beurt komt, is de PARTNER van degene die net miste
     if (ts.activeSide === 'left') {
