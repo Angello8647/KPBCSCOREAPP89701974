@@ -1876,7 +1876,9 @@ window.initFriendlyScoring = function() {
             rightTotalScore: 0, // Totale score Team 2/Speler 2
             leftPhaseScore: 0,  // Score in huidige fase (Team 1/Speler 1)
             rightPhaseScore: 0, // Score in huidige fase (Team 2/Speler 2)
-            lastMissedBy: null  // 'left' of 'right' (om te weten wie er niet mag beginnen)
+            lastMissedBy: null, // 'left' of 'right' (om te weten wie er niet mag beginnen)
+            leftBeurtNummer: 1, // ✅ NIEUW: Beurt nummer voor links
+            rightBeurtNummer: 1 // ✅ NIEUW: Beurt nummer voor rechts
         };
     }
 
