@@ -1676,9 +1676,21 @@ window.selectFriendlyWhite = function(identifier, element) {
             }
         });
     }
+    
+    // Activeer startknop
+    const startBtn = document.getElementById('friendlyStartMatchBtn');
+    if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.classList.remove('disabled-btn');
+    }
+    
+    console.log(`✅ Witte bal gekozen: ${identifier} (Andere krijgt automatisch geel)`);
+}; // ← ✅ DEZE WAS VERDWENEN!
 
 // 3. Logica voor 3 spelers (Strikte "Lock-out" + Kleurwissel)
-window.assignFriendlyColor = function(playerNum, color, element) {
+window.assignFriendlyColor = function(playerNum, color, event) {
+    if (event) event.stopPropagation();
+    
     if (!state.friendlyMatch.colorAssignments) state.friendlyMatch.colorAssignments = {};
     const assignments = state.friendlyMatch.colorAssignments;
     const oldColor = assignments[playerNum];
@@ -1713,7 +1725,6 @@ window.updateFriendly3PlayerUI = function() {
     Object.entries(assignments).forEach(([pNum, color]) => {
         const row = document.querySelector(`.player-color-row[data-player="${pNum}"]`);
         if (row) {
-            // ✅ FIX: Zoekt nu naar .color-dot.white (wat overeenkomt met de HTML!)
             const activeDot = row.querySelector(`.color-dot.${color}`);
             if (activeDot) {
                 activeDot.classList.add('active');
@@ -1740,6 +1751,7 @@ window.updateFriendly3PlayerUI = function() {
         startBtn.classList.add('disabled-btn');
     }
 };
+
 // 5. Finale start van de vriendschappelijke match
 window.startFriendlyMatchFromBallSelection = function() {
     console.log("🚀 VRIENDSCHAPPELIJKE MATCH GESTART!", state.friendlyMatch);
@@ -1768,11 +1780,18 @@ window.resetFriendlyBallSelection = function() {
     document.querySelectorAll('.color-dot').forEach(dot => {
         dot.classList.remove('active', 'disabled');
     });
+
+    // ✅ NIEUW: Reset de gele ballen ook
+    document.querySelectorAll('#page13 .ball-circle').forEach(circle => {
+        circle.classList.remove('yellow');
+    });
     
     // 3. Deactiveer de startknop
     const startBtn = document.getElementById('friendlyStartMatchBtn');
-    startBtn.disabled = true;
-    startBtn.classList.add('disabled-btn');
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.classList.add('disabled-btn');
+    }
     
     console.log("✅ Reset compleet. Alle kleuren zijn gewist.");
 };
