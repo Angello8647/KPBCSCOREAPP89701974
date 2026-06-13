@@ -2310,14 +2310,75 @@ window.friendlyUndo = function() {
 };
 
 // 8. MATCH STOPPEN
+// 5. MATCH EINDE & SAMENVATTING (HERGEBRUIKT PAGINA 6)
 window.endFriendlyMatch = function() {
-    if (confirm('Weet je zeker dat je deze vriendschappelijke match wilt stoppen?')) {
-        // Reset de state
-        state.friendlyMatch = null;
-        
-        // Ga terug naar hoofdmenu
-        showPage(1);
+    const fm = state.friendlyMatch;
+    const ts = fm.turnState;
+
+    // 1. Markeer de match als beëindigd
+    ts.matchEnded = true;
+
+    // 2. Bepaal de winnaar (volgens biljartregels)
+    let winnerName = fm.players[1].name; // Standaard: speler 1 wint als speler 2 de nabeurt niet haalt
+    
+    if (ts.firstToTarget === 'right') {
+        // Speler 2 haalde als eerste het target
+        winnerName = fm.players[2].name;
+    } else if (ts.firstToTarget === 'left' && ts.rightTotalScore >= fm.players[2].target) {
+        // Speler 1 haalde als eerste het target, maar speler 2 haalde het ook in de nabeurt
+        winnerName = fm.players[2].name; // De inhaalder wint (of het is gelijk, maar we geven de overwinning aan de inhaalder)
     }
+
+    // 3. Bereid de data voor zodat we Pagina 6 (Competitie Samenvatting) kunnen hergebruiken
+    // We mappen de friendly data tijdelijk naar de state.currentMatch structuur
+    state.currentMatch = {
+        id: 'friendly_' + Date.now(),
+        p1: fm.players[1].name,
+        p2: fm.players[2].name,
+        date: new Date().toISOString().split('T')[0],
+        discipline: fm.gameType === 'vrijspel' ? 'Vrijspel' : (fm.gameType === 'bandstoten' ? 'Bandstoten' : 'Driebanden'),
+        cat: 'Vriendschappelijk',
+        p1Score: ts.leftTotalScore,
+        p2Score: ts.rightTotalScore,
+        p1Turns: [...ts.leftTurns],
+        p2Turns: [...ts.rightTurns],
+        p1Highest: ts.leftHighestSeries,
+        p2Highest: ts.rightHighestSeries,
+        target1: fm.players[1].target,
+        target2: fm.players[2].target,
+        completed: true,
+        winner: winnerName
+    };
+
+    // We mappen ook de spelers voor de statistieken op Pagina 6
+    state.player1 = {
+        score: ts.leftTotalScore,
+        turns: [...ts.leftTurns],
+        highestSeries: ts.leftHighestSeries,
+        target: fm.players[1].target,
+        fixedTSG: fm.players[1].average ? fm.players[1].average.toFixed(3).replace('.', ',') : '−'
+    };
+
+    state.player2 = {
+        score: ts.rightTotalScore,
+        turns: [...ts.rightTurns],
+        highestSeries: ts.rightHighestSeries,
+        target: fm.players[2].target,
+        fixedTSG: fm.players[2].average ? fm.players[2].average.toFixed(3).replace('.', ',') : '−'
+    };
+
+    // 4. Update de UI van Pagina 14 één laatste keer (voor de visuele overgang)
+    window.updateFriendlyUI();
+
+    // 5. Navigeer na een korte vertraging naar de samenvatting (Pagina 6)
+    setTimeout(() => {
+        if (typeof renderMatchSummary === 'function') {
+            renderMatchSummary();
+        }
+        if (typeof showPage === 'function') {
+            showPage(6);
+        }
+    }, 600);
 };
 
 
