@@ -1313,10 +1313,14 @@ window.renderPlayerList = function() {
         const regex = new RegExp(`^(${currentSearchString})`, 'i');
         item.innerHTML = player.replace(regex, '<span style="color: #2ecc71; font-weight: 900;">$1</span>');
         
-        // ✅ NIEUW: Klikken zet naam in zoekbalk, sluit NIET direct
+        // ✅ NIEUW: Klikken zet naam in zoekbalk en update target info
         item.onclick = () => {
             currentSearchString = player;
             window.updateSearchDisplay();
+            
+            // ✅ Update target info met de gekozen speler
+            window.updatePlayerTargetInfo(currentSearchString);
+            
             console.log(`📝 Naam in zoekbalk gezet: ${player}`);
         };
         
