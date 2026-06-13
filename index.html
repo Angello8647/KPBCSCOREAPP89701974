@@ -497,16 +497,19 @@
         </div>
     </div>
 
-    <!-- PAGINA 13: Vriendschappelijke Bal Selectie (Geïsoleerd van Competitie) -->
+    <!-- PAGINA 13: Vriendschappelijke Bal Selectie (Schoon & Compact) -->
     <div id="page13" class="page">
         <div class="header">
             <div>
                 <button class="home-btn" onclick="showPage(1)">🏠 Hoofdmenu</button>
-                <!-- ⚠️ PAS '12' AAN NAAR HET JUISTE NUMMER VAN JE VRIENDSCHAPPELIJKE SETUP PAGINA -->
-                <button class="back-btn" onclick="showPage(12)">← Terug naar Setup</button>
+                
+                <!-- ✅ NIEUW: Compacte Reset knop in de header (alleen zichtbaar bij 3 spelers) -->
+                <button id="btnResetFriendlyColors" class="back-btn hidden" onclick="window.resetFriendlyBallSelection()" style="background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid #e74c3c; font-size: 0.9rem; padding: 8px 15px;">
+                    🔄 Reset
+                </button>
             </div>
             <h1 id="friendlyBallTitle">Kies Bal Kleuren</h1>
-            <div style="width: 70px;"></div>
+            <div style="width: 70px;"></div> <!-- Spacer voor balans -->
         </div>
         
         <div class="ball-selection-container">
@@ -519,18 +522,14 @@
                 <!-- Wordt gevuld door JavaScript -->
             </div>
 
-            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
-                <!-- ✅ NIEUW: Reset knop (Standaard verborgen, wordt alleen getoond bij 3 spelers) -->
-                <button id="btnResetFriendlyColors" class="modal-btn secondary hidden" style="padding: 10px 25px; font-size: 1rem;" onclick="window.resetFriendlyBallSelection()">
-                    🔄 Reset Kleuren
-                </button>
-                
-                <!-- Bestaande start knop -->
-                <button id="friendlyStartMatchBtn" class="start-match-btn disabled-btn" onclick="window.startFriendlyMatchFromBallSelection()" disabled>
+            <!-- ✅ ALLEEN DE START KNOP ONDERAAN (Gecentreerd en prominent) -->
+            <div style="text-align: center; margin-top: 40px;">
+                <button id="friendlyStartMatchBtn" class="start-match-btn disabled-btn" onclick="window.startFriendlyMatchFromBallSelection()" disabled style="width: 100%; max-width: 400px; padding: 15px; font-size: 1.2rem;">
                     🍻 Start Vriendschappelijke Match
                 </button>
             </div>
         </div>
+    </div>
 
 
     
