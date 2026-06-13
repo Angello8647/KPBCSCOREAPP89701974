@@ -3456,3 +3456,62 @@
     gap: 8px 10px !important;
     align-content: start !important;
 }
+
+/* =========================================
+   4. BEURTENLIJST: EXACTE KOPIE VAN COMPETITIE (STRIKT GEÏSOLEERD)
+   ========================================= */
+
+/* NOG TE SPELEN BEURTEN: Donkere schaduw */
+#page14 .turn-row.pending {
+    background: rgba(0, 0, 0, 0.35) !important;
+    color: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    opacity: 0.6 !important;
+}
+#page14 .turn-row.pending span {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-weight: 400 !important;
+}
+
+/* GESPEELDE BEURTEN: Lichte achtergrond, duidelijke tekst */
+#page14 .turn-row.played {
+    background: rgba(255, 255, 255, 0.85) !important;
+    color: #2c3e50 !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+#page14 .turn-row.played span {
+    color: #2c3e50 !important;
+    font-weight: 700 !important;
+}
+
+/* BEURTEN MET 0 PUNTEN: Zeer lichtrode achtergrond */
+#page14 .turn-row.played.zero-turn {
+    background: rgba(231, 76, 60, 0.12) !important;
+    border: 1px solid rgba(231, 76, 60, 0.35) !important;
+}
+#page14 .turn-row.played.zero-turn span {
+    color: #c0392b !important;
+    font-weight: 700 !important;
+}
+
+/* HOOGSTE REEKS: Groene achtergrond en rand */
+#page14 .turn-row.played.highest-series {
+    background: rgba(46, 204, 113, 0.25) !important;
+    border: 2px solid #2ecc71 !important;
+    color: #27ae60 !important;
+    font-weight: 900 !important;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3) !important;
+}
+#page14 .turn-row.played.highest-series span {
+    color: #27ae60 !important;
+}
+
+/* ALLERLAATSTE BEURT (subtiel blauw accent, alleen als het NIET de hoogste reeks is) */
+#page14 .turn-row.played.latest-turn {
+    border: 2px solid #3498db !important;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+}
+#page14 .turn-row.played.latest-turn span {
+    color: #2980b9 !important;
+    font-weight: 900 !important;
+}
