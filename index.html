@@ -602,15 +602,18 @@
         <div class="score-controls">
             <button class="score-btn plus-btn" onclick="window.friendlyChangeScore(1)">+</button>
             
-            <!-- Statistieken blokken (hergebruikt voor visuele balans, kunnen later ingevuld worden) -->
             <div class="stat-group left-group">
-                <div class="stat-box" id="friendlyStat1">0</div>
+                <div class="stat-box" id="friendlyP1PlayedAvg">0,00</div>
+                <div class="stat-box" id="friendlyP1Highest">0</div>
+                <div class="stat-box" id="friendlyP1TargetAvg">−</div>
             </div>
             
             <button class="score-btn minus-btn" onclick="window.friendlyChangeScore(-1)">−</button>
             
             <div class="stat-group right-group">
-                <div class="stat-box" id="friendlyStat2">0</div>
+                <div class="stat-box" id="friendlyP2PlayedAvg">0,00</div>
+                <div class="stat-box" id="friendlyP2Highest">0</div>
+                <div class="stat-box" id="friendlyP2TargetAvg">−</div>
             </div>
             
             <button class="score-btn undo-btn-bottom" id="friendlyBottomUndoBtn" onclick="window.friendlyUndo()">↩️</button>
