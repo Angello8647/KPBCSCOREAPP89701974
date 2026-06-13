@@ -2138,12 +2138,12 @@ window.updateFriendlyUI = function() {
     }
 };
 
-// 3. SCORE WIJZIGEN (+1 of -1) - MET TARGET CHECK
+// 3. SCORE WIJZIGEN (+1 of -1) - HERSTELD
 window.friendlyChangeScore = function(delta) {
     const fm = state.friendlyMatch;
     const ts = fm.turnState;
     
-    // ✅ NIEUW: Als de match al voorbij is, doe niets
+    // ✅ Als de match al voorbij is, doe niets
     if (ts.matchEnded) return;
 
     // Sla state op voor undo
@@ -2157,46 +2157,6 @@ window.friendlyChangeScore = function(delta) {
     } else {
         ts.rightTotalScore += delta;
         ts.rightPhaseScore += delta;
-    }
-
-    // ✅ NIEUW: TARGET CHECK (exact zoals in competitie)
-    const activeScore = ts.activeSide === 'left' ? ts.leftTotalScore : ts.rightTotalScore;
-    const activeTarget = ts.activeSide === 'left' ? fm.players[1].target : fm.players[2].target;
-    const reached = activeScore >= activeTarget;
-
-    // Geval 1: Eerste speler die het target haalt
-    if (reached && ts.firstToTarget === null) {
-        ts.firstToTarget = ts.activeSide;
-        
-        // Sla de huidige run op in de beurtenlijst
-        if (ts.activeSide === 'left') {
-            ts.leftTurns.push(ts.currentRun);
-            if (ts.currentRun > ts.leftHighestSeries) ts.leftHighestSeries = ts.currentRun;
-        } else {
-            ts.rightTurns.push(ts.currentRun);
-            if (ts.currentRun > ts.rightHighestSeries) ts.rightHighestSeries = ts.currentRun;
-        }
-        
-        if (ts.activeSide === 'left') {
-            // Speler 1 haalde als eerste het target → nabeurt voor speler 2
-            ts.isNabeurt = true;
-            ts.activeSide = 'right';
-            ts.currentRun = 0;
-            window.updateFriendlyUI();
-            return;
-        } else {
-            // Speler 2 haalde als eerste het target → match is voorbij
-            window.endFriendlyMatch();
-            return;
-        }
-    }
-
-    // Geval 2: We zitten in de nabeurt en speler 2 haalt ook het target
-    if (ts.isNabeurt && reached) {
-        ts.rightTurns.push(ts.currentRun);
-        if (ts.currentRun > ts.rightHighestSeries) ts.rightHighestSeries = ts.currentRun;
-        window.endFriendlyMatch();
-        return;
     }
 
     // Check of het maximum is bereikt (bij dubbeltje - voor later)
@@ -2216,6 +2176,9 @@ window.friendlyChangeScore = function(delta) {
 
     // Update UI
     window.updateFriendlyUI();
+};
+
+
 };
 
 // 4. MISS / EINDE BEURT
