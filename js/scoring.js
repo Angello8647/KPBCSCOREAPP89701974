@@ -1648,23 +1648,34 @@ window.prepareFriendlyBallSelection = function() {
     }
 };
 
-// 2. Logica voor 2 of 4 spelers/teams
+// 2. Logica voor 2 of 4 spelers/teams (Geïsoleerd voor Pagina 13)
 window.selectFriendlyWhite = function(identifier, element) {
     state.friendlyMatch.whiteBallOwner = identifier;
     
-    // ✅ FIX: Gebruik 'element' parameter in plaats van 'event'
-    document.querySelectorAll('#friendlyBallOptions .ball-option').forEach(opt => opt.classList.remove('selected'));
+    const options = document.querySelectorAll('#page13 .ball-option');
+    
+    // Reset alles naar standaard (wit, geen selectie)
+    options.forEach(opt => {
+        opt.classList.remove('selected');
+        const circle = opt.querySelector('.ball-circle');
+        if (circle) {
+            circle.classList.remove('yellow');
+        }
+    });
+
+    // Pas visuele staat toe
     if (element) {
-        element.closest('.ball-option').classList.add('selected');
+        const clickedOption = element.closest('.ball-option');
+        clickedOption.classList.add('selected'); // Groene gloed voor gekozen (wit)
+        
+        // De ANDERE optie krijgt automatisch de gele bal
+        options.forEach(opt => {
+            if (opt !== clickedOption) {
+                const otherCircle = opt.querySelector('.ball-circle');
+                if (otherCircle) otherCircle.classList.add('yellow');
+            }
+        });
     }
-    
-    // Activeer startknop
-    const startBtn = document.getElementById('friendlyStartMatchBtn');
-    startBtn.disabled = false;
-    startBtn.classList.remove('disabled-btn');
-    
-    console.log(`✅ Witte bal gekozen: ${identifier}`);
-};
 
 // 3. Logica voor 3 spelers (Strikte "Lock-out" + Kleurwissel)
 window.assignFriendlyColor = function(playerNum, color, element) {
