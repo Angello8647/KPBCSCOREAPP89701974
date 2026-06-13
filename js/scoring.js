@@ -2188,7 +2188,7 @@ window.friendlyChangeScore = function(delta) {
 };
 
 
-};
+
 
 
 // 4. MISS / EINDE BEURT (MET TARGET EN NABEURT CHECK)
