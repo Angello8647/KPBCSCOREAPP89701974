@@ -1615,12 +1615,18 @@ window.prepareFriendlyBallSelection = function() {
         const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
         const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] === 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
         
+        // ✅ NIEUW: Helper functie om alleen de voornaam te tonen
+        const getFirstName = (fullName) => fullName.split(' ')[0];
+        
+        const team1Name = `${getFirstName(fm.players[t1Keys[0]])} & ${getFirstName(fm.players[t1Keys[1]])}`;
+        const team2Name = `${getFirstName(fm.players[t2Keys[0]])} & ${getFirstName(fm.players[t2Keys[1]])}`;
+        
         container.innerHTML = `
             <div class="ball-option" onclick="window.selectFriendlyWhite('T1', this)">
-                <div class="ball-circle white" style="font-size: 1rem;"><div>Team 1<br><small>${fm.players[t1Keys[0]]} & ${fm.players[t1Keys[1]]}</small></div></div>
+                <div class="ball-circle white" style="font-size: 1rem;"><div>Team 1<br><small>${team1Name}</small></div></div>
             </div>
             <div class="ball-option" onclick="window.selectFriendlyWhite('T2', this)">
-                <div class="ball-circle white" style="font-size: 1rem;"><div>Team 2<br><small>${fm.players[t2Keys[0]]} & ${fm.players[t2Keys[1]]}</small></div></div>
+                <div class="ball-circle white" style="font-size: 1rem;"><div>Team 2<br><small>${team2Name}</small></div></div>
             </div>
         `;
     }
