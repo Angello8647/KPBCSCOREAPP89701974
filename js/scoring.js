@@ -1259,6 +1259,10 @@ window.updateSearchDisplay = function() {
 window.addSearchLetter = function(letter) {
     currentSearchString += letter;
     window.updateSearchDisplay();
+    
+    // ✅ NIEUW: Update target info na elke letter
+    window.updatePlayerTargetInfo(currentSearchString);
+    
     if (!isGuestMode) window.renderPlayerList();
 };
 
