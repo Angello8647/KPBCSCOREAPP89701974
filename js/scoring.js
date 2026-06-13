@@ -2030,3 +2030,138 @@ window.endFriendlyMatch = function() {
         showPage(1);
     }
 };
+
+
+
+/* =========================================================================
+   ✅ MODAL: TARGET & GEMIDDELDE LOGICA
+   ========================================================================= */
+
+// Hulpvariabelen om de gekozen target/gemiddelde tijdelijk op te slaan
+window.tempPlayerTarget = 0;
+window.tempPlayerAverage = 0;
+
+// 1. Update de info in de modal op basis van de ingevoerde naam
+window.updatePlayerTargetInfo = function(playerName) {
+    const fm = state.friendlyMatch;
+    const infoDiv = document.getElementById('playerTargetInfo');
+    
+    // Alleen tonen bij vrijspel, bandstoten of driebanden
+    const eligibleTypes = ['vrijspel', 'bandstoten', 'driebanden'];
+    if (!fm || !eligibleTypes.includes(fm.gameType) || !playerName || playerName.trim() === '') {
+        infoDiv.classList.add('hidden');
+        infoDiv.classList.remove('data-found', 'manual-input');
+        return;
+    }
+
+    // Zoek speler in state.players (naam + discipline, over alle categorieën heen)
+    const foundPlayers = state.players.filter(p => 
+        p.name.toLowerCase().trim() === playerName.toLowerCase().trim() &&
+        p.discipline.toLowerCase().trim() === fm.gameType.toLowerCase().trim()
+    );
+
+    if (foundPlayers.length > 0) {
+        // SCENARIO A: Data gevonden
+        const player = foundPlayers[0];
+        window.tempPlayerTarget = parseInt(player.target) || 0;
+        window.tempPlayerAverage = parseFloat(player.tsg.replace(',', '.')) || 0;
+
+        infoDiv.classList.remove('hidden', 'manual-input');
+        infoDiv.classList.add('data-found');
+        infoDiv.innerHTML = `
+            <div class="target-info-row">
+                <div class="target-stat">
+                    <span class="label" style="color: #3498db;">🎯 Doel</span>
+                    <span class="value green">${window.tempPlayerTarget}</span>
+                </div>
+                <div class="target-stat">
+                    <span class="label" style="color: #3498db;">📊 Gemiddelde</span>
+                    <span class="value yellow">${player.tsg}</span>
+                </div>
+            </div>
+        `;
+    } else {
+        // SCENARIO B: Geen data (Gast of speler zonder stats in deze discipline)
+        window.tempPlayerTarget = 0; // Reset naar 0, moet handmatig gekozen worden
+        window.tempPlayerAverage = 0;
+
+        infoDiv.classList.remove('hidden', 'data-found');
+        infoDiv.classList.add('manual-input');
+        
+        // Maak dropdown opties (0 tot 100, stappen van 5)
+        let options = '<option value="0">-- Kies doel (0) --</option>';
+        for (let i = 5; i <= 100; i += 5) {
+            options += `<option value="${i}">${i}</option>`;
+        }
+
+        infoDiv.innerHTML = `
+            <div class="target-info-row">
+                <div class="target-stat" style="align-items: flex-start;">
+                    <span class="label" style="color: #e74c3c;">⚠️ Geen data</span>
+                    <span style="font-size: 0.8rem; color: #95a5a6;">Kies handmatig het doel:</span>
+                </div>
+                <div class="target-stat" style="flex: 2;">
+                    <select id="manualTargetSelect" class="target-select" onchange="window.setManualTarget(this.value)">
+                        ${options}
+                    </select>
+                </div
+            </div>
+        `;
+    }
+};
+
+// 2. Wordt aangeroepen wanneer de dropdown verandert
+window.setManualTarget = function(value) {
+    window.tempPlayerTarget = parseInt(value);
+    console.log(`✅ Handmatig doel ingesteld op: ${window.tempPlayerTarget}`);
+};
+
+// 3. AANGEPASTE 'Bevestig Naam' functie
+window.confirmTypedName = function() {
+    const name = document.getElementById('currentSearchText').textContent.trim();
+    
+    if (!name) {
+        alert("Voer eerst een naam in.");
+        return;
+    }
+
+    // ✅ NIEUWE VALIDATIE: Target mag niet 0 zijn
+    if (window.tempPlayerTarget === 0) {
+        alert("⚠️ Het te spelen doel mag niet 0 zijn.\n\nKies een waarde uit het dropdown menu of controleer de naam.");
+        return;
+    }
+
+    const currentSlot = window.currentPlayerSlot;
+    
+    // Sla de speler op als een OBJECT met naam, target en average
+    state.friendlyMatch.players[currentSlot] = {
+        name: name,
+        target: window.tempPlayerTarget,
+        average: window.tempPlayerAverage,
+        isGuest: (document.getElementById('btnModeGuest').classList.contains('mode-active-guest'))
+    };
+
+    console.log(`✅ Speler ${currentSlot} bevestigd:`, state.friendlyMatch.players[currentSlot]);
+    
+    window.closePlayerModal();
+    window.renderChosenPlayers(); // Update de weergave in Stap 3
+    
+    // Ga door naar de volgende speler of naar team setup
+    const totalPlayers = state.friendlyMatch.numPlayers;
+    if (currentSlot < totalPlayers) {
+        setTimeout(() => window.openPlayerSelection(currentSlot + 1), 400);
+    } else {
+        if (totalPlayers === 4) {
+            setTimeout(() => {
+                window.showTeamSetup();
+                document.getElementById('step4TeamSetup').scrollIntoView({ behavior: 'smooth' });
+            }, 400);
+        } else {
+            // 2 of 3 spelers: direct naar bal selectie (Pagina 13)
+            setTimeout(() => {
+                window.prepareFriendlyBallSelection();
+                showPage(13);
+            }, 400);
+        }
+    }
+};
