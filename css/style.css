@@ -3179,26 +3179,49 @@
 }
 
 /* =========================================================================
-   ✅ PAGINA 14: VISUELE FEEDBACK (STRIKT GEÏSOLEERD)
+   ✅ PAGINA 14: VISUELE FEEDBACK (STRIKT GEÏSOLEERD & MATCHT COMPETITIE STIJL)
    ========================================================================= */
 
+/* 1. Algemene actieve speler schaal (subtiel omhoog) */
 #page14 .score-cell.active-player {
-    background: rgba(46, 204, 113, 0.15);
-    border: 2px solid rgba(46, 204, 113, 0.5);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.2);
-    transition: all 0.3s ease;
+    transform: scale(1.03);
+    z-index: 10;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 2. HUIDIG blok Speler 1 (Links) als hij aan de beurt is */
+#page14 #friendlyP1CurrentCell.active-player {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4) !important;
+}
+#page14 #friendlyP1CurrentCell.active-player .cell-value,
+#page14 #friendlyP1CurrentCell.active-player .cell-label {
+    color: #2c3e50 !important; /* Donkere tekst voor maximaal contrast */
+}
+
+/* 3. HUIDIG blok Speler 2 (Rechts) als hij aan de beurt is */
+#page14 #friendlyP2CurrentCell.active-player {
+    background: rgba(241, 196, 15, 0.95) !important;
+    border-color: #f1c40f !important;
+    box-shadow: 0 0 20px rgba(241, 196, 15, 0.4) !important;
+}
+#page14 #friendlyP2CurrentCell.active-player .cell-value,
+#page14 #friendlyP2CurrentCell.active-player .cell-label {
+    color: #2c3e50 !important; /* Donkere tekst voor maximaal contrast */
+}
+
+/* 4. Dimmen van de tegenstander (alle blokken) */
 #page14 .score-cell.dimmed {
-    opacity: 0.35;
-    filter: grayscale(0.7);
-    pointer-events: none;
-    transition: all 0.3s ease;
+    opacity: 0.3 !important;
+    filter: grayscale(0.6) !important;
+    transform: scale(0.96) !important;
+    transition: all 0.3s ease !important;
 }
 
+/* 5. HUIDIG blok volledig verbergen voor de speler die NIET aan de beurt is */
 #page14 .score-cell.turn-hidden {
-    opacity: 0;
-    transform: scale(0.8);
-    pointer-events: none;
-    transition: all 0.3s ease;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
