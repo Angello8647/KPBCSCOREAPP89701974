@@ -2181,7 +2181,8 @@ window.friendlyChangeScore = function(delta) {
 
 };
 
-// 4. MISS / EINDE BEURT
+
+// 4. MISS / EINDE BEURT (MET TARGET EN NABEURT CHECK)
 window.friendlyMiss = function() {
     const fm = state.friendlyMatch;
     const ts = fm.turnState;
@@ -2189,31 +2190,58 @@ window.friendlyMiss = function() {
     // Sla state op voor undo
     window.lastFriendlyState = JSON.parse(JSON.stringify(fm));
 
-    // ✅ NIEUW: Sla de huidige reeks op in de beurtenlijst en update hoogste reeks VOORDAT we resetten
+    // 1. Sla de huidige reeks op in de beurtenlijst en update hoogste reeks
     if (ts.activeSide === 'left') {
         ts.leftTurns.push(ts.currentRun);
-        if (ts.currentRun > ts.leftHighestSeries) {
-            ts.leftHighestSeries = ts.currentRun;
-        }
+        if (ts.currentRun > ts.leftHighestSeries) ts.leftHighestSeries = ts.currentRun;
     } else {
         ts.rightTurns.push(ts.currentRun);
-        if (ts.currentRun > ts.rightHighestSeries) {
-            ts.rightHighestSeries = ts.currentRun;
+        if (ts.currentRun > ts.rightHighestSeries) ts.rightHighestSeries = ts.currentRun;
+    }
+
+    // 2. ✅ TARGET CHECK: Heeft de speler die net stopte zijn doel bereikt?
+    const activeScore = ts.activeSide === 'left' ? ts.leftTotalScore : ts.rightTotalScore;
+    const activeTarget = ts.activeSide === 'left' ? fm.players[1].target : fm.players[2].target;
+    const reached = activeScore >= activeTarget;
+
+    // Geval A: Eerste speler die het target haalt
+    if (reached && ts.firstToTarget === null) {
+        ts.firstToTarget = ts.activeSide;
+        
+        if (ts.activeSide === 'left') {
+            // Speler 1 haalde als eerste het target → Nabeurt voor Speler 2
+            ts.isNabeurt = true;
+            ts.lastMissedBy = 'left';
+            ts.activeSide = 'right';
+            ts.currentRun = 0;
+            ts.rightBeurtNummer++; // Speler 2 start een nieuwe beurt
+            window.updateFriendlyUI();
+            return;
+        } else {
+            // Speler 2 haalde als eerste het target → Match is direct voorbij
+            window.endFriendlyMatch();
+            return;
         }
     }
 
-    // Onthoud wie er miste
-    ts.lastMissedBy = ts.activeSide;
+    // Geval B: We zaten al in de nabeurt (Speler 2 heeft zijn extra beurt gehad)
+    if (ts.isNabeurt) {
+        window.endFriendlyMatch();
+        return;
+    }
 
-    // Wissel naar tegenstander
+    // Geval C: Normale wissel (niemand heeft het target gehaald, of het was geen eerste keer)
+    ts.lastMissedBy = ts.activeSide;
     ts.activeSide = ts.activeSide === 'left' ? 'right' : 'left';
-    ts.currentRun = 0; // Reset huidige beurt score
+    ts.currentRun = 0;
 
     // De speler die nu aan de beurt komt, is de PARTNER van degene die net miste
     if (ts.activeSide === 'left') {
         ts.leftPlayerIndex = ts.leftPlayerIndex === 1 ? 2 : 1;
+        ts.leftBeurtNummer++;
     } else {
         ts.rightPlayerIndex = ts.rightPlayerIndex === 1 ? 2 : 1;
+        ts.rightBeurtNummer++;
     }
 
     // Update UI
