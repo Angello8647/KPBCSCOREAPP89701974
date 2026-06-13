@@ -1793,10 +1793,41 @@ window.updateFriendly3PlayerUI = function() {
     }
 };
 
-// 5. Finale start van de vriendschappelijke match
+// 5. Finale start van de vriendschappelijke match (MET WITTE BAL SWAP LOGICA)
 window.startFriendlyMatchFromBallSelection = function() {
     console.log("🚀 VRIENDSCHAPPELIJKE MATCH GESTART!", state.friendlyMatch);
     
+    const fm = state.friendlyMatch;
+    if (!fm) return;
+
+    // ✅ SWAP LOGICA: Zorg dat de speler/team met de witte bal ALTIJD links (positie 1) staat
+    if (fm.numPlayers === 2) {
+        // 2 SPELERS: Als speler 2 de witte bal heeft, swap spelers 1 en 2
+        if (fm.whiteBallOwner === 2) {
+            console.log("🔄 Swap: Speler 2 heeft witte bal → wissel posities");
+            const tempPlayer = fm.players[1];
+            fm.players[1] = fm.players[2];
+            fm.players[2] = tempPlayer;
+            fm.whiteBallOwner = 1; // Nu staat de witte bal op positie 1
+        }
+    }
+    else if (fm.numPlayers === 4) {
+        // 4 SPELERS (TEAMS): Als Team 2 de witte bal heeft, swap team-toewijzingen
+        if (fm.whiteBallOwner === 'T2') {
+            console.log("🔄 Swap: Team 2 heeft witte bal → wissel teams");
+            // Swap alle team-nummers: 1 wordt 2, 2 wordt 1
+            for (let i = 1; i <= 4; i++) {
+                if (fm.teams[i] === 1) {
+                    fm.teams[i] = 2;
+                } else if (fm.teams[i] === 2) {
+                    fm.teams[i] = 1;
+                }
+            }
+            fm.whiteBallOwner = 'T1'; // Nu is Team 1 het team met de witte bal
+        }
+    }
+    // 3 spelers: voor later (niet aangepakt)
+
     // Navigeer naar Pagina 14 (Vriendschappelijk Scorebord)
     showPage(14);
     
