@@ -3179,7 +3179,7 @@
 }
 
 /* =========================================================================
-   ✅ PAGINA 14: VISUELE FEEDBACK & CELLEN STYLING (STRIKT GEÏSOLEERD)
+   ✅ PAGINA 14: VOLLEDIGE VISUELE FEEDBACK & CELLEN STYLING (STRIKT GEÏSOLEERD)
    ========================================================================= */
 
 /* 1. Algemene actieve speler schaal (subtiel omhoog) */
@@ -3239,7 +3239,35 @@
     color: #000 !important;
 }
 
-/* 6. Dimmen van de tegenstander (alle blokken) */
+/* 6. Nog nodig cellen (Basis: Groen) */
+#page14 #friendlyP1NeededCell,
+#page14 #friendlyP2NeededCell {
+    background: rgba(46, 204, 113, 0.15) !important;
+    border-color: #27ae60 !important;
+}
+#page14 #friendlyP1NeededCell .cell-value,
+#page14 #friendlyP2NeededCell .cell-value {
+    color: #2ecc71 !important;
+}
+
+/* 7. Nog nodig: Rode waarschuwing bij <= 5 punten */
+#page14 #friendlyP1NeededCell.danger,
+#page14 #friendlyP2NeededCell.danger {
+    border-color: #e74c3c !important;
+    background: rgba(231, 76, 60, 0.15) !important;
+    animation: danger-pulse 1.5s infinite;
+}
+#page14 #friendlyP1NeededCell.danger .cell-value,
+#page14 #friendlyP2NeededCell.danger .cell-value {
+    color: #e74c3c !important;
+}
+
+@keyframes danger-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); }
+    50% { box-shadow: 0 0 25px 6px rgba(231,76,60,0.25); }
+}
+
+/* 8. Dimmen van de tegenstander (alle blokken) */
 #page14 .score-cell.dimmed {
     opacity: 0.4 !important;
     filter: grayscale(0.4) !important;
@@ -3247,16 +3275,18 @@
     transition: all 0.3s ease !important;
 }
 
-/* 7. HUIDIG blok volledig verbergen voor de speler die NIET aan de beurt is */
+/* 9. HUIDIG blok volledig verbergen voor de speler die NIET aan de beurt is */
 #page14 .score-cell.turn-hidden {
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
 }
 
-/* 8. Totaal cellen: Houd de actieve speler helder (override dimmed) */
+/* 10. Totaal & Needed cellen: Houd de actieve speler helder (override dimmed) */
 #page14 #friendlyP1TotalCell.active-player, 
-#page14 #friendlyP2TotalCell.active-player {
+#page14 #friendlyP2TotalCell.active-player,
+#page14 #friendlyP1NeededCell.active-player,
+#page14 #friendlyP2NeededCell.active-player {
     opacity: 1 !important;
     transform: scale(1.03) !important;
     filter: none !important;
