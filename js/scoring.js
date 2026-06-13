@@ -1998,6 +1998,7 @@ window.updateFriendlyUI = function() {
     if (stat1El) stat1El.textContent = leftAvg;
     if (stat2El) stat2El.textContent = rightAvg;
 
+
     // --- E. Update de Middenknop (B1, B2, etc.) ---
     const centerInfo = document.getElementById('friendlyCenterInfo');
     
@@ -2009,6 +2010,12 @@ window.updateFriendlyUI = function() {
     const textColor = isWhite ? '#ffffff' : '#f1c40f';
     const glowColor = isWhite ? 'rgba(255, 255, 255, 0.4)' : 'rgba(241, 196, 15, 0.4)';
     
+    // ✅ NIEUW: Nabeurt waarschuwing
+    let extraInfo = '';
+    if (ts.isNabeurt) {
+        extraInfo = '<div style="margin-top:15px; font-size:1.3rem; color:#ffcc00; font-weight:bold; text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);">⚠️ NABEURT</div>';
+    }
+    
     centerInfo.innerHTML = `
         <div style="text-align:center; pointer-events: none;">
             <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
@@ -2017,7 +2024,9 @@ window.updateFriendlyUI = function() {
             <div style="margin-top:15px; font-size:1.1rem; color:#bdc3c7; font-weight:bold; text-transform: uppercase; letter-spacing: 1px;">
                 Einde beurt? Klik hier
             </div>
+            ${extraInfo}
         </div>`;
+
 
     // --- F. Visuele Feedback: Actieve speler highlighten, andere dimmen ---
     const p1Cells = [
