@@ -531,61 +531,98 @@
         </div>
     </div>
 
-    <!-- PAGINA 14: Vriendschappelijk Scorebord -->
+    <!-- PAGINA 14: Vriendschappelijk Scorebord (Identieke Layout aan Competitie) -->
     <div id="page14" class="page">
         <div class="header">
-            <div>
-                <button class="home-btn" onclick="showPage(1)">🏠 Hoofdmenu</button>
-                <button class="back-btn" onclick="window.endFriendlyMatch()" style="background: rgba(231, 76, 60, 0.2); color: #e74c3c;">🛑 Stop Match</button>
-            </div>
-            <h1 id="friendlyMatchTitle">Vriendschappelijke Match</h1>
-            <div style="width: 70px;"></div>
-        </div>
-
-        <!-- DYNAMISCHE HEADER: Toont wie er ligt en de resterende beurten -->
-        <div class="friendly-score-header">
-            <!-- LINKER KANT (Team 1 / Speler 1) -->
-            <div class="friendly-player-panel left-panel" id="panelLeft">
-                <div class="player-status-badge">AAN TAFEL</div>
-                <div class="player-name" id="friendlyLeftName">Naam Speler</div>
-                <div class="player-discipline" id="friendlyLeftDiscipline">Vrijspel</div>
-                <div class="player-limit-counter">
-                    Nog <span id="friendlyLeftLimit" style="color: #2ecc71; font-weight: 900; font-size: 1.4rem;">3</span> beurten
+            <div class="header-match-info">
+                <!-- LINKER KANT (Team 1 / Speler 1) -->
+                <div class="header-player-side left">
+                    <!-- Wordt: 3, 2, of 1 (Resterende beurten) -->
+                    <span class="header-target" id="friendlyHeaderTarget1" style="color: #2ecc71;">3</span>
+                    <!-- Wordt: Naam van speler die aan de beurt is (of wacht) -->
+                    <span class="header-name" id="friendlyHeaderName1">Speler A</span>
                 </div>
-            </div>
-
-            <!-- RECHTER KANT (Team 2 / Speler 2) -->
-            <div class="friendly-player-panel right-panel" id="panelRight">
-                <div class="player-status-badge waiting">VOLGENDE BEURT</div>
-                <div class="player-name" id="friendlyRightName">Naam Speler</div>
-                <div class="player-discipline" id="friendlyRightDiscipline">Vrijspel</div>
-                <div class="player-limit-counter">
-                    Nog <span id="friendlyRightLimit" style="color: #f1c40f; font-weight: 900; font-size: 1.4rem;">3</span> beurten
+                
+                <!-- MIDDEN (Discipline) -->
+                <span class="header-vs" id="friendlyHeaderDiscipline">VRIJSPEL</span>
+                
+                <!-- RECHTER KANT (Team 2 / Speler 2) -->
+                <div class="header-player-side right">
+                    <!-- Wordt: Naam van speler die aan de beurt is (of wacht) -->
+                    <span class="header-name" id="friendlyHeaderName2">Speler C</span>
+                    <!-- Wordt: 3, 2, of 1 (Resterende beurten) -->
+                    <span class="header-target" id="friendlyHeaderTarget2" style="color: #f1c40f;">3</span>
                 </div>
             </div>
         </div>
 
-        <!-- SCORE BLOKKEN (Identiek aan competitie, maar met dynamische ID's) -->
-        <div class="friendly-score-container">
-            <!-- Links -->
-            <div class="score-block" id="scoreBlockLeft">
-                <div class="score-display" id="friendlyScoreLeft">0</div>
-                <div class="score-controls">
-                    <button class="score-btn minus" onclick="window.friendlyScore(-1)">-1</button>
-                    <button class="score-btn plus" onclick="window.friendlyScore(1)">+1</button>
-                    <button class="score-btn miss" onclick="window.friendlyMiss()">MISS</button>
-                </div>
-            </div>
+        <div id="friendlyMatchEndedAlert" class="match-ended" style="display: none;"></div>
 
-            <!-- Rechts -->
-            <div class="score-block" id="scoreBlockRight">
-                <div class="score-display" id="friendlyScoreRight">0</div>
-                <div class="score-controls">
-                    <button class="score-btn minus" onclick="window.friendlyScore(-1)">-1</button>
-                    <button class="score-btn plus" onclick="window.friendlyScore(1)">+1</button>
-                    <button class="score-btn miss" onclick="window.friendlyMiss()">MISS</button>
-                </div>
+        <div class="scoring-row-container">
+            <!-- LINKER SPELER / TEAM -->
+            <div class="score-cell needed-cell" id="friendlyP1NeededCell">
+                <div class="cell-label" style="font-size: 0.8rem; color: #95a5a6;">MAX</div>
+                <div class="cell-value" id="friendlyP1NeededVal">3</div>
             </div>
+            <div class="score-cell current-turn-cell" id="friendlyP1CurrentCell">
+                <div class="cell-label" style="font-size: 0.8rem; color: #95a5a6;">HUIDIG</div>
+                <div class="cell-value" id="friendlyP1CurrentVal">0</div>
+            </div>
+            <div class="score-cell total-cell" id="friendlyP1TotalCell">
+                <div class="cell-label" style="font-size: 0.8rem; color: #95a5a6;">TOTAAL</div>
+                <div class="cell-value" id="friendlyP1TotalVal">0</div>
+            </div>
+            
+            <!-- MIDDEN: WISSEL / MISS KNOP -->
+            <div class="score-cell center-info clickable-turn" id="friendlyCenterInfo" onclick="window.friendlyMiss()" title="Klik hier bij een miss, of als het maximum is bereikt">
+                <div class="cell-value" style="font-size: 1.5rem; color: #e74c3c; font-weight: 800;">MISS</div>
+                <div style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">(of WISSEL)</div>
+            </div>
+            
+            <!-- RECHTER SPELER / TEAM -->
+            <div class="score-cell total-cell" id="friendlyP2TotalCell">
+                <div class="cell-label" style="font-size: 0.8rem; color: #95a5a6;">TOTAAL</div>
+                <div class="cell-value" id="friendlyP2TotalVal">0</div>
+            </div>
+            <div class="score-cell current-turn-cell" id="friendlyP2CurrentCell">
+                <div class="cell-label" style="font-size: 0.8rem; color: #95a5a6;">HUIDIG</div>
+                <div class="cell-value" id="friendlyP2CurrentVal">0</div>
+            </div>
+            <div class="score-cell needed-cell" id="friendlyP2NeededCell">
+                <div class="cell-label" style="font-size: 0.8rem; color: #95a5a6;">MAX</div>
+                <div class="cell-value" id="friendlyP2NeededVal">3</div>
+            </div>
+        </div>
+
+        <div class="score-controls">
+            <button class="score-btn plus-btn" onclick="window.friendlyChangeScore(1)">+</button>
+            
+            <!-- Statistieken blokken (hergebruikt voor visuele balans, kunnen later ingevuld worden) -->
+            <div class="stat-group left-group">
+                <div class="stat-box" id="friendlyStat1">0</div>
+            </div>
+            
+            <button class="score-btn minus-btn" onclick="window.friendlyChangeScore(-1)">−</button>
+            
+            <div class="stat-group right-group">
+                <div class="stat-box" id="friendlyStat2">0</div>
+            </div>
+            
+            <button class="score-btn undo-btn-bottom" id="friendlyBottomUndoBtn" onclick="window.friendlyUndo()">↩️</button>
+        </div>
+
+        <div class="players-container">
+            <div class="player-card player-white" id="friendlyPlayer1Card">
+                <div style="padding: 10px; text-align: center; color: #bdc3c7;">Team 1 / Speler 1</div>
+            </div>
+            <div class="player-card player-yellow" id="friendlyPlayer2Card">
+                <div style="padding: 10px; text-align: center; color: #bdc3c7;">Team 2 / Speler 2</div>
+            </div>
+        </div>
+        
+        <!-- Stop knop onderaan voor gemak -->
+        <div style="text-align: center; margin-top: 30px; padding-bottom: 20px;">
+            <button class="score-btn" style="background: #e74c3c; color: white; padding: 10px 30px;" onclick="window.endFriendlyMatch()">🛑 Match Stoppen</button>
         </div>
     </div>
     
