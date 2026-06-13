@@ -3404,3 +3404,55 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); }
     50% { box-shadow: 0 0 25px 6px rgba(231,76,60,0.25); }
 }
+
+
+/* =========================================
+   3. STATISTIEKEN & SPELERKAARTEN (STRIKT GEÏSOLEERD)
+   ========================================= */
+
+/* 1. Statistieken Blokken */
+#page14 #friendlyP1PlayedAvg, #page14 #friendlyP2PlayedAvg { border-color: #3498db !important; }
+#page14 #friendlyP1Highest, #page14 #friendlyP2Highest { border-color: #f1c40f !important; }
+#page14 #friendlyP1TargetAvg, #page14 #friendlyP2TargetAvg { border-color: #e67e22 !important; }
+
+#page14 .stat-box {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#page14 .stat-box::before {
+    position: absolute !important; top: 50% !important; left: 50% !important;
+    transform: translate(-50%, -50%) !important; font-size: 5rem !important;
+    opacity: 0.15 !important; filter: brightness(1.2) !important; pointer-events: none !important;
+}
+#page14 #friendlyP1PlayedAvg::before, #page14 #friendlyP2PlayedAvg::before { content: "📈"; color: #3498db; }
+#page14 #friendlyP1Highest::before, #page14 #friendlyP2Highest::before { content: "⭐"; color: #f1c40f; }
+#page14 #friendlyP1TargetAvg::before, #page14 #friendlyP2TargetAvg::before { content: "🎯"; color: #e67e22; }
+
+/* 2. Spelerkaarten & Beurtenlijst */
+#page14 .players-container { 
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; padding: 0 20px; 
+}
+#page14 .player-card {
+    border-radius: 15px; padding: 20px; font-size: 1.1em; transition: all 0.3s;
+    min-height: 350px; display: flex; flex-direction: column; position: relative;
+}
+#page14 .player-active { border: 4px solid #e74c3c; box-shadow: 0 0 15px rgba(231, 76, 60, 0.5); }
+#page14 .player-inactive { opacity: 0.6; border: 4px solid transparent; }
+#page14 .player-white { background: white; color: black; }
+#page14 .player-yellow { background: #f1c40f; color: black; }
+#page14 .player-card h3 { text-align: center; margin-bottom: 15px; font-size: 1.5rem; }
+
+#page14 .turns-scroll-container {
+    height: 350px !important; min-height: 350px !important; max-height: 350px !important;
+    overflow-y: auto !important; background: rgba(0,0,0,0.05) !important;
+    border-radius: 8px !important; padding: 10px !important; flex-grow: 0 !important;
+}
+#page14 .turns-list {
+    display: grid !important;
+    grid-template-rows: repeat(8, 1fr) !important; /* Max 8 rijen hoog */
+    grid-auto-flow: column !important;             /* Vul EERST naar beneden, dan volgende kolom */
+    grid-auto-columns: 1fr !important;             /* Kolommen even breed */
+    gap: 8px 10px !important;
+    align-content: start !important;
+}
