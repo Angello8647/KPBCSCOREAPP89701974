@@ -3010,3 +3010,50 @@ window.undo3PlayerAction = function() {
         console.log("⚠️ Niets om ongedaan te maken (geen vorige staat gevonden).");
     }
 };
+
+/* =========================================================================
+   HELPER: BEURTENLIJST RENDEREN VOOR SAMENVATTING (COMPACTE GRID)
+   ========================================================================= */
+const render3PTurnsListSummary = (turns, highest) => {
+    if (!turns || turns.length === 0) {
+        return '<div style="text-align:center;color:#7f8c8d;padding:15px;font-size:0.85em;">Nog geen beurten</div>';
+    }
+    
+    const minBeurten = 12;
+    const totalToShow = Math.max(minBeurten, turns.length);
+    const highestVal = highest || 0;
+    
+    // Compacte 2-koloms grid
+    let html = '<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 5px;">';
+    
+    for (let i = 1; i <= totalToShow; i++) {
+        const isPlayed = i <= turns.length;
+        let scoreDisplay = '−';
+        let classes = 'turn-row-summary';
+        
+        if (isPlayed) {
+            const score = turns[i - 1];
+            if (score === 0) {
+                scoreDisplay = '-';
+                classes += ' played zero-turn';
+            } else {
+                scoreDisplay = score;
+                classes += ' played';
+                if (score === highestVal && highestVal > 0) {
+                    classes += ' highest-series';
+                }
+            }
+            if (i === turns.length && score !== highestVal) {
+                classes += ' latest-turn';
+            }
+        } else {
+            classes += ' pending';
+        }
+        
+        html += `<div class="${classes}" style="padding: 4px 2px; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 0.65rem; opacity: 0.7; text-transform: uppercase;">B${i}</div>
+                    <div style="font-size: 1rem; font-weight: 700; line-height: 1.2;">${scoreDisplay}</div>
+                 </div>`;
+    }
+    return html + '</div>';
+};
