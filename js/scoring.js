@@ -2552,9 +2552,9 @@ window.init3PlayerScoring = function() {
             firstToTarget: null,
             nabeurtQueue: [],
             players: [
-                { id: 1, name: fm.players[0] ? fm.players[0].name : "Speler 1", color: 'white', target: fm.players[0] ? fm.players[0].target : 50, total: 0, turns: [], highest: 0 },
-                { id: 2, name: fm.players[1] ? fm.players[1].name : "Speler 2", color: 'yellow', target: fm.players[1] ? fm.players[1].target : 50, total: 0, turns: [], highest: 0 },
-                { id: 3, name: fm.players[2] ? fm.players[2].name : "Speler 3", color: 'red', target: fm.players[2] ? fm.players[2].target : 50, total: 0, turns: [], highest: 0 }
+                { id: 1, name: fm.players[0] ? fm.players[0].name : "Speler 1", color: 'white', target: fm.players[0] ? fm.players[0].target : 15, total: 0, turns: [], highest: 0 },
+                { id: 2, name: fm.players[1] ? fm.players[1].name : "Speler 2", color: 'yellow', target: fm.players[1] ? fm.players[1].target : 15, total: 0, turns: [], highest: 0 },
+                { id: 3, name: fm.players[2] ? fm.players[2].name : "Speler 3", color: 'red', target: fm.players[2] ? fm.players[2].target : 15, total: 0, turns: [], highest: 0 }
             ]
         };
     }
