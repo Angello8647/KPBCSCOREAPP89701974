@@ -2813,20 +2813,20 @@ window.update3PlayerUI = function() {
             const tsg = mainPlayer ? (mainPlayer.tsg || mainPlayer.fixedTSG || '−') : '−';
             const avg = player.turns.length > 0 ? (player.total / player.turns.length).toFixed(2).replace('.', ',') : "0,00";
 
-            // HTML genereren voor Stats en Beurten
+            // HTML genereren voor Stats en Beurten (met classes voor grote cijfers)
             const statsHtml = `
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 100%; text-align: center; margin-bottom: 10px;">
-                    <div style="background:rgba(0,0,0,0.25); padding: 8px 4px; border-radius: 6px;">
-                        <div style="font-size: 0.65rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px;">Gem.</div>
-                        <div style="font-size: 1.1rem; font-weight: 900; color: #ecf0f1;">${avg}</div>
+                <div class="stats3p-grid">
+                    <div class="stats3p-item">
+                        <div class="stats3p-label">Gem.</div>
+                        <div class="stats3p-value">${avg}</div>
                     </div>
-                    <div style="background:rgba(0,0,0,0.25); padding: 8px 4px; border-radius: 6px;">
-                        <div style="font-size: 0.65rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px;">Hoogste</div>
-                        <div style="font-size: 1.1rem; font-weight: 900; color: #2ecc71;">${player.highest}</div>
+                    <div class="stats3p-item">
+                        <div class="stats3p-label">Hoogste</div>
+                        <div class="stats3p-value">${player.highest}</div>
                     </div>
-                    <div style="background:rgba(0,0,0,0.25); padding: 8px 4px; border-radius: 6px;">
-                        <div style="font-size: 0.65rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px;">TSG</div>
-                        <div style="font-size: 1.1rem; font-weight: 900; color: #f1c40f;">${tsg}</div>
+                    <div class="stats3p-item">
+                        <div class="stats3p-label">TSG</div>
+                        <div class="stats3p-value">${tsg}</div>
                     </div>
                 </div>
             `;
