@@ -3672,6 +3672,7 @@
     border: 2px solid #3498db !important;
     box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
 }
+
 #page14-3player .turn-row.played.latest-turn span {
     color: #2980b9 !important;
 }
