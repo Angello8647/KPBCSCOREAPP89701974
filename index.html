@@ -633,7 +633,103 @@
             <button class="score-btn" style="background: #e74c3c; color: white; padding: 10px 30px;" onclick="window.endFriendlyMatch()">🛑 Match Stoppen</button>
         </div>
     </div>
+
+    <!-- ========================================================================= -->
+    <!-- PAGINA 14 (3 SPELERS): VRIENDSCHAPPELIJKE MATCH 3-PLAYER INTERFACE        -->
+    <!-- ========================================================================= -->
+    <section id="page14-3player" class="page hidden">
+        
+        <!-- 1. Header met Bediening -->
+        <div class="friendly3p-header">
+            <button class="ctrl-btn undo-btn" onclick="alert('Undo komt later!')">↩️</button>
+            <button class="ctrl-btn minus-btn" onclick="window.change3PlayerScore(-1)">−</button>
+            
+            <div class="ctrl-btn center-turn-btn" onclick="window.end3PlayerTurn()">
+                <div id="friendly3p-turn-indicator" style="font-size: 1.2rem; font-weight: 900;">BEURT: WIT</div>
+                <div style="font-size: 0.8rem; opacity: 0.8;">Klik voor einde beurt</div>
+            </div>
+            
+            <button class="ctrl-btn plus-btn" onclick="window.change3PlayerScore(1)">+</button>
+        </div>
     
+        <!-- 2. De 3 Kolommen -->
+        <div class="friendly3p-columns">
+            
+            <!-- KOLOM 1: WIT -->
+            <div class="player-col player-white-col" id="friendlyP3Col1">
+                <div class="col-header">
+                    <span class="player-name" id="friendly3p-name1">Speler 1</span>
+                    <span class="ball-icon">⚪</span>
+                </div>
+                <div class="col-target">Target: <span id="friendly3p-target1">0</span></div>
+                
+                <div class="col-current">
+                    <div class="current-label">HUIDIG</div>
+                    <div class="current-value" id="friendly3p-current1">0</div>
+                </div>
+                
+                <div class="col-total">
+                    <div class="total-label">TOTAAL</div>
+                    <div class="total-value" id="friendly3p-total1">0</div>
+                </div>
+    
+                <div class="col-stats-placeholder">
+                    <!-- Hier komen later: Gemiddelde, Hoogste, TSG -->
+                    <div>Statistieken volgen...</div>
+                </div>
+                
+                <div class="col-turns-placeholder">
+                    <!-- Hier komt later de scrollbare beurtenlijst -->
+                    <div>Beurtenlijst volgt...</div>
+                </div>
+            </div>
+    
+            <!-- KOLOM 2: GEEL -->
+            <div class="player-col player-yellow-col" id="friendlyP3Col2">
+                <div class="col-header">
+                    <span class="player-name" id="friendly3p-name2">Speler 2</span>
+                    <span class="ball-icon">🟡</span>
+                </div>
+                <div class="col-target">Target: <span id="friendly3p-target2">0</span></div>
+                
+                <div class="col-current">
+                    <div class="current-label">HUIDIG</div>
+                    <div class="current-value" id="friendly3p-current2">0</div>
+                </div>
+                
+                <div class="col-total">
+                    <div class="total-label">TOTAAL</div>
+                    <div class="total-value" id="friendly3p-total2">0</div>
+                </div>
+    
+                <div class="col-stats-placeholder"><div>Statistieken volgen...</div></div>
+                <div class="col-turns-placeholder"><div>Beurtenlijst volgt...</div></div>
+            </div>
+    
+            <!-- KOLOM 3: ROOD -->
+            <div class="player-col player-red-col" id="friendlyP3Col3">
+                <div class="col-header">
+                    <span class="player-name" id="friendly3p-name3">Speler 3</span>
+                    <span class="ball-icon">🔴</span>
+                </div>
+                <div class="col-target">Target: <span id="friendly3p-target3">0</span></div>
+                
+                <div class="col-current">
+                    <div class="current-label">HUIDIG</div>
+                    <div class="current-value" id="friendly3p-current3">0</div>
+                </div>
+                
+                <div class="col-total">
+                    <div class="total-label">TOTAAL</div>
+                    <div class="total-value" id="friendly3p-total3">0</div>
+                </div>
+    
+                <div class="col-stats-placeholder"><div>Statistieken volgen...</div></div>
+                <div class="col-turns-placeholder"><div>Beurtenlijst volgt...</div></div>
+            </div>
+    
+        </div>
+    </section>
 
     
     <script src="js/state.js"></script>
