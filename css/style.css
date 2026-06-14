@@ -3600,8 +3600,18 @@
     gap: 10px;
     margin-bottom: 10px;
 }
-#page14-3player .player-name { font-size: 1.5rem; font-weight: 900; color: white; }
-#page14-3player .ball-icon { font-size: 1.5rem; }
+/* 1. Grotere, compacte naam */
+#page14-3player .player-name {
+    font-size: 2.2rem; /* Veel groter */
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    line-height: 1.1;
+    white-space: nowrap; /* Voorkomt dat de naam op 2 regels breekt */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#page14-3player .ball-icon { font-size: 2.2rem; }
 
 #page14-3player .col-target { font-size: 1rem; color: #bdc3c7; margin-bottom: 15px; }
 
