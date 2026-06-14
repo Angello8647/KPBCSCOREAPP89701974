@@ -1860,35 +1860,63 @@ window.startFriendlyMatchFromBallSelection = function() {
         }
     }
     else if (fm.numPlayers === 3) {
-        console.log("🎯 3 SPELERS: Kleuren toewijzen en targets berekenen");
+        console.log("🎯 3 SPELERS: Kleuren toewijzen en ECHTE targets ophalen");
         
-        // 1. Sorteer spelers op kleur: wit (index 0) → geel (index 1) → rood (index 2)
         const sortedPlayers = [];
         const colorOrder = ['white', 'yellow', 'red'];
         
         for (const color of colorOrder) {
             const playerNum = Object.keys(fm.colorAssignments).find(key => fm.colorAssignments[key] === color);
+            
             if (playerNum) {
-                const player = fm.players[playerNum];
-                const playerName = typeof player === 'object' ? player.name : player;
+                const playerObj = fm.players[playerNum];
                 
-                // Haal TSG op uit de globale spelerslijst
+                // ✅ FIX: Haal de NAAM en het AL BEREKENDE TARGET direct uit het geselecteerde speler-object
+                const playerName = typeof playerObj === 'object' && playerObj !== null ? playerObj.name : playerObj;
+                const target = typeof playerObj === 'object' && playerObj !== null ? (playerObj.target || 50) : 50;
+                
+                // Haal TSG op voor de statistieken op het scorebord
                 const playerData = state.players ? state.players.find(p => p.name === playerName) : null;
-                const tsg = playerData ? parseFloat(playerData.tsg || playerData.average || 1.0) : 1.0;
-                
-                // Bereken target op basis van TSG (zelfde formule als bij 2 spelers)
-                // Standaard: 50 punten, maar als TSG hoger is, wordt target hoger
-                const baseTarget = 50;
-                const target = Math.round(baseTarget * tsg);
+                const tsg = playerData ? (playerData.tsg || playerData.average || '1,000') : '1,000';
                 
                 sortedPlayers.push({
                     name: playerName,
                     color: color,
-                    target: target,
+                    target: target, // ✅ Gebruik hier het echte target!
                     tsg: tsg
                 });
             }
         }
+        
+        console.log("✅ Gesorteerde spelers met echte targets:", sortedPlayers);
+        
+        // Update fm.players met de gesorteerde lijst
+        fm.players = sortedPlayers;
+        
+        // Initialiseer de 3-speler scoring
+        window.init3PlayerScoring();
+        
+        // Navigeer naar de 3-speler pagina (FORCEERBAAR)
+        console.log("🔄 Navigeren naar 3-speler pagina...");
+        
+        document.querySelectorAll('.page').forEach(p => {
+            p.classList.add('hidden');
+            p.classList.remove('active');
+            p.style.display = 'none';
+        });
+        
+        const page3p = document.getElementById('page14-3player');
+        if (page3p) {
+            console.log("✅ page14-3player gevonden, tonen...");
+            page3p.classList.remove('hidden');
+            page3p.classList.add('active');
+            page3p.style.display = 'block';
+        } else {
+            console.error("❌ FOUT: page14-3player bestaat niet in de HTML!");
+        }
+        
+        return;
+    }
         
         // 2. Update fm.players met de gesorteerde lijst (voor compatibiliteit)
         fm.players = sortedPlayers;
