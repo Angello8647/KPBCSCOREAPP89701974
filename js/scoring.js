@@ -2792,7 +2792,7 @@ window.update3PlayerUI = function() {
 
         if (nameEl && targetEl && currentEl && totalEl && col) {
             // Naam en Target updaten
-            nameEl.textContent = player.name;
+            nameEl.textContent = formatShortName(player.name);
             targetEl.textContent = player.target;
 
             // ✅ NIEUW: HUIDIG alleen tonen voor de actieve speler
