@@ -2971,40 +2971,34 @@ window.show3PlayerSummary = function() {
     }
 };
 
-// 3. Terug naar hoofdmenu (MET VOLLEDIGE RESET)
+// 3. Terug naar hoofdmenu (MET VOLLEDIGE RESET EN STYLE WISSEN)
 window.backToHomeFrom3PlayerSummary = function() {
-    console.log("🏠 Terug naar hoofdmenu vanuit samenvatting...");
+    console.log("🏠 Terug naar hoofdmenu...");
     
-    // Reset de friendly match state
+    // Reset states
     state.friendlyMatch = null;
-    window.last3pState = null; // Ook de undo state wissen
+    window.last3pState = null;
     
-    // Verberg ALLE pagina's (forceerbaar)
+    // Verberg alle pagina's en WIS de inline styles
     document.querySelectorAll('.page').forEach(p => {
-        p.classList.add('hidden');
         p.classList.remove('active');
-        p.style.display = 'none';
+        p.classList.add('hidden');
+        p.style.display = ''; // ✅ CRUCIAAL: Wist display: none
     });
     
-    // Toon pagina 1 (hoofdmenu)
+    // Toon pagina 1
     const page1 = document.getElementById('page1');
     if (page1) {
         page1.classList.remove('hidden');
         page1.classList.add('active');
-        page1.style.display = 'block';
-        console.log("✅ Pagina 1 (hoofdmenu) is nu actief");
-    } else {
-        console.error("❌ Pagina 1 niet gevonden!");
+        page1.style.display = ''; // ✅ Laat CSS de display regelen
     }
     
-    // Reset ook de modus-selectie containers (voor het geval die gedimd zijn)
+    // Reset containers
     const officialContainer = document.getElementById('containerOfficial');
     const friendlyContainer = document.getElementById('containerFriendly');
-    
     if (officialContainer) officialContainer.classList.remove('inactive-mode');
     if (friendlyContainer) friendlyContainer.classList.remove('inactive-mode');
-    
-    console.log("✅ Hoofdmenu is volledig gereset");
 };
 
 /* =========================================================================
