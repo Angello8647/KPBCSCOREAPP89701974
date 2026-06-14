@@ -1898,9 +1898,26 @@ window.startFriendlyMatchFromBallSelection = function() {
         // 3. Initialiseer de 3-speler scoring met de echte data
         window.init3PlayerScoring();
         
-        // 4. Navigeer naar de 3-speler pagina
-        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-        document.getElementById('page14-3player').classList.remove('hidden');
+        // 4. Navigeer naar de 3-speler pagina (FORCEERBAAR)
+        console.log("🔄 Navigeren naar 3-speler pagina...");
+        
+        // Verberg alle pagina's (zowel hidden class als display:none)
+        document.querySelectorAll('.page').forEach(p => {
+            p.classList.add('hidden');
+            p.classList.remove('active');
+            p.style.display = 'none';
+        });
+        
+        // Forceer de 3-speler pagina zichtbaar
+        const page3p = document.getElementById('page14-3player');
+        if (page3p) {
+            console.log("✅ page14-3player gevonden, tonen...");
+            page3p.classList.remove('hidden');
+            page3p.classList.add('active');
+            page3p.style.display = 'block';
+        } else {
+            console.error("❌ FOUT: page14-3player bestaat niet in de HTML!");
+        }
         
         return; // Stop hier, want we hebben al genavigeerd
     }
