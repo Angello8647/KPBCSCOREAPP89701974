@@ -3874,3 +3874,27 @@
 #page15-3player-summary .summary3p-footer { text-align: center; margin-top: 20px; }
 #page15-3player-summary .summary3p-back-btn { background: #3498db; color: white; border: none; padding: 15px 40px; font-size: 1.2rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
 #page15-3player-summary .summary3p-back-btn:hover { background: #2980b9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); }
+
+/* =========================================================================
+   FORCED FIX: WITTE ACHTERGROND ALLEEN VOOR 3-SPELERS 
+   (Overschrijft de globale competitie-regel, maar laat die verder intact)
+   ========================================================================= */
+
+#page14-3player .turn-row.played.zero-turn {
+    background: #ffffff !important;
+    border: 2px solid #e74c3c !important;
+}
+
+#page14-3player .turn-row.played.zero-turn span {
+    color: #e74c3c !important;
+}
+
+#page14-3player .turn-row.played.highest-series {
+    background: #ffffff !important;
+    border: 2px solid #2ecc71 !important;
+}
+
+#page14-3player .turn-row.played.highest-series span {
+    color: #27ae60 !important;
+    font-weight: 900 !important;
+}
