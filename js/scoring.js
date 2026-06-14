@@ -2839,22 +2839,23 @@ window.update3PlayerUI = function() {
     });
 };
 
-// 5. MATCH EINDE AFHANDELING
+// 5. MATCH EINDE AFHANDELING → GA NAAR SAMENVATTING
 window.end3PlayerMatch = function() {
     const fm = state.friendlyMatch;
     const s3 = fm.state3p;
     
-    // Bepaal winnaar: degene die als eerste het target haalde
+    // Bepaal winnaar voor de log
     let winnerName = "Onbekend";
     if (s3.firstToTarget !== null) {
         winnerName = s3.players[s3.firstToTarget].name;
     }
-
-    alert(`🏁 MATCH VOORBIJ!\n\nDe winnaar is: ${winnerName}\n(Gefeliciteerd!)`);
     
-    // Hier kunnen we later een doorverwijzing naar een samenvattingspagina inbouwen
-    // Voor nu verbergen we de 3-speler pagina weer
-    document.getElementById('page14-3player').classList.add('hidden');
+    console.log(`🏁 MATCH VOORBIJ! Winnaar: ${winnerName}`);
+    
+    // Navigeer naar de samenvatting pagina
+    setTimeout(() => {
+        window.show3PlayerSummary();
+    }, 500);
 };
 
 
