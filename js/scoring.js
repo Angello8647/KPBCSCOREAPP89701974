@@ -2786,7 +2786,7 @@ const render3PTurnsList = (turns, highest) => {
 
 
 /* =========================================================================
-   UI UPDATEN: MET STATISTIEKEN EN BEURTENLIJST
+   UI UPDATEN: MET STATISTIEKEN, BEURTENLIJST, NAAM EN TARGET
    ========================================================================= */
 window.update3PlayerUI = function() {
     const fm = state.friendlyMatch;
@@ -2813,13 +2813,20 @@ window.update3PlayerUI = function() {
         turnIndicator.style.color = turnColor;
     }
 
-    // 2. Update de 3 kolommen (inclusief stats en beurtenlijst)
+    // 2. Update de 3 kolommen (inclusief NAAM, TARGET, stats en beurtenlijst)
     s3.players.forEach((player, index) => {
+        // ✅ FIX: Naam en Target elementen ophalen
+        const nameEl = document.getElementById(`friendly3p-name${index + 1}`);
+        const targetEl = document.getElementById(`friendly3p-target${index + 1}`);
         const currentEl = document.getElementById(`friendly3p-current${index + 1}`);
         const totalEl = document.getElementById(`friendly3p-total${index + 1}`);
         const col = document.getElementById(`friendlyP3Col${index + 1}`);
 
-        if (currentEl && totalEl && col) {
+        if (nameEl && targetEl && currentEl && totalEl && col) {
+            // ✅ FIX: Naam en Target daadwerkelijk updaten!
+            nameEl.textContent = player.name;
+            targetEl.textContent = player.target;
+
             // Basis scores updaten
             currentEl.textContent = (index === s3.activeIndex && !s3.matchEnded) ? s3.currentRun : '0';
             totalEl.textContent = player.total;
@@ -2831,12 +2838,12 @@ window.update3PlayerUI = function() {
                 col.classList.remove('active-player');
             }
 
-            // ✅ NIEUW: Statistieken berekenen
+            // Statistieken berekenen
             const mainPlayer = state.players ? state.players.find(p => p.name === player.name) : null;
             const tsg = mainPlayer ? (mainPlayer.tsg || mainPlayer.fixedTSG || '−') : '−';
             const avg = player.turns.length > 0 ? (player.total / player.turns.length).toFixed(2).replace('.', ',') : "0,00";
 
-            // ✅ NIEUW: HTML genereren voor Stats en Beurten
+            // HTML genereren voor Stats en Beurten
             const statsHtml = `
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 100%; text-align: center; margin-bottom: 10px;">
                     <div style="background:rgba(0,0,0,0.25); padding: 8px 4px; border-radius: 6px;">
@@ -2861,25 +2868,23 @@ window.update3PlayerUI = function() {
                 </div>
             `;
 
-            // ✅ FIX: Vervang de placeholders, maar VERWIJDER de class NIET
+            // Vervang de placeholders door de echte content
             let statsPlaceholder = col.querySelector('.col-stats-placeholder');
             let turnsPlaceholder = col.querySelector('.col-turns-placeholder');
             
             if (statsPlaceholder) {
-                // ❌ VERWIJDERD: statsPlaceholder.className = '';
                 statsPlaceholder.style.padding = '0';
                 statsPlaceholder.style.background = 'transparent';
                 statsPlaceholder.innerHTML = statsHtml;
             }
             if (turnsPlaceholder) {
-                // ❌ VERWIJDERD: turnsPlaceholder.className = '';
                 turnsPlaceholder.style.padding = '0';
                 turnsPlaceholder.style.background = 'transparent';
                 turnsPlaceholder.innerHTML = turnsHtml;
             }
         }
     });
-}
+};
 
 // 5. MATCH EINDE AFHANDELING
 window.end3PlayerMatch = function() {
