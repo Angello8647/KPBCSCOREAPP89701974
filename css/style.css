@@ -3859,9 +3859,11 @@
     transition: all 0.2s ease;
 }
 
+/* De 'active-run' class krijgt nu een extra dikke groene rand en glow */
 #page14-3player .score-item.active-run {
-    background: rgba(46, 204, 113, 0.15);
-    border: 1px solid rgba(46, 204, 113, 0.3);
+    background: rgba(46, 204, 113, 0.3);
+    border: 2px solid rgba(46, 204, 113, 0.8);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
 }
 
 #page14-3player .score-label {
