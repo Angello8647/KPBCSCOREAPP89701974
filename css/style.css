@@ -3637,3 +3637,41 @@
     font-style: italic;
     margin-top: 10px;
 }
+
+/* =========================================================================
+   3-SPELERS: BEURTENLIJST STYLING (Compact voor in de kolom)
+   ========================================================================= */
+
+/* Zorg dat de bestaande turn-row classes ook in de 3-speler modus werken */
+#page14-3player .turn-row.pending {
+    background: rgba(0, 0, 0, 0.35) !important;
+    color: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+#page14-3player .turn-row.played {
+    background: rgba(255, 255, 255, 0.85) !important;
+    color: #2c3e50 !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+#page14-3player .turn-row.played.zero-turn {
+    background: rgba(231, 76, 60, 0.12) !important;
+    border: 1px solid rgba(231, 76, 60, 0.35) !important;
+}
+#page14-3player .turn-row.played.zero-turn span {
+    color: #c0392b !important;
+}
+#page14-3player .turn-row.played.highest-series {
+    background: rgba(46, 204, 113, 0.25) !important;
+    border: 2px solid #2ecc71 !important;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3) !important;
+}
+#page14-3player .turn-row.played.highest-series span {
+    color: #27ae60 !important;
+}
+#page14-3player .turn-row.played.latest-turn {
+    border: 2px solid #3498db !important;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+}
+#page14-3player .turn-row.played.latest-turn span {
+    color: #2980b9 !important;
+}
