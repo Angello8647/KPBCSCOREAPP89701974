@@ -2590,11 +2590,9 @@ window.change3PlayerScore = function(delta) {
     window.update3PlayerUI();
 };
 
-// 3. EINDE BEURT
+// 3. EINDE BEURT (MET SLIMME NABEURT WACHTRIJ)
 window.end3PlayerTurn = function() {
     console.log("🛑 end3PlayerTurn aangeroepen");
-    
-    // ✅ FAIL-SAFE
     if (!state.friendlyMatch || !state.friendlyMatch.state3p) {
         window.init3PlayerScoring();
         return; 
@@ -2605,22 +2603,64 @@ window.end3PlayerTurn = function() {
     if (s3.matchEnded) return;
 
     const activePlayer = s3.players[s3.activeIndex];
+    const activeIndex = s3.activeIndex;
 
-    // Sla de reeks op
+    // 1. Sla de reeks op in de beurtenlijst en update hoogste reeks
     activePlayer.turns.push(s3.currentRun);
     if (s3.currentRun > activePlayer.highest) {
         activePlayer.highest = s3.currentRun;
     }
 
-    // Wissel naar volgende speler (0 -> 1 -> 2 -> 0)
-    s3.activeIndex = (s3.activeIndex + 1) % 3;
+    // 2. CHECK: Heeft deze speler zojuist zijn target gehaald én is hij de EERSTE die dat doet?
+    const reachedTarget = activePlayer.total >= activePlayer.target;
+    
+    if (reachedTarget && s3.firstToTarget === null) {
+        console.log(`🎯 ${activePlayer.name} heeft als EERSTE het target gehaald!`);
+        s3.firstToTarget = activeIndex; // Onthoud wie als eerste uit was
+
+        // Bepaal wie er nog een nabeurt krijgt (de wachtrij)
+        if (activeIndex === 0) { // Wit was als eerste
+            s3.nabeurtQueue = [1, 2]; // Geel, dan Rood
+        } else if (activeIndex === 1) { // Geel was als eerste
+            s3.nabeurtQueue = [2]; // Alleen Rood (Wit had zijn beurt al)
+        } else if (activeIndex === 2) { // Rood was als eerste
+            s3.nabeurtQueue = []; // Niemand meer, Rood wint direct
+        }
+    }
+
+    // 3. Bepaal wie er nu aan de beurt is
+    if (s3.nabeurtQueue.length > 0) {
+        // We zitten in de nabeurt-fase: haal de volgende speler uit de wachtrij
+        s3.activeIndex = s3.nabeurtQueue.shift(); // Haalt de eerste uit de array
+        console.log(`➡️ Nabeurt: volgende speler is index ${s3.activeIndex}`);
+        
+        // Als de wachtrij nu leeg is, is de match na deze beurt voorbij
+        if (s3.nabeurtQueue.length === 0) {
+            // We markeren de match als beëindigd, maar laten de speler eerst zijn beurt maken
+            // (De daadwerkelijke 'matchEnded' check doen we na hun beurt, of we doen het nu en ze spelen hun laatste beurt)
+            // Laten we het simpel houden: als de queue leeg is, is dit de allerlaatste beurt van de match.
+        }
+    } else if (s3.firstToTarget !== null) {
+        // De wachtrij was al leeg, en iemand had al gewonnen. Match is nu echt voorbij.
+        s3.matchEnded = true;
+        console.log("🏁 Match beëindigd!");
+    } else {
+        // Normale wissel (nog niemand heeft het target gehaald)
+        s3.activeIndex = (s3.activeIndex + 1) % 3;
+    }
+
+    // Reset de huidige reeks voor de volgende speler
     s3.currentRun = 0;
-    console.log(`   Wissel naar speler index: ${s3.activeIndex}`);
 
     window.update3PlayerUI();
+    
+    // 4. Als de match net is geëindigd, trigger de eindafhandeling
+    if (s3.matchEnded) {
+        setTimeout(() => window.end3PlayerMatch(), 500);
+    }
 };
 
-// 4. UI UPDATEN
+// 4. UI UPDATEN (MET NABEURT WAARSCHUWING)
 window.update3PlayerUI = function() {
     const fm = state.friendlyMatch;
     if (!fm || !fm.state3p) return;
@@ -2632,8 +2672,20 @@ window.update3PlayerUI = function() {
     // 1. Update de middenknop
     const turnIndicator = document.getElementById('friendly3p-turn-indicator');
     if (turnIndicator) {
-        turnIndicator.textContent = `BEURT: ${colorNames[s3.activeIndex]}`;
-        turnIndicator.style.color = s3.activeIndex === 0 ? '#ffffff' : (s3.activeIndex === 1 ? '#f1c40f' : '#e74c3c');
+        let turnText = `BEURT: ${colorNames[s3.activeIndex]}`;
+        let turnColor = s3.activeIndex === 0 ? '#ffffff' : (s3.activeIndex === 1 ? '#f1c40f' : '#e74c3c');
+        
+        // ✅ NIEUW: Toon NABEURT waarschuwing als de wachtrij nog spelers bevat
+        if (s3.nabeurtQueue.length > 0 && s3.firstToTarget !== null) {
+            turnText += ' ⚠️ NABEURT';
+            turnColor = '#ffcc00'; // Geel/waarschuwing kleur
+        } else if (s3.matchEnded) {
+            turnText = 'MATCH VOORBIJ';
+            turnColor = '#e74c3c';
+        }
+
+        turnIndicator.textContent = turnText;
+        turnIndicator.style.color = turnColor;
     }
 
     // 2. Update de 3 kolommen
@@ -2643,11 +2695,12 @@ window.update3PlayerUI = function() {
         const col = document.getElementById(`friendlyP3Col${index + 1}`);
 
         if (currentEl && totalEl) {
-            currentEl.textContent = (index === s3.activeIndex) ? s3.currentRun : '0';
+            // Alleen de actieve speler ziet zijn huidige reeks, anderen zien 0
+            currentEl.textContent = (index === s3.activeIndex && !s3.matchEnded) ? s3.currentRun : '0';
             totalEl.textContent = player.total;
 
             if (col) {
-                if (index === s3.activeIndex) {
+                if (index === s3.activeIndex && !s3.matchEnded) {
                     col.classList.add('active-player');
                 } else {
                     col.classList.remove('active-player');
@@ -2655,5 +2708,22 @@ window.update3PlayerUI = function() {
             }
         }
     });
-    console.log("✅ UI geüpdatet");
+};
+
+// 5. MATCH EINDE AFHANDELING
+window.end3PlayerMatch = function() {
+    const fm = state.friendlyMatch;
+    const s3 = fm.state3p;
+    
+    // Bepaal winnaar: degene die als eerste het target haalde
+    let winnerName = "Onbekend";
+    if (s3.firstToTarget !== null) {
+        winnerName = s3.players[s3.firstToTarget].name;
+    }
+
+    alert(`🏁 MATCH VOORBIJ!\n\nDe winnaar is: ${winnerName}\n(Gefeliciteerd!)`);
+    
+    // Hier kunnen we later een doorverwijzing naar een samenvattingspagina inbouwen
+    // Voor nu verbergen we de 3-speler pagina weer
+    document.getElementById('page14-3player').classList.add('hidden');
 };
