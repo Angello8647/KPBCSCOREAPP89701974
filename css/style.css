@@ -3844,40 +3844,7 @@
 
 
 /* =========================================================================
-   PAGINA 15 (3 SPELERS): SAMENVATTING STYLING (Ongewijzigd, werkte goed)
-   ========================================================================= */
-#page15-3player-summary {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    min-height: 100vh;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-#page15-3player-summary .summary3p-header { text-align: center; margin-bottom: 30px; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 15px; }
-#page15-3player-summary .summary3p-title { font-size: 2.5rem; font-weight: 900; color: white; margin-bottom: 10px; }
-#page15-3player-summary .summary3p-winner { font-size: 1.8rem; font-weight: 700; color: #f1c40f; margin-bottom: 5px; }
-#page15-3player-summary .summary3p-subtitle { font-size: 1rem; color: #bdc3c7; font-style: italic; }
-#page15-3player-summary .summary3p-columns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; flex: 1; margin-bottom: 20px; }
-#page15-3player-summary .summary3p-col { background: rgba(44, 62, 80, 0.8); border-radius: 15px; padding: 20px; display: flex; flex-direction: column; border: 3px solid transparent; transition: all 0.3s ease; }
-#page15-3player-summary .summary3p-white { border-top: 5px solid #ffffff; }
-#page15-3player-summary .summary3p-yellow { border-top: 5px solid #f1c40f; }
-#page15-3player-summary .summary3p-red { border-top: 5px solid #e74c3c; }
-#page15-3player-summary .summary3p-col.winner-col { border: 3px solid #2ecc71; box-shadow: 0 0 30px rgba(46, 204, 113, 0.4); transform: scale(1.02); }
-#page15-3player-summary .summary3p-player-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
-#page15-3player-summary .summary3p-ball { font-size: 2.5rem; }
-#page15-3player-summary .summary3p-name { font-size: 1.5rem; font-weight: 900; color: white; }
-#page15-3player-summary .summary3p-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-#page15-3player-summary .summary3p-stat { background: rgba(0, 0, 0, 0.3); padding: 12px; border-radius: 8px; text-align: center; }
-#page15-3player-summary .stat-label { font-size: 0.75rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-#page15-3player-summary .stat-value { font-size: 1.5rem; font-weight: 900; color: #ecf0f1; }
-#page15-3player-summary .summary3p-turns-list { flex: 1; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 10px; overflow-y: auto; max-height: 200px; }
-#page15-3player-summary .summary3p-footer { text-align: center; margin-top: 20px; }
-#page15-3player-summary .summary3p-back-btn { background: #3498db; color: white; border: none; padding: 15px 40px; font-size: 1.2rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
-#page15-3player-summary .summary3p-back-btn:hover { background: #2980b9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); }
-
-/* =========================================================================
-   FORCED FIX: WITTE ACHTERGROND ALLEEN VOOR 3-SPELERS 
-   (Overschrijft de globale competitie-regel, maar laat die verder intact)
+   PAGINA 14 (3 SPELERS): FORCED FIX - WITTE ACHTERGROND VOOR 0 EN HOOGSTE
    ========================================================================= */
 
 #page14-3player .turn-row.played.zero-turn {
@@ -3900,32 +3867,28 @@
 }
 
 /* =========================================================================
-   NUCLEAR FIX: VERWIJDER ALLE VERTICALE RUIMTE (3-SPELERS)
+   PAGINA 14 (3 SPELERS): NUCLEAR FIX - VERWIJDER ALLE VERTICALE RUIMTE
    ========================================================================= */
 
-/* 1. Kolom zelf: zorg dat hij netjes vult zonder extra padding onderaan */
 #page14-3player .player-col {
-    padding: 10px 8px 5px 8px !important; /* Minimale padding onderaan */
+    padding: 10px 8px 5px 8px !important;
     height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
 }
 
-/* 2. Statistieken: geen marge of padding onderaan */
 #page14-3player .stats3p-grid {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
 }
 
-/* 3. Beurtenlijst container: direct aansluiten, en fix voor flexbox scrollbar bug */
 #page14-3player .turns-scroll-container {
     margin-top: 0 !important;
-    padding-top: 2px !important; /* Slechts 2px lucht voor esthetiek */
-    flex: 1 1 auto !important; /* Laat het groeien en krimpen */
-    min-height: 0 !important; /* CRUCIAAL: voorkomt dat de container de kolom uitduwt */
+    padding-top: 2px !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
 }
 
-/* 4. De originele placeholder divs (voor het geval de JS daar nog iets mee doet) */
 #page14-3player .col-turns-placeholder,
 #page14-3player .col-stats-placeholder {
     margin: 0 !important;
@@ -3933,10 +3896,9 @@
 }
 
 /* =========================================================================
-   DEFINITIEVE FIX: BEURTENLIJST ZONDER SCROLLBAR (3-SPELERS)
+   PAGINA 14 (3 SPELERS): DEFINITIEVE FIX - BEURTENLIJST ZONDER SCROLLBAR
    ========================================================================= */
 
-/* 1. Stats placeholder: compact maar met ademruimte */
 #page14-3player .col-stats-placeholder {
     height: auto !important;
     max-height: 120px !important;
@@ -3944,28 +3906,23 @@
     margin-bottom: 10px !important;
 }
 
-/* 2. Turns placeholder: geen limiet, laat het groeien */
 #page14-3player .col-turns-placeholder {
     flex: 1 1 auto !important;
     min-height: 0 !important;
-    overflow: visible !important; /* ✅ Geen scrollbar, laat het groeien */
+    overflow: visible !important;
     display: flex !important;
     flex-direction: column !important;
 }
 
-/* 3. Scroll container: alleen scrollen als het ECHT niet meer past */
 #page14-3player .turns-scroll-container {
     flex: 1 1 auto !important;
     min-height: 0 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    
-    /* Dunne, subtiele scrollbar */
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
 
-/* Verberg scrollbar in Chrome/Edge/Safari */
 #page14-3player .turns-scroll-container::-webkit-scrollbar {
     width: 6px;
 }
@@ -3979,6 +3936,7 @@
 #page14-3player .turns-scroll-container::-webkit-scrollbar-thumb:hover {
     background: rgba(255,255,255,0.5);
 }
+
 /* =========================================================================
    PAGINA 15 (3 SPELERS): SAMENVATTING STYLING (MET COMPETITIE-STIJL BEURTEN)
    ========================================================================= */
@@ -3991,7 +3949,6 @@
     flex-direction: column;
 }
 
-/* Header */
 #page15-3player-summary .summary3p-header {
     text-align: center;
     margin-bottom: 25px;
@@ -4020,7 +3977,6 @@
     font-style: italic;
 }
 
-/* 3 Kolommen */
 #page15-3player-summary .summary3p-columns {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -4029,7 +3985,6 @@
     margin-bottom: 20px;
 }
 
-/* Individuele Kolom */
 #page15-3player-summary .summary3p-col {
     background: rgba(44, 62, 80, 0.8);
     border-radius: 15px;
@@ -4040,19 +3995,16 @@
     transition: all 0.3s ease;
 }
 
-/* Kleuraccenten */
 #page15-3player-summary .summary3p-white { border-top: 5px solid #ffffff; }
 #page15-3player-summary .summary3p-yellow { border-top: 5px solid #f1c40f; }
 #page15-3player-summary .summary3p-red { border-top: 5px solid #e74c3c; }
 
-/* Winnaar highlight */
 #page15-3player-summary .summary3p-col.winner-col {
     border: 3px solid #2ecc71;
     box-shadow: 0 0 30px rgba(46, 204, 113, 0.4);
     transform: scale(1.02);
 }
 
-/* Speler Header */
 #page15-3player-summary .summary3p-player-header {
     display: flex;
     align-items: center;
@@ -4072,7 +4024,6 @@
     color: white;
 }
 
-/* Statistieken Grid */
 #page15-3player-summary .summary3p-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -4101,7 +4052,6 @@
     color: #ecf0f1;
 }
 
-/* ✅ NIEUW: Beurtenlijst container (zelfde stijl als pagina 14) */
 #page15-3player-summary .summary3p-turns-list {
     flex: 1;
     background: rgba(0, 0, 0, 0.2);
@@ -4115,7 +4065,6 @@
     scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
 
-/* ✅ NIEUW: Beurten rijen (exact dezelfde stijl als pagina 14) */
 #page15-3player-summary .summary3p-turns-list .turn-row {
     padding: 8px 12px;
     border-radius: 6px;
@@ -4128,19 +4077,16 @@
     display: block;
 }
 
-/* Niet gespeelde beurten */
 #page15-3player-summary .summary3p-turns-list .turn-row.pending {
     background: rgba(0, 0, 0, 0.3);
     color: rgba(255, 255, 255, 0.3);
 }
 
-/* Gespeelde beurten */
 #page15-3player-summary .summary3p-turns-list .turn-row.played {
     background: #ffffff;
     color: #2c3e50;
 }
 
-/* NUL BEURT: Witte achtergrond, rode rand en tekst */
 #page15-3player-summary .summary3p-turns-list .turn-row.played.zero-turn {
     background: #ffffff;
     border: 2px solid #e74c3c;
@@ -4150,7 +4096,6 @@
     color: #e74c3c;
 }
 
-/* HOOGSTE REEKS: Witte achtergrond, groene rand en tekst */
 #page15-3player-summary .summary3p-turns-list .turn-row.played.highest-series {
     background: #ffffff;
     border: 2px solid #2ecc71;
@@ -4161,7 +4106,6 @@
     font-weight: 900;
 }
 
-/* LAATSTE BEURT: Lichtblauw */
 #page15-3player-summary .summary3p-turns-list .turn-row.played.latest-turn {
     background: rgba(52, 152, 219, 0.2);
     border: 2px solid #3498db;
@@ -4171,7 +4115,6 @@
     color: #2980b9;
 }
 
-/* Verberg scrollbar in Chrome/Edge/Safari */
 #page15-3player-summary .summary3p-turns-list::-webkit-scrollbar {
     width: 6px;
 }
@@ -4186,7 +4129,6 @@
     background: rgba(255,255,255,0.5);
 }
 
-/* Footer met Terug knop */
 #page15-3player-summary .summary3p-footer {
     text-align: center;
     margin-top: 20px;
