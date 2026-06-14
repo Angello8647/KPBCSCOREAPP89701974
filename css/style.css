@@ -3931,3 +3931,22 @@
     margin: 0 !important;
     padding: 0 !important;
 }
+
+/* =========================================================================
+   FORCED FIX: BEPERK HOOGTE STATS PLACEHOLDER (3-SPELERS)
+   ========================================================================= */
+
+/* 1. Stats placeholder: beperk hoogte zodat er ruimte overblijft voor beurten */
+#page14-3player .col-stats-placeholder {
+    height: auto !important; /* Geen vaste hoogte */
+    max-height: 120px !important; /* Maximaal 120px voor stats */
+    flex: 0 0 auto !important; /* Groeit niet, pakt alleen wat het nodig heeft */
+    margin-bottom: 5px !important; /* Kleine ruimte naar beurtenlijst */
+}
+
+/* 2. Turns placeholder: forceer dat het ALLE overgebleven ruimte pakt */
+#page14-3player .col-turns-placeholder {
+    flex: 1 1 auto !important; /* Groeit om alle resterende ruimte te vullen */
+    min-height: 0 !important; /* Cruciaal: voorkomt overflow */
+    overflow-y: auto !important; /* Scroll alleen als het echt nodig is */
+}
