@@ -2522,118 +2522,138 @@ window.setManualTarget = function(value) {
 
 
 /* =========================================================================
-   3-SPELERS VRIENDSCHAPPELIJKE MODUS (100% GEÏSOLEERD)
+   3-SPELERS VRIENDSCHAPPELIJKE MODUS (100% GEÏSOLEERD + FAIL-SAFE)
    ========================================================================= */
 
 // 1. INITIALISATIE: Zet de basisstate op voor 3 spelers
 window.init3PlayerScoring = function() {
-    const fm = state.friendlyMatch;
-    if (!fm) return;
-
-    // Maak een aparte state voor 3 spelers, zodat we de 2-speler state niet raken
-    if (!fm.state3p) {
-        fm.state3p = {
-            activeIndex: 0, // 0 = Wit (Speler 1), 1 = Geel (Speler 2), 2 = Rood (Speler 3)
-            currentRun: 0,
-            matchEnded: false,
-            firstToTarget: null, // 'white', 'yellow', of 'red'
-            nabeurtQueue: [],    // Lijst met indexen van spelers die nog een nabeurt moeten krijgen
-            
-            // Data per speler
+    console.log("🚀 init3PlayerScoring wordt aangeroepen...");
+    
+    // ✅ FAIL-SAFE: Maak state.friendlyMatch aan als het niet bestaat (voor direct testen)
+    if (!state.friendlyMatch) {
+        console.log("⚠️ state.friendlyMatch aangemaakt voor testdoeleinden");
+        state.friendlyMatch = {
             players: [
-                { id: 1, name: fm.players[0].name, color: 'white', target: fm.players[0].target, total: 0, turns: [], highest: 0 },
-                { id: 2, name: fm.players[1].name, color: 'yellow', target: fm.players[1].target, total: 0, turns: [], highest: 0 },
-                { id: 3, name: fm.players[2].name, color: 'red', target: fm.players[2].target, total: 0, turns: [], highest: 0 }
+                { name: "Speler 1 (Wit)", target: 50 },
+                { name: "Speler 2 (Geel)", target: 50 },
+                { name: "Speler 3 (Rood)", target: 50 }
             ]
         };
     }
 
-    // Update de UI voor het eerst
+    const fm = state.friendlyMatch;
+
+    if (!fm.state3p) {
+        console.log("✅ state3p wordt aangemaakt...");
+        fm.state3p = {
+            activeIndex: 0, // 0 = Wit, 1 = Geel, 2 = Rood
+            currentRun: 0,
+            matchEnded: false,
+            firstToTarget: null,
+            nabeurtQueue: [],
+            players: [
+                { id: 1, name: fm.players[0] ? fm.players[0].name : "Speler 1", color: 'white', target: fm.players[0] ? fm.players[0].target : 50, total: 0, turns: [], highest: 0 },
+                { id: 2, name: fm.players[1] ? fm.players[1].name : "Speler 2", color: 'yellow', target: fm.players[1] ? fm.players[1].target : 50, total: 0, turns: [], highest: 0 },
+                { id: 3, name: fm.players[2] ? fm.players[2].name : "Speler 3", color: 'red', target: fm.players[2] ? fm.players[2].target : 50, total: 0, turns: [], highest: 0 }
+            ]
+        };
+    }
     window.update3PlayerUI();
 };
 
 // 2. SCORE WIJZIGEN (+1 of -1)
 window.change3PlayerScore = function(delta) {
+    console.log(`👉 change3PlayerScore aangeroepen met delta: ${delta}`);
+    
+    // ✅ FAIL-SAFE: Initialiseer automatisch als het nog niet bestaat
+    if (!state.friendlyMatch || !state.friendlyMatch.state3p) {
+        window.init3PlayerScoring();
+    }
+
     const fm = state.friendlyMatch;
     const s3 = fm.state3p;
-
-    if (s3.matchEnded) return; // Match is al voorbij, doe niets
-
-    // Sla op voor undo (eenvoudige versie voor nu)
-    window.last3pState = JSON.parse(JSON.stringify(fm));
+    
+    if (s3.matchEnded) {
+        console.log("⛔ Match is al beëindigd.");
+        return; 
+    }
 
     const activePlayer = s3.players[s3.activeIndex];
+    console.log(`   Huidige speler: ${activePlayer.name}, Huidige reeks was: ${s3.currentRun}`);
     
     // Update scores
     s3.currentRun += delta;
     activePlayer.total += delta;
+    console.log(`   Nieuwe reeks: ${s3.currentRun}, Nieuwe totaal: ${activePlayer.total}`);
 
     // Update UI direct
     window.update3PlayerUI();
 };
 
-// 3. EINDE BEURT (Basis versie: sla op en wissel naar volgende speler)
+// 3. EINDE BEURT
 window.end3PlayerTurn = function() {
+    console.log("🛑 end3PlayerTurn aangeroepen");
+    
+    // ✅ FAIL-SAFE
+    if (!state.friendlyMatch || !state.friendlyMatch.state3p) {
+        window.init3PlayerScoring();
+        return; 
+    }
+
     const fm = state.friendlyMatch;
     const s3 = fm.state3p;
-
     if (s3.matchEnded) return;
 
     const activePlayer = s3.players[s3.activeIndex];
 
-    // Sla de reeks op in de beurtenlijst en update hoogste reeks
+    // Sla de reeks op
     activePlayer.turns.push(s3.currentRun);
     if (s3.currentRun > activePlayer.highest) {
         activePlayer.highest = s3.currentRun;
     }
 
-    // ⚠️ NOTE: Hier komt later de slimme "nabeurt" logica. 
-    // Voor nu wisselen we gewoon naar de volgende speler (0 -> 1 -> 2 -> 0)
+    // Wissel naar volgende speler (0 -> 1 -> 2 -> 0)
     s3.activeIndex = (s3.activeIndex + 1) % 3;
     s3.currentRun = 0;
+    console.log(`   Wissel naar speler index: ${s3.activeIndex}`);
 
     window.update3PlayerUI();
 };
 
-// 4. UI UPDATEN: Zet de data uit de state in de HTML
+// 4. UI UPDATEN
 window.update3PlayerUI = function() {
     const fm = state.friendlyMatch;
+    if (!fm || !fm.state3p) return;
+    
     const s3 = fm.state3p;
-    if (!s3) return;
-
-    const colors = ['white', 'yellow', 'red'];
     const colorNames = ['WIT', 'GEEL', 'ROOD'];
     const activePlayer = s3.players[s3.activeIndex];
 
-    // 1. Update de middenknop (Wie is er aan de beurt?)
+    // 1. Update de middenknop
     const turnIndicator = document.getElementById('friendly3p-turn-indicator');
     if (turnIndicator) {
         turnIndicator.textContent = `BEURT: ${colorNames[s3.activeIndex]}`;
-        // Optioneel: verander de tekstkleur van de knop op basis van de speler
         turnIndicator.style.color = s3.activeIndex === 0 ? '#ffffff' : (s3.activeIndex === 1 ? '#f1c40f' : '#e74c3c');
     }
 
-    // 2. Loop door alle 3 de spelers en update hun kolommen
+    // 2. Update de 3 kolommen
     s3.players.forEach((player, index) => {
-        const col = document.getElementById(`friendlyP3Col${index + 1}`);
-        const nameEl = document.getElementById(`friendly3p-name${index + 1}`);
-        const targetEl = document.getElementById(`friendly3p-target${index + 1}`);
         const currentEl = document.getElementById(`friendly3p-current${index + 1}`);
         const totalEl = document.getElementById(`friendly3p-total${index + 1}`);
+        const col = document.getElementById(`friendlyP3Col${index + 1}`);
 
-        if (col && nameEl && targetEl && currentEl && totalEl) {
-            // Update tekst
-            nameEl.textContent = player.name;
-            targetEl.textContent = player.target;
-            currentEl.textContent = (index === s3.activeIndex) ? s3.currentRun : '0'; // Alleen actieve speler ziet huidige reeks
+        if (currentEl && totalEl) {
+            currentEl.textContent = (index === s3.activeIndex) ? s3.currentRun : '0';
             totalEl.textContent = player.total;
 
-            // Update visuele highlight (active player)
-            if (index === s3.activeIndex) {
-                col.classList.add('active-player');
-            } else {
-                col.classList.remove('active-player');
+            if (col) {
+                if (index === s3.activeIndex) {
+                    col.classList.add('active-player');
+                } else {
+                    col.classList.remove('active-player');
+                }
             }
         }
     });
+    console.log("✅ UI geüpdatet");
 };
