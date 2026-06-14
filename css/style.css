@@ -3647,266 +3647,10 @@
 }
 
 /* =========================================================================
-   3-SPELERS: BEURTENLIJST STYLING (Compact voor in de kolom)
+   3-SPELERS: COMPLETE & SCHONE STYLING (GEEN DUBBELE REGELS)
    ========================================================================= */
 
-/* Zorg dat de bestaande turn-row classes ook in de 3-speler modus werken */
-#page14-3player .turn-row.pending {
-    background: rgba(0, 0, 0, 0.35) !important;
-    color: rgba(255, 255, 255, 0.25) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-#page14-3player .turn-row.played {
-    background: rgba(255, 255, 255, 0.85) !important;
-    color: #2c3e50 !important;
-    border: 1px solid rgba(0, 0, 0, 0.15) !important;
-}
-#page14-3player .turn-row.played.zero-turn {
-    background: rgba(231, 76, 60, 0.12) !important;
-    border: 1px solid rgba(231, 76, 60, 0.35) !important;
-}
-#page14-3player .turn-row.played.zero-turn span {
-    color: #c0392b !important;
-}
-#page14-3player .turn-row.played.highest-series {
-    background: rgba(46, 204, 113, 0.25) !important;
-    border: 2px solid #2ecc71 !important;
-    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3) !important;
-}
-#page14-3player .turn-row.played.highest-series span {
-    color: #27ae60 !important;
-}
-#page14-3player .turn-row.played.latest-turn {
-    border: 2px solid #3498db !important;
-    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
-}
-
-#page14-3player .turn-row.played.latest-turn span {
-    color: #2980b9 !important;
-}
-
-
-/* =========================================================================
-   PAGINA 15 (3 SPELERS): SAMENVATTING STYLING
-   ========================================================================= */
-
-#page15-3player-summary {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    min-height: 100vh;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header */
-#page15-3player-summary .summary3p-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-}
-
-#page15-3player-summary .summary3p-title {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: white;
-    margin-bottom: 10px;
-}
-
-#page15-3player-summary .summary3p-winner {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #f1c40f;
-    margin-bottom: 5px;
-}
-
-#page15-3player-summary .summary3p-subtitle {
-    font-size: 1rem;
-    color: #bdc3c7;
-    font-style: italic;
-}
-
-/* 3 Kolommen */
-#page15-3player-summary .summary3p-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
-    flex: 1;
-    margin-bottom: 20px;
-}
-
-/* Individuele Kolom */
-#page15-3player-summary .summary3p-col {
-    background: rgba(44, 62, 80, 0.8);
-    border-radius: 15px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    border: 3px solid transparent;
-    transition: all 0.3s ease;
-}
-
-/* Kleuraccenten */
-#page15-3player-summary .summary3p-white { border-top: 5px solid #ffffff; }
-#page15-3player-summary .summary3p-yellow { border-top: 5px solid #f1c40f; }
-#page15-3player-summary .summary3p-red { border-top: 5px solid #e74c3c; }
-
-/* Winnaar highlight */
-#page15-3player-summary .summary3p-col.winner-col {
-    border: 3px solid #2ecc71;
-    box-shadow: 0 0 30px rgba(46, 204, 113, 0.4);
-    transform: scale(1.02);
-}
-
-/* Speler Header */
-#page15-3player-summary .summary3p-player-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-#page15-3player-summary .summary3p-ball {
-    font-size: 2.5rem;
-}
-
-#page15-3player-summary .summary3p-name {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: white;
-}
-
-/* Statistieken Grid */
-#page15-3player-summary .summary3p-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-#page15-3player-summary .summary3p-stat {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-#page15-3player-summary .stat-label {
-    font-size: 0.75rem;
-    color: #95a5a6;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 5px;
-}
-
-#page15-3player-summary .stat-value {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #ecf0f1;
-}
-
-/* Beurtenlijst */
-#page15-3player-summary .summary3p-turns-list {
-    flex: 1;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    padding: 10px;
-    overflow-y: auto;
-    max-height: 200px;
-}
-
-/* Footer met Terug knop */
-#page15-3player-summary .summary3p-footer {
-    text-align: center;
-    margin-top: 20px;
-}
-
-#page15-3player-summary .summary3p-back-btn {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-#page15-3player-summary .summary3p-back-btn:hover {
-    background: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-}
-
-
-/* =========================================================================
-   3-SPELERS: NIEUWE HORIZONTALE SCORE BOX
-   ========================================================================= */
-
-#page14-3player .col-score-box {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 12px;
-    padding: 12px 8px;
-    margin-bottom: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-sizing: border-box;
-}
-
-#page14-3player .score-item {
-    flex: 1;
-    text-align: center;
-    padding: 8px 4px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-/* De 'active-run' class krijgt nu een extra dikke groene rand en glow */
-#page14-3player .score-item.active-run {
-    background: rgba(46, 204, 113, 0.3);
-    border: 2px solid rgba(46, 204, 113, 0.8);
-}
-
-#page14-3player .score-label {
-    font-size: 0.7rem;
-    color: #95a5a6;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 6px;
-    font-weight: 700;
-}
-
-#page14-3player .score-value {
-    font-size: 2.1rem;
-    font-weight: 900;
-    color: #ffffff;
-    line-height: 1;
-    transition: color 0.2s ease;
-}
-
-/* HUIDIG krijgt extra nadruk */
-#page14-3player .score-item.active-run .score-value {
-    color: #2ecc71;
-    font-size: 2.4rem;
-    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
-}
-
-/* Target en Totaal iets subtieler */
-#page14-3player .score-item:not(.active-run) .score-value {
-    color: #bdc3c7;
-}
-
-/* =========================================================================
-   3-SPELERS: MAXIMALE CIJFERGROOTTE (6rem) + GEKLEURDE KOLOM ACHTERGRONDEN
-   ========================================================================= */
-
-/* Basis kolom stijl met kleur-tint */
+/* 1. KOLOM ACHTERGRONDEN (Krachtige tinten) */
 #page14-3player .player-col {
     border-radius: 15px;
     padding: 10px 8px;
@@ -3917,47 +3661,34 @@
     border: 2px solid transparent;
 }
 
-/* 1. WITTE KOLOM: Krachtigere witte tint */
-#page14-3player .player-white-col {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.5);
+#page14-3player .player-white-col { background: rgba(255, 255, 255, 0.25); border-color: rgba(255, 255, 255, 0.5); }
+#page14-3player .player-yellow-col { background: rgba(241, 196, 15, 0.25); border-color: rgba(241, 196, 15, 0.5); }
+#page14-3player .player-red-col { background: rgba(231, 76, 60, 0.25); border-color: rgba(231, 76, 60, 0.5); }
+
+#page14-3player .player-col.active-player { transform: scale(1.03); }
+#page14-3player .player-white-col.active-player { box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); border-color: #ffffff; }
+#page14-3player .player-yellow-col.active-player { box-shadow: 0 0 30px rgba(241, 196, 15, 0.5); border-color: #f1c40f; }
+#page14-3player .player-red-col.active-player { box-shadow: 0 0 30px rgba(231, 76, 60, 0.5); border-color: #e74c3c; }
+
+/* 2. NAAM */
+#page14-3player .player-name {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
 }
 
-/* 2. GELE KOLOM: Krachtigere gele tint */
-#page14-3player .player-yellow-col {
-    background: rgba(241, 196, 15, 0.25);
-    border-color: rgba(241, 196, 15, 0.5);
-}
-
-/* 3. RODE KOLOM: Krachtigere rode tint */
-#page14-3player .player-red-col {
-    background: rgba(231, 76, 60, 0.25);
-    border-color: rgba(231, 76, 60, 0.5);
-}
-
-/* Actieve speler krijgt een extra glow en schaal */
-#page14-3player .player-col.active-player {
-    transform: scale(1.03);
-}
-#page14-3player .player-white-col.active-player { 
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); 
-    border-color: #ffffff; 
-}
-#page14-3player .player-yellow-col.active-player { 
-    box-shadow: 0 0 30px rgba(241, 196, 15, 0.5); 
-    border-color: #f1c40f; 
-}
-#page14-3player .player-red-col.active-player { 
-    box-shadow: 0 0 30px rgba(231, 76, 60, 0.5); 
-    border-color: #e74c3c; 
-}
-
-/* Score box aanpassingen voor maximale grootte */
+/* 3. SCORE BOX (Horizontaal, compact) */
 #page14-3player .col-score-box {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    background: rgba(0, 0, 0, 0.25); /* Transparanter zodat kolomkleur doorkomt */
+    background: rgba(0, 0, 0, 0.25);
     border-radius: 12px;
     padding: 10px 5px;
     margin-bottom: 8px;
@@ -3980,7 +3711,7 @@
 
 #page14-3player .score-item.active-run {
     background: rgba(46, 204, 113, 0.2);
-    border: 1px solid rgba(46, 204, 113, 0.5);
+    border: 2px solid rgba(46, 204, 113, 0.8); /* Geen glow, alleen rand */
 }
 
 #page14-3player .score-label {
@@ -3991,35 +3722,30 @@
     margin-bottom: 2px;
     font-weight: 800;
     line-height: 1;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.6); /* Zorgt dat tekst leesbaar blijft op gekleurde achtergrond */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
 }
 
 #page14-3player .score-value {
-    font-size: 4.5rem; /* Zeer groot voor Target en Totaal */
+    font-size: 3.5rem; /* Groot voor Target/Totaal */
     font-weight: 900;
     color: #ffffff;
     line-height: 1;
-    transition: all 0.2s ease;
-    text-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Cruciaal voor leesbaarheid van ver */
+    text-shadow: 0 4px 8px rgba(0,0,0,0.5);
 }
 
 #page14-3player .score-item.active-run .score-value {
     color: #2ecc71;
-    font-size: 6rem;
+    font-size: 6rem; /* ENORM voor Huidig */
 }
 
-
-/* =========================================================================
-   3-SPELERS: STATISTIEKEN GRID (PERFECTE GROOTTE: 3rem)
-   ========================================================================= */
-
+/* 4. STATISTIEKEN GRID */
 #page14-3player .stats3p-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
     width: 100%;
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 8px; /* Compact, dicht bij beurtenlijst */
 }
 
 #page14-3player .stats3p-item {
@@ -4043,43 +3769,35 @@
 }
 
 #page14-3player .stats3p-value {
-    font-size: 3rem; /* ✅ Perfecte grootte */
+    font-size: 3rem;
     font-weight: 900;
     color: #ffffff;
     line-height: 1;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* ✅ NIEUW: Geef alleen de 3e waarde (TSG) een groen-blauwe kleur */
+/* TSG in groen-blauw */
 #page14-3player .stats3p-item:nth-child(3) .stats3p-value {
-    color: #1abc9c; /* Prachtig groen-blauw (Teal) */
-    text-shadow: 0 2px 6px rgba(26, 188, 156, 0.4); /* Subtiele matchende schaduw */
+    color: #1abc9c;
+    text-shadow: 0 2px 6px rgba(26, 188, 156, 0.4);
 }
 
-
-/* =========================================================================
-   3-SPELERS: BEURTENLIJST (COMPETITIE-STIJL, MAXIMALE HOOGTE)
-   ========================================================================= */
-
-/* Scroll container - NEEMT ALLE BESCHIKBARE RUIMTE */
+/* 5. BEURTENLIJST (Maximale hoogte, witte achtergrond voor speciaal) */
 #page14-3player .turns-scroll-container {
     width: 100%;
-    flex: 1; /* Neemt alle overgebleven ruimte */
+    flex: 1; /* Neemt ALLE overgebleven ruimte, geen scrollbar tenzij echt nodig */
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     padding: 8px;
     overflow-y: auto;
-    /* ✅ GEEN max-height meer, dus de lijst groeit tot de bodem */
 }
 
-/* Beurtenlijst */
 #page14-3player .turns-list {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-/* Individuele beurt rij */
 #page14-3player .turn-row {
     padding: 6px 10px;
     border-radius: 6px;
@@ -4088,49 +3806,71 @@
     transition: all 0.2s ease;
 }
 
-#page14-3player .turn-row span {
-    display: block;
-}
+#page14-3player .turn-row span { display: block; }
 
-/* Niet gespeelde beurten */
 #page14-3player .turn-row.pending {
     background: rgba(0, 0, 0, 0.3);
     color: rgba(255, 255, 255, 0.3);
 }
 
-/* Gespeelde beurten */
 #page14-3player .turn-row.played {
-    background: rgba(255, 255, 255, 0.9);
+    background: #ffffff; /* Standaard wit voor gespeelde beurten */
     color: #2c3e50;
 }
 
-/* ✅ NUL BEURT: WITTE ACHTERGROND met rode rand en tekst */
+/* ✅ NUL BEURT: Witte achtergrond, rode rand en tekst */
 #page14-3player .turn-row.played.zero-turn {
-    background: #ffffff; /* WIT */
+    background: #ffffff;
     border: 2px solid #e74c3c;
 }
+#page14-3player .turn-row.played.zero-turn span { color: #e74c3c; }
 
-#page14-3player .turn-row.played.zero-turn span {
-    color: #e74c3c;
-}
-
-/* ✅ HOOGSTE REEKS: WITTE ACHTERGROND met groene rand en tekst */
+/* ✅ HOOGSTE REEKS: Witte achtergrond, groene rand en tekst */
 #page14-3player .turn-row.played.highest-series {
-    background: #ffffff; /* WIT */
+    background: #ffffff;
     border: 2px solid #2ecc71;
 }
-
 #page14-3player .turn-row.played.highest-series span {
     color: #27ae60;
     font-weight: 900;
 }
 
-/* Laatste beurt (blauw) */
+/* LAATSTE BEURT: Lichtblauw */
 #page14-3player .turn-row.played.latest-turn {
     background: rgba(52, 152, 219, 0.2);
     border: 2px solid #3498db;
 }
+#page14-3player .turn-row.played.latest-turn span { color: #2980b9; }
 
-#page14-3player .turn-row.played.latest-turn span {
-    color: #2980b9;
+
+/* =========================================================================
+   PAGINA 15 (3 SPELERS): SAMENVATTING STYLING (Ongewijzigd, werkte goed)
+   ========================================================================= */
+#page15-3player-summary {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
+#page15-3player-summary .summary3p-header { text-align: center; margin-bottom: 30px; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 15px; }
+#page15-3player-summary .summary3p-title { font-size: 2.5rem; font-weight: 900; color: white; margin-bottom: 10px; }
+#page15-3player-summary .summary3p-winner { font-size: 1.8rem; font-weight: 700; color: #f1c40f; margin-bottom: 5px; }
+#page15-3player-summary .summary3p-subtitle { font-size: 1rem; color: #bdc3c7; font-style: italic; }
+#page15-3player-summary .summary3p-columns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; flex: 1; margin-bottom: 20px; }
+#page15-3player-summary .summary3p-col { background: rgba(44, 62, 80, 0.8); border-radius: 15px; padding: 20px; display: flex; flex-direction: column; border: 3px solid transparent; transition: all 0.3s ease; }
+#page15-3player-summary .summary3p-white { border-top: 5px solid #ffffff; }
+#page15-3player-summary .summary3p-yellow { border-top: 5px solid #f1c40f; }
+#page15-3player-summary .summary3p-red { border-top: 5px solid #e74c3c; }
+#page15-3player-summary .summary3p-col.winner-col { border: 3px solid #2ecc71; box-shadow: 0 0 30px rgba(46, 204, 113, 0.4); transform: scale(1.02); }
+#page15-3player-summary .summary3p-player-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid rgba(255, 255, 255, 0.1); }
+#page15-3player-summary .summary3p-ball { font-size: 2.5rem; }
+#page15-3player-summary .summary3p-name { font-size: 1.5rem; font-weight: 900; color: white; }
+#page15-3player-summary .summary3p-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+#page15-3player-summary .summary3p-stat { background: rgba(0, 0, 0, 0.3); padding: 12px; border-radius: 8px; text-align: center; }
+#page15-3player-summary .stat-label { font-size: 0.75rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+#page15-3player-summary .stat-value { font-size: 1.5rem; font-weight: 900; color: #ecf0f1; }
+#page15-3player-summary .summary3p-turns-list { flex: 1; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 10px; overflow-y: auto; max-height: 200px; }
+#page15-3player-summary .summary3p-footer { text-align: center; margin-top: 20px; }
+#page15-3player-summary .summary3p-back-btn { background: #3498db; color: white; border: none; padding: 15px 40px; font-size: 1.2rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+#page15-3player-summary .summary3p-back-btn:hover { background: #2980b9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); }
