@@ -2708,6 +2708,7 @@ const render3PTurnsList = (turns, highest) => {
     return html + '</div>';
 };
 
+
 /* =========================================================================
    UI UPDATEN: MET STATISTIEKEN EN BEURTENLIJST
    ========================================================================= */
@@ -2784,25 +2785,25 @@ window.update3PlayerUI = function() {
                 </div>
             `;
 
-            // Vervang de placeholders door de echte content
+            // ✅ FIX: Vervang de placeholders, maar VERWIJDER de class NIET
             let statsPlaceholder = col.querySelector('.col-stats-placeholder');
             let turnsPlaceholder = col.querySelector('.col-turns-placeholder');
             
             if (statsPlaceholder) {
-                statsPlaceholder.className = ''; // Verwijder placeholder class
+                // ❌ VERWIJDERD: statsPlaceholder.className = '';
                 statsPlaceholder.style.padding = '0';
                 statsPlaceholder.style.background = 'transparent';
                 statsPlaceholder.innerHTML = statsHtml;
             }
             if (turnsPlaceholder) {
-                turnsPlaceholder.className = ''; 
+                // ❌ VERWIJDERD: turnsPlaceholder.className = '';
                 turnsPlaceholder.style.padding = '0';
                 turnsPlaceholder.style.background = 'transparent';
                 turnsPlaceholder.innerHTML = turnsHtml;
             }
         }
     });
-};
+}
 
 // 5. MATCH EINDE AFHANDELING
 window.end3PlayerMatch = function() {
