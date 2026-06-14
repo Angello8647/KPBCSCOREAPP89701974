@@ -2950,55 +2950,42 @@ window.render3PlayerSummary = function() {
     });
 };
 
-// 2. Navigeer naar de samenvatting (ZONDER inline styles)
+// 2. Navigeer naar de samenvatting (GEBRUIKT DEZELFDE LOGICA ALS showPage())
 window.show3PlayerSummary = function() {
-    // Verberg alle pagina's, maar wis de inline styles!
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.classList.add('hidden');
-        p.style.display = ''; // ✅ Wist de inline display: none
-    });
+    // Verberg alle pagina's (exact zoals showPage() doet)
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     
     // Toon samenvatting
     const summaryPage = document.getElementById('page15-3player-summary');
     if (summaryPage) {
-        summaryPage.classList.remove('hidden');
         summaryPage.classList.add('active');
-        summaryPage.style.display = ''; // ✅ Laat CSS de display regelen
+        state.currentPage = 15;
         
         // Render de data
         window.render3PlayerSummary();
     }
 };
 
-// 3. Terug naar hoofdmenu (MET VOLLEDIGE RESET EN STYLE WISSEN)
+// 3. Terug naar hoofdmenu (GEBRUIKT DEZELFDE LOGICA ALS showPage())
 window.backToHomeFrom3PlayerSummary = function() {
-    console.log("🏠 Terug naar hoofdmenu...");
-    
     // Reset states
     state.friendlyMatch = null;
     window.last3pState = null;
     
-    // Verberg alle pagina's en WIS de inline styles
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.classList.add('hidden');
-        p.style.display = ''; // ✅ CRUCIAAL: Wist display: none
-    });
+    // Verberg alle pagina's (exact zoals showPage() doet)
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     
-    // Toon pagina 1
+    // Toon pagina 1 (exact zoals showPage(1) doet)
     const page1 = document.getElementById('page1');
     if (page1) {
-        page1.classList.remove('hidden');
         page1.classList.add('active');
-        page1.style.display = ''; // ✅ Laat CSS de display regelen
+        state.currentPage = 1;
+        
+        // Reset containers
+        if (typeof window.resetPage1State === 'function') {
+            window.resetPage1State();
+        }
     }
-    
-    // Reset containers
-    const officialContainer = document.getElementById('containerOfficial');
-    const friendlyContainer = document.getElementById('containerFriendly');
-    if (officialContainer) officialContainer.classList.remove('inactive-mode');
-    if (friendlyContainer) friendlyContainer.classList.remove('inactive-mode');
 };
 
 /* =========================================================================
