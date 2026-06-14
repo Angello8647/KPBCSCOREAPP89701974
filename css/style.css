@@ -3933,39 +3933,39 @@
 }
 
 /* =========================================================================
-   PRECISIE FIX: PERFECTE AFSTAND + GEEN SCROLLBAR (3-SPELERS)
+   DEFINITIEVE FIX: BEURTENLIJST ZONDER SCROLLBAR (3-SPELERS)
    ========================================================================= */
 
-/* 1. Stats placeholder: iets meer ademruimte, maar nog steeds compact */
+/* 1. Stats placeholder: compact maar met ademruimte */
 #page14-3player .col-stats-placeholder {
     height: auto !important;
     max-height: 120px !important;
     flex: 0 0 auto !important;
-    margin-bottom: 10px !important; /* ✅ Iets meer ruimte (was 5px) */
+    margin-bottom: 10px !important;
 }
 
-/* 2. Turns placeholder: neem alle ruimte, maar forceer geen scrollbar */
+/* 2. Turns placeholder: geen limiet, laat het groeien */
 #page14-3player .col-turns-placeholder {
     flex: 1 1 auto !important;
     min-height: 0 !important;
-    overflow: hidden !important; /* ✅ Geen scrollbar op de placeholder zelf */
+    overflow: visible !important; /* ✅ Geen scrollbar, laat het groeien */
     display: flex !important;
     flex-direction: column !important;
 }
 
-/* 3. De echte scroll container binnenin: pas scrollen als het ECHT moet */
+/* 3. Scroll container: alleen scrollen als het ECHT niet meer past */
 #page14-3player .turns-scroll-container {
     flex: 1 1 auto !important;
     min-height: 0 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     
-    /* ✅ Verberg de scrollbar visueel als hij niet nodig is */
-    scrollbar-width: thin; /* Firefox: dunne scrollbar */
+    /* Dunne, subtiele scrollbar */
+    scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
 
-/* Verberg scrollbar in Chrome/Edge/Safari tenzij je eroverheen hovert */
+/* Verberg scrollbar in Chrome/Edge/Safari */
 #page14-3player .turns-scroll-container::-webkit-scrollbar {
     width: 6px;
 }
