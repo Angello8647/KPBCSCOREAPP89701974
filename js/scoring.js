@@ -1892,11 +1892,19 @@ window.startFriendlyMatchFromBallSelection = function() {
         
         console.log("🔄 Navigeren naar 3-speler pagina...");
         
-        // ✅ GEBRUIK EXACT DEZELFDE LOGICA ALS showPage()
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // ✅ VERBERG ALLE PAGINA'S EN RUIM OP
+        document.querySelectorAll('.page').forEach(p => {
+            p.classList.remove('active');
+            p.classList.remove('hidden'); // ✅ Ruim .hidden op
+            p.style.display = ''; // ✅ Wis inline display
+        });
+        
+        // ✅ TOON 3-SPELER PAGINA
         const page3p = document.getElementById('page14-3player');
         if (page3p) {
             page3p.classList.add('active');
+            page3p.classList.remove('hidden'); // ✅ Voor het geval die er is
+            page3p.style.display = ''; // ✅ Wis inline display
             state.currentPage = 14;
         }
         
