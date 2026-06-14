@@ -18,22 +18,7 @@
                 <input type="password" id="adminPassword" placeholder="Wachtwoord" style="display: none;">
                 <button class="upload-btn" onclick="checkPassword()">📤 Beheer Matchen</button>
                 <button onclick="
-                    // 1. Verberg ALLE pagina's hardhandig
-                    document.querySelectorAll('.page').forEach(p => {
-                        p.style.display = 'none';
-                        p.classList.remove('active');
-                    });
-                    
-                    // 2. Forceer de 3-speler pagina zichtbaar
-                    const p3 = document.getElementById('page14-3player');
-                    p3.style.display = 'block';
-                    p3.classList.add('active');
-                    p3.classList.remove('hidden');
-                    
-                    console.log('✅ 3-speler pagina geforceerd zichtbaar!');
-                " style="background: #e74c3c; color: white; padding: 15px 20px; border-radius: 8px; margin: 10px; font-weight: bold; border: 2px solid white; z-index: 9999; position: relative; cursor: pointer;">
-                    🧪 FORCEER 3 SPELERS PAGINA
-                </button>
+                   
             </div>
         </div>
     
