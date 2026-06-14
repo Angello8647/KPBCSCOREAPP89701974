@@ -2938,7 +2938,7 @@ window.render3PlayerSummary = function() {
         
         // Beurtenlijst renderen
         const turnsListEl = document.getElementById(`summary3p-turnsList${idx}`);
-        turnsListEl.innerHTML = render3PTurnsList(player.turns, player.highest);
+        turnsListEl.innerHTML = render3PTurnsListSummary(player.turns, player.highest);
         
         // Winnaar highlight
         const col = turnsListEl.closest('.summary3p-col');
