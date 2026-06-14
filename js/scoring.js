@@ -2569,39 +2569,54 @@ window.setManualTarget = function(value) {
    3-SPELERS VRIENDSCHAPPELIJKE MODUS (100% GEÏSOLEERD + FAIL-SAFE)
    ========================================================================= */
 
+
 // 1. INITIALISATIE: Zet de basisstate op voor 3 spelers
 window.init3PlayerScoring = function() {
     console.log("🚀 init3PlayerScoring wordt aangeroepen...");
-    
-    // ✅ FAIL-SAFE: Maak state.friendlyMatch aan als het niet bestaat (voor direct testen)
-    if (!state.friendlyMatch) {
-        console.log("⚠️ state.friendlyMatch aangemaakt voor testdoeleinden");
-        state.friendlyMatch = {
-            players: [
-                { name: "Speler 1 (Wit)", target: 15 },
-                { name: "Speler 2 (Geel)", target: 15 },
-                { name: "Speler 3 (Rood)", target: 15 }
-            ]
-        };
-    }
-
     const fm = state.friendlyMatch;
-
-    if (!fm.state3p) {
-        console.log("✅ state3p wordt aangemaakt...");
-        fm.state3p = {
-            activeIndex: 0, // 0 = Wit, 1 = Geel, 2 = Rood
-            currentRun: 0,
-            matchEnded: false,
-            firstToTarget: null,
-            nabeurtQueue: [],
-            players: [
-                { id: 1, name: fm.players[0] ? fm.players[0].name : "Speler 1", color: 'white', target: fm.players[0] ? fm.players[0].target : 15, total: 0, turns: [], highest: 0 },
-                { id: 2, name: fm.players[1] ? fm.players[1].name : "Speler 2", color: 'yellow', target: fm.players[1] ? fm.players[1].target : 15, total: 0, turns: [], highest: 0 },
-                { id: 3, name: fm.players[2] ? fm.players[2].name : "Speler 3", color: 'red', target: fm.players[2] ? fm.players[2].target : 15, total: 0, turns: [], highest: 0 }
-            ]
-        };
+    
+    if (!fm) {
+        console.error("❌ FOUT: state.friendlyMatch bestaat niet!");
+        return;
     }
+
+    // ✅ NIEUW: Gebruik de echte spelersdata als die beschikbaar is (uit de bal-selectie)
+    if (fm.players && fm.players.length === 3 && fm.players[0].name) {
+        console.log("✅ Echte spelersdata gevonden, gebruiken...");
+        
+        if (!fm.state3p) {
+            fm.state3p = {
+                activeIndex: 0, // Start altijd met de witte speler (index 0)
+                currentRun: 0,
+                matchEnded: false,
+                firstToTarget: null,
+                nabeurtQueue: [],
+                players: [
+                    { id: 1, name: fm.players[0].name, color: 'white', target: fm.players[0].target, total: 0, turns: [], highest: 0 },
+                    { id: 2, name: fm.players[1].name, color: 'yellow', target: fm.players[1].target, total: 0, turns: [], highest: 0 },
+                    { id: 3, name: fm.players[2].name, color: 'red', target: fm.players[2].target, total: 0, turns: [], highest: 0 }
+                ]
+            };
+        }
+    } else {
+        // ✅ FAIL-SAFE: Maak test-data aan als er geen echte data is (voor direct testen)
+        console.log("⚠️ Geen echte spelersdata, fail-safe testdata aanmaken...");
+        if (!fm.state3p) {
+            fm.state3p = {
+                activeIndex: 0,
+                currentRun: 0,
+                matchEnded: false,
+                firstToTarget: null,
+                nabeurtQueue: [],
+                players: [
+                    { id: 1, name: "Speler 1 (Wit)", color: 'white', target: 15, total: 0, turns: [], highest: 0 },
+                    { id: 2, name: "Speler 2 (Geel)", color: 'yellow', target: 15, total: 0, turns: [], highest: 0 },
+                    { id: 3, name: "Speler 3 (Rood)", color: 'red', target: 15, total: 0, turns: [], highest: 0 }
+                ]
+            };
+        }
+    }
+    
     window.update3PlayerUI();
 };
 
