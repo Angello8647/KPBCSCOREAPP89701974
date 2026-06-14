@@ -4035,7 +4035,7 @@
 }
 
 #page14-3player .stats3p-value {
-    font-size: 6rem; /* Zoals gevraagd: enorm groot! */
+    font-size: 3rem; /* Zoals gevraagd: enorm groot! */
     font-weight: 900;
     color: #ffffff;
     line-height: 1; /* Cruciaal: voorkomt dat de box te hoog wordt */
