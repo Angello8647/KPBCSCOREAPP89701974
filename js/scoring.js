@@ -2631,6 +2631,9 @@ window.end3PlayerTurn = function() {
     const s3 = fm.state3p;
     if (s3.matchEnded) return;
 
+    // ✅ NIEUW: Sla de huidige staat op VOORDAT we iets veranderen
+    window.last3pState = JSON.parse(JSON.stringify(state.friendlyMatch));
+
     const activePlayer = s3.players[s3.activeIndex];
     const activeIndex = s3.activeIndex;
 
