@@ -2950,31 +2950,45 @@ window.render3PlayerSummary = function() {
     });
 };
 
-// 2. Navigeer naar de samenvatting (GEBRUIK EXACT DEZELFDE LOGICA ALS showPage())
+// 2. Navigeer naar de samenvatting
 window.show3PlayerSummary = function() {
-    // ✅ GEBRUIK EXACT DEZELFDE LOGICA ALS showPage()
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // ✅ VERBERG ALLE PAGINA'S EN RUIM OP
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.classList.remove('hidden'); // ✅ Ruim .hidden op
+        p.style.display = ''; // ✅ Wis inline display
+    });
     
+    // ✅ TOON SAMENVATTING
     const summaryPage = document.getElementById('page15-3player-summary');
     if (summaryPage) {
         summaryPage.classList.add('active');
+        summaryPage.classList.remove('hidden'); // ✅ Voor het geval die er is
+        summaryPage.style.display = ''; // ✅ Wis inline display
         state.currentPage = 15;
         window.render3PlayerSummary();
     }
 };
 
-// 3. Terug naar hoofdmenu (GEBRUIK EXACT DEZELFDE LOGICA ALS showPage())
+// 3. Terug naar hoofdmenu
 window.backToHomeFrom3PlayerSummary = function() {
     // Reset states
     state.friendlyMatch = null;
     window.last3pState = null;
     
-    // ✅ GEBRUIK EXACT DEZELFDE LOGICA ALS showPage()
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // ✅ VERBERG ALLE PAGINA'S EN RUIM OP
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.classList.remove('hidden'); // ✅ Ruim .hidden op
+        p.style.display = ''; // ✅ Wis inline display
+    });
     
+    // ✅ TOON PAGINA 1
     const page1 = document.getElementById('page1');
     if (page1) {
         page1.classList.add('active');
+        page1.classList.remove('hidden'); // ✅ Voor het geval die er is
+        page1.style.display = ''; // ✅ Wis inline display
         state.currentPage = 1;
         
         if (typeof window.resetPage1State === 'function') {
