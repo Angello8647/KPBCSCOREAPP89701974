@@ -3900,23 +3900,34 @@
 }
 
 /* =========================================================================
-   FORCED FIX: MINIMALE RUIMTE TUSSEN STATS EN BEURTENLIJST (3-SPELERS)
+   NUCLEAR FIX: VERWIJDER ALLE VERTICALE RUIMTE (3-SPELERS)
    ========================================================================= */
 
-/* 1. Verwijder bijna alle ruimte onder de statistieken */
-#page14-3player .stats3p-grid {
-    margin-bottom: 5px !important; /* Was 8px of 15px, nu minimaal */
+/* 1. Kolom zelf: zorg dat hij netjes vult zonder extra padding onderaan */
+#page14-3player .player-col {
+    padding: 10px 8px 5px 8px !important; /* Minimale padding onderaan */
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-/* 2. Zorg dat de beurtenlijst direct daarop aansluit */
+/* 2. Statistieken: geen marge of padding onderaan */
+#page14-3player .stats3p-grid {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* 3. Beurtenlijst container: direct aansluiten, en fix voor flexbox scrollbar bug */
 #page14-3player .turns-scroll-container {
     margin-top: 0 !important;
-    padding-top: 4px !important; /* Heel klein beetje lucht voor de esthetiek */
-    flex: 1 !important; /* Forceer dat het ALLE overgebleven ruimte pakt */
+    padding-top: 2px !important; /* Slechts 2px lucht voor esthetiek */
+    flex: 1 1 auto !important; /* Laat het groeien en krimpen */
+    min-height: 0 !important; /* CRUCIAAL: voorkomt dat de container de kolom uitduwt */
 }
 
-/* 3. Voor de zekerheid: verwijder oude marge van de placeholder */
-#page14-3player .col-turns-placeholder {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
+/* 4. De originele placeholder divs (voor het geval de JS daar nog iets mee doet) */
+#page14-3player .col-turns-placeholder,
+#page14-3player .col-stats-placeholder {
+    margin: 0 !important;
+    padding: 0 !important;
 }
