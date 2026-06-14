@@ -2972,3 +2972,23 @@ window.backToHomeFrom3PlayerSummary = function() {
         page1.style.display = 'block';
     }
 };
+
+/* =========================================================================
+   3-SPELERS: UNDO FUNCTIE
+   ========================================================================= */
+window.undo3PlayerAction = function() {
+    if (window.last3pState && window.last3pState.state3p) {
+        console.log("↩️ Undo actie uitgevoerd!");
+        
+        // Herstel de 3-speler state naar de opgeslagen momentopname
+        state.friendlyMatch.state3p = JSON.parse(JSON.stringify(window.last3pState.state3p));
+        
+        // Wis de opgeslagen state (zodat je niet oneindig ver terug kunt gaan, wat bugs voorkomt)
+        window.last3pState = null;
+        
+        // Update het scherm met de herstelde data
+        window.update3PlayerUI();
+    } else {
+        console.log("⚠️ Niets om ongedaan te maken (geen vorige staat gevonden).");
+    }
+};
