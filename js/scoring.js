@@ -2660,7 +2660,7 @@ window.end3PlayerTurn = function() {
     }
 };
 
-// 4. UI UPDATEN (MET NABEURT WAARSCHUWING)
+// 4. UI UPDATEN (MET VERBETERDE NABEURT WAARSCHUWING)
 window.update3PlayerUI = function() {
     const fm = state.friendlyMatch;
     if (!fm || !fm.state3p) return;
@@ -2675,10 +2675,11 @@ window.update3PlayerUI = function() {
         let turnText = `BEURT: ${colorNames[s3.activeIndex]}`;
         let turnColor = s3.activeIndex === 0 ? '#ffffff' : (s3.activeIndex === 1 ? '#f1c40f' : '#e74c3c');
         
-        // ✅ NIEUW: Toon NABEURT waarschuwing als de wachtrij nog spelers bevat
-        if (s3.nabeurtQueue.length > 0 && s3.firstToTarget !== null) {
+        // ✅ VERBETERD: Toon NABEURT zolang iemand al het target heeft gehaald én de match nog loopt
+        // (Onafhankelijk van of de wachtrij nog spelers bevat)
+        if (s3.firstToTarget !== null && !s3.matchEnded) {
             turnText += ' ⚠️ NABEURT';
-            turnColor = '#ffcc00'; // Geel/waarschuwing kleur
+            turnColor = '#ffcc00'; // Duidelijke geel/oranje waarschuwingskleur
         } else if (s3.matchEnded) {
             turnText = 'MATCH VOORBIJ';
             turnColor = '#e74c3c';
