@@ -2607,6 +2607,9 @@ window.change3PlayerScore = function(delta) {
         return; 
     }
 
+    // ✅ NIEUW: Sla de huidige staat op VOORDAT we iets veranderen
+    window.last3pState = JSON.parse(JSON.stringify(state.friendlyMatch));
+    
     const activePlayer = s3.players[s3.activeIndex];
     console.log(`   Huidige speler: ${activePlayer.name}, Huidige reeks was: ${s3.currentRun}`);
     
