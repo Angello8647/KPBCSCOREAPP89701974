@@ -2747,6 +2747,16 @@ const render3PTurnsList = (turns, highest) => {
 /* =========================================================================
    UI UPDATEN: MET STATISTIEKEN, BEURTENLIJST, NAAM, TARGET EN HUIDIG LOGICA
    ========================================================================= */
+// Hulpfunctie om namen af te korten (bijv. "Alain AUREAU" -> "Alain A.")
+const formatShortName = (fullName) => {
+    if (!fullName) return "Onbekend";
+    const parts = fullName.trim().split(' ');
+    if (parts.length >= 2) {
+        return `${parts[0]} ${parts[1].charAt(0)}.`;
+    }
+    return parts[0]; // Als er maar 1 naam is
+};
+
 window.update3PlayerUI = function() {
     const fm = state.friendlyMatch;
     if (!fm || !fm.state3p) return;
