@@ -3938,7 +3938,7 @@
 }
 
 #page14-3player .score-value {
-    font-size: 3.2rem; /* VEEL GROTER */
+    font-size: 6rem; /* VEEL GROTER */
     font-weight: 900;
     color: #ffffff;
     line-height: 1; /* Cruciaal: voorkomt extra hoogte door de letters */
@@ -3948,6 +3948,6 @@
 /* HUIDIG krijgt MAXIMALE nadruk */
 #page14-3player .score-item.active-run .score-value {
     color: #2ecc71;
-    font-size: 4rem; /* Enorm groot voor de actieve reeks */
+    font-size: 6rem; /* Enorm groot voor de actieve reeks */
     text-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
 }
