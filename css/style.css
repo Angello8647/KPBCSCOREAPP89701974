@@ -3833,3 +3833,62 @@
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
 }
+
+
+/* =========================================================================
+   3-SPELERS: NIEUWE HORIZONTALE SCORE BOX
+   ========================================================================= */
+
+#page14-3player .col-score-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 12px;
+    padding: 12px 8px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+}
+
+#page14-3player .score-item {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+#page14-3player .score-item.active-run {
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+#page14-3player .score-label {
+    font-size: 0.7rem;
+    color: #95a5a6;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+#page14-3player .score-value {
+    font-size: 2.1rem;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+/* HUIDIG krijgt extra nadruk */
+#page14-3player .score-item.active-run .score-value {
+    color: #2ecc71;
+    font-size: 2.4rem;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+}
+
+/* Target en Totaal iets subtieler */
+#page14-3player .score-item:not(.active-run) .score-value {
+    color: #bdc3c7;
+}
