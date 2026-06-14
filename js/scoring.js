@@ -2696,20 +2696,18 @@ window.end3PlayerTurn = function() {
 };
 
 /* =========================================================================
-   HELPER: BEURTENLIJST RENDEREN VOOR 3 SPELERS
+   HELPER: BEURTENLIJST RENDEREN VOOR 3 SPELERS (COMPETITIE-STIJL)
    ========================================================================= */
 const render3PTurnsList = (turns, highest) => {
     if (!turns || turns.length === 0) {
         return '<div style="text-align:center;color:#7f8c8d;padding:15px;font-size:0.85em;">Nog geen beurten</div>';
     }
     
-    // We tonen minimaal 12 vakjes (6 rijen van 2) voor een compacte, nette kolom
-    const minBeurten = 12; 
+    const minBeurten = 56; // Zelfde als competitie
     const totalToShow = Math.max(minBeurten, turns.length);
     const highestVal = highest || 0;
     
-    // Gebruik een 2-koloms grid binnen de spelerkolom om verticale ruimte te besparen
-    let html = '<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 5px;">';
+    let html = '';
     
     for (let i = 1; i <= totalToShow; i++) {
         const isPlayed = i <= turns.length;
@@ -2718,16 +2716,19 @@ const render3PTurnsList = (turns, highest) => {
         
         if (isPlayed) {
             const score = turns[i - 1];
+            
             if (score === 0) {
                 scoreDisplay = '-';
                 classes += ' played zero-turn';
             } else {
                 scoreDisplay = score;
                 classes += ' played';
+                
                 if (score === highestVal && highestVal > 0) {
                     classes += ' highest-series';
                 }
             }
+            
             if (i === turns.length && score !== highestVal) {
                 classes += ' latest-turn';
             }
@@ -2735,12 +2736,10 @@ const render3PTurnsList = (turns, highest) => {
             classes += ' pending';
         }
         
-        html += `<div class="${classes}" style="padding: 4px 2px; border-radius: 4px; text-align: center;">
-                    <div style="font-size: 0.65rem; opacity: 0.7; text-transform: uppercase;">B${i}</div>
-                    <div style="font-size: 1rem; font-weight: 700; line-height: 1.2;">${scoreDisplay}</div>
-                 </div>`;
+        // Compacte layout voor smalle kolom
+        html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
     }
-    return html + '</div>';
+    return html;
 };
 
 
@@ -2842,9 +2841,8 @@ window.update3PlayerUI = function() {
             `;
 
             const turnsHtml = `
-                <div style="width: 100%; background: rgba(0,0,0,0.15); border-radius: 8px; padding: 5px; flex: 1; overflow-y: auto; max-height: 250px;">
-                    <div style="font-size: 0.75rem; color: #95a5a6; text-align: center; margin-bottom: 5px; text-transform: uppercase; font-weight: 700;">📊 Alle Beurten</div>
-                    ${render3PTurnsList(player.turns, player.highest)}
+                <div class="turns-scroll-container">
+                    <div class="turns-list">${render3PTurnsList(player.turns, player.highest)}</div>
                 </div>
             `;
 
