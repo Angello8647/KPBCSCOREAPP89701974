@@ -3898,3 +3898,25 @@
     color: #27ae60 !important;
     font-weight: 900 !important;
 }
+
+/* =========================================================================
+   FORCED FIX: MINIMALE RUIMTE TUSSEN STATS EN BEURTENLIJST (3-SPELERS)
+   ========================================================================= */
+
+/* 1. Verwijder bijna alle ruimte onder de statistieken */
+#page14-3player .stats3p-grid {
+    margin-bottom: 5px !important; /* Was 8px of 15px, nu minimaal */
+}
+
+/* 2. Zorg dat de beurtenlijst direct daarop aansluit */
+#page14-3player .turns-scroll-container {
+    margin-top: 0 !important;
+    padding-top: 4px !important; /* Heel klein beetje lucht voor de esthetiek */
+    flex: 1 !important; /* Forceer dat het ALLE overgebleven ruimte pakt */
+}
+
+/* 3. Voor de zekerheid: verwijder oude marge van de placeholder */
+#page14-3player .col-turns-placeholder {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
