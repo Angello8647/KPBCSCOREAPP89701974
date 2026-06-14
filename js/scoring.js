@@ -2856,3 +2856,112 @@ window.end3PlayerMatch = function() {
     // Voor nu verbergen we de 3-speler pagina weer
     document.getElementById('page14-3player').classList.add('hidden');
 };
+
+
+/* =========================================================================
+   PAGINA 15 (3 SPELERS): SAMENVATTING RENDEREN
+   ========================================================================= */
+
+// 1. Render de samenvatting met alle data
+window.render3PlayerSummary = function() {
+    const fm = state.friendlyMatch;
+    if (!fm || !fm.state3p) return;
+    
+    const s3 = fm.state3p;
+    const colorNames = ['WIT', 'GEEL', 'ROOD'];
+    
+    // Bepaal winnaar
+    let winnerName = "Onbekend";
+    let winnerIndex = -1;
+    if (s3.firstToTarget !== null) {
+        winnerName = s3.players[s3.firstToTarget].name;
+        winnerIndex = s3.firstToTarget;
+    }
+    
+    // Update header
+    document.getElementById('summary3p-winnerName').textContent = winnerName;
+    
+    // Update subtitle op basis van hoe de match eindigde
+    const subtitle = document.getElementById('summary3p-subtitle');
+    if (s3.firstToTarget === 2) {
+        subtitle.textContent = '(Rood haalde als eerste het target - directe winst)';
+    } else {
+        subtitle.textContent = '(Eerste speler die het target haalde)';
+    }
+    
+    // Update de 3 kolommen
+    s3.players.forEach((player, index) => {
+        const idx = index + 1;
+        
+        // Naam
+        document.getElementById(`summary3p-name${idx}`).textContent = player.name;
+        
+        // Statistieken
+        document.getElementById(`summary3p-score${idx}`).textContent = player.total;
+        document.getElementById(`summary3p-turns${idx}`).textContent = player.turns.length;
+        document.getElementById(`summary3p-highest${idx}`).textContent = player.highest;
+        
+        const avg = player.turns.length > 0 ? (player.total / player.turns.length).toFixed(2).replace('.', ',') : "0,00";
+        document.getElementById(`summary3p-avg${idx}`).textContent = avg;
+        
+        document.getElementById(`summary3p-target${idx}`).textContent = player.target;
+        
+        // TSG ophalen
+        const mainPlayer = state.players ? state.players.find(p => p.name === player.name) : null;
+        const tsg = mainPlayer ? (mainPlayer.tsg || mainPlayer.fixedTSG || '−') : '−';
+        document.getElementById(`summary3p-tsg${idx}`).textContent = tsg;
+        
+        // Beurtenlijst renderen
+        const turnsListEl = document.getElementById(`summary3p-turnsList${idx}`);
+        turnsListEl.innerHTML = render3PTurnsList(player.turns, player.highest);
+        
+        // Winnaar highlight
+        const col = turnsListEl.closest('.summary3p-col');
+        if (index === winnerIndex) {
+            col.classList.add('winner-col');
+        } else {
+            col.classList.remove('winner-col');
+        }
+    });
+};
+
+// 2. Navigeer naar de samenvatting
+window.show3PlayerSummary = function() {
+    // Verberg alle pagina's
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.add('hidden');
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
+    
+    // Toon samenvatting
+    const summaryPage = document.getElementById('page15-3player-summary');
+    if (summaryPage) {
+        summaryPage.classList.remove('hidden');
+        summaryPage.classList.add('active');
+        summaryPage.style.display = 'flex';
+        
+        // Render de data
+        window.render3PlayerSummary();
+    }
+};
+
+// 3. Terug naar hoofdmenu
+window.backToHomeFrom3PlayerSummary = function() {
+    // Reset de friendly match state
+    state.friendlyMatch = null;
+    
+    // Navigeer naar pagina 1
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.add('hidden');
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
+    
+    const page1 = document.getElementById('page1');
+    if (page1) {
+        page1.classList.remove('hidden');
+        page1.classList.add('active');
+        page1.style.display = 'block';
+    }
+};
