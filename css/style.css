@@ -4151,3 +4151,50 @@
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
 }
+/* =========================================================================
+   PAGINA 15 (3 SPELERS): COMPACTE BEURTEN GRID
+   ========================================================================= */
+
+#page15-3player-summary .turn-row-summary {
+    padding: 4px 2px;
+    border-radius: 4px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+#page15-3player-summary .turn-row-summary.pending {
+    background: rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.25);
+}
+
+#page15-3player-summary .turn-row-summary.played {
+    background: #ffffff;
+    color: #2c3e50;
+}
+
+#page15-3player-summary .turn-row-summary.played.zero-turn {
+    background: #ffffff;
+    border: 2px solid #e74c3c;
+}
+
+#page15-3player-summary .turn-row-summary.played.zero-turn div:last-child {
+    color: #e74c3c;
+}
+
+#page15-3player-summary .turn-row-summary.played.highest-series {
+    background: #ffffff;
+    border: 2px solid #2ecc71;
+}
+
+#page15-3player-summary .turn-row-summary.played.highest-series div:last-child {
+    color: #27ae60;
+    font-weight: 900;
+}
+
+#page15-3player-summary .turn-row-summary.played.latest-turn {
+    border: 2px solid #3498db;
+}
+
+#page15-3player-summary .turn-row-summary.played.latest-turn div:last-child {
+    color: #2980b9;
+}
