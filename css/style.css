@@ -4058,18 +4058,18 @@
 
 
 /* =========================================================================
-   3-SPELERS: BEURTENLIJST (COMPETITIE-STIJL)
+   3-SPELERS: BEURTENLIJST (COMPETITIE-STIJL, MAXIMALE HOOGTE)
    ========================================================================= */
 
-/* Scroll container */
+/* Scroll container - NEEMT ALLE BESCHIKBARE RUIMTE */
 #page14-3player .turns-scroll-container {
     width: 100%;
-    flex: 1;
+    flex: 1; /* Neemt alle overgebleven ruimte */
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     padding: 8px;
     overflow-y: auto;
-    max-height: 300px;
+    /* ✅ GEEN max-height meer, dus de lijst groeit tot de bodem */
 }
 
 /* Beurtenlijst */
@@ -4104,21 +4104,20 @@
     color: #2c3e50;
 }
 
-/* Nul beurt (rood) */
+/* ✅ NUL BEURT: WITTE ACHTERGROND met rode rand en tekst */
 #page14-3player .turn-row.played.zero-turn {
-    background: rgba(231, 76, 60, 0.2);
-    border: 2px solid rgba(231, 76, 60, 0.5);
+    background: #ffffff; /* WIT */
+    border: 2px solid #e74c3c;
 }
 
 #page14-3player .turn-row.played.zero-turn span {
     color: #e74c3c;
 }
 
-/* Hoogste reeks (groen) */
+/* ✅ HOOGSTE REEKS: WITTE ACHTERGROND met groene rand en tekst */
 #page14-3player .turn-row.played.highest-series {
-    background: rgba(46, 204, 113, 0.3);
+    background: #ffffff; /* WIT */
     border: 2px solid #2ecc71;
-    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.4);
 }
 
 #page14-3player .turn-row.played.highest-series span {
