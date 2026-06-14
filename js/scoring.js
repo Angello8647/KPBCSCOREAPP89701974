@@ -2534,9 +2534,9 @@ window.init3PlayerScoring = function() {
         console.log("⚠️ state.friendlyMatch aangemaakt voor testdoeleinden");
         state.friendlyMatch = {
             players: [
-                { name: "Speler 1 (Wit)", target: 50 },
-                { name: "Speler 2 (Geel)", target: 50 },
-                { name: "Speler 3 (Rood)", target: 50 }
+                { name: "Speler 1 (Wit)", target: 15 },
+                { name: "Speler 2 (Geel)", target: 15 },
+                { name: "Speler 3 (Rood)", target: 15 }
             ]
         };
     }
@@ -2660,14 +2660,63 @@ window.end3PlayerTurn = function() {
     }
 };
 
-// 4. UI UPDATEN (MET VERBETERDE NABEURT WAARSCHUWING)
+/* =========================================================================
+   HELPER: BEURTENLIJST RENDEREN VOOR 3 SPELERS
+   ========================================================================= */
+const render3PTurnsList = (turns, highest) => {
+    if (!turns || turns.length === 0) {
+        return '<div style="text-align:center;color:#7f8c8d;padding:15px;font-size:0.85em;">Nog geen beurten</div>';
+    }
+    
+    // We tonen minimaal 12 vakjes (6 rijen van 2) voor een compacte, nette kolom
+    const minBeurten = 12; 
+    const totalToShow = Math.max(minBeurten, turns.length);
+    const highestVal = highest || 0;
+    
+    // Gebruik een 2-koloms grid binnen de spelerkolom om verticale ruimte te besparen
+    let html = '<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 5px;">';
+    
+    for (let i = 1; i <= totalToShow; i++) {
+        const isPlayed = i <= turns.length;
+        let scoreDisplay = '−';
+        let classes = 'turn-row';
+        
+        if (isPlayed) {
+            const score = turns[i - 1];
+            if (score === 0) {
+                scoreDisplay = '-';
+                classes += ' played zero-turn';
+            } else {
+                scoreDisplay = score;
+                classes += ' played';
+                if (score === highestVal && highestVal > 0) {
+                    classes += ' highest-series';
+                }
+            }
+            if (i === turns.length && score !== highestVal) {
+                classes += ' latest-turn';
+            }
+        } else {
+            classes += ' pending';
+        }
+        
+        html += `<div class="${classes}" style="padding: 4px 2px; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 0.65rem; opacity: 0.7; text-transform: uppercase;">B${i}</div>
+                    <div style="font-size: 1rem; font-weight: 700; line-height: 1.2;">${scoreDisplay}</div>
+                 </div>`;
+    }
+    return html + '</div>';
+};
+
+/* =========================================================================
+   UI UPDATEN: MET STATISTIEKEN EN BEURTENLIJST
+   ========================================================================= */
 window.update3PlayerUI = function() {
     const fm = state.friendlyMatch;
     if (!fm || !fm.state3p) return;
     
     const s3 = fm.state3p;
     const colorNames = ['WIT', 'GEEL', 'ROOD'];
-    const activePlayer = s3.players[s3.activeIndex];
 
     // 1. Update de middenknop
     const turnIndicator = document.getElementById('friendly3p-turn-indicator');
@@ -2675,11 +2724,9 @@ window.update3PlayerUI = function() {
         let turnText = `BEURT: ${colorNames[s3.activeIndex]}`;
         let turnColor = s3.activeIndex === 0 ? '#ffffff' : (s3.activeIndex === 1 ? '#f1c40f' : '#e74c3c');
         
-        // ✅ VERBETERD: Toon NABEURT zolang iemand al het target heeft gehaald én de match nog loopt
-        // (Onafhankelijk van of de wachtrij nog spelers bevat)
         if (s3.firstToTarget !== null && !s3.matchEnded) {
             turnText += ' ⚠️ NABEURT';
-            turnColor = '#ffcc00'; // Duidelijke geel/oranje waarschuwingskleur
+            turnColor = '#ffcc00';
         } else if (s3.matchEnded) {
             turnText = 'MATCH VOORBIJ';
             turnColor = '#e74c3c';
@@ -2689,23 +2736,69 @@ window.update3PlayerUI = function() {
         turnIndicator.style.color = turnColor;
     }
 
-    // 2. Update de 3 kolommen
+    // 2. Update de 3 kolommen (inclusief stats en beurtenlijst)
     s3.players.forEach((player, index) => {
         const currentEl = document.getElementById(`friendly3p-current${index + 1}`);
         const totalEl = document.getElementById(`friendly3p-total${index + 1}`);
         const col = document.getElementById(`friendlyP3Col${index + 1}`);
 
-        if (currentEl && totalEl) {
-            // Alleen de actieve speler ziet zijn huidige reeks, anderen zien 0
+        if (currentEl && totalEl && col) {
+            // Basis scores updaten
             currentEl.textContent = (index === s3.activeIndex && !s3.matchEnded) ? s3.currentRun : '0';
             totalEl.textContent = player.total;
 
-            if (col) {
-                if (index === s3.activeIndex && !s3.matchEnded) {
-                    col.classList.add('active-player');
-                } else {
-                    col.classList.remove('active-player');
-                }
+            // Active player highlight
+            if (index === s3.activeIndex && !s3.matchEnded) {
+                col.classList.add('active-player');
+            } else {
+                col.classList.remove('active-player');
+            }
+
+            // ✅ NIEUW: Statistieken berekenen
+            const mainPlayer = state.players ? state.players.find(p => p.name === player.name) : null;
+            const tsg = mainPlayer ? (mainPlayer.tsg || mainPlayer.fixedTSG || '−') : '−';
+            const avg = player.turns.length > 0 ? (player.total / player.turns.length).toFixed(2).replace('.', ',') : "0,00";
+
+            // ✅ NIEUW: HTML genereren voor Stats en Beurten
+            const statsHtml = `
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 100%; text-align: center; margin-bottom: 10px;">
+                    <div style="background:rgba(0,0,0,0.25); padding: 8px 4px; border-radius: 6px;">
+                        <div style="font-size: 0.65rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px;">Gem.</div>
+                        <div style="font-size: 1.1rem; font-weight: 900; color: #ecf0f1;">${avg}</div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.25); padding: 8px 4px; border-radius: 6px;">
+                        <div style="font-size: 0.65rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px;">Hoogste</div>
+                        <div style="font-size: 1.1rem; font-weight: 900; color: #2ecc71;">${player.highest}</div>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.25); padding: 8px 4px; border-radius: 6px;">
+                        <div style="font-size: 0.65rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 0.5px;">TSG</div>
+                        <div style="font-size: 1.1rem; font-weight: 900; color: #f1c40f;">${tsg}</div>
+                    </div>
+                </div>
+            `;
+
+            const turnsHtml = `
+                <div style="width: 100%; background: rgba(0,0,0,0.15); border-radius: 8px; padding: 5px; flex: 1; overflow-y: auto; max-height: 250px;">
+                    <div style="font-size: 0.75rem; color: #95a5a6; text-align: center; margin-bottom: 5px; text-transform: uppercase; font-weight: 700;">📊 Alle Beurten</div>
+                    ${render3PTurnsList(player.turns, player.highest)}
+                </div>
+            `;
+
+            // Vervang de placeholders door de echte content
+            let statsPlaceholder = col.querySelector('.col-stats-placeholder');
+            let turnsPlaceholder = col.querySelector('.col-turns-placeholder');
+            
+            if (statsPlaceholder) {
+                statsPlaceholder.className = ''; // Verwijder placeholder class
+                statsPlaceholder.style.padding = '0';
+                statsPlaceholder.style.background = 'transparent';
+                statsPlaceholder.innerHTML = statsHtml;
+            }
+            if (turnsPlaceholder) {
+                turnsPlaceholder.className = ''; 
+                turnsPlaceholder.style.padding = '0';
+                turnsPlaceholder.style.background = 'transparent';
+                turnsPlaceholder.innerHTML = turnsHtml;
             }
         }
     });
