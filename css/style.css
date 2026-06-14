@@ -4152,13 +4152,10 @@
     box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
 }
 /* =========================================================================
-   PAGINA 15 (3 SPELERS): COMPACTE BEURTEN GRID
+   PAGINA 15 (3 SPELERS): VLOEIBARE BEURTEN BLOKJES
    ========================================================================= */
 
 #page15-3player-summary .turn-row-summary {
-    padding: 4px 2px;
-    border-radius: 4px;
-    text-align: center;
     transition: all 0.2s ease;
 }
 
