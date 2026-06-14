@@ -1859,7 +1859,51 @@ window.startFriendlyMatchFromBallSelection = function() {
             fm.whiteBallOwner = 'T1'; // Nu is Team 1 het team met de witte bal
         }
     }
-    // 3 spelers: voor later (niet aangepakt)
+    else if (fm.numPlayers === 3) {
+        console.log("🎯 3 SPELERS: Kleuren toewijzen en targets berekenen");
+        
+        // 1. Sorteer spelers op kleur: wit (index 0) → geel (index 1) → rood (index 2)
+        const sortedPlayers = [];
+        const colorOrder = ['white', 'yellow', 'red'];
+        
+        for (const color of colorOrder) {
+            const playerNum = Object.keys(fm.colorAssignments).find(key => fm.colorAssignments[key] === color);
+            if (playerNum) {
+                const player = fm.players[playerNum];
+                const playerName = typeof player === 'object' ? player.name : player;
+                
+                // Haal TSG op uit de globale spelerslijst
+                const playerData = state.players ? state.players.find(p => p.name === playerName) : null;
+                const tsg = playerData ? parseFloat(playerData.tsg || playerData.average || 1.0) : 1.0;
+                
+                // Bereken target op basis van TSG (zelfde formule als bij 2 spelers)
+                // Standaard: 50 punten, maar als TSG hoger is, wordt target hoger
+                const baseTarget = 50;
+                const target = Math.round(baseTarget * tsg);
+                
+                sortedPlayers.push({
+                    name: playerName,
+                    color: color,
+                    target: target,
+                    tsg: tsg
+                });
+            }
+        }
+        
+        // 2. Update fm.players met de gesorteerde lijst (voor compatibiliteit)
+        fm.players = sortedPlayers;
+        
+        console.log("✅ Gesorteerde spelers:", sortedPlayers);
+        
+        // 3. Initialiseer de 3-speler scoring met de echte data
+        window.init3PlayerScoring();
+        
+        // 4. Navigeer naar de 3-speler pagina
+        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        document.getElementById('page14-3player').classList.remove('hidden');
+        
+        return; // Stop hier, want we hebben al genavigeerd
+    }
 
     // Navigeer naar Pagina 14 (Vriendschappelijk Scorebord)
     showPage(14);
