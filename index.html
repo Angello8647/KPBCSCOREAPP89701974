@@ -748,6 +748,146 @@
         </div>
     </section>
 
+    <!-- ========================================================================= -->
+    <!-- PAGINA 15 (3 SPELERS): SAMENVATTING NA DE MATCH                           -->
+    <!-- ========================================================================= -->
+    <section id="page15-3player-summary" class="page hidden">
+        
+        <!-- Header met Winnaar -->
+        <div class="summary3p-header">
+            <div class="summary3p-title">🏁 MATCH VOORBIJ</div>
+            <div class="summary3p-winner">
+                🏆 Winnaar: <span id="summary3p-winnerName">-</span>
+            </div>
+            <div class="summary3p-subtitle" id="summary3p-subtitle">
+                (Eerste speler die het target haalde)
+            </div>
+        </div>
+    
+        <!-- 3 Kolommen met Statistieken -->
+        <div class="summary3p-columns">
+            
+            <!-- Speler 1 (Wit) -->
+            <div class="summary3p-col summary3p-white">
+                <div class="summary3p-player-header">
+                    <div class="summary3p-ball">⚪</div>
+                    <div class="summary3p-name" id="summary3p-name1">-</div>
+                </div>
+                <div class="summary3p-stats">
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Eindscore</div>
+                        <div class="stat-value" id="summary3p-score1">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Beurten</div>
+                        <div class="stat-value" id="summary3p-turns1">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Hoogste</div>
+                        <div class="stat-value" id="summary3p-highest1">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Gemiddelde</div>
+                        <div class="stat-value" id="summary3p-avg1">0,00</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Target</div>
+                        <div class="stat-value" id="summary3p-target1">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">TSG</div>
+                        <div class="stat-value" id="summary3p-tsg1">-</div>
+                    </div>
+                </div>
+                <div class="summary3p-turns-list" id="summary3p-turnsList1">
+                    <!-- Beurtenlijst komt hier -->
+                </div>
+            </div>
+    
+            <!-- Speler 2 (Geel) -->
+            <div class="summary3p-col summary3p-yellow">
+                <div class="summary3p-player-header">
+                    <div class="summary3p-ball">🟡</div>
+                    <div class="summary3p-name" id="summary3p-name2">-</div>
+                </div>
+                <div class="summary3p-stats">
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Eindscore</div>
+                        <div class="stat-value" id="summary3p-score2">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Beurten</div>
+                        <div class="stat-value" id="summary3p-turns2">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Hoogste</div>
+                        <div class="stat-value" id="summary3p-highest2">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Gemiddelde</div>
+                        <div class="stat-value" id="summary3p-avg2">0,00</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Target</div>
+                        <div class="stat-value" id="summary3p-target2">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">TSG</div>
+                        <div class="stat-value" id="summary3p-tsg2">-</div>
+                    </div>
+                </div>
+                <div class="summary3p-turns-list" id="summary3p-turnsList2">
+                    <!-- Beurtenlijst komt hier -->
+                </div>
+            </div>
+    
+            <!-- Speler 3 (Rood) -->
+            <div class="summary3p-col summary3p-red">
+                <div class="summary3p-player-header">
+                    <div class="summary3p-ball">🔴</div>
+                    <div class="summary3p-name" id="summary3p-name3">-</div>
+                </div>
+                <div class="summary3p-stats">
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Eindscore</div>
+                        <div class="stat-value" id="summary3p-score3">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Beurten</div>
+                        <div class="stat-value" id="summary3p-turns3">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Hoogste</div>
+                        <div class="stat-value" id="summary3p-highest3">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Gemiddelde</div>
+                        <div class="stat-value" id="summary3p-avg3">0,00</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">Target</div>
+                        <div class="stat-value" id="summary3p-target3">0</div>
+                    </div>
+                    <div class="summary3p-stat">
+                        <div class="stat-label">TSG</div>
+                        <div class="stat-value" id="summary3p-tsg3">-</div>
+                    </div>
+                </div>
+                <div class="summary3p-turns-list" id="summary3p-turnsList3">
+                    <!-- Beurtenlijst komt hier -->
+                </div>
+            </div>
+    
+        </div>
+    
+        <!-- Terug knop -->
+        <div class="summary3p-footer">
+            <button class="summary3p-back-btn" onclick="window.backToHomeFrom3PlayerSummary()">
+                🏠 Terug naar Hoofdmenu
+            </button>
+        </div>
+    
+    </section>
     
     <script src="js/state.js"></script>
     <script src="js/utils.js"></script>
