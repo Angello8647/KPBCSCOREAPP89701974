@@ -2950,14 +2950,18 @@ window.render3PlayerSummary = function() {
     });
 };
 
-// 2. Navigeer naar de samenvatting (GEBRUIKT DEZELFDE LOGICA ALS showPage())
+// 2. Navigeer naar de samenvatting (VERWIJDER .hidden EN VOEG .active TOE)
 window.show3PlayerSummary = function() {
-    // Verberg alle pagina's (exact zoals showPage() doet)
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Verberg alle pagina's: verwijder .active EN voeg .hidden toe
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.classList.add('hidden');
+    });
     
-    // Toon samenvatting
+    // Toon samenvatting: verwijder .hidden EN voeg .active toe
     const summaryPage = document.getElementById('page15-3player-summary');
     if (summaryPage) {
+        summaryPage.classList.remove('hidden'); // ✅ CRUCIAAL: verwijder .hidden
         summaryPage.classList.add('active');
         state.currentPage = 15;
         
@@ -2966,18 +2970,22 @@ window.show3PlayerSummary = function() {
     }
 };
 
-// 3. Terug naar hoofdmenu (GEBRUIKT DEZELFDE LOGICA ALS showPage())
+// 3. Terug naar hoofdmenu (VERWIJDER .hidden EN VOEG .active TOE)
 window.backToHomeFrom3PlayerSummary = function() {
     // Reset states
     state.friendlyMatch = null;
     window.last3pState = null;
     
-    // Verberg alle pagina's (exact zoals showPage() doet)
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Verberg alle pagina's: verwijder .active EN voeg .hidden toe
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.classList.add('hidden');
+    });
     
-    // Toon pagina 1 (exact zoals showPage(1) doet)
+    // Toon pagina 1: verwijder .hidden EN voeg .active toe
     const page1 = document.getElementById('page1');
     if (page1) {
+        page1.classList.remove('hidden'); // ✅ CRUCIAAL: verwijder .hidden
         page1.classList.add('active');
         state.currentPage = 1;
         
