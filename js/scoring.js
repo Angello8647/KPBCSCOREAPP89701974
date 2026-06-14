@@ -1892,23 +1892,15 @@ window.startFriendlyMatchFromBallSelection = function() {
         
         console.log("🔄 Navigeren naar 3-speler pagina...");
         
-        document.querySelectorAll('.page').forEach(p => {
-            p.classList.add('hidden');
-            p.classList.remove('active');
-            p.style.display = 'none';
-        });
-        
+        // ✅ GEBRUIK EXACT DEZELFDE LOGICA ALS showPage()
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const page3p = document.getElementById('page14-3player');
         if (page3p) {
-            console.log("✅ page14-3player gevonden, tonen...");
-            page3p.classList.remove('hidden');
             page3p.classList.add('active');
-            page3p.style.display = 'block';
-        } else {
-            console.error("❌ FOUT: page14-3player bestaat niet in de HTML!");
+            state.currentPage = 14;
         }
         
-        return; // ✅ EINDE van 3-speler logica
+        return;
     }
 
     // ✅ Voor 2 en 4 spelers: navigeer naar Pagina 14
