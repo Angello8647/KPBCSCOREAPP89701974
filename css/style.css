@@ -3515,3 +3515,125 @@
     color: #2980b9 !important;
     font-weight: 900 !important;
 }
+
+
+/* =========================================================================
+   PAGINA 14 (3 SPELERS): 3-KOLOMS LAYOUT & HEADER
+   ========================================================================= */
+
+/* 1. Header met knoppen */
+#page14-3player .friendly3p-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    margin: 10px 20px;
+}
+
+#page14-3player .ctrl-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#page14-3player .ctrl-btn:active { transform: scale(0.95); }
+#page14-3player .undo-btn { width: 60px; height: 60px; font-size: 1.5rem; }
+#page14-3player .minus-btn { width: 70px; height: 70px; font-size: 2.5rem; font-weight: 900; }
+#page14-3player .plus-btn { width: 70px; height: 70px; font-size: 2.5rem; font-weight: 900; background: rgba(46, 204, 113, 0.2); border-color: #2ecc71; }
+
+#page14-3player .center-turn-btn {
+    flex: 1;
+    max-width: 300px;
+    height: 70px;
+    background: rgba(52, 152, 219, 0.2);
+    border-color: #3498db;
+    padding: 5px;
+}
+
+/* 2. De 3 Kolommen Container */
+#page14-3player .friendly3p-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 gelijke kolommen */
+    gap: 15px;
+    padding: 0 20px 20px 20px;
+    height: calc(100vh - 120px); /* Vul de rest van het scherm */
+}
+
+/* 3. Individuele Kolom Stijl */
+#page14-3player .player-col {
+    background: rgba(44, 62, 80, 0.6);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+/* Kleuraccenten per kolom */
+#page14-3player .player-white-col { border-top: 4px solid #ffffff; }
+#page14-3player .player-yellow-col { border-top: 4px solid #f1c40f; }
+#page14-3player .player-red-col { border-top: 4px solid #e74c3c; }
+
+/* Actieve speler highlight (wordt later door JS toegevoegd) */
+#page14-3player .player-col.active-player {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* 4. Inhoud van de Kolommen */
+#page14-3player .col-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+#page14-3player .player-name { font-size: 1.5rem; font-weight: 900; color: white; }
+#page14-3player .ball-icon { font-size: 1.5rem; }
+
+#page14-3player .col-target { font-size: 1rem; color: #bdc3c7; margin-bottom: 15px; }
+
+#page14-3player .col-current {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    width: 100%;
+}
+#page14-3player .current-label { font-size: 0.9rem; color: #95a5a6; text-transform: uppercase; letter-spacing: 1px; }
+#page14-3player .current-value { font-size: 4rem; font-weight: 900; color: #2ecc71; line-height: 1; }
+
+#page14-3player .col-total {
+    text-align: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+#page14-3player .total-label { font-size: 0.9rem; color: #95a5a6; text-transform: uppercase; }
+#page14-3player .total-value { font-size: 2.5rem; font-weight: 900; color: white; }
+
+#page14-3player .col-stats-placeholder, 
+#page14-3player .col-turns-placeholder {
+    width: 100%;
+    flex: 1;
+    background: rgba(0,0,0,0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 10px;
+}
