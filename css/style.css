@@ -3676,3 +3676,160 @@
 #page14-3player .turn-row.played.latest-turn span {
     color: #2980b9 !important;
 }
+
+
+/* =========================================================================
+   PAGINA 15 (3 SPELERS): SAMENVATTING STYLING
+   ========================================================================= */
+
+#page15-3player-summary {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+#page15-3player-summary .summary3p-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+}
+
+#page15-3player-summary .summary3p-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 10px;
+}
+
+#page15-3player-summary .summary3p-winner {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #f1c40f;
+    margin-bottom: 5px;
+}
+
+#page15-3player-summary .summary3p-subtitle {
+    font-size: 1rem;
+    color: #bdc3c7;
+    font-style: italic;
+}
+
+/* 3 Kolommen */
+#page15-3player-summary .summary3p-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+/* Individuele Kolom */
+#page15-3player-summary .summary3p-col {
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* Kleuraccenten */
+#page15-3player-summary .summary3p-white { border-top: 5px solid #ffffff; }
+#page15-3player-summary .summary3p-yellow { border-top: 5px solid #f1c40f; }
+#page15-3player-summary .summary3p-red { border-top: 5px solid #e74c3c; }
+
+/* Winnaar highlight */
+#page15-3player-summary .summary3p-col.winner-col {
+    border: 3px solid #2ecc71;
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.4);
+    transform: scale(1.02);
+}
+
+/* Speler Header */
+#page15-3player-summary .summary3p-player-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+#page15-3player-summary .summary3p-ball {
+    font-size: 2.5rem;
+}
+
+#page15-3player-summary .summary3p-name {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: white;
+}
+
+/* Statistieken Grid */
+#page15-3player-summary .summary3p-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#page15-3player-summary .summary3p-stat {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#page15-3player-summary .stat-label {
+    font-size: 0.75rem;
+    color: #95a5a6;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+#page15-3player-summary .stat-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ecf0f1;
+}
+
+/* Beurtenlijst */
+#page15-3player-summary .summary3p-turns-list {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+/* Footer met Terug knop */
+#page15-3player-summary .summary3p-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#page15-3player-summary .summary3p-back-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#page15-3player-summary .summary3p-back-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
