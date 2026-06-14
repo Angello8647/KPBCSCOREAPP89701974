@@ -3023,8 +3023,8 @@ const render3PTurnsListSummary = (turns, highest) => {
     const totalToShow = Math.max(minBeurten, turns.length);
     const highestVal = highest || 0;
     
-    // Compacte 2-koloms grid
-    let html = '<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 5px;">';
+    // ✅ FIX: Flex-wrap zodat blokjes naast elkaar staan en automatisch naar de volgende regel springen
+    let html = '<div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 5px;">';
     
     for (let i = 1; i <= totalToShow; i++) {
         const isPlayed = i <= turns.length;
@@ -3050,9 +3050,10 @@ const render3PTurnsListSummary = (turns, highest) => {
             classes += ' pending';
         }
         
-        html += `<div class="${classes}" style="padding: 4px 2px; border-radius: 4px; text-align: center;">
-                    <div style="font-size: 0.65rem; opacity: 0.7; text-transform: uppercase;">B${i}</div>
-                    <div style="font-size: 1rem; font-weight: 700; line-height: 1.2;">${scoreDisplay}</div>
+        // ✅ FIX: min-width zodat ze een vaste blokjes-vorm hebben
+        html += `<div class="${classes}" style="min-width: 45px; padding: 5px 2px; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 0.65rem; opacity: 0.7; text-transform: uppercase; line-height: 1;">B${i}</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; line-height: 1.2;">${scoreDisplay}</div>
                  </div>`;
     }
     return html + '</div>';
