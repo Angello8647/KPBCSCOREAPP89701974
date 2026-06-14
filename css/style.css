@@ -4002,7 +4002,7 @@
 
 
 /* =========================================================================
-   3-SPELERS: STATISTIEKEN GRID (ENORME CIJFERS)
+   3-SPELERS: STATISTIEKEN GRID (PERFECTE GROOTTE: 3rem)
    ========================================================================= */
 
 #page14-3player .stats3p-grid {
@@ -4035,9 +4035,15 @@
 }
 
 #page14-3player .stats3p-value {
-    font-size: 3rem; /* Zoals gevraagd: enorm groot! */
+    font-size: 3rem; /* ✅ Perfecte grootte */
     font-weight: 900;
     color: #ffffff;
-    line-height: 1; /* Cruciaal: voorkomt dat de box te hoog wordt */
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Subtiele schaduw voor leesbaarheid */
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* ✅ NIEUW: Geef alleen de 3e waarde (TSG) een groen-blauwe kleur */
+#page14-3player .stats3p-item:nth-child(3) .stats3p-value {
+    color: #1abc9c; /* Prachtig groen-blauw (Teal) */
+    text-shadow: 0 2px 6px rgba(26, 188, 156, 0.4); /* Subtiele matchende schaduw */
 }
