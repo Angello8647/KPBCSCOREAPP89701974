@@ -4055,3 +4055,83 @@
     color: #1abc9c; /* Prachtig groen-blauw (Teal) */
     text-shadow: 0 2px 6px rgba(26, 188, 156, 0.4); /* Subtiele matchende schaduw */
 }
+
+
+/* =========================================================================
+   3-SPELERS: BEURTENLIJST (COMPETITIE-STIJL)
+   ========================================================================= */
+
+/* Scroll container */
+#page14-3player .turns-scroll-container {
+    width: 100%;
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 8px;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+/* Beurtenlijst */
+#page14-3player .turns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Individuele beurt rij */
+#page14-3player .turn-row {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#page14-3player .turn-row span {
+    display: block;
+}
+
+/* Niet gespeelde beurten */
+#page14-3player .turn-row.pending {
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Gespeelde beurten */
+#page14-3player .turn-row.played {
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+}
+
+/* Nul beurt (rood) */
+#page14-3player .turn-row.played.zero-turn {
+    background: rgba(231, 76, 60, 0.2);
+    border: 2px solid rgba(231, 76, 60, 0.5);
+}
+
+#page14-3player .turn-row.played.zero-turn span {
+    color: #e74c3c;
+}
+
+/* Hoogste reeks (groen) */
+#page14-3player .turn-row.played.highest-series {
+    background: rgba(46, 204, 113, 0.3);
+    border: 2px solid #2ecc71;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.4);
+}
+
+#page14-3player .turn-row.played.highest-series span {
+    color: #27ae60;
+    font-weight: 900;
+}
+
+/* Laatste beurt (blauw) */
+#page14-3player .turn-row.played.latest-turn {
+    background: rgba(52, 152, 219, 0.2);
+    border: 2px solid #3498db;
+}
+
+#page14-3player .turn-row.played.latest-turn span {
+    color: #2980b9;
+}
