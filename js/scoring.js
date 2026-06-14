@@ -2950,13 +2950,13 @@ window.render3PlayerSummary = function() {
     });
 };
 
-// 2. Navigeer naar de samenvatting
+// 2. Navigeer naar de samenvatting (ZONDER inline styles)
 window.show3PlayerSummary = function() {
-    // Verberg alle pagina's
+    // Verberg alle pagina's, maar wis de inline styles!
     document.querySelectorAll('.page').forEach(p => {
-        p.classList.add('hidden');
         p.classList.remove('active');
-        p.style.display = 'none';
+        p.classList.add('hidden');
+        p.style.display = ''; // ✅ Wist de inline display: none
     });
     
     // Toon samenvatting
@@ -2964,7 +2964,7 @@ window.show3PlayerSummary = function() {
     if (summaryPage) {
         summaryPage.classList.remove('hidden');
         summaryPage.classList.add('active');
-        summaryPage.style.display = 'flex';
+        summaryPage.style.display = ''; // ✅ Laat CSS de display regelen
         
         // Render de data
         window.render3PlayerSummary();
