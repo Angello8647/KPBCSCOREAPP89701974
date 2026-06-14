@@ -3933,20 +3933,49 @@
 }
 
 /* =========================================================================
-   FORCED FIX: BEPERK HOOGTE STATS PLACEHOLDER (3-SPELERS)
+   PRECISIE FIX: PERFECTE AFSTAND + GEEN SCROLLBAR (3-SPELERS)
    ========================================================================= */
 
-/* 1. Stats placeholder: beperk hoogte zodat er ruimte overblijft voor beurten */
+/* 1. Stats placeholder: iets meer ademruimte, maar nog steeds compact */
 #page14-3player .col-stats-placeholder {
-    height: auto !important; /* Geen vaste hoogte */
-    max-height: 120px !important; /* Maximaal 120px voor stats */
-    flex: 0 0 auto !important; /* Groeit niet, pakt alleen wat het nodig heeft */
-    margin-bottom: 5px !important; /* Kleine ruimte naar beurtenlijst */
+    height: auto !important;
+    max-height: 120px !important;
+    flex: 0 0 auto !important;
+    margin-bottom: 10px !important; /* ✅ Iets meer ruimte (was 5px) */
 }
 
-/* 2. Turns placeholder: forceer dat het ALLE overgebleven ruimte pakt */
+/* 2. Turns placeholder: neem alle ruimte, maar forceer geen scrollbar */
 #page14-3player .col-turns-placeholder {
-    flex: 1 1 auto !important; /* Groeit om alle resterende ruimte te vullen */
-    min-height: 0 !important; /* Cruciaal: voorkomt overflow */
-    overflow-y: auto !important; /* Scroll alleen als het echt nodig is */
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important; /* ✅ Geen scrollbar op de placeholder zelf */
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* 3. De echte scroll container binnenin: pas scrollen als het ECHT moet */
+#page14-3player .turns-scroll-container {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    
+    /* ✅ Verberg de scrollbar visueel als hij niet nodig is */
+    scrollbar-width: thin; /* Firefox: dunne scrollbar */
+    scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+
+/* Verberg scrollbar in Chrome/Edge/Safari tenzij je eroverheen hovert */
+#page14-3player .turns-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+#page14-3player .turns-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+#page14-3player .turns-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+#page14-3player .turns-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.5);
 }
