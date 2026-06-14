@@ -2745,7 +2745,7 @@ const render3PTurnsList = (turns, highest) => {
 
 
 /* =========================================================================
-   UI UPDATEN: MET STATISTIEKEN, BEURTENLIJST, NAAM EN TARGET
+   UI UPDATEN: MET STATISTIEKEN, BEURTENLIJST, NAAM, TARGET EN HUIDIG LOGICA
    ========================================================================= */
 window.update3PlayerUI = function() {
     const fm = state.friendlyMatch;
@@ -2774,7 +2774,6 @@ window.update3PlayerUI = function() {
 
     // 2. Update de 3 kolommen (inclusief NAAM, TARGET, stats en beurtenlijst)
     s3.players.forEach((player, index) => {
-        // ✅ FIX: Naam en Target elementen ophalen
         const nameEl = document.getElementById(`friendly3p-name${index + 1}`);
         const targetEl = document.getElementById(`friendly3p-target${index + 1}`);
         const currentEl = document.getElementById(`friendly3p-current${index + 1}`);
@@ -2782,15 +2781,27 @@ window.update3PlayerUI = function() {
         const col = document.getElementById(`friendlyP3Col${index + 1}`);
 
         if (nameEl && targetEl && currentEl && totalEl && col) {
-            // ✅ FIX: Naam en Target daadwerkelijk updaten!
+            // Naam en Target updaten
             nameEl.textContent = player.name;
             targetEl.textContent = player.target;
 
-            // Basis scores updaten
-            currentEl.textContent = (index === s3.activeIndex && !s3.matchEnded) ? s3.currentRun : '0';
+            // ✅ NIEUW: HUIDIG alleen tonen voor de actieve speler
+            const currentItem = currentEl.parentElement;
+            
+            if (index === s3.activeIndex && !s3.matchEnded) {
+                // Speler is aan de beurt: toon de score en maak het blokje opvallend
+                currentEl.textContent = s3.currentRun;
+                if (currentItem) currentItem.classList.add('active-run');
+            } else {
+                // Speler is NIET aan de beurt: toon een streepje en verwijder de opmaak
+                currentEl.textContent = '-';
+                if (currentItem) currentItem.classList.remove('active-run');
+            }
+
+            // Totaal updaten
             totalEl.textContent = player.total;
 
-            // Active player highlight
+            // Active player highlight op de kolom
             if (index === s3.activeIndex && !s3.matchEnded) {
                 col.classList.add('active-player');
             } else {
@@ -2844,7 +2855,6 @@ window.update3PlayerUI = function() {
         }
     });
 };
-
 // 5. MATCH EINDE AFHANDELING → GA NAAR SAMENVATTING
 window.end3PlayerMatch = function() {
     const fm = state.friendlyMatch;
