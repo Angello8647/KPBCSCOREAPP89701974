@@ -1841,14 +1841,13 @@ window.startFriendlyMatchFromBallSelection = function() {
             const tempPlayer = fm.players[1];
             fm.players[1] = fm.players[2];
             fm.players[2] = tempPlayer;
-            fm.whiteBallOwner = 1; // Nu staat de witte bal op positie 1
+            fm.whiteBallOwner = 1;
         }
     }
     else if (fm.numPlayers === 4) {
         // 4 SPELERS (TEAMS): Als Team 2 de witte bal heeft, swap team-toewijzingen
         if (fm.whiteBallOwner === 'T2') {
             console.log("🔄 Swap: Team 2 heeft witte bal → wissel teams");
-            // Swap alle team-nummers: 1 wordt 2, 2 wordt 1
             for (let i = 1; i <= 4; i++) {
                 if (fm.teams[i] === 1) {
                     fm.teams[i] = 2;
@@ -1856,7 +1855,7 @@ window.startFriendlyMatchFromBallSelection = function() {
                     fm.teams[i] = 1;
                 }
             }
-            fm.whiteBallOwner = 'T1'; // Nu is Team 1 het team met de witte bal
+            fm.whiteBallOwner = 'T1';
         }
     }
     else if (fm.numPlayers === 3) {
@@ -1871,18 +1870,16 @@ window.startFriendlyMatchFromBallSelection = function() {
             if (playerNum) {
                 const playerObj = fm.players[playerNum];
                 
-                // ✅ FIX: Haal de NAAM en het AL BEREKENDE TARGET direct uit het geselecteerde speler-object
                 const playerName = typeof playerObj === 'object' && playerObj !== null ? playerObj.name : playerObj;
                 const target = typeof playerObj === 'object' && playerObj !== null ? (playerObj.target || 50) : 50;
                 
-                // Haal TSG op voor de statistieken op het scorebord
                 const playerData = state.players ? state.players.find(p => p.name === playerName) : null;
                 const tsg = playerData ? (playerData.tsg || playerData.average || '1,000') : '1,000';
                 
                 sortedPlayers.push({
                     name: playerName,
                     color: color,
-                    target: target, // ✅ Gebruik hier het echte target!
+                    target: target,
                     tsg: tsg
                 });
             }
@@ -1890,13 +1887,9 @@ window.startFriendlyMatchFromBallSelection = function() {
         
         console.log("✅ Gesorteerde spelers met echte targets:", sortedPlayers);
         
-        // Update fm.players met de gesorteerde lijst
         fm.players = sortedPlayers;
-        
-        // Initialiseer de 3-speler scoring
         window.init3PlayerScoring();
         
-        // Navigeer naar de 3-speler pagina (FORCEERBAAR)
         console.log("🔄 Navigeren naar 3-speler pagina...");
         
         document.querySelectorAll('.page').forEach(p => {
@@ -1915,80 +1908,12 @@ window.startFriendlyMatchFromBallSelection = function() {
             console.error("❌ FOUT: page14-3player bestaat niet in de HTML!");
         }
         
-        return;
-    }
-        
-        // 2. Update fm.players met de gesorteerde lijst (voor compatibiliteit)
-        fm.players = sortedPlayers;
-        
-        console.log("✅ Gesorteerde spelers:", sortedPlayers);
-        
-        // 3. Initialiseer de 3-speler scoring met de echte data
-        window.init3PlayerScoring();
-        
-        // 4. Navigeer naar de 3-speler pagina (FORCEERBAAR)
-        console.log("🔄 Navigeren naar 3-speler pagina...");
-        
-        // Verberg alle pagina's (zowel hidden class als display:none)
-        document.querySelectorAll('.page').forEach(p => {
-            p.classList.add('hidden');
-            p.classList.remove('active');
-            p.style.display = 'none';
-        });
-        
-        // Forceer de 3-speler pagina zichtbaar
-        const page3p = document.getElementById('page14-3player');
-        if (page3p) {
-            console.log("✅ page14-3player gevonden, tonen...");
-            page3p.classList.remove('hidden');
-            page3p.classList.add('active');
-            page3p.style.display = 'block';
-        } else {
-            console.error("❌ FOUT: page14-3player bestaat niet in de HTML!");
-        }
-        
-        return; // Stop hier, want we hebben al genavigeerd
+        return; // ✅ EINDE van 3-speler logica
     }
 
-    // Navigeer naar Pagina 14 (Vriendschappelijk Scorebord)
+    // ✅ Voor 2 en 4 spelers: navigeer naar Pagina 14
     showPage(14);
-    
-    // Initialiseer de scoring logica
     window.initFriendlyScoring();
-};
-
-// 6. Reset alle kleurkeuzes op Pagina 13
-window.resetFriendlyBallSelection = function() {
-    console.log("🔄 Reset bal kleur selectie...");
-    
-    // 1. Wis de state
-    if (state.friendlyMatch) {
-        state.friendlyMatch.whiteBallOwner = null;
-        state.friendlyMatch.colorAssignments = {};
-    }
-    
-    // 2. Verwijder alle visuele selecties
-    document.querySelectorAll('#friendlyBallOptions .ball-option').forEach(opt => {
-        opt.classList.remove('selected');
-    });
-    
-    document.querySelectorAll('.color-dot').forEach(dot => {
-        dot.classList.remove('active', 'disabled');
-    });
-
-    // ✅ NIEUW: Reset de gele ballen ook
-    document.querySelectorAll('#page13 .ball-circle').forEach(circle => {
-        circle.classList.remove('yellow');
-    });
-    
-    // 3. Deactiveer de startknop
-    const startBtn = document.getElementById('friendlyStartMatchBtn');
-    if (startBtn) {
-        startBtn.disabled = true;
-        startBtn.classList.add('disabled-btn');
-    }
-    
-    console.log("✅ Reset compleet. Alle kleuren zijn gewist.");
 };
 
 
