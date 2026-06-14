@@ -3945,8 +3945,12 @@
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     min-height: 100vh;
     padding: 20px;
-    display: flex;
+    display: none; /* ✅ Standaard verborgen */
     flex-direction: column;
+}
+
+#page15-3player-summary.active {
+    display: flex; /* ✅ Alleen zichtbaar wanneer .active */
 }
 
 #page15-3player-summary .summary3p-header {
