@@ -2942,46 +2942,33 @@ window.render3PlayerSummary = function() {
     });
 };
 
-// 2. Navigeer naar de samenvatting (VERWIJDER .hidden EN VOEG .active TOE)
+// 2. Navigeer naar de samenvatting (GEBRUIK EXACT DEZELFDE LOGICA ALS showPage())
 window.show3PlayerSummary = function() {
-    // Verberg alle pagina's: verwijder .active EN voeg .hidden toe
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.classList.add('hidden');
-    });
+    // ✅ GEBRUIK EXACT DEZELFDE LOGICA ALS showPage()
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     
-    // Toon samenvatting: verwijder .hidden EN voeg .active toe
     const summaryPage = document.getElementById('page15-3player-summary');
     if (summaryPage) {
-        summaryPage.classList.remove('hidden'); // ✅ CRUCIAAL: verwijder .hidden
         summaryPage.classList.add('active');
         state.currentPage = 15;
-        
-        // Render de data
         window.render3PlayerSummary();
     }
 };
 
-// 3. Terug naar hoofdmenu (VERWIJDER .hidden EN VOEG .active TOE)
+// 3. Terug naar hoofdmenu (GEBRUIK EXACT DEZELFDE LOGICA ALS showPage())
 window.backToHomeFrom3PlayerSummary = function() {
     // Reset states
     state.friendlyMatch = null;
     window.last3pState = null;
     
-    // Verberg alle pagina's: verwijder .active EN voeg .hidden toe
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.classList.add('hidden');
-    });
+    // ✅ GEBRUIK EXACT DEZELFDE LOGICA ALS showPage()
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     
-    // Toon pagina 1: verwijder .hidden EN voeg .active toe
     const page1 = document.getElementById('page1');
     if (page1) {
-        page1.classList.remove('hidden'); // ✅ CRUCIAAL: verwijder .hidden
         page1.classList.add('active');
         state.currentPage = 1;
         
-        // Reset containers
         if (typeof window.resetPage1State === 'function') {
             window.resetPage1State();
         }
