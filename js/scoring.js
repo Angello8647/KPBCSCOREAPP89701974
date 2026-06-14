@@ -2971,24 +2971,40 @@ window.show3PlayerSummary = function() {
     }
 };
 
-// 3. Terug naar hoofdmenu
+// 3. Terug naar hoofdmenu (MET VOLLEDIGE RESET)
 window.backToHomeFrom3PlayerSummary = function() {
+    console.log("🏠 Terug naar hoofdmenu vanuit samenvatting...");
+    
     // Reset de friendly match state
     state.friendlyMatch = null;
+    window.last3pState = null; // Ook de undo state wissen
     
-    // Navigeer naar pagina 1
+    // Verberg ALLE pagina's (forceerbaar)
     document.querySelectorAll('.page').forEach(p => {
         p.classList.add('hidden');
         p.classList.remove('active');
         p.style.display = 'none';
     });
     
+    // Toon pagina 1 (hoofdmenu)
     const page1 = document.getElementById('page1');
     if (page1) {
         page1.classList.remove('hidden');
         page1.classList.add('active');
         page1.style.display = 'block';
+        console.log("✅ Pagina 1 (hoofdmenu) is nu actief");
+    } else {
+        console.error("❌ Pagina 1 niet gevonden!");
     }
+    
+    // Reset ook de modus-selectie containers (voor het geval die gedimd zijn)
+    const officialContainer = document.getElementById('containerOfficial');
+    const friendlyContainer = document.getElementById('containerFriendly');
+    
+    if (officialContainer) officialContainer.classList.remove('inactive-mode');
+    if (friendlyContainer) friendlyContainer.classList.remove('inactive-mode');
+    
+    console.log("✅ Hoofdmenu is volledig gereset");
 };
 
 /* =========================================================================
