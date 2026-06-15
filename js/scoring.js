@@ -2050,21 +2050,41 @@ window.updateFriendlyUI = function() {
     }
 
     // --- B. Update de Header ---
-    document.getElementById('friendlyHeaderName1').textContent = leftName;
-    document.getElementById('friendlyHeaderTarget1').textContent = leftTarget;
     
-    document.getElementById('friendlyHeaderName2').textContent = rightName;
-    document.getElementById('friendlyHeaderTarget2').textContent = rightTarget;
-
-    // ✅ NIEUW: Bepaal de discipline op basis van het team dat NU aan de beurt is
-    const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
+    // ✅ NIEUW: Voeg emoji toe en verberg de '0' bij Triatlon/Dubbeltje (4 spelers)
+    const isPhaseGameHeader = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+    const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
     
-    let phaseText = '';
-    if (activePhase === 'vrijspel') phaseText = 'VRIJSPEL';
-    else if (activePhase === 'bandstoten') phaseText = 'BANDSTOTEN';
-    else if (activePhase === 'driebanden') phaseText = 'DRIEBANDEN';
+    let displayLeftName = leftName;
+    let displayRightName = rightName;
 
-    document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
+    if (isPhaseGameHeader && isTeam) {
+        // Haal de globale speler-index op (1 t/m 4) op basis van team en volgorde
+        const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] == 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] == 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        
+        const leftGlobalIdx = t1Keys[ts.leftPlayerIndex - 1];
+        const rightGlobalIdx = t2Keys[ts.rightPlayerIndex - 1];
+        
+        const leftEmoji = icons[leftGlobalIdx] || "";
+        const rightEmoji = icons[rightGlobalIdx] || "";
+        
+        // Voeg emoji toe aan de naam
+        displayLeftName = `${leftEmoji} ${leftName}`;
+        displayRightName = `${rightEmoji} ${rightName}`;
+        
+        // Verberg het target (de '0') in de header bij fase-spellen
+        document.getElementById('friendlyHeaderTarget1').textContent = ""; 
+        document.getElementById('friendlyHeaderTarget2').textContent = "";
+    } else {
+        // Bij normale spellen: toon gewoon het target
+        document.getElementById('friendlyHeaderTarget1').textContent = leftTarget;
+        document.getElementById('friendlyHeaderTarget2').textContent = rightTarget;
+    }
+
+    // Update de namen in de header
+    document.getElementById('friendlyHeaderName1').textContent = displayLeftName;
+    document.getElementById('friendlyHeaderName2').textContent = displayRightName;
 
     // --- C. Update de Score Cellen ---
     
