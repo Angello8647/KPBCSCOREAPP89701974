@@ -1140,6 +1140,10 @@ window.resetFriendlyConfig = function() {
     document.querySelectorAll('#pageFriendly .config-card').forEach(card => {
         card.classList.remove('selected', 'dimmed');
     });
+    // ✅ NIEUW: Zorg dat alle speltype-opties weer zichtbaar zijn na een reset
+    document.querySelectorAll('#step2GameType .config-card').forEach(card => {
+        card.style.display = '';
+    });
     
     // 2. Verberg Stap 2, Stap 3 en Stap 4 expliciet
     const step2 = document.getElementById('step2GameType');
