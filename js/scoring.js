@@ -2070,40 +2070,38 @@ window.updateFriendlyUI = function() {
 
     // --- D. Update de Statistieken (Fase-blokjes of Gemiddelden) ---
     
-    // ✅ DEZE TWEE BLIJVEN ALTIJD BESTAAN (ook bij triatlon)
+    // ✅ DEZE TWEE BLIJVEN ALTIJD BESTAAN (ook bij triatlon, voor elders op het scherm)
     const stat1El = document.getElementById('friendlyStat1');
     const stat2El = document.getElementById('friendlyStat2');
     if (stat1El) stat1El.textContent = leftAvg;
     if (stat2El) stat2El.textContent = rightAvg;
     
-    // Check of we een speltype spelen met fases (Triatlon of Dubbeltje)
+    // Check of we een speltype spelen met fases
     const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
 
-    // Helper functie om te bepalen wat er in een blokje moet staan
-    const getPhaseBox = (phaseName, targetValue) => {
+    // Helper functie: vergelijkt de fase van DIT team met de kolom die we willen tonen
+    const getPhaseBox = (teamPhase, phaseName, targetValue) => {
         const phases = ['vrijspel', 'bandstoten', 'driebanden'];
-        const currentIndex = phases.indexOf(ts.phase);
+        const teamIndex = phases.indexOf(teamPhase);
         const targetIndex = phases.indexOf(phaseName);
 
-        if (targetIndex < currentIndex) {
-            return { text: '✅', class: 'phase-box-passed' }; // Gehaalde fase
-        } else if (targetIndex === currentIndex) {
-            return { text: targetValue, class: 'phase-box-active' }; // Huidige fase
+        if (targetIndex < teamIndex) {
+            return { text: '✅', class: 'phase-box-passed' }; // Gehaald
+        } else if (targetIndex === teamIndex) {
+            return { text: targetValue, class: 'phase-box-active' }; // Actief
         } else {
-            return { text: targetValue, class: 'phase-box-future' }; // Toekomstige fase (grijs)
+            return { text: targetValue, class: 'phase-box-future' }; // Toekomst (grijs)
         }
     };
 
     if (isPhaseGame) {
-        // Haal de doelen op die we in initFriendlyScoring hebben ingesteld
         const targets = fm.thresholds; 
 
-        // Bepaal de inhoud voor de 3 blokjes
-        const p1Vrij = getPhaseBox('vrijspel', targets.vrijspel);
-        const p1Band = getPhaseBox('bandstoten', targets.bandstoten);
-        const p1Drie = getPhaseBox('driebanden', targets.driebanden);
+        // ✅ LINKS: Gebruik ts.leftPhase
+        const p1Vrij = getPhaseBox(ts.leftPhase, 'vrijspel', targets.vrijspel);
+        const p1Band = getPhaseBox(ts.leftPhase, 'bandstoten', targets.bandstoten);
+        const p1Drie = getPhaseBox(ts.leftPhase, 'driebanden', targets.driebanden);
 
-        // Update Speler/Team 1 blokjes
         const p1Box1 = document.getElementById('friendlyP1PlayedAvg');
         const p1Box2 = document.getElementById('friendlyP1Highest');
         const p1Box3 = document.getElementById('friendlyP1TargetAvg');
@@ -2112,10 +2110,10 @@ window.updateFriendlyUI = function() {
         if (p1Box2) { p1Box2.textContent = p1Band.text; p1Box2.className = `stat-box ${p1Band.class}`; }
         if (p1Box3) { p1Box3.textContent = p1Drie.text; p1Box3.className = `stat-box ${p1Drie.class}`; }
 
-        // Update Speler/Team 2 blokjes (zelfde logica)
-        const p2Vrij = getPhaseBox('vrijspel', targets.vrijspel);
-        const p2Band = getPhaseBox('bandstoten', targets.bandstoten);
-        const p2Drie = getPhaseBox('driebanden', targets.driebanden);
+        // ✅ RECHTS: Gebruik ts.rightPhase
+        const p2Vrij = getPhaseBox(ts.rightPhase, 'vrijspel', targets.vrijspel);
+        const p2Band = getPhaseBox(ts.rightPhase, 'bandstoten', targets.bandstoten);
+        const p2Drie = getPhaseBox(ts.rightPhase, 'driebanden', targets.driebanden);
 
         const p2Box1 = document.getElementById('friendlyP2PlayedAvg');
         const p2Box2 = document.getElementById('friendlyP2Highest');
@@ -2126,13 +2124,13 @@ window.updateFriendlyUI = function() {
         if (p2Box3) { p2Box3.textContent = p2Drie.text; p2Box3.className = `stat-box ${p2Drie.class}`; }
 
     } else {
-        // NORMALE SPELTYPES (Vrijspel, Bandstoten, Driebanden) - ONVERANDERD
+        // NORMALE SPELTYPES: ONVERANDERD
         const leftPlayedAvg = ts.leftTurns.length > 0 ? (ts.leftTotalScore / ts.leftTurns.length).toFixed(2).replace('.', ',') : "0,00";
         const rightPlayedAvg = ts.rightTurns.length > 0 ? (ts.rightTotalScore / ts.rightTurns.length).toFixed(2).replace('.', ',') : "0,00";
 
         document.getElementById('friendlyP1PlayedAvg').textContent = leftPlayedAvg;
         document.getElementById('friendlyP1Highest').textContent = ts.leftHighestSeries;
-        document.getElementById('friendlyP1TargetAvg').textContent = leftAvg; 
+        document.getElementById('friendlyP1TargetAvg').textContent = leftAvg;
 
         document.getElementById('friendlyP2PlayedAvg').textContent = rightPlayedAvg;
         document.getElementById('friendlyP2Highest').textContent = ts.rightHighestSeries;
@@ -2319,12 +2317,17 @@ window.friendlyChangeScore = function(delta) {
         return;
     }
 
-    // Check of de fase-drempel is bereikt (bij triatlon - voor later)
-    const threshold = fm.thresholds[ts.phase];
-    const currentPhaseScore = ts.activeSide === 'left' ? ts.leftPhaseScore : ts.rightPhaseScore;
-    if (currentPhaseScore >= threshold && ts.phase !== 'driebanden') {
-        window.friendlyAdvancePhase();
-        return;
+    // ✅ CHECK: Heeft het actieve team zijn fase-drempel bereikt? (Alleen bij Triatlon/Dubbeltje)
+    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+    if (isPhaseGame) {
+        const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
+        const currentPhaseScore = ts.activeSide === 'left' ? ts.leftPhaseScore : ts.rightPhaseScore;
+        const threshold = fm.thresholds[activePhase];
+
+        if (currentPhaseScore >= threshold && activePhase !== 'driebanden') {
+            window.friendlyAdvancePhase();
+            return; // Stop verdere verwerking, de fase is gewisseld
+        }
     }
 
     // Update UI
@@ -2428,29 +2431,35 @@ window.friendlySwitchToPartner = function() {
     window.updateFriendlyUI();
 };
 
-// 6. FASE-OVERGANG (Vrijspel → Bandstoten → Driebanden)
+// 6. FASE-OVERGANG (Alleen voor het actieve team!)
 window.friendlyAdvancePhase = function() {
     const fm = state.friendlyMatch;
     const ts = fm.turnState;
 
-    // Ga naar de volgende fase
-    if (ts.phase === 'vrijspel') {
-        ts.phase = 'bandstoten';
-    } else if (ts.phase === 'bandstoten') {
-        ts.phase = 'driebanden';
-    }
-
-    // Reset de fase-score
+    // Wissel alleen de fase van het team dat aan de beurt is
     if (ts.activeSide === 'left') {
-        ts.leftPhaseScore = 0;
+        if (ts.leftPhase === 'vrijspel') {
+            ts.leftPhase = 'bandstoten';
+            ts.phase = 'bandstoten'; // ✅ Update ook globale phase voor de header
+        } else if (ts.leftPhase === 'bandstoten') {
+            ts.leftPhase = 'driebanden';
+            ts.phase = 'driebanden'; // ✅ Update ook globale phase voor de header
+        }
+        ts.leftPhaseScore = 0; // Reset fasescore voor de nieuwe discipline
     } else {
-        ts.rightPhaseScore = 0;
+        if (ts.rightPhase === 'vrijspel') {
+            ts.rightPhase = 'bandstoten';
+            ts.phase = 'bandstoten'; // ✅ Update ook globale phase voor de header
+        } else if (ts.rightPhase === 'bandstoten') {
+            ts.rightPhase = 'driebanden';
+            ts.phase = 'driebanden'; // ✅ Update ook globale phase voor de header
+        }
+        ts.rightPhaseScore = 0; // Reset fasescore voor de nieuwe discipline
     }
 
-    // Verplichte wissel naar partner
+    // Verplichte wissel naar partner na fase-overgang
     window.friendlySwitchToPartner();
 };
-
 // 7. UNDO
 window.friendlyUndo = function() {
     if (!window.lastFriendlyState) return;
