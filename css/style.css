@@ -4222,3 +4222,39 @@
     font-size: 1.5rem !important; /* Iets groter vinkje */
     color: #2ecc71 !important; /* Groen vinkje */
 }
+/* =========================================================================
+   TRIATLON / DUBBELTJE: FASE BLOKJES STYLING
+   ========================================================================= */
+
+/* Toekomstige fase: Grijs en iets vager */
+.stat-box.phase-box-future {
+    color: #95a5a6 !important;
+    opacity: 0.6;
+}
+
+/* Huidige fase: Normale opmaak (iets opvallender) */
+.stat-box.phase-box-active {
+    font-weight: 900 !important;
+    color: #ecf0f1 !important;
+}
+
+/* Gehaalde fase: Groen vinkje */
+.stat-box.phase-box-passed {
+    font-size: 1.5rem !important;
+    color: #2ecc71 !important;
+}
+
+/* =========================================================================
+   NODIG BLOKJE: ROOD bij ≤5 of ≤2 (pulse animatie)
+   ========================================================================= */
+
+.stat-box.needed-urgent {
+    color: #e74c3c !important; /* Rood */
+    font-weight: 900 !important;
+    animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+}
