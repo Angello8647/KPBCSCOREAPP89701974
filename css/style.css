@@ -4199,3 +4199,26 @@
 #page15-3player-summary .turn-row-summary.played.latest-turn div:last-child {
     color: #2980b9;
 }
+
+
+/* =========================================================================
+   TRIATLON / DUBBELTJE: FASE BLOKJES STYLING
+   ========================================================================= */
+
+/* Toekomstige fase: Grijs en iets vager */
+.stat-box.phase-box-future {
+    color: #95a5a6 !important;
+    opacity: 0.6;
+}
+
+/* Huidige fase: Normale opmaak (misschien iets opvallender maken als je wilt) */
+.stat-box.phase-box-active {
+    font-weight: 900 !important;
+    color: #ecf0f1 !important;
+}
+
+/* Gehaalde fase: Normale opmaak voor het vinkje */
+.stat-box.phase-box-passed {
+    font-size: 1.5rem !important; /* Iets groter vinkje */
+    color: #2ecc71 !important; /* Groen vinkje */
+}
