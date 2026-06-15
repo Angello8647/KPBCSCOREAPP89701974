@@ -4248,7 +4248,7 @@
    NODIG BLOKJE: ROOD bij ≤5 of ≤2 (pulse animatie)
    ========================================================================= */
 
-.stat-box.needed-urgent {
+.needed-urgent {
     color: #e74c3c !important; /* Rood */
     font-weight: 900 !important;
     animation: pulse 0.5s ease-in-out infinite alternate;
