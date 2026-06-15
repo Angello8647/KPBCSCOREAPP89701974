@@ -2071,7 +2071,7 @@ window.updateFriendlyUI = function() {
         
         // Voeg emoji toe aan de naam
         displayLeftName = `${leftEmoji} ${leftName}`;
-        displayRightName = `${rightEmoji} ${rightName}`;
+        displayRightName = `${rightName} ${rightEmoji}`;
         
         // Verberg het target (de '0') in de header bij fase-spellen
         document.getElementById('friendlyHeaderTarget1').textContent = ""; 
