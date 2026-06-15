@@ -2132,15 +2132,15 @@ window.updateFriendlyUI = function() {
     const rightThreshold = getUrgentThreshold(rightPhase);
     
     if (leftNeeded <= leftThreshold) {
-        p1NeededEl.classList.add('needed-urgent');
+        p1NeededCell.classList.add('danger');
     } else {
-        p1NeededEl.classList.remove('needed-urgent');
+        p1NeededCell.classList.remove('danger');
     }
     
     if (rightNeeded <= rightThreshold) {
-        p2NeededEl.classList.add('needed-urgent');
+        p2NeededCell.classList.add('danger');
     } else {
-        p2NeededEl.classList.remove('needed-urgent');
+        p2NeededCell.classList.remove('danger');
     }
 
     // --- D. Update de Statistieken (Fase-blokjes of Gemiddelden) ---
