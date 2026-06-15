@@ -2464,8 +2464,11 @@ window.friendlyAdvancePhase = function() {
         ts.rightPhaseScore = 0; // Reset fasescore voor de nieuwe discipline
     }
 
-    // Verplichte wissel naar partner na fase-overgang
-    window.friendlySwitchToPartner();
+    // ✅ NIEUW: Alleen wisselen van partner bij Dubbeltje (max beurten per fase).
+    // Bij Triatlon mag de speler gewoon doorspelen in de nieuwe discipline!
+    if (fm.gameType === 'dubbeltje') {
+        window.friendlySwitchToPartner();
+    }
 };
 // 7. UNDO
 window.friendlyUndo = function() {
