@@ -2401,13 +2401,13 @@ window.friendlyMiss = function() {
     }
     // ✅ Bij phase games: geen target check, geen nabeurt logica
 
-    // Normale wissel (of bij phase games: altijd wissel)
-    ts.lastMissedBy = ts.activeSide;
-    ts.activeSide = ts.activeSide === 'left' ? 'right' : 'left';
+    // Geval C: Normale wissel (niemand heeft het target gehaald, of het was geen eerste keer)
+    ts.lastMissedBy = ts.activeSide; // 1. Onthoud wie er net miste
+    ts.activeSide = ts.activeSide === 'left' ? 'right' : 'left'; // 2. Draai de beurt om
     ts.currentRun = 0;
 
-    // De speler die nu aan de beurt komt, is de PARTNER van degene die net miste
-    if (ts.activeSide === 'left') {
+    // 3. Update de partner van het team dat NET miste (lastMissedBy), niet de nieuwe actieve kant!
+    if (ts.lastMissedBy === 'left') {
         ts.leftPlayerIndex = ts.leftPlayerIndex === 1 ? 2 : 1;
         ts.leftBeurtNummer++;
     } else {
