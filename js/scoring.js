@@ -2069,11 +2069,11 @@ window.updateFriendlyUI = function() {
     // --- C. Update de Score Cellen ---
     
     // ✅ NIEUW: Bij phase games toont HUIDIG alleen de punten van de huidige fase
-    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+    const isPhaseGameCheck = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
     
     let leftCurrentDisplay, rightCurrentDisplay;
     
-    if (isPhaseGame) {
+    if (isPhaseGameCheck) {
         // Bij Triatlon/Dubbeltje: toon alleen de fase-score
         leftCurrentDisplay = ts.leftPhaseScore;
         rightCurrentDisplay = ts.rightPhaseScore;
@@ -2086,7 +2086,7 @@ window.updateFriendlyUI = function() {
     // ✅ NODIG: Bij phase games toont het het resterende fasedoel
     let leftNeeded, rightNeeded;
     
-    if (isPhaseGame) {
+    if (isPhaseGameCheck) {
         // Bij Triatlon/Dubbeltje: toon het resterende fasedoel
         const leftThreshold = fm.thresholds[ts.leftPhase];
         const rightThreshold = fm.thresholds[ts.rightPhase];
@@ -2113,7 +2113,7 @@ window.updateFriendlyUI = function() {
     
     // Bepaal de huidige discipline per team
     let leftPhase, rightPhase;
-    if (isPhaseGame) {
+    if (isPhaseGameCheck) {
         leftPhase = ts.leftPhase;
         rightPhase = ts.rightPhase;
     } else {
