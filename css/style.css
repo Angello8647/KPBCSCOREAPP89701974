@@ -4245,21 +4245,41 @@
 }
 
 /* =========================================================================
-   ULTIEME NODIG CEL ROOD WAARSCHUWING + PULSE (overschrijft ALLES)
+   ULTIEME NODIG CEL ROOD WAARSCHUWING + PULSE (100% waterdicht)
    ========================================================================= */
 #friendlyP1NeededCell.danger,
 #friendlyP2NeededCell.danger {
     border-color: #e74c3c !important;
     background: rgba(231, 76, 60, 0.15) !important;
-    animation: danger-pulse 1.5s infinite !important; /* <-- !important is hier cruciaal */
+    animation: friendly-danger-pulse 1.5s infinite !important;
+    -webkit-animation: friendly-danger-pulse 1.5s infinite !important; /* Safari support */
 }
 
 #friendlyP1NeededCell.danger .cell-value,
 #friendlyP2NeededCell.danger .cell-value {
     color: #e74c3c !important;
+    font-weight: 900 !important;
 }
 
-@keyframes danger-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); }
-    50% { box-shadow: 0 0 25px 6px rgba(231,76,60,0.25); }
+/* ✅ Unieke naam om conflicten met andere @keyframes te vermijden */
+@keyframes friendly-danger-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(231,76,60,0.4);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 25px 6px rgba(231,76,60,0.25);
+        transform: scale(1.02);
+    }
+}
+
+@-webkit-keyframes friendly-danger-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(231,76,60,0.4);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 25px 6px rgba(231,76,60,0.25);
+        transform: scale(1.02);
+    }
 }
