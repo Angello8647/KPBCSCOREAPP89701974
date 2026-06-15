@@ -2451,28 +2451,30 @@ window.friendlyAdvancePhase = function() {
     if (ts.activeSide === 'left') {
         if (ts.leftPhase === 'vrijspel') {
             ts.leftPhase = 'bandstoten';
-            ts.phase = 'bandstoten'; // ✅ Update ook globale phase voor de header
+            ts.phase = 'bandstoten'; // Voor de header
         } else if (ts.leftPhase === 'bandstoten') {
             ts.leftPhase = 'driebanden';
-            ts.phase = 'driebanden'; // ✅ Update ook globale phase voor de header
+            ts.phase = 'driebanden'; // Voor de header
         }
         ts.leftPhaseScore = 0; // Reset fasescore voor de nieuwe discipline
     } else {
         if (ts.rightPhase === 'vrijspel') {
             ts.rightPhase = 'bandstoten';
-            ts.phase = 'bandstoten'; // ✅ Update ook globale phase voor de header
+            ts.phase = 'bandstoten'; // Voor de header
         } else if (ts.rightPhase === 'bandstoten') {
             ts.rightPhase = 'driebanden';
-            ts.phase = 'driebanden'; // ✅ Update ook globale phase voor de header
+            ts.phase = 'driebanden'; // Voor de header
         }
         ts.rightPhaseScore = 0; // Reset fasescore voor de nieuwe discipline
     }
 
-    // ✅ NIEUW: Alleen wisselen van partner bij Dubbeltje (max beurten per fase).
-    // Bij Triatlon mag de speler gewoon doorspelen in de nieuwe discipline!
+    // Alleen wisselen van partner bij Dubbeltje (bij Triatlon mag de speler doorspelen)
     if (fm.gameType === 'dubbeltje') {
         window.friendlySwitchToPartner();
     }
+
+    // ✅ NIEUW: Update de UI NA de fase-overgang, zodat de header en blokjes direct veranderen!
+    window.updateFriendlyUI();
 };
 // 7. UNDO
 window.friendlyUndo = function() {
