@@ -1974,7 +1974,9 @@ window.initFriendlyScoring = function() {
         fm.turnState = {
             activeSide: 'left',
             currentRun: 0,
-            phase: 'vrijspel',
+            phase: 'vrijspel', // Blijft voor backward compatibility
+            leftPhase: 'vrijspel',   // ✅ NIEUW: Fase van Team 1
+            rightPhase: 'vrijspel',  // ✅ NIEUW: Fase van Team 2
             leftPlayerIndex: 1,
             rightPlayerIndex: 1,
             leftTotalScore: 0,
@@ -1988,9 +1990,9 @@ window.initFriendlyScoring = function() {
             rightTurns: [],
             leftHighestSeries: 0,
             rightHighestSeries: 0,
-            firstToTarget: null,    // ✅ NIEUW: 'left' of 'right' (wie haalde als eerste het target?)
-            isNabeurt: false,       // ✅ NIEUW: true als we in de nabeurt zitten
-            matchEnded: false       // ✅ NIEUW: true als de match voorbij is
+            firstToTarget: null,
+            isNabeurt: false,
+            matchEnded: false
         };
     }
 
