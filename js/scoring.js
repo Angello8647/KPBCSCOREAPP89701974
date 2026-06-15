@@ -2332,8 +2332,12 @@ window.friendlyChangeScore = function(delta) {
         const threshold = fm.thresholds[activePhase];
 
         if (currentPhaseScore >= threshold && activePhase !== 'driebanden') {
+            // ✅ Update UI eerst, zodat gebruiker de "20" even ziet in het vrijspel
+            window.updateFriendlyUI();
+            
+            // Dan pas fase-overgang (die reset de fase-score naar 0)
             window.friendlyAdvancePhase();
-            return; // Stop verdere verwerking, de fase is gewisseld
+            return;
         }
     }
 
