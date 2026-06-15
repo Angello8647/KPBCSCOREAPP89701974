@@ -2066,11 +2066,76 @@ window.updateFriendlyUI = function() {
     document.getElementById('friendlyP2CurrentVal').textContent = ts.activeSide === 'right' ? ts.currentRun : 0;
     document.getElementById('friendlyP2TotalVal').textContent = ts.rightTotalScore;
 
-    // --- D. Update de Statistieken (Gemiddelden) ---
+    // --- D. Update de Statistieken (Fase-blokjes of Gemiddelden) ---
+    
+    // ✅ DEZE TWEE BLIJVEN ALTIJD BESTAAN (ook bij triatlon)
     const stat1El = document.getElementById('friendlyStat1');
     const stat2El = document.getElementById('friendlyStat2');
     if (stat1El) stat1El.textContent = leftAvg;
     if (stat2El) stat2El.textContent = rightAvg;
+    
+    // Check of we een speltype spelen met fases (Triatlon of Dubbeltje)
+    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+
+    // Helper functie om te bepalen wat er in een blokje moet staan
+    const getPhaseBox = (phaseName, targetValue) => {
+        const phases = ['vrijspel', 'bandstoten', 'driebanden'];
+        const currentIndex = phases.indexOf(ts.phase);
+        const targetIndex = phases.indexOf(phaseName);
+
+        if (targetIndex < currentIndex) {
+            return { text: '✅', class: 'phase-box-passed' }; // Gehaalde fase
+        } else if (targetIndex === currentIndex) {
+            return { text: targetValue, class: 'phase-box-active' }; // Huidige fase
+        } else {
+            return { text: targetValue, class: 'phase-box-future' }; // Toekomstige fase (grijs)
+        }
+    };
+
+    if (isPhaseGame) {
+        // Haal de doelen op die we in initFriendlyScoring hebben ingesteld
+        const targets = fm.thresholds; 
+
+        // Bepaal de inhoud voor de 3 blokjes
+        const p1Vrij = getPhaseBox('vrijspel', targets.vrijspel);
+        const p1Band = getPhaseBox('bandstoten', targets.bandstoten);
+        const p1Drie = getPhaseBox('driebanden', targets.driebanden);
+
+        // Update Speler/Team 1 blokjes
+        const p1Box1 = document.getElementById('friendlyP1PlayedAvg');
+        const p1Box2 = document.getElementById('friendlyP1Highest');
+        const p1Box3 = document.getElementById('friendlyP1TargetAvg');
+        
+        if (p1Box1) { p1Box1.textContent = p1Vrij.text; p1Box1.className = `stat-box ${p1Vrij.class}`; }
+        if (p1Box2) { p1Box2.textContent = p1Band.text; p1Box2.className = `stat-box ${p1Band.class}`; }
+        if (p1Box3) { p1Box3.textContent = p1Drie.text; p1Box3.className = `stat-box ${p1Drie.class}`; }
+
+        // Update Speler/Team 2 blokjes (zelfde logica)
+        const p2Vrij = getPhaseBox('vrijspel', targets.vrijspel);
+        const p2Band = getPhaseBox('bandstoten', targets.bandstoten);
+        const p2Drie = getPhaseBox('driebanden', targets.driebanden);
+
+        const p2Box1 = document.getElementById('friendlyP2PlayedAvg');
+        const p2Box2 = document.getElementById('friendlyP2Highest');
+        const p2Box3 = document.getElementById('friendlyP2TargetAvg');
+
+        if (p2Box1) { p2Box1.textContent = p2Vrij.text; p2Box1.className = `stat-box ${p2Vrij.class}`; }
+        if (p2Box2) { p2Box2.textContent = p2Band.text; p2Box2.className = `stat-box ${p2Band.class}`; }
+        if (p2Box3) { p2Box3.textContent = p2Drie.text; p2Box3.className = `stat-box ${p2Drie.class}`; }
+
+    } else {
+        // NORMALE SPELTYPES (Vrijspel, Bandstoten, Driebanden) - ONVERANDERD
+        const leftPlayedAvg = ts.leftTurns.length > 0 ? (ts.leftTotalScore / ts.leftTurns.length).toFixed(2).replace('.', ',') : "0,00";
+        const rightPlayedAvg = ts.rightTurns.length > 0 ? (ts.rightTotalScore / ts.rightTurns.length).toFixed(2).replace('.', ',') : "0,00";
+
+        document.getElementById('friendlyP1PlayedAvg').textContent = leftPlayedAvg;
+        document.getElementById('friendlyP1Highest').textContent = ts.leftHighestSeries;
+        document.getElementById('friendlyP1TargetAvg').textContent = leftAvg; 
+
+        document.getElementById('friendlyP2PlayedAvg').textContent = rightPlayedAvg;
+        document.getElementById('friendlyP2Highest').textContent = ts.rightHighestSeries;
+        document.getElementById('friendlyP2TargetAvg').textContent = rightAvg;
+    }
 
 
     // --- E. Update de Middenknop (B1, B2, etc.) ---
