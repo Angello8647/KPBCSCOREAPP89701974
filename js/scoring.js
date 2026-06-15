@@ -2066,14 +2066,82 @@ window.updateFriendlyUI = function() {
 
     document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
 
-        // --- C. Update de Score Cellen ---
-    document.getElementById('friendlyP1NeededVal').textContent = Math.max(0, leftTarget - ts.leftTotalScore);
-    document.getElementById('friendlyP1CurrentVal').textContent = ts.activeSide === 'left' ? ts.currentRun : 0;
+    // --- C. Update de Score Cellen ---
+    
+    // ✅ NIEUW: Bij phase games toont HUIDIG alleen de punten van de huidige fase
+    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+    
+    let leftCurrentDisplay, rightCurrentDisplay;
+    
+    if (isPhaseGame) {
+        // Bij Triatlon/Dubbeltje: toon alleen de fase-score
+        leftCurrentDisplay = ts.leftPhaseScore;
+        rightCurrentDisplay = ts.rightPhaseScore;
+    } else {
+        // Bij normale matches: toon de huidige reeks (zoals vroeger)
+        leftCurrentDisplay = ts.activeSide === 'left' ? ts.currentRun : 0;
+        rightCurrentDisplay = ts.activeSide === 'right' ? ts.currentRun : 0;
+    }
+    
+    // ✅ NODIG: Bij phase games toont het het resterende fasedoel
+    let leftNeeded, rightNeeded;
+    
+    if (isPhaseGame) {
+        // Bij Triatlon/Dubbeltje: toon het resterende fasedoel
+        const leftThreshold = fm.thresholds[ts.leftPhase];
+        const rightThreshold = fm.thresholds[ts.rightPhase];
+        
+        leftNeeded = Math.max(0, leftThreshold - ts.leftPhaseScore);
+        rightNeeded = Math.max(0, rightThreshold - ts.rightPhaseScore);
+    } else {
+        // Bij normale matches: toon het resterende target
+        leftNeeded = Math.max(0, leftTarget - ts.leftTotalScore);
+        rightNeeded = Math.max(0, rightTarget - ts.rightTotalScore);
+    }
+    
+    document.getElementById('friendlyP1NeededVal').textContent = leftNeeded;
+    document.getElementById('friendlyP1CurrentVal').textContent = leftCurrentDisplay;
     document.getElementById('friendlyP1TotalVal').textContent = ts.leftTotalScore;
 
-    document.getElementById('friendlyP2NeededVal').textContent = Math.max(0, rightTarget - ts.rightTotalScore);
-    document.getElementById('friendlyP2CurrentVal').textContent = ts.activeSide === 'right' ? ts.currentRun : 0;
+    document.getElementById('friendlyP2NeededVal').textContent = rightNeeded;
+    document.getElementById('friendlyP2CurrentVal').textContent = rightCurrentDisplay;
     document.getElementById('friendlyP2TotalVal').textContent = ts.rightTotalScore;
+
+    // ✅ ROOD KLEUREN: Werkt voor ALLE speltypes
+    const p1NeededEl = document.getElementById('friendlyP1NeededVal');
+    const p2NeededEl = document.getElementById('friendlyP2NeededVal');
+    
+    // Bepaal de huidige discipline per team
+    let leftPhase, rightPhase;
+    if (isPhaseGame) {
+        leftPhase = ts.leftPhase;
+        rightPhase = ts.rightPhase;
+    } else {
+        // Bij normale matches: gebruik het speltype
+        leftPhase = fm.gameType;
+        rightPhase = fm.gameType;
+    }
+    
+    // Drempels per discipline
+    const getUrgentThreshold = (phase) => {
+        if (phase === 'driebanden') return 2; // Driebanden: rood bij ≤2
+        return 5; // Vrijspel en Bandstoten: rood bij ≤5
+    };
+    
+    const leftThreshold = getUrgentThreshold(leftPhase);
+    const rightThreshold = getUrgentThreshold(rightPhase);
+    
+    if (leftNeeded <= leftThreshold) {
+        p1NeededEl.classList.add('needed-urgent');
+    } else {
+        p1NeededEl.classList.remove('needed-urgent');
+    }
+    
+    if (rightNeeded <= rightThreshold) {
+        p2NeededEl.classList.add('needed-urgent');
+    } else {
+        p2NeededEl.classList.remove('needed-urgent');
+    }
 
     // --- D. Update de Statistieken (Fase-blokjes of Gemiddelden) ---
     
