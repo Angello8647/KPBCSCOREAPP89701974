@@ -2350,38 +2350,46 @@ window.friendlyMiss = function() {
         if (ts.currentRun > ts.rightHighestSeries) ts.rightHighestSeries = ts.currentRun;
     }
 
-    // 2. ✅ TARGET CHECK: Heeft de speler die net stopte zijn doel bereikt?
-    const activeScore = ts.activeSide === 'left' ? ts.leftTotalScore : ts.rightTotalScore;
-    const activeTarget = ts.activeSide === 'left' ? fm.players[1].target : fm.players[2].target;
-    const reached = activeScore >= activeTarget;
+    // ✅ CHECK: Is dit een phase game (Triatlon/Dubbeltje)?
+    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
 
-    // Geval A: Eerste speler die het target haalt
-    if (reached && ts.firstToTarget === null) {
-        ts.firstToTarget = ts.activeSide;
+    if (!isPhaseGame) {
+        // NORMALE SPELTYPES: Target check (zoals vroeger)
         
-        if (ts.activeSide === 'left') {
-            // Speler 1 haalde als eerste het target → Nabeurt voor Speler 2
-            ts.isNabeurt = true;
-            ts.lastMissedBy = 'left';
-            ts.activeSide = 'right';
-            ts.currentRun = 0;
-            ts.rightBeurtNummer++; // Speler 2 start een nieuwe beurt
-            window.updateFriendlyUI();
-            return;
-        } else {
-            // Speler 2 haalde als eerste het target → Match is direct voorbij
+        // 2. TARGET CHECK: Heeft de speler die net stopte zijn doel bereikt?
+        const activeScore = ts.activeSide === 'left' ? ts.leftTotalScore : ts.rightTotalScore;
+        const activeTarget = ts.activeSide === 'left' ? fm.players[1].target : fm.players[2].target;
+        const reached = activeScore >= activeTarget;
+
+        // Geval A: Eerste speler die het target haalt
+        if (reached && ts.firstToTarget === null) {
+            ts.firstToTarget = ts.activeSide;
+            
+            if (ts.activeSide === 'left') {
+                // Speler 1 haalde als eerste het target → Nabeurt voor Speler 2
+                ts.isNabeurt = true;
+                ts.lastMissedBy = 'left';
+                ts.activeSide = 'right';
+                ts.currentRun = 0;
+                ts.rightBeurtNummer++;
+                window.updateFriendlyUI();
+                return;
+            } else {
+                // Speler 2 haalde als eerste het target → Match is direct voorbij
+                window.endFriendlyMatch();
+                return;
+            }
+        }
+
+        // Geval B: We zaten al in de nabeurt
+        if (ts.isNabeurt) {
             window.endFriendlyMatch();
             return;
         }
     }
+    // ✅ Bij phase games: geen target check, geen nabeurt logica
 
-    // Geval B: We zaten al in de nabeurt (Speler 2 heeft zijn extra beurt gehad)
-    if (ts.isNabeurt) {
-        window.endFriendlyMatch();
-        return;
-    }
-
-    // Geval C: Normale wissel (niemand heeft het target gehaald, of het was geen eerste keer)
+    // Normale wissel (of bij phase games: altijd wissel)
     ts.lastMissedBy = ts.activeSide;
     ts.activeSide = ts.activeSide === 'left' ? 'right' : 'left';
     ts.currentRun = 0;
