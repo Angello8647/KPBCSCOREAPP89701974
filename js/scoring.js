@@ -2145,6 +2145,8 @@ window.updateFriendlyUI = function() {
     if (calcRightNeeded <= rightThresh) {
         p2NeededCell.classList.add('danger');
     } else {
+        p2NeededCell.classList.remove('danger');
+    }
         
 
     // --- D. Update de Statistieken (Fase-blokjes of Gemiddelden) ---
