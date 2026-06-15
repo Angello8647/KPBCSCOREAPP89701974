@@ -2201,18 +2201,21 @@ window.updateFriendlyUI = function() {
     }
     // --- G. Update Statistieken & Spelerkaarten (Beurtenlijst) ---
     
-    // 1. Bereken live gemiddelde (Totaal / Aantal voltooide beurten)
-    const leftPlayedAvg = ts.leftTurns.length > 0 ? (ts.leftTotalScore / ts.leftTurns.length).toFixed(2).replace('.', ',') : "0,00";
-    const rightPlayedAvg = ts.rightTurns.length > 0 ? (ts.rightTotalScore / ts.rightTurns.length).toFixed(2).replace('.', ',') : "0,00";
-
-    // 2. Update de 3 statistiek-blokken per kant
-    document.getElementById('friendlyP1PlayedAvg').textContent = leftPlayedAvg;
-    document.getElementById('friendlyP1Highest').textContent = ts.leftHighestSeries;
-    document.getElementById('friendlyP1TargetAvg').textContent = leftAvg; // De database average uit stap A
-
-    document.getElementById('friendlyP2PlayedAvg').textContent = rightPlayedAvg;
-    document.getElementById('friendlyP2Highest').textContent = ts.rightHighestSeries;
-    document.getElementById('friendlyP2TargetAvg').textContent = rightAvg;
+    // ✅ ALLEEN uitvoeren als het GEEN phase game is
+    if (!isPhaseGame) {
+        // 1. Bereken live gemiddelde (Totaal / Aantal voltooide beurten)
+        const leftPlayedAvg = ts.leftTurns.length > 0 ? (ts.leftTotalScore / ts.leftTurns.length).toFixed(2).replace('.', ',') : "0,00";
+        const rightPlayedAvg = ts.rightTurns.length > 0 ? (ts.rightTotalScore / ts.rightTurns.length).toFixed(2).replace('.', ',') : "0,00";
+    
+        // 2. Update de 3 statistiek-blokken per kant
+        document.getElementById('friendlyP1PlayedAvg').textContent = leftPlayedAvg;
+        document.getElementById('friendlyP1Highest').textContent = ts.leftHighestSeries;
+        document.getElementById('friendlyP1TargetAvg').textContent = leftAvg;
+    
+        document.getElementById('friendlyP2PlayedAvg').textContent = rightPlayedAvg;
+        document.getElementById('friendlyP2Highest').textContent = ts.rightHighestSeries;
+        document.getElementById('friendlyP2TargetAvg').textContent = rightAvg;
+    }
 
 
     // 3. Helper functie om de beurtenlijst te bouwen (EXACTE KOPIE VAN COMPETITIE)
