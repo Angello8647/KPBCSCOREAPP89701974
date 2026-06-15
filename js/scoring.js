@@ -2107,41 +2107,45 @@ window.updateFriendlyUI = function() {
     document.getElementById('friendlyP2CurrentVal').textContent = rightCurrentDisplay;
     document.getElementById('friendlyP2TotalVal').textContent = ts.rightTotalScore;
 
-    // ✅ ROOD KLEUREN: Werkt voor ALLE speltypes
-    const p1NeededEl = document.getElementById('friendlyP1NeededVal');
-    const p2NeededEl = document.getElementById('friendlyP2NeededVal');
+    // ✅ ROOD KLEUREN: 100% Zelfstandig blok (klasse op de parent cel zetten)
+    const p1NeededCell = document.getElementById('friendlyP1NeededCell');
+    const p2NeededCell = document.getElementById('friendlyP2NeededCell');
     
-    // Bepaal de huidige discipline per team
-    let leftPhase, rightPhase;
-    if (isPhaseGameCheck) {
-        leftPhase = ts.leftPhase;
-        rightPhase = ts.rightPhase;
-    } else {
-        // Bij normale matches: gebruik het speltype
-        leftPhase = fm.gameType;
-        rightPhase = fm.gameType;
-    }
+    // 1. Bepaal of het een fase-spel is
+    const isPhaseLocal = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
     
-    // Drempels per discipline
-    const getUrgentThreshold = (phase) => {
-        if (phase === 'driebanden') return 2; // Driebanden: rood bij ≤2
-        return 5; // Vrijspel en Bandstoten: rood bij ≤5
-    };
+    // 2. Bepaal de huidige discipline per team
+    const leftPhaseLocal = isPhaseLocal ? ts.leftPhase : fm.gameType;
+    const rightPhaseLocal = isPhaseLocal ? ts.rightPhase : fm.gameType;
     
-    const leftThreshold = getUrgentThreshold(leftPhase);
-    const rightThreshold = getUrgentThreshold(rightPhase);
+    // 3. Drempels per discipline
+    const getThresholdLocal = (phase) => (phase === 'driebanden' ? 2 : 5);
+    const leftThresh = getThresholdLocal(leftPhaseLocal);
+    const rightThresh = getThresholdLocal(rightPhaseLocal);
     
-    if (leftNeeded <= leftThreshold) {
+    // 4. Bereken wat er nodig is (opnieuw, om 100% zeker te zijn)
+    const calcLeftNeeded = isPhaseLocal 
+        ? Math.max(0, fm.thresholds[ts.leftPhase] - ts.leftPhaseScore) 
+        : Math.max(0, leftTarget - ts.leftTotalScore);
+        
+    const calcRightNeeded = isPhaseLocal 
+        ? Math.max(0, fm.thresholds[ts.rightPhase] - ts.rightPhaseScore) 
+        : Math.max(0, rightTarget - ts.rightTotalScore);
+
+    // 5. DEBUG: Laat in de console zien dat deze code echt wordt uitgevoerd
+    console.log("🚨 UI CHECK: Links nodig:", calcLeftNeeded, "vs drempel:", leftThresh, "-> Rood?", calcLeftNeeded <= leftThresh);
+
+    // 6. Pas de klasse toe
+    if (calcLeftNeeded <= leftThresh) {
         p1NeededCell.classList.add('danger');
     } else {
         p1NeededCell.classList.remove('danger');
     }
     
-    if (rightNeeded <= rightThreshold) {
+    if (calcRightNeeded <= rightThresh) {
         p2NeededCell.classList.add('danger');
     } else {
-        p2NeededCell.classList.remove('danger');
-    }
+        
 
     // --- D. Update de Statistieken (Fase-blokjes of Gemiddelden) ---
     
