@@ -2056,7 +2056,14 @@ window.updateFriendlyUI = function() {
     document.getElementById('friendlyHeaderName2').textContent = rightName;
     document.getElementById('friendlyHeaderTarget2').textContent = rightTarget;
 
-    const phaseText = ts.phase === 'vrijspel' ? 'VRIJSPEL' : (ts.phase === 'bandstoten' ? 'BANDSTOTEN' : 'DRIEBANDEN');
+    // ✅ NIEUW: Bepaal de discipline op basis van het team dat NU aan de beurt is
+    const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
+    
+    let phaseText = '';
+    if (activePhase === 'vrijspel') phaseText = 'VRIJSPEL';
+    else if (activePhase === 'bandstoten') phaseText = 'BANDSTOTEN';
+    else if (activePhase === 'driebanden') phaseText = 'DRIEBANDEN';
+
     document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
 
         // --- C. Update de Score Cellen ---
