@@ -2425,17 +2425,23 @@ window.friendlyChangeScore = function(delta) {
         const currentPhaseScore = ts.activeSide === 'left' ? ts.leftPhaseScore : ts.rightPhaseScore;
         const threshold = fm.thresholds[activePhase];
 
-        if (currentPhaseScore >= threshold && activePhase !== 'driebanden') {
-            // ✅ Update UI eerst, zodat gebruiker de "20" even ziet in het vrijspel
+        if (currentPhaseScore >= threshold) {
+            // ✅ Update UI eerst, zodat gebruiker de eindstand even ziet
             window.updateFriendlyUI();
             
-            // Dan pas fase-overgang (die reset de fase-score naar 0)
-            window.friendlyAdvancePhase();
-            return;
+            if (activePhase === 'driebanden') {
+                // ✅ MATCH IS VOORBIJ! Laatste fase is gehaald. Direct winnen, geen nabeurt.
+                window.endFriendlyMatch();
+                return;
+            } else {
+                // Nog een volgende fase, dus wissel van fase
+                window.friendlyAdvancePhase();
+                return;
+            }
         }
     }
 
-    // Update UI
+    // Update UI (voor alle andere gevallen)
     window.updateFriendlyUI();
 };
 
