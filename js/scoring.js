@@ -1491,7 +1491,7 @@ window.showTeamSetup = function() {
 
     // Bouw de 4 rijen
     for (let i = 1; i <= 4; i++) {
-        const playerName = players[i] || `Speler ${i}`;
+        const playerName = players[i]?.name || `Speler ${i}`;
         const row = document.createElement('div');
         row.className = 'team-setup-row';
         row.id = `teamRow${i}`;
