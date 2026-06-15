@@ -1020,7 +1020,7 @@ window.selectMode = function(mode) {
    ✅ VRIENDSCHAPPELIJKE MATCH: CONFIGURATIE LOGICA (GEUPDATE & WATERDICHT)
    ========================================================================= */
 
-// 1. SPELERS KIEZEN (AANGEPAST)
+// 1. SPELERS KIEZEN (MET FILTER VOOR 4 SPELERS)
 window.selectPlayers = function(numPlayers) {
     // Reset alle spelers-kaartjes
     document.querySelectorAll('#step1Players .config-card').forEach(card => {
@@ -1037,6 +1037,26 @@ window.selectPlayers = function(numPlayers) {
     document.querySelectorAll('#step2GameType .config-card').forEach(card => {
         card.classList.remove('dimmed', 'selected');
     });
+    
+    // ✅ NIEUW: Filter de speltype-opties op basis van het aantal spelers
+    const allGameCards = document.querySelectorAll('#step2GameType .config-card');
+    
+    if (numPlayers === 4) {
+        // Bij 4 spelers: toon ALLEEN triatlon-small, triatlon-large en dubbeltje
+        allGameCards.forEach(card => {
+            const type = card.getAttribute('data-gametype');
+            if (type === 'vrijspel' || type === 'bandstoten' || type === 'driebanden') {
+                card.style.display = 'none'; // Verberg de onmogelijke opties
+            } else {
+                card.style.display = ''; // Toon de mogelijke opties
+            }
+        });
+    } else {
+        // Bij 2 of 3 spelers: toon ALLE opties weer
+        allGameCards.forEach(card => {
+            card.style.display = '';
+        });
+    }
     
     const step2 = document.getElementById('step2GameType');
     if (step2) step2.classList.remove('hidden');
