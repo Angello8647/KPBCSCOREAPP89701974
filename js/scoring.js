@@ -1392,8 +1392,11 @@ window.confirmTypedName = function() {
         return;
     }
     
-    // ✅ NIEUWE VALIDATIE: Target mag niet 0 zijn
-    if (window.tempPlayerTarget === 0) {
+    // ✅ VALIDATIE: Target mag niet 0 zijn, BEHALVE bij triatlon en dubbeltje
+    const gameType = state.friendlyMatch?.gameType;
+    const requiresTarget = ['vrijspel', 'bandstoten', 'driebanden'].includes(gameType);
+    
+    if (requiresTarget && window.tempPlayerTarget === 0) {
         alert("⚠️ Het te spelen doel mag niet 0 zijn.\n\nKies een waarde uit het dropdown menu of controleer de naam.");
         return;
     }
