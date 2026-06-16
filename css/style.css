@@ -4417,3 +4417,60 @@
     color: #7f8c8d;
     font-style: italic;
 }
+/* TOT kolommen styling */
+.cross-table .tot-header {
+    background-color: #2c3e50 !important;
+    font-size: 1.1em;
+    border: 2px solid #444;
+}
+
+.cross-table .tot-sub {
+    background-color: #34495e;
+    font-size: 0.8em;
+    border: 1px solid #444;
+}
+
+.cross-table .tot-pts,
+.cross-table .tot-avg,
+.cross-table .tot-turns,
+.cross-table .tot-mp,
+.cross-table .tot-hr {
+    background-color: #2c3e50;
+    font-weight: bold;
+    border: 2px solid #555;
+    text-align: center;
+}
+
+.cross-table .tot-mp {
+    font-size: 1.1em;
+}
+
+/* Match cellen styling */
+.cross-table .match-pts,
+.cross-table .match-turns {
+    font-size: 0.85em;
+    border: 1px dashed #666;
+}
+
+.cross-table .match-avg {
+    font-size: 0.85em;
+    border: 1px dashed #666;
+}
+
+/* Speler naam en coëfficiënt */
+.cross-table .player-nr {
+    text-align: center;
+    font-weight: bold;
+    background-color: #2c3e50;
+}
+
+.cross-table .player-name {
+    font-weight: bold;
+    background-color: #2c3e50;
+}
+
+.cross-table .player-coef {
+    font-size: 0.85em;
+    color: #95a5a6;
+    background-color: #2c3e50;
+}
