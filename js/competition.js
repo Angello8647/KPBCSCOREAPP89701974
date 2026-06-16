@@ -396,4 +396,18 @@ window.renderCrossTable = function() {
 
     html += `</tbody></table></div>`;
     container.innerHTML = html;
+
+
+    // ✅ NIEUW: Automatisch lettertype verkleinen als de naam niet in 200px past
+    const nameCells = container.querySelectorAll('.player-name');
+    nameCells.forEach(cell => {
+        let fontSize = 14; // Startgrootte in pixels (ongeveer 0.9em)
+        cell.style.fontSize = fontSize + 'px';
+        
+        // Blijf verkleinen zolang de tekst breder is dan de cel, met een minimum van 10px
+        while (cell.scrollWidth > cell.clientWidth && fontSize > 10) {
+            fontSize--;
+            cell.style.fontSize = fontSize + 'px';
+        }
+    });
 };
