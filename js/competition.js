@@ -252,6 +252,14 @@ window.renderCrossTable = function() {
     if (!currentCrossDiscipline || !currentCrossCategory) return;
 
     const container = document.getElementById('crossTableContainer');
+    // Hulpfunctie: "Wouter BOEDTS" wordt "W. BOEDTS"
+    const formatShortName = (fullName) => {
+        const parts = fullName.trim().split(' ');
+        if (parts.length < 2) return fullName;
+        const voorletter = parts[0].charAt(0).toUpperCase();
+        const achternaam = parts.slice(1).join(' ');
+        return `${voorletter}. ${achternaam}`;
+    };
     
     // 1. Filter spelers
     const players = state.players.filter(p => p.discipline === currentCrossDiscipline && p.category === currentCrossCategory);
@@ -306,7 +314,7 @@ window.renderCrossTable = function() {
         // --- RIJ 1: Nr + Naam + Punten/Gemiddelde + TOT (Pt, Gem) ---
         html += `<tr>`;
         html += `<td class="player-nr" rowspan="2">${rowIndex + 1}</td>`;
-        html += `<td class="player-name">${player1.name}</td>`;
+        html += `<td class="player-name">${formatShortName(player1.name)}</td>`;
         
         players.forEach((player2, colIndex) => {
             if (rowIndex === colIndex) {
