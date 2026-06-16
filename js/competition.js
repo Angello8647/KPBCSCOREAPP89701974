@@ -283,7 +283,6 @@ window.renderCrossTable = function() {
     players.forEach(p => {
         html += `<th colspan="2">${config.targetPoints}</th>`;
     });
-    // 5 kolommen: Pt(1) + Gem(2) + Empty(2) = 5
     html += `<th class="tot-sub">Pt</th><th class="tot-sub" colspan="2">Gem</th><th colspan="2"></th></tr>`;
     
     // HEADER RIJ 3: Coëfficiënten + TOT labels (Bt, MP, HR)
@@ -293,7 +292,6 @@ window.renderCrossTable = function() {
         const coef = playerData && playerData.tsg ? parseFloat(playerData.tsg.replace(',', '.')) : 0;
         html += `<th colspan="2">${coef.toFixed(4).replace('.', ',')}</th>`;
     });
-    // 5 kolommen: Bt(1) + MP(1) + HR(1) + Empty(2) = 5
     html += `<th class="tot-sub">Bt</th><th class="tot-sub">MP</th><th class="tot-sub">HR</th><th colspan="2"></th></tr>`;
     
     html += `</thead><tbody>`;
@@ -338,10 +336,9 @@ window.renderCrossTable = function() {
         });
         
         // TOT kolommen voor Rij 1 (Pt en Gem)
-        // Structuur: Pt(1) + Gem(2) + Empty(2) = 5 kolommen
         html += `<td class="tot-pts">${stats.totalPointsScored}</td>`;
         html += `<td class="tot-avg" colspan="2">${stats.average.toFixed(3).replace('.', ',')}</td>`;
-        html += `<td colspan="2"></td>`; // Empty space for Bt/MP/HR headers
+        html += `<td colspan="2"></td>`;
         html += `</tr>`;
         
         // --- RIJ 2: Coëfficiënt + Beurten/Comp.Punten + TOT (Bt, MP, HR) ---
@@ -372,17 +369,19 @@ window.renderCrossTable = function() {
                     html += `<td class="match-turns">${turns}</td>`;
                     html += `<td class="${compPointsClass}">${compPointsText}</td>`;
                 } else {
-                    // Niet gespeeld - al gedaan in Rij 1 met colspan, dus niets doen
+                    // NIET GESPEELD: colspan in rij 1 neemt alleen rij 1 in!
+                    // Dus in rij 2 moeten we nog steeds 2 cellen renderen
+                    html += `<td class="not-played"></td>`;
+                    html += `<td class="not-played"></td>`;
                 }
             }
         });
         
         // TOT kolommen voor Rij 2 (Bt, MP, HR)
-        // Structuur: Bt(1) + MP(1) + HR(1) + Empty(2) = 5 kolommen
         html += `<td class="tot-turns">${stats.totalTurnsPlayed}</td>`;
         html += `<td class="tot-mp">${stats.totalCompPoints > 0 ? '+' + stats.totalCompPoints : stats.totalCompPoints}</td>`;
         html += `<td class="tot-hr">${stats.highestSeries}</td>`;
-        html += `<td colspan="2"></td>`; // Empty space
+        html += `<td colspan="2"></td>`;
         html += `</tr>`;
     });
 
