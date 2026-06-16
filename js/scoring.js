@@ -2086,6 +2086,16 @@ window.updateFriendlyUI = function() {
     document.getElementById('friendlyHeaderName1').textContent = displayLeftName;
     document.getElementById('friendlyHeaderName2').textContent = displayRightName;
 
+    // ✅ CRUCIAAL: Bepaal de discipline op basis van het team dat NU aan de beurt is
+    const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
+    
+    let phaseText = '';
+    if (activePhase === 'vrijspel') phaseText = 'VRIJSPEL';
+    else if (activePhase === 'bandstoten') phaseText = 'BANDSTOTEN';
+    else if (activePhase === 'driebanden') phaseText = 'DRIEBANDEN';
+
+    document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
+
     // --- C. Update de Score Cellen ---
     
     // ✅ NIEUW: Bij phase games toont HUIDIG alleen de punten van de huidige fase
