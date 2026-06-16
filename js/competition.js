@@ -275,7 +275,7 @@ window.renderCrossTable = function() {
     players.forEach((p, idx) => {
         html += `<th colspan="2">${idx + 1}</th>`;
     });
-    html += `<th colspan="4" class="tot-header">TOT</th></tr>`;
+    html += `<th colspan="5" class="tot-header">TOT</th></tr>`;
     
     // Rij 2: Target punten + TOT labels
     const config = COMPETITION_CONFIG[currentCrossDiscipline];
@@ -283,16 +283,16 @@ window.renderCrossTable = function() {
     players.forEach(p => {
         html += `<th colspan="2">${config.targetPoints}</th>`;
     });
-    html += `<th class="tot-sub">Pt</th><th class="tot-sub">Gem</th><th class="tot-sub">Bt</th><th class="tot-sub">MP</th></tr>`;
+    html += `<th class="tot-sub">Pt</th><th class="tot-sub">Gem</th><th class="tot-sub">Bt</th><th class="tot-sub">MP</th><th class="tot-sub">HR</th></tr>`;
     
-    // Rij 3: Coëfficiënt + HR
+    // Rij 3: Coëfficiënt
     html += `<tr>`;
     players.forEach(p => {
         const playerData = state.players.find(sp => sp.id === p.id);
         const coef = playerData && playerData.tsg ? parseFloat(playerData.tsg.replace(',', '.')) : 0;
         html += `<th colspan="2">${coef.toFixed(4).replace('.', ',')}</th>`;
     });
-    html += `<th class="tot-sub">HR</th><th colspan="3"></th></tr>`;
+    html += `<th colspan="5"></th></tr>`;
     
     html += `</thead><tbody>`;
 
@@ -302,9 +302,9 @@ window.renderCrossTable = function() {
         const playerData = state.players.find(sp => sp.id === player1.id);
         const coef = playerData && playerData.tsg ? parseFloat(playerData.tsg.replace(',', '.')) : 0;
         
-        // Eerste rij: Naam + Punten/Deling per tegenstander + TOT Pt/Gem
+        // Eerste rij: Nr + Naam + Punten/Deling per tegenstander + TOT Pt/Gem
         html += `<tr>`;
-        html += `<td class="player-nr">${rowIndex + 1}</td>`;
+        html += `<td class="player-nr" rowspan="2">${rowIndex + 1}</td>`;
         html += `<td class="player-name">${player1.name}</td>`;
         
         players.forEach((player2, colIndex) => {
@@ -333,7 +333,7 @@ window.renderCrossTable = function() {
             }
         });
         
-        // TOT kolommen: Pt en Gem
+        // TOT kolommen: Pt en Gem (eerste rij)
         html += `<td class="tot-pts">${stats.totalPointsScored}</td>`;
         html += `<td class="tot-avg">${stats.average.toFixed(3).replace('.', ',')}</td>`;
         html += `<td class="tot-turns" rowspan="2">${stats.totalTurnsPlayed}</td>`;
@@ -343,8 +343,8 @@ window.renderCrossTable = function() {
         
         // Tweede rij: Coëfficiënt + Beurten/Competitiepunten per tegenstander
         html += `<tr>`;
+        // GEEN cellen voor Nr en Naam (die hebben al rowspan="2")
         html += `<td class="player-coef">${coef.toFixed(4).replace('.', ',')}</td>`;
-        html += `<td></td>`; // Lege cel onder naam
         
         players.forEach((player2, colIndex) => {
             if (rowIndex !== colIndex) {
@@ -370,6 +370,7 @@ window.renderCrossTable = function() {
             }
         });
         
+        // GEEN cellen voor TOT kolommen (die hebben al rowspan="2")
         html += `</tr>`;
     });
 
