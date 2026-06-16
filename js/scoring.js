@@ -2552,6 +2552,8 @@ window.friendlySwitchToPartner = function() {
 
     // Reset de run
     ts.currentRun = 0;
+    ts.leftTeamRun = 0;   // ✅ NIEUW: Totaal punten team links in huidige beurt
+    ts.rightTeamRun = 0;  // ✅ NIEUW: Totaal punten team rechts in huidige beurt
 
     // Update UI
     window.updateFriendlyUI();
