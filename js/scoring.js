@@ -2429,15 +2429,52 @@ window.friendlyChangeScore = function(delta) {
         console.log("🟡 RECHTS gescoord:", delta, "| Huidige reeks:", ts.currentRun, "| TEAM RUN:", ts.rightTeamRun);
     }
 
-    // Check of het maximum is bereikt (bij dubbeltje - voor later)
-    const limit = fm.limits[ts.phase];
-    if (ts.currentRun >= limit) {
-        window.friendlySwitchToPartner();
-        return;
+    // ✅ CHECK 1: Heeft het actieve team zijn fase-drempel bereikt? (EERST checken!)
+    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+    if (isPhaseGame) {
+        const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
+        const currentPhaseScore = ts.activeSide === 'left' ? ts.leftPhaseScore : ts.rightPhaseScore;
+        const threshold = fm.thresholds[activePhase];
+
+        if (currentPhaseScore >= threshold) {
+            // ✅ Update UI eerst, zodat gebruiker de eindstand even ziet
+            window.updateFriendlyUI();
+            
+            if (activePhase === 'driebanden') {
+                // ✅ MATCH IS VOORBIJ! Sla de laatste TEAM-reeks op
+                if (ts.activeSide === 'left') {
+                    const finalScore = ts.leftTeamRun || ts.currentRun;
+                    ts.leftTurns.push(finalScore);
+                    if (finalScore > ts.leftHighestSeries) ts.leftHighestSeries = finalScore;
+                } else {
+                    const finalScore = ts.rightTeamRun || ts.currentRun;
+                    ts.rightTurns.push(finalScore);
+                    if (finalScore > ts.rightHighestSeries) ts.rightHighestSeries = finalScore;
+                }
+
+                window.updateFriendlyUI();
+                window.endFriendlyMatch();
+                return;
+            } else {
+                // Nog een volgende fase, dus wissel van fase
+                window.friendlyAdvancePhase();
+                return;
+            }
+        }
     }
 
-    // ✅ CHECK: Heeft het actieve team zijn fase-drempel bereikt? (Alleen bij Triatlon/Dubbeltje)
-    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+    // ✅ CHECK 2: Check of het maximum is bereikt (bij dubbeltje)
+    // Dit komt NU PAS, zodat de threshold check eerst kan zien of de match moet eindigen
+    if (fm.gameType === 'dubbeltje') {
+        const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
+        const limit = fm.limits[activePhase];
+        
+        if (ts.currentRun >= limit) {
+            // Max reeks bereikt! Beurt is direct over, wissel naar partner.
+            window.friendlySwitchToPartner();
+            return;
+        }
+    }
     if (isPhaseGame) {
         const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
         const currentPhaseScore = ts.activeSide === 'left' ? ts.leftPhaseScore : ts.rightPhaseScore;
