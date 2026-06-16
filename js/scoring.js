@@ -2408,9 +2408,11 @@ window.friendlyChangeScore = function(delta) {
     if (ts.activeSide === 'left') {
         ts.leftTotalScore += delta;
         ts.leftPhaseScore += delta;
+        ts.leftTeamRun = (ts.leftTeamRun || 0) + delta; // ✅ Verzamel voor teambeurt
     } else {
         ts.rightTotalScore += delta;
         ts.rightPhaseScore += delta;
+        ts.rightTeamRun = (ts.rightTeamRun || 0) + delta; // ✅ Verzamel voor teambeurt
     }
 
     // Check of het maximum is bereikt (bij dubbeltje - voor later)
