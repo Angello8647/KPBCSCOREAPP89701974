@@ -245,7 +245,8 @@ window.loadCrossTableCategory = function(category) {
 };
 
 /**
- * Genereert en toont de kruistabel op Pagina 21
+ * Genereert en toont de gedetailleerde kruistabel op Pagina 21
+ * Met 2x2 blokken per match (Punten/Deling/Beurten/Competitiepunten)
  */
 window.renderCrossTable = function() {
     if (!currentCrossDiscipline || !currentCrossCategory) return;
@@ -265,23 +266,23 @@ window.renderCrossTable = function() {
 
     // 2. Bouw de kruistabel
     let html = `<div class="matches-list-title"> Kruistabel: ${currentCrossDiscipline} - Categorie ${currentCrossCategory}</div>`;
-    html += `<table class="cross-table"><thead><tr><th>Speler</th>`;
+    html += `<div style="overflow-x: auto;"><table class="cross-table"><thead><tr><th>Speler</th>`;
     
-    // Header rij met alle spelers
+    // Header rij met alle spelers (alleen achternaam voor ruimte)
     players.forEach(p => {
-        html += `<th>${p.name.split(' ').pop()}</th>`; // Alleen achternaam voor ruimte
+        html += `<th colspan="2">${p.name.split(' ').pop()}</th>`;
     });
     html += `</tr></thead><tbody>`;
 
-    // 3. Voor elke speler een rij
+    // 3. Voor elke speler een rij (2 rijen per speler voor 2x2 blok)
     players.forEach((player1, rowIndex) => {
-        html += `<tr><td><strong>${player1.name}</strong></td>`;
+        // Eerste rij: Punten en Deling
+        html += `<tr><td rowspan="2"><strong>${player1.name}</strong></td>`;
         
-        // Voor elke tegenstander een cel
         players.forEach((player2, colIndex) => {
             if (rowIndex === colIndex) {
-                // Eigen cel (diagonaal)
-                html += `<td class="self-cell">-</td>`;
+                // Eigen cel (diagonaal) - 2x2 grijs blok
+                html += `<td class="self-cell" rowspan="2" colspan="2">-</td>`;
             } else {
                 // Zoek match tussen deze twee spelers
                 const match = state.matches.find(m => 
@@ -296,10 +297,18 @@ window.renderCrossTable = function() {
                     // Bepaal of player1 p1 of p2 was
                     const isP1 = match.p1_club_id === player1.id;
                     const pointsForPlayer1 = isP1 ? match.p1Score : match.p2Score;
-                    const pointsForPlayer2 = isP1 ? match.p2Score : match.p1Score;
+                    const turnsForPlayer1 = isP1 ? match.p1Turns.length : match.p2Turns.length;
                     const winner = match.winner;
                     
-                    // Bepaal cel-klasse
+                    // Bereken deling (gemiddelde)
+                    const average = turnsForPlayer1 > 0 ? (pointsForPlayer1 / turnsForPlayer1).toFixed(2) : '0.00';
+                    
+                    // Bereken competitiepunten
+                    const compPoints = calculateCompetitionPoints(pointsForPlayer1, turnsForPlayer1, currentCrossDiscipline);
+                    let compPointsClass = compPoints > 0 ? 'comp-pts-positive' : compPoints < 0 ? 'comp-pts-negative' : '';
+                    let compPointsText = compPoints > 0 ? `+${compPoints}` : compPoints;
+                    
+                    // Bepaal cel-kleur op basis van winst/verlies
                     let cellClass = '';
                     if (winner === player1.name) {
                         cellClass = 'win-cell';
@@ -307,10 +316,56 @@ window.renderCrossTable = function() {
                         cellClass = 'loss-cell';
                     }
                     
-                    html += `<td class="${cellClass}">${pointsForPlayer1}-${pointsForPlayer2}</td>`;
+                    // Eerste rij: Punten en Deling
+                    html += `<td class="${cellClass}">${pointsForPlayer1}</td>`;
+                    html += `<td class="${cellClass}">${average.replace('.', ',')}</td>`;
                 } else {
                     // Nog niet gespeeld
-                    html += `<td class="not-played">-</td>`;
+                    html += `<td class="not-played" colspan="2">-</td>`;
+                }
+            }
+        });
+        
+        html += `</tr>`;
+        
+        // Tweede rij: Beurten en Competitiepunten
+        html += `<tr>`;
+        
+        players.forEach((player2, colIndex) => {
+            if (rowIndex === colIndex) {
+                // Eigen cel - al gedaan in eerste rij met rowspan
+                // Geen extra cel nodig
+            } else {
+                const match = state.matches.find(m => 
+                    m.completed && 
+                    m.discipline === currentCrossDiscipline && 
+                    m.cat === currentCrossCategory &&
+                    ((m.p1_club_id === player1.id && m.p2_club_id === player2.id) ||
+                     (m.p1_club_id === player2.id && m.p2_club_id === player1.id))
+                );
+
+                if (match) {
+                    const isP1 = match.p1_club_id === player1.id;
+                    const pointsForPlayer1 = isP1 ? match.p1Score : match.p2Score;
+                    const turnsForPlayer1 = isP1 ? match.p1Turns.length : match.p2Turns.length;
+                    const winner = match.winner;
+                    
+                    const compPoints = calculateCompetitionPoints(pointsForPlayer1, turnsForPlayer1, currentCrossDiscipline);
+                    let compPointsClass = compPoints > 0 ? 'comp-pts-positive' : compPoints < 0 ? 'comp-pts-negative' : '';
+                    let compPointsText = compPoints > 0 ? `+${compPoints}` : compPoints;
+                    
+                    let cellClass = '';
+                    if (winner === player1.name) {
+                        cellClass = 'win-cell';
+                    } else if (winner === player2.name) {
+                        cellClass = 'loss-cell';
+                    }
+                    
+                    // Tweede rij: Beurten en Competitiepunten
+                    html += `<td class="${cellClass}">${turnsForPlayer1}</td>`;
+                    html += `<td class="${compPointsClass} ${cellClass}">${compPointsText}</td>`;
+                } else {
+                    // Nog niet gespeeld - al gedaan in eerste rij met colspan
                 }
             }
         });
@@ -318,6 +373,6 @@ window.renderCrossTable = function() {
         html += `</tr>`;
     });
 
-    html += `</tbody></table>`;
+    html += `</tbody></table></div>`;
     container.innerHTML = html;
 };
