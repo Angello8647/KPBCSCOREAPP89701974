@@ -388,7 +388,12 @@ window.renderCrossTable = function() {
         
         // TOT kolommen voor Rij 2 (Bt, MP, HR)
         html += `<td class="tot-turns">${stats.totalTurnsPlayed}</td>`;
-        html += `<td class="tot-mp">${stats.totalCompPoints > 0 ? '+' + stats.totalCompPoints : stats.totalCompPoints}</td>`;
+        // ✅ Bepaal de kleurklasse voor de totaalscore
+        let mpClass = 'tot-mp';
+        if (stats.totalCompPoints > 0) mpClass += ' comp-pts-positive'; // Groen
+        else if (stats.totalCompPoints < 0) mpClass += ' comp-pts-negative'; // Rood
+        
+        html += `<td class="${mpClass}">${stats.totalCompPoints > 0 ? '+' + stats.totalCompPoints : stats.totalCompPoints}</td>`;
         html += `<td class="tot-hr">${stats.highestSeries}</td>`;
         html += `<td colspan="2"></td>`;
         html += `</tr>`;
