@@ -2448,14 +2448,15 @@ window.friendlyChangeScore = function(delta) {
             window.updateFriendlyUI();
             
             if (activePhase === 'driebanden') {
-                // ✅ CRUCIAAL: Sla de laatste, winnende reeks op voordat de match eindigt!
-                // (Normaal gebeurt dit in friendlyMiss, maar die wordt hier overgeslagen)
+                // ✅ CRUCIAAL: Sla de laatste, winnende TEAM-reeks op!
                 if (ts.activeSide === 'left') {
-                    ts.leftTurns.push(ts.currentRun);
-                    if (ts.currentRun > ts.leftHighestSeries) ts.leftHighestSeries = ts.currentRun;
+                    const finalScore = ts.leftTeamRun || ts.currentRun;
+                    ts.leftTurns.push(finalScore);
+                    if (finalScore > ts.leftHighestSeries) ts.leftHighestSeries = finalScore;
                 } else {
-                    ts.rightTurns.push(ts.currentRun);
-                    if (ts.currentRun > ts.rightHighestSeries) ts.rightHighestSeries = ts.currentRun;
+                    const finalScore = ts.rightTeamRun || ts.currentRun;
+                    ts.rightTurns.push(finalScore);
+                    if (finalScore > ts.rightHighestSeries) ts.rightHighestSeries = finalScore;
                 }
 
                 // Update UI één laatste keer zodat de laatste beurt zichtbaar is in de kaart
