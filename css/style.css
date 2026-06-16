@@ -4245,41 +4245,41 @@
 }
 
 /* =========================================================================
-   ULTIEME NODIG CEL ROOD WAARSCHUWING + PULSE (100% waterdicht)
+   ULTIEME NODIG CEL ROOD WAARSCHUWING + PULSE (Nucleaire optie)
    ========================================================================= */
 #friendlyP1NeededCell.danger,
 #friendlyP2NeededCell.danger {
     border-color: #e74c3c !important;
-    background: rgba(231, 76, 60, 0.15) !important;
-    animation: friendly-danger-pulse 1.5s infinite !important;
-    -webkit-animation: friendly-danger-pulse 1.5s infinite !important; /* Safari support */
+    background-color: rgba(231, 76, 60, 0.2) !important;
+    animation: friendly-danger-pulse-hard 1s infinite !important;
+    -webkit-animation: friendly-danger-pulse-hard 1s infinite !important;
 }
 
 #friendlyP1NeededCell.danger .cell-value,
 #friendlyP2NeededCell.danger .cell-value {
-    color: #e74c3c !important;
+    color: #ffffff !important; /* Witte tekst op rode achtergrond voor maximaal contrast */
     font-weight: 900 !important;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
 
-/* ✅ Unieke naam om conflicten met andere @keyframes te vermijden */
-@keyframes friendly-danger-pulse {
+@keyframes friendly-danger-pulse-hard {
     0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(231,76,60,0.4);
+        background-color: rgba(231, 76, 60, 0.2) !important;
         transform: scale(1);
     }
     50% { 
-        box-shadow: 0 0 25px 6px rgba(231,76,60,0.25);
-        transform: scale(1.02);
+        background-color: rgba(231, 76, 60, 0.6) !important; /* Wordt echt rood */
+        transform: scale(1.08); /* Wordt duidelijk groter */
     }
 }
 
-@-webkit-keyframes friendly-danger-pulse {
+@-webkit-keyframes friendly-danger-pulse-hard {
     0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(231,76,60,0.4);
+        background-color: rgba(231, 76, 60, 0.2) !important;
         transform: scale(1);
     }
     50% { 
-        box-shadow: 0 0 25px 6px rgba(231,76,60,0.25);
-        transform: scale(1.02);
+        background-color: rgba(231, 76, 60, 0.6) !important;
+        transform: scale(1.08);
     }
 }
