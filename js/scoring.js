@@ -2098,20 +2098,10 @@ window.updateFriendlyUI = function() {
 
     // --- C. Update de Score Cellen ---
     
-    // ✅ NIEUW: Bij phase games toont HUIDIG alleen de punten van de huidige fase
-    const isPhaseGameCheck = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
-    
-    let leftCurrentDisplay, rightCurrentDisplay;
-    
-    if (isPhaseGameCheck) {
-        // Bij Triatlon/Dubbeltje: toon alleen de fase-score
-        leftCurrentDisplay = ts.leftPhaseScore;
-        rightCurrentDisplay = ts.rightPhaseScore;
-    } else {
-        // Bij normale matches: toon de huidige reeks (zoals vroeger)
-        leftCurrentDisplay = ts.activeSide === 'left' ? ts.currentRun : 0;
-        rightCurrentDisplay = ts.activeSide === 'right' ? ts.currentRun : 0;
-    }
+    // ✅ HUIDIG: Toont altijd de punten van de huidige beurt (currentRun)
+    // Dit geldt voor ALLE speltypes (normaal, Triatlon, Dubbeltje)
+    const leftCurrentDisplay = ts.activeSide === 'left' ? ts.currentRun : 0;
+    const rightCurrentDisplay = ts.activeSide === 'right' ? ts.currentRun : 0;
     
     // ✅ NODIG: Bij phase games toont het het resterende fasedoel
     let leftNeeded, rightNeeded;
