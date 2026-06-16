@@ -353,7 +353,8 @@ window.renderCrossTable = function() {
         // --- RIJ 2: Coëfficiënt + Beurten/Comp.Punten + TOT (Bt, MP, HR) ---
         html += `<tr>`;
         // Nr heeft al rowspan=2, dus die slaan we over
-        html += `<td class="player-coef">${coef.toFixed(4).replace('.', ',')}</td>`;
+        // ✅ FIX: Gebruik de berekende coëfficiënt uit de stats (Gespeeld Gem / TSG)
+        html += `<td class="player-coef">${stats.coefficient.toFixed(4).replace('.', ',')}</td>`;
         
         players.forEach((player2, colIndex) => {
             if (rowIndex === colIndex) {
