@@ -4343,7 +4343,7 @@
 
 
 /* =========================================================================
-   KRUISTABEL STIJL (Pagina 21)
+   KRUISTABEL STIJL (Pagina 21) - MET ZEBRA VOOR ALLE CELLEN
    ========================================================================= */
 .cross-table {
     border-collapse: collapse;
@@ -4357,6 +4357,7 @@
     text-align: center;
     border: 1px dashed #666;
     vertical-align: middle;
+    min-height: 20px; /* ✅ Zorg dat lege cellen ook hoogte hebben */
 }
 
 .cross-table th {
@@ -4400,13 +4401,19 @@
     font-size: 0.85em;
 }
 
-/* 3. ZEBRA KLEUREN (Direct op TD, zonder !important zodat speciale cellen kunnen winnen) */
-.cross-table tbody tr.row-even td { background-color: rgba(255, 255, 255, 0.04); }
-.cross-table tbody tr.row-odd td  { background-color: rgba(0, 0, 0, 0.15); }
+/* 3. ZEBRA KLEUREN - ALGEMENE REGEL VOOR ALLE TD CELLEN */
+.cross-table tbody tr.row-even td { 
+    background-color: rgba(255, 255, 255, 0.04); 
+}
+.cross-table tbody tr.row-odd td { 
+    background-color: rgba(0, 0, 0, 0.15); 
+}
 
-/* 4. SPECIALE CELLEN (Overschrijven de zebra omdat ze later staan en specifieker zijn) */
+/* 4. SPECIALE CELLEN (overschrijven de zebra) */
 .cross-table .player-nr,
-.cross-table .player-coef { background-color: #2c3e50 !important; }
+.cross-table .player-coef { 
+    background-color: #2c3e50 !important; 
+}
 
 .cross-table .tot-pts,
 .cross-table .tot-avg,
@@ -4426,11 +4433,27 @@
 .cross-table .tot-turns { background-color: rgba(149, 165, 166, 0.25) !important; }
 .cross-table .tot-mp { font-size: 1.1em !important; }
 
-.cross-table .self-cell { background-color: #7f8c8d !important; border: 1px solid #555 !important; }
-.cross-table .not-played { background-color: rgba(0,0,0,0.2) !important; color: #7f8c8d; }
+.cross-table .self-cell { 
+    background-color: #7f8c8d !important; 
+    border: 1px solid #555 !important; 
+}
 
-.cross-table .win-cell { background-color: rgba(46, 204, 113, 0.15) !important; color: #2ecc71; font-weight: bold; }
-.cross-table .loss-cell { background-color: rgba(231, 76, 60, 0.15) !important; color: #e74c3c; font-weight: bold; }
+.cross-table .not-played { 
+    background-color: rgba(0,0,0,0.2) !important; 
+    color: #7f8c8d; 
+}
+
+.cross-table .win-cell { 
+    background-color: rgba(46, 204, 113, 0.15) !important; 
+    color: #2ecc71; 
+    font-weight: bold; 
+}
+
+.cross-table .loss-cell { 
+    background-color: rgba(231, 76, 60, 0.15) !important; 
+    color: #e74c3c; 
+    font-weight: bold; 
+}
 
 .cross-table .comp-pts-positive { color: #2ecc71 !important; font-weight: bold; }
 .cross-table .comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
