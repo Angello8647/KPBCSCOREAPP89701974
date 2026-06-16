@@ -4427,6 +4427,7 @@
 }
 
 /* De daadwerkelijke TOT cellen in de body */
+/* De daadwerkelijke TOT cellen in de body */
 .cross-table .tot-pts,
 .cross-table .tot-avg,
 .cross-table .tot-turns,
@@ -4438,8 +4439,16 @@
     border: 2px solid #555 !important; /* Duidelijke rand */
     text-align: center !important;
     padding: 6px 4px !important;
-    min-width: 60px;
-	max-width: 60px;
+    min-width: 40px;
+}
+
+/* ✅ SUBTIELE KLEURVERSCHILLEN VOOR PT EN BT */
+.cross-table .tot-pts {
+    background-color: rgba(52, 152, 219, 0.25) !important; /* Subtiel blauw voor Punten */
+}
+
+.cross-table .tot-turns {
+    background-color: rgba(149, 165, 166, 0.25) !important; /* Subtiel grijs voor Beurten */
 }
 
 /* Competitiepunten in TOT extra opvallend */
