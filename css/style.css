@@ -4350,14 +4350,15 @@
 /* =========================================================================
    KRUISTABEL STIJL (2x2 BLOKKEN + TOT)
    ========================================================================= */
+/* =========================================================================
+   KRUISTABEL STIJL (VEILIGE VERSIE)
+   ========================================================================= */
 .cross-table {
     border-collapse: collapse;
-    font-size: 0.85em;
+    font-size: 0.9em; /* Iets kleiner dan standaard, maar leesbaar */
     font-family: Verdana, sans-serif;
     margin-top: 10px;
-    /* ✅ Forceer vaste kolombreedtes */
-    table-layout: fixed; 
-    width: 100%;
+    /* table-layout: fixed verwijderen om de TOT-colspan niet te breken */
 }
 
 .cross-table th, .cross-table td {
@@ -4375,51 +4376,48 @@
     border: 1px solid #444;
 }
 
-/* ✅ VASTE BREEDTE VOOR MATCH KOLOMMEN (1.2cm ≈ 45px) */
-.cross-table th[colspan="2"]:not(.tot-header),
+/* ✅ MINIMALE BREEDTE VOOR MATCH KOLOMMEN (ongeveer 1,2cm) */
+/* We gebruiken min-width in plaats van fixed width, dat is veiliger voor colspans */
 .cross-table td.match-pts,
 .cross-table td.match-avg,
 .cross-table td.match-turns,
 .cross-table td.self-cell,
 .cross-table td.not-played {
-    width: 100px !important;
-    min-width: 100px !important;
-    max-width: 100px !important;
-    font-size: 0.85em !important;
-    padding: 2px !important;
+    min-width: 45px; 
+    font-size: 0.9em;
 }
 
-/* ✅ NAMEN IETS KLEINER */
+/* ✅ NAMEN: NORMAAL FORMAAT (niet meer te klein) */
 .cross-table .player-name {
-    font-size: 0.9em !important;
-    white-space: nowrap; /* Voorkomt dat namen afbreken */
+    font-size: 1em !important; /* Terug naar normaal */
+    font-weight: bold;
+    white-space: nowrap;
     text-align: left !important;
     padding-left: 8px !important;
 }
 
 .cross-table .player-nr {
-    width: 30px !important;
-    min-width: 30px !important;
+    width: 30px;
     font-weight: bold;
     background-color: #2c3e50;
 }
 
 .cross-table .player-coef {
-    font-size: 0.75em !important;
+    font-size: 0.8em;
     color: #bdc3c7;
     background-color: #2c3e50;
 }
 
-/* ✅ TOT KOLOMMEN OPMAAK */
+/* ✅ TOT KOLOMMEN: HERSTELD NAAR WERKENDE OPMAAK */
 .cross-table .tot-header {
     background-color: #2c3e50 !important;
-    font-size: 1.1em !important;
+    font-size: 1.1em;
     border: 2px solid #ecf0f1 !important;
 }
 
 .cross-table .tot-sub {
     background-color: #34495e;
-    font-size: 0.8em !important;
+    font-size: 0.85em;
 }
 
 /* De daadwerkelijke TOT cellen in de body */
@@ -4428,13 +4426,13 @@
 .cross-table .tot-turns,
 .cross-table .tot-mp,
 .cross-table .tot-hr {
-    background-color: rgba(255, 255, 255, 0.08) !important; /* Iets lichter dan de rest */
+    background-color: #2c3e50 !important; /* Donkere achtergrond zoals header */
+    color: #ecf0f1;
     font-weight: bold !important;
-    /* ✅ Dubbele lijn links zoals in Excel */
-    border-left: 3px double #ecf0f1 !important; 
-    border-right: 2px solid #444 !important;
+    border: 2px solid #555 !important; /* Duidelijke rand */
     text-align: center !important;
     padding: 6px 4px !important;
+    min-width: 40px;
 }
 
 /* Competitiepunten in TOT extra opvallend */
