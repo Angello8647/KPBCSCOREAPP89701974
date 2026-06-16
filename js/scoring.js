@@ -2622,50 +2622,34 @@ window.friendlySwitchToPartner = function() {
 window.friendlyAdvancePhase = function() {
     const fm = state.friendlyMatch;
     const ts = fm.turnState;
-    
-    // ✅ Eerst de voltooide teambeurt opslaan voordat we van fase wisselen
-    const isPhase = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
-    if (isPhase) {
-        if (ts.activeSide === 'left') {
-            const scoreToRecord = ts.leftTeamRun || ts.currentRun;
-            ts.leftTurns.push(scoreToRecord);
-            if (scoreToRecord > ts.leftHighestSeries) ts.leftHighestSeries = scoreToRecord;
-            ts.leftTeamRun = 0;
-        } else {
-            const scoreToRecord = ts.rightTeamRun || ts.currentRun;
-            ts.rightTurns.push(scoreToRecord);
-            if (scoreToRecord > ts.rightHighestSeries) ts.rightHighestSeries = scoreToRecord;
-            ts.rightTeamRun = 0;
-        }
-    }
 
     // Wissel alleen de fase van het team dat aan de beurt is
     if (ts.activeSide === 'left') {
         if (ts.leftPhase === 'vrijspel') {
             ts.leftPhase = 'bandstoten';
-            ts.phase = 'bandstoten'; // Voor de header
+            ts.phase = 'bandstoten';
         } else if (ts.leftPhase === 'bandstoten') {
             ts.leftPhase = 'driebanden';
-            ts.phase = 'driebanden'; // Voor de header
+            ts.phase = 'driebanden';
         }
-        ts.leftPhaseScore = 0; // Reset fasescore voor de nieuwe discipline
+        ts.leftPhaseScore = 0; // Reset fasescore
     } else {
         if (ts.rightPhase === 'vrijspel') {
             ts.rightPhase = 'bandstoten';
-            ts.phase = 'bandstoten'; // Voor de header
+            ts.phase = 'bandstoten';
         } else if (ts.rightPhase === 'bandstoten') {
             ts.rightPhase = 'driebanden';
-            ts.phase = 'driebanden'; // Voor de header
+            ts.phase = 'driebanden';
         }
-        ts.rightPhaseScore = 0; // Reset fasescore voor de nieuwe discipline
+        ts.rightPhaseScore = 0; // Reset fasescore
     }
 
-    // Alleen wisselen van partner bij Dubbeltje (bij Triatlon mag de speler doorspelen)
+    // Alleen wisselen van partner bij Dubbeltje
     if (fm.gameType === 'dubbeltje') {
         window.friendlySwitchToPartner();
     }
 
-    // ✅ NIEUW: Update de UI NA de fase-overgang, zodat de header en blokjes direct veranderen!
+    // Update UI
     window.updateFriendlyUI();
 };
 // 7. UNDO
