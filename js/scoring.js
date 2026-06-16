@@ -2105,7 +2105,7 @@ window.updateFriendlyUI = function() {
 
     const disciplineEl = document.getElementById('friendlyHeaderDiscipline');
     disciplineEl.textContent = phaseText;
-    disciplineEl.style.color = phaseColor; // ✅ Directe kleur toepassing
+    disciplineEl.style.setProperty('color', phaseColor, 'important'); // ✅ Forceer met !important
 
     // --- C. Update de Score Cellen ---
     // ✅ Bepaal of het een fase-spel is (eenmalige declaratie voor heel sectie C)
