@@ -4286,7 +4286,7 @@
 
 
 /* =========================================================================
-   KRUISTABEL STIJL (OPGESCHOOND + CORRECT)
+   KRUISTABEL STIJL (VOLLEDIG OPNIEUW + CORRECTE ZEBRA)
    ========================================================================= */
 .cross-table {
     border-collapse: collapse;
@@ -4311,7 +4311,7 @@
     border: 1px solid #000 !important;
 }
 
-/* ✅ VASTE BREEDTE VOOR MATCH KOLOMMEN (60px per cel) */
+/* ✅ 1. VASTE BREEDTES */
 .cross-table td.match-pts,
 .cross-table td.match-avg,
 .cross-table td.match-turns,
@@ -4322,7 +4322,6 @@
     font-size: 0.9em;
 }
 
-/* ✅ VASTE BREEDTE EN UITLIJNING VOOR NAAM-KOLOM (200px) */
 .cross-table .player-name,
 .cross-table .player-coef {
     width: 200px !important;
@@ -4335,16 +4334,14 @@
 .cross-table .player-nr {
     width: 30px;
     font-weight: bold;
-    background-color: #2c3e50;
 }
 
 .cross-table .player-coef {
     font-size: 0.8em;
     color: #bdc3c7;
-    background-color: #2c3e50;
 }
 
-/* ✅ TOT KOLOMMEN OPMAAK */
+/* ✅ 2. TOT KOLOM HEADER */
 .cross-table .tot-header {
     background-color: #2c3e50 !important;
     font-size: 1.1em;
@@ -4356,7 +4353,24 @@
     font-size: 0.85em;
 }
 
-/* De daadwerkelijke TOT cellen in de body */
+/* ✅ 3. ZEBRA KLEUREN - DIRECT OP TD (niet op tr!) */
+.cross-table tbody tr.row-even td {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.cross-table tbody tr.row-odd td {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ✅ 4. SPECIALE CELLEN (overschrijven zebra dankzij volgorde) */
+
+/* Naam en coëfficiënt kolommen */
+.cross-table .player-nr,
+.cross-table .player-coef {
+    background-color: #2c3e50 !important;
+}
+
+/* TOT cellen */
 .cross-table .tot-pts,
 .cross-table .tot-avg,
 .cross-table .tot-turns,
@@ -4384,18 +4398,32 @@
     font-size: 1.1em !important;
 }
 
-/* Kleuren voor winst/verlies */
+/* Diagonaal (eigen cel) */
+.cross-table .self-cell {
+    background-color: #7f8c8d !important;
+    border: 1px solid #555 !important;
+}
+
+/* Niet gespeeld */
+.cross-table .not-played {
+    background-color: rgba(0,0,0,0.2) !important;
+    color: #7f8c8d;
+}
+
+/* Winst/Verlies */
 .cross-table .win-cell {
-    background-color: rgba(46, 204, 113, 0.15);
+    background-color: rgba(46, 204, 113, 0.15) !important;
     color: #2ecc71;
     font-weight: bold;
 }
 
 .cross-table .loss-cell {
-    background-color: rgba(231, 76, 60, 0.15);
+    background-color: rgba(231, 76, 60, 0.15) !important;
     color: #e74c3c;
+    font-weight: bold;
 }
 
+/* Tekstkleuren voor competitiepunten */
 .cross-table .comp-pts-positive {
     color: #2ecc71 !important;
     font-weight: bold;
@@ -4404,66 +4432,4 @@
 .cross-table .comp-pts-negative {
     color: #e74c3c !important;
     font-weight: bold;
-}
-
-.cross-table .self-cell {
-    background-color: #7f8c8d !important;
-    border: 1px solid #555 !important;
-}
-
-.cross-table .not-played {
-    background-color: rgba(0,0,0,0.2);
-    color: #7f8c8d;
-}
-
-/* ✅ ALTERNERENDE RIJKLEUREN (ZEBRA) */
-.cross-table tbody tr.row-even {
-    background-color: rgba(255, 255, 255, 0.04);
-}
-
-.cross-table tbody tr.row-odd {
-    background-color: rgba(0, 0, 0, 0.15);
-}
-
-/* ✅ FIX: Maak ALLE gewone cellen transparant zodat zebra-kleur zichtbaar is */
-.cross-table tbody td {
-    background-color: transparent !important;
-}
-
-/* ✅ HERSTEL de achtergronden voor de speciale cellen (NA de transparant regel) */
-.cross-table .self-cell { 
-    background-color: #7f8c8d !important; 
-}
-
-.cross-table .not-played { 
-    background-color: rgba(0,0,0,0.2) !important; 
-}
-
-.cross-table .win-cell { 
-    background-color: rgba(46, 204, 113, 0.15) !important; 
-}
-
-.cross-table .loss-cell { 
-    background-color: rgba(231, 76, 60, 0.15) !important; 
-}
-
-.cross-table .tot-pts,
-.cross-table .tot-avg,
-.cross-table .tot-turns,
-.cross-table .tot-mp,
-.cross-table .tot-hr {
-    background-color: #2c3e50 !important; 
-}
-
-.cross-table .tot-pts { 
-    background-color: rgba(52, 152, 219, 0.25) !important; 
-}
-
-.cross-table .tot-turns { 
-    background-color: rgba(149, 165, 166, 0.25) !important; 
-}
-
-.cross-table .player-nr,
-.cross-table .player-coef {
-    background-color: #2c3e50 !important;
 }
