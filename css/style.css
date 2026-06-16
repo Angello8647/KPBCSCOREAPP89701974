@@ -4388,12 +4388,14 @@
 }
 
 /* ✅ NAMEN: NORMAAL FORMAAT (niet meer te klein) */
-.cross-table .player-name {
-    font-size: 1em !important; /* Terug naar normaal */
-    font-weight: bold;
-    white-space: nowrap;
-    text-align: left !important;
-    padding-left: 8px !important;
+/* ✅ VASTE BREEDTE EN UITLIJNING VOOR NAAM-KOLOM (200px) */
+.cross-table .player-name,
+.cross-table .player-coef {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    text-align: left !important; /* Forceer links uitlijnen */
+    padding-left: 10px !important;
 }
 
 .cross-table .player-nr {
@@ -4432,7 +4434,8 @@
     border: 2px solid #555 !important; /* Duidelijke rand */
     text-align: center !important;
     padding: 6px 4px !important;
-    min-width: 40px;
+    min-width: 60px;
+	max-width: 60px;
 }
 
 /* Competitiepunten in TOT extra opvallend */
