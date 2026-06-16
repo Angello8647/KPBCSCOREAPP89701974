@@ -4296,3 +4296,52 @@
     transition: color 0.3s ease !important;
     margin-top: 10px !important;
 }
+
+
+/* =========================================================================
+   COMPETITIE TABEL STIJL
+   ========================================================================= */
+.competition-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9em;
+    font-family: Verdana, sans-serif;
+}
+
+.competition-table th, .competition-table td {
+    padding: 8px 5px;
+    text-align: center;
+    border: 1px solid #444;
+}
+
+.competition-table th {
+    background-color: #34495e;
+    color: #ecf0f1;
+    font-weight: bold;
+}
+
+.competition-table td {
+    color: #ecf0f1;
+}
+
+/* Alternerende rijen */
+.competition-table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Naam kolom links uitlijnen */
+.competition-table td:nth-child(2), .competition-table th:nth-child(2) {
+    text-align: left;
+    padding-left: 10px;
+}
+
+/* Competitiepunten kolom (MPTN) vet en gekleurd */
+.comp-pts-positive { color: #2ecc71 !important; font-weight: bold; }
+.comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
+.comp-pts-zero { color: #bdc3c7 !important; font-weight: bold; }
+
+/* Rang 1, 2, 3 highlight */
+.rank-1 { background-color: rgba(241, 196, 15, 0.2) !important; font-weight: bold; }
+.rank-2 { background-color: rgba(189, 195, 199, 0.2) !important; }
+.rank-3 { background-color: rgba(211, 84, 0, 0.2) !important; }
