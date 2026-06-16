@@ -277,24 +277,24 @@ window.renderCrossTable = function() {
     });
     html += `<th colspan="5" class="tot-header">TOT</th></tr>`;
     
-    // Rij 2: Target punten + TOT labels
+    // Rij 2: Target punten + TOT labels (Pt, Gem over 2 kolommen)
     const config = COMPETITION_CONFIG[currentCrossDiscipline];
     html += `<tr>`;
     players.forEach(p => {
         html += `<th colspan="2">${config.targetPoints}</th>`;
     });
-    html += `<th class="tot-sub">Pt</th><th class="tot-sub">Gem</th><th class="tot-sub">Bt</th><th class="tot-sub">MP</th><th class="tot-sub">HR</th></tr>`;
-    
-    // Rij 3: Coëfficiënt
+    html += `<th class="tot-sub">Pt</th><th class="tot-sub" colspan="2">Gem</th><th colspan="2"></th></tr>`;
+
+    // Rij 3: Coëfficiënt + TOT labels (Bt, MP, HR)
     html += `<tr>`;
     players.forEach(p => {
         const playerData = state.players.find(sp => sp.id === p.id);
         const coef = playerData && playerData.tsg ? parseFloat(playerData.tsg.replace(',', '.')) : 0;
         html += `<th colspan="2">${coef.toFixed(4).replace('.', ',')}</th>`;
     });
-    html += `<th colspan="5"></th></tr>`;
+    html += `<th class="tot-sub">Bt</th><th class="tot-sub">MP</th><th class="tot-sub">HR</th><th colspan="2"></th></tr>`;
     
-    html += `</thead><tbody>`;
+
 
     // 4. Voor elke speler 2 rijen
     players.forEach((player1, rowIndex) => {
@@ -333,12 +333,13 @@ window.renderCrossTable = function() {
             }
         });
         
-        // TOT kolommen: Pt en Gem (eerste rij)
+        // TOT kolommen: Pt en Gem (eerste rij, Gem over 2 kolommen)
         html += `<td class="tot-pts">${stats.totalPointsScored}</td>`;
-        html += `<td class="tot-avg">${stats.average.toFixed(3).replace('.', ',')}</td>`;
+        html += `<td class="tot-avg" colspan="2">${stats.average.toFixed(3).replace('.', ',')}</td>`;
         html += `<td class="tot-turns" rowspan="2">${stats.totalTurnsPlayed}</td>`;
         html += `<td class="tot-mp" rowspan="2">${stats.totalCompPoints > 0 ? '+' + stats.totalCompPoints : stats.totalCompPoints}</td>`;
         html += `<td class="tot-hr" rowspan="2">${stats.highestSeries}</td>`;
+        html += `<td colspan="2" rowspan="2"></td>`;
         html += `</tr>`;
         
         // Tweede rij: Coëfficiënt + Beurten/Competitiepunten per tegenstander
