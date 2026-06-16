@@ -2565,6 +2565,22 @@ window.friendlySwitchToPartner = function() {
 window.friendlyAdvancePhase = function() {
     const fm = state.friendlyMatch;
     const ts = fm.turnState;
+    
+    // ✅ Eerst de voltooide teambeurt opslaan voordat we van fase wisselen
+    const isPhase = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+    if (isPhase) {
+        if (ts.activeSide === 'left') {
+            const scoreToRecord = ts.leftTeamRun || ts.currentRun;
+            ts.leftTurns.push(scoreToRecord);
+            if (scoreToRecord > ts.leftHighestSeries) ts.leftHighestSeries = scoreToRecord;
+            ts.leftTeamRun = 0;
+        } else {
+            const scoreToRecord = ts.rightTeamRun || ts.currentRun;
+            ts.rightTurns.push(scoreToRecord);
+            if (scoreToRecord > ts.rightHighestSeries) ts.rightHighestSeries = scoreToRecord;
+            ts.rightTeamRun = 0;
+        }
+    }
 
     // Wissel alleen de fase van het team dat aan de beurt is
     if (ts.activeSide === 'left') {
