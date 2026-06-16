@@ -2736,11 +2736,34 @@ window.endFriendlyMatch = function() {
     }
 
     // 3. Bereid de data voor zodat we Pagina 6 (Competitie Samenvatting) kunnen hergebruiken
-    // We mappen de friendly data tijdelijk naar de state.currentMatch structuur
+    
+    // ✅ NIEUW: Bepaal de weergavenamen (met emojis voor 4-speler fase-spellen)
+    let displayP1 = fm.players[1].name;
+    let displayP2 = fm.players[2].name;
+    const isPhaseGameSummary = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+
+    if (fm.numPlayers === 4 && isPhaseGameSummary) {
+        const icons = { 1: "🧙‍♂️", 2: "👷‍♂️", 3: "👮‍♂️", 4: "👨‍🚀" };
+        
+        // Haal de spelers per team op, gesorteerd op volgorde
+        const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] == 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] == 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
+        
+        const p1_1 = fm.players[t1Keys[0]];
+        const p1_2 = fm.players[t1Keys[1]];
+        const p2_1 = fm.players[t2Keys[0]];
+        const p2_2 = fm.players[t2Keys[1]];
+
+        // Maak een mooie string met emojis en namen
+        displayP1 = `${icons[t1Keys[0]]} ${p1_1.name} & ${icons[t1Keys[1]]} ${p1_2.name}`;
+        displayP2 = `${icons[t2Keys[0]]} ${p2_1.name} & ${icons[t2Keys[1]]} ${p2_2.name}`;
+    }
+
+    // We mappen de friendly data naar de state.currentMatch structuur
     state.currentMatch = {
         id: 'friendly_' + Date.now(),
-        p1: fm.players[1].name,
-        p2: fm.players[2].name,
+        p1: displayP1, // ✅ Gebruik de aangepaste naam
+        p2: displayP2, // ✅ Gebruik de aangepaste naam
         date: new Date().toISOString().split('T')[0],
         discipline: fm.gameType === 'vrijspel' ? 'Vrijspel' : (fm.gameType === 'bandstoten' ? 'Bandstoten' : 'Driebanden'),
         cat: 'Vriendschappelijk',
