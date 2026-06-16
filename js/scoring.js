@@ -2561,10 +2561,9 @@ window.friendlySwitchToPartner = function() {
         ts.rightPlayerIndex = ts.rightPlayerIndex === 1 ? 2 : 1;
     }
 
-    // Reset de run
+    // ✅ Reset ALLEEN de currentRun (voor de nieuwe speler)
+    // De TeamRun blijft staan want die hoort bij de teambeurt!
     ts.currentRun = 0;
-    ts.leftTeamRun = 0;   // ✅ NIEUW: Totaal punten team links in huidige beurt
-    ts.rightTeamRun = 0;  // ✅ NIEUW: Totaal punten team rechts in huidige beurt
 
     // Update UI
     window.updateFriendlyUI();
