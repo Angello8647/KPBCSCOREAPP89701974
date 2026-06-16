@@ -312,7 +312,11 @@ window.renderCrossTable = function() {
         const coef = playerData && playerData.tsg ? parseFloat(playerData.tsg.replace(',', '.')) : 0;
         
         // --- RIJ 1: Nr + Naam + Punten/Gemiddelde + TOT (Pt, Gem) ---
-        html += `<tr>`;
+        // Bepaal of dit een even of oneven speler is voor de zebra-kleur
+        const rowClass = rowIndex % 2 === 0 ? 'row-even' : 'row-odd';
+
+        // --- RIJ 1: Nr + Naam + Punten/Gemiddelde + TOT (Pt, Gem) ---
+        html += `<tr class="${rowClass}">`;
         html += `<td class="player-nr" rowspan="2">${rowIndex + 1}</td>`;
         html += `<td class="player-name">${formatShortName(player1.name)}</td>`;
         
@@ -351,7 +355,7 @@ window.renderCrossTable = function() {
         html += `</tr>`;
         
         // --- RIJ 2: Coëfficiënt + Beurten/Comp.Punten + TOT (Bt, MP, HR) ---
-        html += `<tr>`;
+        html += `<tr class="${rowClass}">`;
         // Nr heeft al rowspan=2, dus die slaan we over
         // ✅ FIX: Gebruik de berekende coëfficiënt uit de stats (Gespeeld Gem / TSG)
         html += `<td class="player-coef">${stats.coefficient.toFixed(4).replace('.', ',')}</td>`;
