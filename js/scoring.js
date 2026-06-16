@@ -2635,37 +2635,52 @@ window.endFriendlyMatch = function() {
     // 1. Markeer de match als beëindigd
     ts.matchEnded = true;
 
-    // 2. ✅ NIEUW: Bepaal de winnaar op basis van Rendement (Prestatie t.o.v. TSG)
+    // 2. ✅ Bepaal de winnaar
     let winnerName = "";
+    const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
 
-    if (ts.firstToTarget === 'right') {
-        // REGEL 1: Speler 2 haalde als eerste het target → Directe winst, geen nabeurt voor Speler 1
-        winnerName = fm.players[2].name;
-    } else {
-        // REGEL 2 & 3: Speler 1 haalde als eerste het target, Speler 2 heeft zijn nabeurt gehad.
-        // Nu vergelijken we het rendement.
+    if (isPhaseGame) {
+        // ✅ FASE-SPELLEN: Wie het target in driebanden haalt, wint direct (geen nabeurt, geen rendement)
+        // Het team dat aan de beurt was toen de match eindigde, is de winnaar
+        winnerName = ts.activeSide === 'left' ? fm.players[1].name : fm.players[2].name;
         
-        // Haal de TSG op (fallback naar 1.0 als er geen TSG bekend is om delen door 0 te voorkomen)
-        const tsg1 = fm.players[1].average ? parseFloat(fm.players[1].average) : 1.0;
-        const tsg2 = fm.players[2].average ? parseFloat(fm.players[2].average) : 1.0;
-
-        // Bereken het werkelijke gemiddelde (minimaal 1 beurt om delen door 0 te voorkomen)
-        const avg1 = ts.leftTotalScore / Math.max(1, ts.leftTurns.length);
-        const avg2 = ts.rightTotalScore / Math.max(1, ts.rightTurns.length);
-
-        // Bereken het rendement (Hoeveel % van hun eigen TSG hebben ze gehaald?)
-        const rendement1 = avg1 / tsg1;
-        const rendement2 = avg2 / tsg2;
-
-        console.log(`📊 Rendement Speler 1: ${(rendement1 * 100).toFixed(1)}%`);
-        console.log(`📊 Rendement Speler 2: ${(rendement2 * 100).toFixed(1)}%`);
-
-        if (rendement2 > rendement1) {
-            // Speler 2 speelde beter naar zijn eigen gemiddelde tijdens de nabeurt
+        // Bij 4-speler mode: toon de teamnaam (beide spelers)
+        if (fm.numPlayers === 4) {
+            const t1Keys = Object.keys(fm.players).filter(p => fm.teams[p] == 1).sort((a, b) => fm.orders[a] - fm.orders[b]);
+            const t2Keys = Object.keys(fm.players).filter(p => fm.teams[p] == 2).sort((a, b) => fm.orders[a] - fm.orders[b]);
+            
+            if (ts.activeSide === 'left') {
+                winnerName = `${fm.players[t1Keys[0]].name} & ${fm.players[t1Keys[1]].name}`;
+            } else {
+                winnerName = `${fm.players[t2Keys[0]].name} & ${fm.players[t2Keys[1]].name}`;
+            }
+        }
+    } else {
+        // ✅ NORMALE MATCHES: Rendement-logica (zoals vroeger)
+        if (ts.firstToTarget === 'right') {
+            // Speler 2 haalde als eerste het target → Directe winst
             winnerName = fm.players[2].name;
         } else {
-            // Speler 1 behield zijn voorsprong of speelde beter naar zijn gemiddelde
-            winnerName = fm.players[1].name;
+            // Speler 1 haalde als eerste het target, Speler 2 heeft zijn nabeurt gehad
+            // Nu vergelijken we het rendement
+            
+            const tsg1 = fm.players[1].average ? parseFloat(fm.players[1].average) : 1.0;
+            const tsg2 = fm.players[2].average ? parseFloat(fm.players[2].average) : 1.0;
+
+            const avg1 = ts.leftTotalScore / Math.max(1, ts.leftTurns.length);
+            const avg2 = ts.rightTotalScore / Math.max(1, ts.rightTurns.length);
+
+            const rendement1 = avg1 / tsg1;
+            const rendement2 = avg2 / tsg2;
+
+            console.log(`📊 Rendement Speler 1: ${(rendement1 * 100).toFixed(1)}%`);
+            console.log(`📊 Rendement Speler 2: ${(rendement2 * 100).toFixed(1)}%`);
+
+            if (rendement2 > rendement1) {
+                winnerName = fm.players[2].name;
+            } else {
+                winnerName = fm.players[1].name;
+            }
         }
     }
 
