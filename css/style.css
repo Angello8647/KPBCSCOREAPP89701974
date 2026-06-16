@@ -4368,12 +4368,16 @@
     vertical-align: middle;
 }
 
+
 /* Header opmaak */
 .cross-table th {
     background-color: #34495e;
     color: #ecf0f1;
     font-weight: bold;
-    border: 1px solid #444;
+    /* ✅ DUIDELIJKE RANDEN VOOR HEADER */
+    border: 1px solid #000 !important; /* Zwarte rand */
+    /* OF als je liever een lichte rand wilt: */
+    /* border: 1px solid #ecf0f1 !important; */
 }
 
 /* ✅ BREEDTE VOOR MATCH KOLOMMEN (100px per cel) */
