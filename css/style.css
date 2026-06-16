@@ -4489,3 +4489,35 @@
 .cross-table tbody tr.row-odd {
     background-color: rgba(0, 0, 0, 0.15); /* Subtiel donkerder */
 }
+
+/* ✅ FIX: Maak gewone cellen transparant zodat zebra-kleur zichtbaar is */
+.cross-table tbody td {
+    background-color: transparent !important;
+}
+
+/* ✅ HERSTEL de achtergronden voor de speciale cellen */
+.cross-table .self-cell { 
+    background-color: #7f8c8d !important; 
+}
+.cross-table .not-played { 
+    background-color: rgba(0,0,0,0.2) !important; 
+}
+.cross-table .win-cell { 
+    background-color: rgba(46, 204, 113, 0.15) !important; 
+}
+.cross-table .loss-cell { 
+    background-color: rgba(231, 76, 60, 0.15) !important; 
+}
+
+/* TOT kolom behoudt zijn eigen donkere kleur */
+.cross-table .tot-pts,
+.cross-table .tot-avg,
+.cross-table .tot-turns,
+.cross-table .tot-mp,
+.cross-table .tot-hr {
+    background-color: #2c3e50 !important; 
+}
+
+/* Subtiele kleurverschillen in TOT (als je die nog had) */
+.cross-table .tot-pts { background-color: rgba(52, 152, 219, 0.25) !important; }
+.cross-table .tot-turns { background-color: rgba(149, 165, 166, 0.25) !important; }
