@@ -354,11 +354,11 @@ window.renderCrossTable = function() {
         html += `<td colspan="2"></td>`;
         html += `</tr>`;
         
+
         // --- RIJ 2: Coëfficiënt + Beurten/Comp.Punten + TOT (Bt, MP, HR) ---
         html += `<tr class="${rowClass}">`;
-        
-        // ✅ FIX: Voeg een lege cel toe om de kolom-balans te herstellen (Nr + Naam = 2 kolommen)
-        html += `<td></td>`; 
+        // Nr heeft al rowspan=2, dus die slaan we over
+        // ✅ FIX: Gebruik de berekende coëfficiënt uit de stats (Gespeeld Gem / TSG)
         html += `<td class="player-coef">${stats.coefficient.toFixed(4).replace('.', ',')}</td>`;
         
         players.forEach((player2, colIndex) => {
