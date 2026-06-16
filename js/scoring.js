@@ -2097,6 +2097,8 @@ window.updateFriendlyUI = function() {
     document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
 
     // --- C. Update de Score Cellen ---
+    // ✅ Bepaal of het een fase-spel is (eenmalige declaratie voor heel sectie C)
+    const isPhaseGameCheck = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
     
     // ✅ HUIDIG: Toont altijd de punten van de huidige beurt (currentRun)
     // Dit geldt voor ALLE speltypes (normaal, Triatlon, Dubbeltje)
