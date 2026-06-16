@@ -932,6 +932,50 @@
             <div class="no-matches"><p>Selecteer een discipline en categorie om het klassement te zien.</p></div>
         </div>
     </div>
+
+    <!-- PAGINA 21: Kruistabel -->
+    <div id="page21" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage(20)">← Terug</button>
+            <h1>📊 Kruistabel</h1>
+            <div style="width: 70px;"></div>
+        </div>
+    
+        <div class="selection-container" style="margin-top: 20px;">
+            <div class="selection-title">Selecteer Discipline & Categorie</div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #ecf0f1; margin-bottom: 10px;">Discipline:</h3>
+                <div class="selection-grid">
+                    <div class="selection-option" onclick="loadCrossTable('Vrijspel')" id="crossDiscVS">
+                        <h3>Vrijspel</h3>
+                    </div>
+                    <div class="selection-option" onclick="loadCrossTable('Bandstoten')" id="crossDiscBS">
+                        <h3>Bandstoten</h3>
+                    </div>
+                    <div class="selection-option" onclick="loadCrossTable('Driebanden')" id="crossDiscDB">
+                        <h3>Driebanden</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #ecf0f1; margin-bottom: 10px;">Categorie:</h3>
+                <div class="category-grid">
+                    <div class="category-option" onclick="loadCrossTableCategory(1)" id="crossCat1">Cat. 1</div>
+                    <div class="category-option" onclick="loadCrossTableCategory(2)" id="crossCat2">Cat. 2</div>
+                    <div class="category-option" onclick="loadCrossTableCategory(3)" id="crossCat3">Cat. 3</div>
+                    <div class="category-option" onclick="loadCrossTableCategory(4)" id="crossCat4">Cat. 4</div>
+                    <div class="category-option" onclick="loadCrossTableCategory(5)" id="crossCat5">Cat. 5</div>
+                    <div class="category-option" onclick="loadCrossTableCategory(6)" id="crossCat6">Cat. 6</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="matches-list-container" id="crossTableContainer" style="padding: 10px; overflow-x: auto;">
+            <div class="no-matches"><p>Selecteer een discipline en categorie om de kruistabel te zien.</p></div>
+        </div>
+    </div>
     
     <script src="js/state.js"></script>
     <script src="js/competition.js"></script>
