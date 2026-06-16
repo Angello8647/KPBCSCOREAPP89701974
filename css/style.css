@@ -4439,7 +4439,7 @@
 }
 
 .cross-table .not-played { 
-    background-color: rgba(0,0,0,0.2) !important; 
+    /* Geen achtergrond - zebra schijnt door! */
     color: #7f8c8d; 
 }
 
