@@ -34,13 +34,18 @@
         <div class="selection-container friendly-container" id="containerFriendly">
             <div class="selection-title">Vrije Wedstrijd & Info</div>
             
-            <!-- LET OP: onclick is nu window.selectMode('friendly') -->
-            <button class="next-btn friendly-btn" onclick="window.selectMode('friendly')">
-                🍻 Vriendschappelijke Match Starten
-            </button>
-            <button class="next-btn friendly-btn" onclick="showPage(20)" style="margin-top: 10px;">
-                🏆 Competitie Stand
-            </button>
+            <!-- Omhulsel om knoppen netjes onder elkaar te zetten -->
+            <div style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
+                
+                <button class="next-btn friendly-btn" onclick="window.selectMode('friendly')">
+                    🍻 Vriendschappelijke Match Starten
+                </button>
+                
+                <button class="next-btn friendly-btn" onclick="showPage(20)">
+                    🏆 Competitie Stand
+                </button>
+                
+            </div>
         </div>
     </div>
     
