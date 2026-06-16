@@ -286,11 +286,11 @@ window.renderCrossTable = function() {
     });
     html += `<th colspan="5" class="tot-header">TOT</th></tr>`;
     
-    // HEADER RIJ 2: Targets + TOT labels (Pt, Gem)
-    const config = COMPETITION_CONFIG[currentCrossDiscipline];
+    // HEADER RIJ 2: Persoonlijke Targets + TOT labels (Pt, Gem)
     html += `<tr>`;
     players.forEach(p => {
-        html += `<th colspan="2">${config.targetPoints}</th>`;
+        // ✅ FIX: Gebruik het persoonlijke target van de speler (p.target)
+        html += `<th colspan="2">${p.target}</th>`;
     });
     html += `<th class="tot-sub">Pt</th><th class="tot-sub" colspan="2">Gem</th><th colspan="2"></th></tr>`;
     
