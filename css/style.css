@@ -4286,7 +4286,64 @@
 
 
 /* =========================================================================
-   KRUISTABEL STIJL (VOLLEDIG OPNIEUW + CORRECTE ZEBRA)
+   HEADER DISCIPLINE
+   ========================================================================= */
+#friendlyHeaderDiscipline {
+    font-size: 2.5rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3px !important;
+    transition: color 0.3s ease !important;
+    margin-top: 10px !important;
+}
+
+/* =========================================================================
+   COMPETITIE TABEL STIJL (Pagina 20: Rangschikking)
+   ========================================================================= */
+.competition-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9em;
+    font-family: Verdana, sans-serif;
+}
+
+.competition-table th, .competition-table td {
+    padding: 8px 5px;
+    text-align: center;
+    border: 1px solid #444;
+}
+
+.competition-table th {
+    background-color: #34495e;
+    color: #ecf0f1;
+    font-weight: bold;
+}
+
+.competition-table td {
+    color: #ecf0f1;
+}
+
+.competition-table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.competition-table td:nth-child(2), .competition-table th:nth-child(2) {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.comp-pts-positive { color: #2ecc71 !important; font-weight: bold; }
+.comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
+.comp-pts-zero { color: #bdc3c7 !important; font-weight: bold; }
+
+.rank-1 { background-color: rgba(241, 196, 15, 0.2) !important; font-weight: bold; }
+.rank-2 { background-color: rgba(189, 195, 199, 0.2) !important; }
+.rank-3 { background-color: rgba(211, 84, 0, 0.2) !important; }
+
+
+/* =========================================================================
+   KRUISTABEL STIJL (Pagina 21)
    ========================================================================= */
 .cross-table {
     border-collapse: collapse;
@@ -4295,7 +4352,6 @@
     margin-top: 10px;
 }
 
-/* Basis cel opmaak */
 .cross-table th, .cross-table td {
     padding: 4px 2px;
     text-align: center;
@@ -4303,7 +4359,6 @@
     vertical-align: middle;
 }
 
-/* Header opmaak */
 .cross-table th {
     background-color: #34495e;
     color: #ecf0f1;
@@ -4311,7 +4366,7 @@
     border: 1px solid #000 !important;
 }
 
-/* ✅ 1. VASTE BREEDTES */
+/* 1. VASTE BREEDTES */
 .cross-table td.match-pts,
 .cross-table td.match-avg,
 .cross-table td.match-turns,
@@ -4331,46 +4386,28 @@
     padding-left: 10px !important;
 }
 
-.cross-table .player-nr {
-    width: 30px;
-    font-weight: bold;
-}
+.cross-table .player-nr { width: 30px; font-weight: bold; }
+.cross-table .player-coef { font-size: 0.8em; color: #bdc3c7; }
 
-.cross-table .player-coef {
-    font-size: 0.8em;
-    color: #bdc3c7;
-}
-
-/* ✅ 2. TOT KOLOM HEADER */
+/* 2. TOT KOLOM HEADER */
 .cross-table .tot-header {
     background-color: #2c3e50 !important;
     font-size: 1.1em;
     border: 2px solid #ecf0f1 !important;
 }
-
 .cross-table .tot-sub {
     background-color: #34495e;
     font-size: 0.85em;
 }
 
-/* ✅ 3. ZEBRA KLEUREN - DIRECT OP TD (niet op tr!) */
-.cross-table tbody tr.row-even td {
-    background-color: rgba(255, 255, 255, 0.04);
-}
+/* 3. ZEBRA KLEUREN (Direct op TD, zonder !important zodat speciale cellen kunnen winnen) */
+.cross-table tbody tr.row-even td { background-color: rgba(255, 255, 255, 0.04); }
+.cross-table tbody tr.row-odd td  { background-color: rgba(0, 0, 0, 0.15); }
 
-.cross-table tbody tr.row-odd td {
-    background-color: rgba(0, 0, 0, 0.15);
-}
-
-/* ✅ 4. SPECIALE CELLEN (overschrijven zebra dankzij volgorde) */
-
-/* Naam en coëfficiënt kolommen */
+/* 4. SPECIALE CELLEN (Overschrijven de zebra omdat ze later staan en specifieker zijn) */
 .cross-table .player-nr,
-.cross-table .player-coef {
-    background-color: #2c3e50 !important;
-}
+.cross-table .player-coef { background-color: #2c3e50 !important; }
 
-/* TOT cellen */
 .cross-table .tot-pts,
 .cross-table .tot-avg,
 .cross-table .tot-turns,
@@ -4385,51 +4422,15 @@
     min-width: 40px;
 }
 
-/* Subtiele kleurverschillen in TOT */
-.cross-table .tot-pts {
-    background-color: rgba(52, 152, 219, 0.25) !important;
-}
+.cross-table .tot-pts { background-color: rgba(52, 152, 219, 0.25) !important; }
+.cross-table .tot-turns { background-color: rgba(149, 165, 166, 0.25) !important; }
+.cross-table .tot-mp { font-size: 1.1em !important; }
 
-.cross-table .tot-turns {
-    background-color: rgba(149, 165, 166, 0.25) !important;
-}
+.cross-table .self-cell { background-color: #7f8c8d !important; border: 1px solid #555 !important; }
+.cross-table .not-played { background-color: rgba(0,0,0,0.2) !important; color: #7f8c8d; }
 
-.cross-table .tot-mp {
-    font-size: 1.1em !important;
-}
+.cross-table .win-cell { background-color: rgba(46, 204, 113, 0.15) !important; color: #2ecc71; font-weight: bold; }
+.cross-table .loss-cell { background-color: rgba(231, 76, 60, 0.15) !important; color: #e74c3c; font-weight: bold; }
 
-/* Diagonaal (eigen cel) */
-.cross-table .self-cell {
-    background-color: #7f8c8d !important;
-    border: 1px solid #555 !important;
-}
-
-/* Niet gespeeld */
-.cross-table .not-played {
-    background-color: rgba(0,0,0,0.2) !important;
-    color: #7f8c8d;
-}
-
-/* Winst/Verlies */
-.cross-table .win-cell {
-    background-color: rgba(46, 204, 113, 0.15) !important;
-    color: #2ecc71;
-    font-weight: bold;
-}
-
-.cross-table .loss-cell {
-    background-color: rgba(231, 76, 60, 0.15) !important;
-    color: #e74c3c;
-    font-weight: bold;
-}
-
-/* Tekstkleuren voor competitiepunten */
-.cross-table .comp-pts-positive {
-    color: #2ecc71 !important;
-    font-weight: bold;
-}
-
-.cross-table .comp-pts-negative {
-    color: #e74c3c !important;
-    font-weight: bold;
-}
+.cross-table .comp-pts-positive { color: #2ecc71 !important; font-weight: bold; }
+.cross-table .comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
