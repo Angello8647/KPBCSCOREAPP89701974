@@ -2405,14 +2405,17 @@ window.friendlyChangeScore = function(delta) {
 
     // Update de score
     ts.currentRun += delta;
+    
     if (ts.activeSide === 'left') {
         ts.leftTotalScore += delta;
         ts.leftPhaseScore += delta;
-        ts.leftTeamRun = (ts.leftTeamRun || 0) + delta; // ✅ Verzamel voor teambeurt
+        ts.leftTeamRun = (ts.leftTeamRun || 0) + delta; 
+        console.log("🔵 LINKS gescoord:", delta, "| Huidige reeks:", ts.currentRun, "| TEAM RUN:", ts.leftTeamRun);
     } else {
         ts.rightTotalScore += delta;
         ts.rightPhaseScore += delta;
-        ts.rightTeamRun = (ts.rightTeamRun || 0) + delta; // ✅ Verzamel voor teambeurt
+        ts.rightTeamRun = (ts.rightTeamRun || 0) + delta;
+        console.log("🟡 RECHTS gescoord:", delta, "| Huidige reeks:", ts.currentRun, "| TEAM RUN:", ts.rightTeamRun);
     }
 
     // Check of het maximum is bereikt (bij dubbeltje - voor later)
