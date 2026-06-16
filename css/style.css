@@ -4480,3 +4480,12 @@
     background-color: rgba(0,0,0,0.2);
     color: #7f8c8d;
 }
+
+/* ✅ ALTERNERENDE RIJKLEUREN (ZEBRA) */
+.cross-table tbody tr.row-even {
+    background-color: rgba(255, 255, 255, 0.04); /* Subtiel lichter */
+}
+
+.cross-table tbody tr.row-odd {
+    background-color: rgba(0, 0, 0, 0.15); /* Subtiel donkerder */
+}
