@@ -4286,81 +4286,16 @@
 
 
 /* =========================================================================
-   HEADER DISCIPLINE: Opvallend met unieke kleuren per discipline
-   ========================================================================= */
-#friendlyHeaderDiscipline {
-    font-size: 2.5rem !important;
-    font-weight: 900 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 3px !important;
-    transition: color 0.3s ease !important;
-    margin-top: 10px !important;
-}
-
-
-/* =========================================================================
-   COMPETITIE TABEL STIJL
-   ========================================================================= */
-.competition-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 0.9em;
-    font-family: Verdana, sans-serif;
-}
-
-.competition-table th, .competition-table td {
-    padding: 8px 5px;
-    text-align: center;
-    border: 1px solid #444;
-}
-
-.competition-table th {
-    background-color: #34495e;
-    color: #ecf0f1;
-    font-weight: bold;
-}
-
-.competition-table td {
-    color: #ecf0f1;
-}
-
-/* Alternerende rijen */
-.competition-table tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* Naam kolom links uitlijnen */
-.competition-table td:nth-child(2), .competition-table th:nth-child(2) {
-    text-align: left;
-    padding-left: 10px;
-}
-
-/* Competitiepunten kolom (MPTN) vet en gekleurd */
-.comp-pts-positive { color: #2ecc71 !important; font-weight: bold; }
-.comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
-.comp-pts-zero { color: #bdc3c7 !important; font-weight: bold; }
-
-/* Rang 1, 2, 3 highlight */
-.rank-1 { background-color: rgba(241, 196, 15, 0.2) !important; font-weight: bold; }
-.rank-2 { background-color: rgba(189, 195, 199, 0.2) !important; }
-.rank-3 { background-color: rgba(211, 84, 0, 0.2) !important; }
-
-
-/* =========================================================================
-   KRUISTABEL STIJL (2x2 BLOKKEN + TOT)
-   ========================================================================= */
-/* =========================================================================
-   KRUISTABEL STIJL (VEILIGE VERSIE)
+   KRUISTABEL STIJL (OPGESCHOOND + CORRECT)
    ========================================================================= */
 .cross-table {
     border-collapse: collapse;
-    font-size: 0.9em; /* Iets kleiner dan standaard, maar leesbaar */
+    font-size: 0.9em;
     font-family: Verdana, sans-serif;
     margin-top: 10px;
-    /* table-layout: fixed verwijderen om de TOT-colspan niet te breken */
 }
 
+/* Basis cel opmaak */
 .cross-table th, .cross-table td {
     padding: 4px 2px;
     text-align: center;
@@ -4368,37 +4303,32 @@
     vertical-align: middle;
 }
 
-
 /* Header opmaak */
 .cross-table th {
     background-color: #34495e;
     color: #ecf0f1;
     font-weight: bold;
-    /* ✅ DUIDELIJKE RANDEN VOOR HEADER */
-    border: 1px solid #000 !important; /* Zwarte rand */
-    /* OF als je liever een lichte rand wilt: */
-    /* border: 1px solid #ecf0f1 !important; */
+    border: 1px solid #000 !important;
 }
 
-/* ✅ BREEDTE VOOR MATCH KOLOMMEN (100px per cel) */
+/* ✅ VASTE BREEDTE VOOR MATCH KOLOMMEN (60px per cel) */
 .cross-table td.match-pts,
 .cross-table td.match-avg,
 .cross-table td.match-turns,
 .cross-table td.self-cell,
 .cross-table td.not-played {
-    min-width: 60px; 
+    min-width: 60px;
     max-width: 60px;
     font-size: 0.9em;
 }
 
-/* ✅ NAMEN: NORMAAL FORMAAT (niet meer te klein) */
 /* ✅ VASTE BREEDTE EN UITLIJNING VOOR NAAM-KOLOM (200px) */
 .cross-table .player-name,
 .cross-table .player-coef {
     width: 200px !important;
     min-width: 200px !important;
     max-width: 200px !important;
-    text-align: left !important; /* Forceer links uitlijnen */
+    text-align: left !important;
     padding-left: 10px !important;
 }
 
@@ -4414,7 +4344,7 @@
     background-color: #2c3e50;
 }
 
-/* ✅ TOT KOLOMMEN: HERSTELD NAAR WERKENDE OPMAAK */
+/* ✅ TOT KOLOMMEN OPMAAK */
 .cross-table .tot-header {
     background-color: #2c3e50 !important;
     font-size: 1.1em;
@@ -4427,31 +4357,29 @@
 }
 
 /* De daadwerkelijke TOT cellen in de body */
-/* De daadwerkelijke TOT cellen in de body */
 .cross-table .tot-pts,
 .cross-table .tot-avg,
 .cross-table .tot-turns,
 .cross-table .tot-mp,
 .cross-table .tot-hr {
-    background-color: #2c3e50 !important; /* Donkere achtergrond zoals header */
+    background-color: #2c3e50 !important;
     color: #ecf0f1;
     font-weight: bold !important;
-    border: 2px solid #555 !important; /* Duidelijke rand */
+    border: 2px solid #555 !important;
     text-align: center !important;
     padding: 6px 4px !important;
     min-width: 40px;
 }
 
-/* ✅ SUBTIELE KLEURVERSCHILLEN VOOR PT EN BT */
+/* Subtiele kleurverschillen in TOT */
 .cross-table .tot-pts {
-    background-color: rgba(52, 152, 219, 0.25) !important; /* Subtiel blauw voor Punten */
+    background-color: rgba(52, 152, 219, 0.25) !important;
 }
 
 .cross-table .tot-turns {
-    background-color: rgba(149, 165, 166, 0.25) !important; /* Subtiel grijs voor Beurten */
+    background-color: rgba(149, 165, 166, 0.25) !important;
 }
 
-/* Competitiepunten in TOT extra opvallend */
 .cross-table .tot-mp {
     font-size: 1.1em !important;
 }
@@ -4468,8 +4396,15 @@
     color: #e74c3c;
 }
 
-.cross-table .comp-pts-positive { color: #2ecc71 !important; font-weight: bold; }
-.cross-table .comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
+.cross-table .comp-pts-positive {
+    color: #2ecc71 !important;
+    font-weight: bold;
+}
+
+.cross-table .comp-pts-negative {
+    color: #e74c3c !important;
+    font-weight: bold;
+}
 
 .cross-table .self-cell {
     background-color: #7f8c8d !important;
@@ -4483,33 +4418,35 @@
 
 /* ✅ ALTERNERENDE RIJKLEUREN (ZEBRA) */
 .cross-table tbody tr.row-even {
-    background-color: rgba(255, 255, 255, 0.04); /* Subtiel lichter */
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
 .cross-table tbody tr.row-odd {
-    background-color: rgba(0, 0, 0, 0.15); /* Subtiel donkerder */
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
-/* ✅ FIX: Maak gewone cellen transparant zodat zebra-kleur zichtbaar is */
+/* ✅ FIX: Maak ALLE gewone cellen transparant zodat zebra-kleur zichtbaar is */
 .cross-table tbody td {
     background-color: transparent !important;
 }
 
-/* ✅ HERSTEL de achtergronden voor de speciale cellen */
+/* ✅ HERSTEL de achtergronden voor de speciale cellen (NA de transparant regel) */
 .cross-table .self-cell { 
     background-color: #7f8c8d !important; 
 }
+
 .cross-table .not-played { 
     background-color: rgba(0,0,0,0.2) !important; 
 }
+
 .cross-table .win-cell { 
     background-color: rgba(46, 204, 113, 0.15) !important; 
 }
+
 .cross-table .loss-cell { 
     background-color: rgba(231, 76, 60, 0.15) !important; 
 }
 
-/* TOT kolom behoudt zijn eigen donkere kleur */
 .cross-table .tot-pts,
 .cross-table .tot-avg,
 .cross-table .tot-turns,
@@ -4518,6 +4455,15 @@
     background-color: #2c3e50 !important; 
 }
 
-/* Subtiele kleurverschillen in TOT (als je die nog had) */
-.cross-table .tot-pts { background-color: rgba(52, 152, 219, 0.25) !important; }
-.cross-table .tot-turns { background-color: rgba(149, 165, 166, 0.25) !important; }
+.cross-table .tot-pts { 
+    background-color: rgba(52, 152, 219, 0.25) !important; 
+}
+
+.cross-table .tot-turns { 
+    background-color: rgba(149, 165, 166, 0.25) !important; 
+}
+
+.cross-table .player-nr,
+.cross-table .player-coef {
+    background-color: #2c3e50 !important;
+}
