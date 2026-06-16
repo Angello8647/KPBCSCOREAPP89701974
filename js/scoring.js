@@ -2474,17 +2474,23 @@ window.friendlyMiss = function() {
     // Sla state op voor undo
     window.lastFriendlyState = JSON.parse(JSON.stringify(fm));
 
-    // 1. Sla de huidige reeks op in de beurtenlijst en update hoogste reeks
-    if (ts.activeSide === 'left') {
-        ts.leftTurns.push(ts.currentRun);
-        if (ts.currentRun > ts.leftHighestSeries) ts.leftHighestSeries = ts.currentRun;
-    } else {
-        ts.rightTurns.push(ts.currentRun);
-        if (ts.currentRun > ts.rightHighestSeries) ts.rightHighestSeries = ts.currentRun;
-    }
-
     // ✅ CHECK: Is dit een phase game (Triatlon/Dubbeltje)?
     const isPhaseGame = ['triatlon-small', 'triatlon-large', 'dubbeltje'].includes(fm.gameType);
+
+    // 1. Sla de huidige reeks op in de beurtenlijst en update hoogste reeks
+    // ✅ Voor fase-spellen: gebruik de team-run (totaal van beide partners)
+    // ✅ Voor normale matches: gebruik currentRun (alleen van de huidige speler)
+    if (ts.activeSide === 'left') {
+        const scoreToRecord = isPhaseGame ? (ts.leftTeamRun || ts.currentRun) : ts.currentRun;
+        ts.leftTurns.push(scoreToRecord);
+        if (scoreToRecord > ts.leftHighestSeries) ts.leftHighestSeries = scoreToRecord;
+        ts.leftTeamRun = 0; // Reset team-run voor de volgende beurt
+    } else {
+        const scoreToRecord = isPhaseGame ? (ts.rightTeamRun || ts.currentRun) : ts.currentRun;
+        ts.rightTurns.push(scoreToRecord);
+        if (scoreToRecord > ts.rightHighestSeries) ts.rightHighestSeries = scoreToRecord;
+        ts.rightTeamRun = 0; // Reset team-run voor de volgende beurt
+    }
 
     if (!isPhaseGame) {
         // NORMALE SPELTYPES: Target check (zoals vroeger)
