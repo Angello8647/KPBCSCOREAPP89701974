@@ -2090,11 +2090,22 @@ window.updateFriendlyUI = function() {
     const activePhase = ts.activeSide === 'left' ? ts.leftPhase : ts.rightPhase;
     
     let phaseText = '';
-    if (activePhase === 'vrijspel') phaseText = 'VRIJSPEL';
-    else if (activePhase === 'bandstoten') phaseText = 'BANDSTOTEN';
-    else if (activePhase === 'driebanden') phaseText = 'DRIEBANDEN';
+    let phaseColor = '';
+    
+    if (activePhase === 'vrijspel') {
+        phaseText = 'VRIJSPEL';
+        phaseColor = '#f39c12'; // Goud/Geel
+    } else if (activePhase === 'bandstoten') {
+        phaseText = 'BANDSTOTEN';
+        phaseColor = '#3498db'; // Blauw
+    } else if (activePhase === 'driebanden') {
+        phaseText = 'DRIEBANDEN';
+        phaseColor = '#e74c3c'; // Rood
+    }
 
-    document.getElementById('friendlyHeaderDiscipline').textContent = phaseText;
+    const disciplineEl = document.getElementById('friendlyHeaderDiscipline');
+    disciplineEl.textContent = phaseText;
+    disciplineEl.style.color = phaseColor; // ✅ Directe kleur toepassing
 
     // --- C. Update de Score Cellen ---
     // ✅ Bepaal of het een fase-spel is (eenmalige declaratie voor heel sectie C)
