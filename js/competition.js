@@ -245,7 +245,7 @@ window.loadCrossTableCategory = function(category) {
 };
 
 /**
- * Genereert de volledige kruistabel met TOT kolommen (exacte Excel replica)
+ * Genereert de volledige kruistabel met correcte 2x2 blokken en TOT structuur
  */
 window.renderCrossTable = function() {
     if (!currentCrossDiscipline || !currentCrossCategory) return;
@@ -267,48 +267,51 @@ window.renderCrossTable = function() {
     const playerStats = players.map(p => calculatePlayerStats(p.id, p.name, currentCrossDiscipline, currentCrossCategory));
 
     // 3. Bouw de kruistabel
-    let html = `<div class="matches-list-title"> Kruistabel: ${currentCrossDiscipline} - Categorie ${currentCrossCategory}</div>`;
+    let html = `<div class="matches-list-title">📊 Kruistabel: ${currentCrossDiscipline} - Categorie ${currentCrossCategory}</div>`;
     html += `<div style="overflow-x: auto;"><table class="cross-table"><thead>`;
     
-    // Rij 1: Spelernummers
+    // HEADER RIJ 1: Nummers + TOT
     html += `<tr><th rowspan="3">Nr</th><th rowspan="3">Naam + Coëff.</th>`;
     players.forEach((p, idx) => {
         html += `<th colspan="2">${idx + 1}</th>`;
     });
     html += `<th colspan="5" class="tot-header">TOT</th></tr>`;
     
-    // Rij 2: Target punten + TOT labels (Pt, Gem over 2 kolommen)
+    // HEADER RIJ 2: Targets + TOT labels (Pt, Gem)
     const config = COMPETITION_CONFIG[currentCrossDiscipline];
     html += `<tr>`;
     players.forEach(p => {
         html += `<th colspan="2">${config.targetPoints}</th>`;
     });
+    // 5 kolommen: Pt(1) + Gem(2) + Empty(2) = 5
     html += `<th class="tot-sub">Pt</th><th class="tot-sub" colspan="2">Gem</th><th colspan="2"></th></tr>`;
-
-    // Rij 3: Coëfficiënt + TOT labels (Bt, MP, HR)
+    
+    // HEADER RIJ 3: Coëfficiënten + TOT labels (Bt, MP, HR)
     html += `<tr>`;
     players.forEach(p => {
         const playerData = state.players.find(sp => sp.id === p.id);
         const coef = playerData && playerData.tsg ? parseFloat(playerData.tsg.replace(',', '.')) : 0;
         html += `<th colspan="2">${coef.toFixed(4).replace('.', ',')}</th>`;
     });
+    // 5 kolommen: Bt(1) + MP(1) + HR(1) + Empty(2) = 5
     html += `<th class="tot-sub">Bt</th><th class="tot-sub">MP</th><th class="tot-sub">HR</th><th colspan="2"></th></tr>`;
     
+    html += `</thead><tbody>`;
 
-
-    // 4. Voor elke speler 2 rijen
+    // 4. BODY: Per speler 2 rijen
     players.forEach((player1, rowIndex) => {
         const stats = playerStats[rowIndex];
         const playerData = state.players.find(sp => sp.id === player1.id);
         const coef = playerData && playerData.tsg ? parseFloat(playerData.tsg.replace(',', '.')) : 0;
         
-        // Eerste rij: Nr + Naam + Punten/Deling per tegenstander + TOT Pt/Gem
+        // --- RIJ 1: Nr + Naam + Punten/Gemiddelde + TOT (Pt, Gem) ---
         html += `<tr>`;
         html += `<td class="player-nr" rowspan="2">${rowIndex + 1}</td>`;
         html += `<td class="player-name">${player1.name}</td>`;
         
         players.forEach((player2, colIndex) => {
             if (rowIndex === colIndex) {
+                // Eigen cel (diagonaal) - beslaat 2x2
                 html += `<td class="self-cell" rowspan="2" colspan="2"></td>`;
             } else {
                 const match = state.matches.find(m => 
@@ -328,27 +331,28 @@ window.renderCrossTable = function() {
                     html += `<td class="match-pts">${points}</td>`;
                     html += `<td class="match-avg">${average}</td>`;
                 } else {
+                    // Niet gespeeld - beslaat 2 kolommen in deze rij
                     html += `<td class="not-played" colspan="2"></td>`;
                 }
             }
         });
         
-        // TOT kolommen: Pt en Gem (eerste rij, Gem over 2 kolommen)
+        // TOT kolommen voor Rij 1 (Pt en Gem)
+        // Structuur: Pt(1) + Gem(2) + Empty(2) = 5 kolommen
         html += `<td class="tot-pts">${stats.totalPointsScored}</td>`;
         html += `<td class="tot-avg" colspan="2">${stats.average.toFixed(3).replace('.', ',')}</td>`;
-        html += `<td class="tot-turns" rowspan="2">${stats.totalTurnsPlayed}</td>`;
-        html += `<td class="tot-mp" rowspan="2">${stats.totalCompPoints > 0 ? '+' + stats.totalCompPoints : stats.totalCompPoints}</td>`;
-        html += `<td class="tot-hr" rowspan="2">${stats.highestSeries}</td>`;
-        html += `<td colspan="2" rowspan="2"></td>`;
+        html += `<td colspan="2"></td>`; // Empty space for Bt/MP/HR headers
         html += `</tr>`;
         
-        // Tweede rij: Coëfficiënt + Beurten/Competitiepunten per tegenstander
+        // --- RIJ 2: Coëfficiënt + Beurten/Comp.Punten + TOT (Bt, MP, HR) ---
         html += `<tr>`;
-        // GEEN cellen voor Nr en Naam (die hebben al rowspan="2")
+        // Nr heeft al rowspan=2, dus die slaan we over
         html += `<td class="player-coef">${coef.toFixed(4).replace('.', ',')}</td>`;
         
         players.forEach((player2, colIndex) => {
-            if (rowIndex !== colIndex) {
+            if (rowIndex === colIndex) {
+                // Eigen cel - al gedaan in Rij 1 met rowspan, dus niets doen
+            } else {
                 const match = state.matches.find(m => 
                     m.completed && 
                     m.discipline === currentCrossDiscipline && 
@@ -367,11 +371,18 @@ window.renderCrossTable = function() {
                     
                     html += `<td class="match-turns">${turns}</td>`;
                     html += `<td class="${compPointsClass}">${compPointsText}</td>`;
+                } else {
+                    // Niet gespeeld - al gedaan in Rij 1 met colspan, dus niets doen
                 }
             }
         });
         
-        // GEEN cellen voor TOT kolommen (die hebben al rowspan="2")
+        // TOT kolommen voor Rij 2 (Bt, MP, HR)
+        // Structuur: Bt(1) + MP(1) + HR(1) + Empty(2) = 5 kolommen
+        html += `<td class="tot-turns">${stats.totalTurnsPlayed}</td>`;
+        html += `<td class="tot-mp">${stats.totalCompPoints > 0 ? '+' + stats.totalCompPoints : stats.totalCompPoints}</td>`;
+        html += `<td class="tot-hr">${stats.highestSeries}</td>`;
+        html += `<td colspan="2"></td>`; // Empty space
         html += `</tr>`;
     });
 
