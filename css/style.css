@@ -4283,3 +4283,35 @@
         transform: scale(1.08);
     }
 }
+
+
+/* =========================================================================
+   HEADER DISCIPLINE: Opvallend met unieke kleuren per discipline
+   ========================================================================= */
+#friendlyHeaderDiscipline {
+    font-size: 2.5rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3px !important;
+    text-shadow: 0 0 15px currentColor !important;
+    transition: all 0.3s ease !important;
+    margin-top: 10px !important;
+}
+
+/* ✅ VRIJSPEL: Goud/Geel */
+.discipline-vrijspel {
+    color: #f39c12 !important;
+    text-shadow: 0 0 20px rgba(243, 156, 18, 0.6) !important;
+}
+
+/* ✅ BANDSTOTEN: Blauw */
+.discipline-bandstoten {
+    color: #3498db !important;
+    text-shadow: 0 0 20px rgba(52, 152, 219, 0.6) !important;
+}
+
+/* ✅ DRIEBANDEN: Rood/Paars */
+.discipline-driebanden {
+    color: #e74c3c !important;
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.6) !important;
+}
