@@ -4376,14 +4376,14 @@
     border: 1px solid #444;
 }
 
-/* ✅ MINIMALE BREEDTE VOOR MATCH KOLOMMEN (ongeveer 1,2cm) */
-/* We gebruiken min-width in plaats van fixed width, dat is veiliger voor colspans */
+/* ✅ BREEDTE VOOR MATCH KOLOMMEN (100px per cel) */
 .cross-table td.match-pts,
 .cross-table td.match-avg,
 .cross-table td.match-turns,
 .cross-table td.self-cell,
 .cross-table td.not-played {
-    min-width: 45px; 
+    min-width: 100px; 
+    max-width: 100px;
     font-size: 0.9em;
 }
 
