@@ -880,6 +880,50 @@
         </div>
     
     </section>
+
+    <!-- PAGINA 20: Competitie Stand -->
+    <div id="page20" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showPage(1)">← Terug</button>
+            <h1>🏆 Competitie Stand</h1>
+            <div style="width: 70px;"></div>
+        </div>
+    
+        <div class="selection-container" style="margin-top: 20px;">
+            <div class="selection-title">Selecteer Discipline & Categorie</div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #ecf0f1; margin-bottom: 10px;">Discipline:</h3>
+                <div class="selection-grid">
+                    <div class="selection-option" onclick="loadLeaderboard('Vrijspel')" id="compDiscVS">
+                        <h3>Vrijspel</h3>
+                    </div>
+                    <div class="selection-option" onclick="loadLeaderboard('Bandstoten')" id="compDiscBS">
+                        <h3>Bandstoten</h3>
+                    </div>
+                    <div class="selection-option" onclick="loadLeaderboard('Driebanden')" id="compDiscDB">
+                        <h3>Driebanden</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #ecf0f1; margin-bottom: 10px;">Categorie:</h3>
+                <div class="category-grid">
+                    <div class="category-option" onclick="loadLeaderboardCategory(1)" id="compCat1">Cat. 1</div>
+                    <div class="category-option" onclick="loadLeaderboardCategory(2)" id="compCat2">Cat. 2</div>
+                    <div class="category-option" onclick="loadLeaderboardCategory(3)" id="compCat3">Cat. 3</div>
+                    <div class="category-option" onclick="loadLeaderboardCategory(4)" id="compCat4">Cat. 4</div>
+                    <div class="category-option" onclick="loadLeaderboardCategory(5)" id="compCat5">Cat. 5</div>
+                    <div class="category-option" onclick="loadLeaderboardCategory(6)" id="compCat6">Cat. 6</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="matches-list-container" id="competitionLeaderboard" style="padding: 10px;">
+            <div class="no-matches"><p>Selecteer een discipline en categorie om het klassement te zien.</p></div>
+        </div>
+    </div>
     
     <script src="js/state.js"></script>
     <script src="js/competition.js"></script>
