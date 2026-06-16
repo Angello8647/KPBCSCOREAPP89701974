@@ -2430,7 +2430,20 @@ window.friendlyChangeScore = function(delta) {
             window.updateFriendlyUI();
             
             if (activePhase === 'driebanden') {
-                // ✅ MATCH IS VOORBIJ! Laatste fase is gehaald. Direct winnen, geen nabeurt.
+                // ✅ CRUCIAAL: Sla de laatste, winnende reeks op voordat de match eindigt!
+                // (Normaal gebeurt dit in friendlyMiss, maar die wordt hier overgeslagen)
+                if (ts.activeSide === 'left') {
+                    ts.leftTurns.push(ts.currentRun);
+                    if (ts.currentRun > ts.leftHighestSeries) ts.leftHighestSeries = ts.currentRun;
+                } else {
+                    ts.rightTurns.push(ts.currentRun);
+                    if (ts.currentRun > ts.rightHighestSeries) ts.rightHighestSeries = ts.currentRun;
+                }
+
+                // Update UI één laatste keer zodat de laatste beurt zichtbaar is in de kaart
+                window.updateFriendlyUI();
+                
+                // Nu pas de match beëindigen
                 window.endFriendlyMatch();
                 return;
             } else {
