@@ -127,3 +127,96 @@ window.calculatePlayerStats = function(playerId, playerName, discipline, categor
         tsg: tsg
     };
 };
+
+// =========================================================================
+// BLOK 3: UI - LEADERBOARD (KLASSEMENT)
+// =========================================================================
+
+let currentCompDiscipline = null;
+let currentCompCategory = null;
+
+// Hulpfuncties voor de knoppen
+window.loadLeaderboard = function(discipline) {
+    currentCompDiscipline = discipline;
+    document.querySelectorAll('#page20 .selection-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById(`compDisc${discipline === 'Vrijspel' ? 'VS' : discipline === 'Bandstoten' ? 'BS' : 'DB'}`).classList.add('selected');
+    if (currentCompCategory) renderCompetitionLeaderboard();
+};
+
+window.loadLeaderboardCategory = function(category) {
+    currentCompCategory = category;
+    document.querySelectorAll('#page20 .category-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById(`compCat${category}`).classList.add('selected');
+    if (currentCompDiscipline) renderCompetitionLeaderboard();
+};
+
+/**
+ * Genereert en toont het klassement op Pagina 20
+ */
+window.renderCompetitionLeaderboard = function() {
+    if (!currentCompDiscipline || !currentCompCategory) return;
+
+    const container = document.getElementById('competitionLeaderboard');
+    
+    // 1. Filter spelers
+    const players = state.players.filter(p => p.discipline === currentCompDiscipline && p.category === currentCompCategory);
+    
+    if (players.length === 0) {
+        container.innerHTML = `<div class="no-matches"><p>Geen spelers gevonden voor ${currentCompDiscipline} - Categorie ${currentCompCategory}</p></div>`;
+        return;
+    }
+
+    // 2. Bereken stats voor elke speler
+    let leaderboard = players.map(p => calculatePlayerStats(p.id, p.name, currentCompDiscipline, currentCompCategory));
+
+    // 3. Sorteer (Tie-breakers: 1. Comp Punten, 2. Coëfficiënt, 3. Hoogste Reeks)
+    leaderboard.sort((a, b) => {
+        if (b.totalCompPoints !== a.totalCompPoints) return b.totalCompPoints - a.totalCompPoints;
+        if (b.coefficient !== a.coefficient) return b.coefficient - a.coefficient;
+        return b.highestSeries - a.highestSeries;
+    });
+
+    // 4. Bouw de HTML tabel
+    let html = `<div class="matches-list-title">🏆 Klassement: ${currentCompDiscipline} - Categorie ${currentCompCategory}</div>`;
+    html += `<table class="competition-table">
+        <thead>
+            <tr>
+                <th>nr</th>
+                <th>NAAM</th>
+                <th>GSM</th>
+                <th>TSG</th>
+                <th>PTN</th>
+                <th>BRTN</th>
+                <th>GGEM</th>
+                <th>COEF</th>
+                <th>MPTN</th>
+                <th>HR</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    leaderboard.forEach((p, index) => {
+        const rank = index + 1;
+        let rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+        
+        // Kleur voor MPTN (Competitiepunten)
+        let mptnClass = p.totalCompPoints > 0 ? 'comp-pts-positive' : p.totalCompPoints < 0 ? 'comp-pts-negative' : 'comp-pts-zero';
+        let mptnText = p.totalCompPoints > 0 ? `+${p.totalCompPoints}` : p.totalCompPoints;
+
+        html += `<tr class="${rankClass}">
+            <td>${rank}</td>
+            <td>${p.name}</td>
+            <td>${p.matchesPlayed}</td>
+            <td>${p.tsg.toFixed(3).replace('.', ',')}</td>
+            <td>${p.totalPointsScored}</td>
+            <td>${p.totalTurnsPlayed}</td>
+            <td>${p.average.toFixed(3).replace('.', ',')}</td>
+            <td>${p.coefficient.toFixed(4).replace('.', ',')}</td>
+            <td class="${mptnClass}">${mptnText}</td>
+            <td>${p.highestSeries}</td>
+        </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+};
