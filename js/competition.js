@@ -220,3 +220,104 @@ window.renderCompetitionLeaderboard = function() {
     html += `</tbody></table>`;
     container.innerHTML = html;
 };
+
+
+// =========================================================================
+// BLOK 4: UI - KRUISTABEL
+// =========================================================================
+
+let currentCrossDiscipline = null;
+let currentCrossCategory = null;
+
+// Hulpfuncties voor de knoppen
+window.loadCrossTable = function(discipline) {
+    currentCrossDiscipline = discipline;
+    document.querySelectorAll('#page21 .selection-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById(`crossDisc${discipline === 'Vrijspel' ? 'VS' : discipline === 'Bandstoten' ? 'BS' : 'DB'}`).classList.add('selected');
+    if (currentCrossCategory) renderCrossTable();
+};
+
+window.loadCrossTableCategory = function(category) {
+    currentCrossCategory = category;
+    document.querySelectorAll('#page21 .category-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById(`crossCat${category}`).classList.add('selected');
+    if (currentCrossDiscipline) renderCrossTable();
+};
+
+/**
+ * Genereert en toont de kruistabel op Pagina 21
+ */
+window.renderCrossTable = function() {
+    if (!currentCrossDiscipline || !currentCrossCategory) return;
+
+    const container = document.getElementById('crossTableContainer');
+    
+    // 1. Filter spelers
+    const players = state.players.filter(p => p.discipline === currentCrossDiscipline && p.category === currentCrossCategory);
+    
+    if (players.length === 0) {
+        container.innerHTML = `<div class="no-matches"><p>Geen spelers gevonden voor ${currentCrossDiscipline} - Categorie ${currentCrossCategory}</p></div>`;
+        return;
+    }
+
+    // Sorteer spelers op naam
+    players.sort((a, b) => a.name.localeCompare(b.name));
+
+    // 2. Bouw de kruistabel
+    let html = `<div class="matches-list-title"> Kruistabel: ${currentCrossDiscipline} - Categorie ${currentCrossCategory}</div>`;
+    html += `<table class="cross-table"><thead><tr><th>Speler</th>`;
+    
+    // Header rij met alle spelers
+    players.forEach(p => {
+        html += `<th>${p.name.split(' ').pop()}</th>`; // Alleen achternaam voor ruimte
+    });
+    html += `</tr></thead><tbody>`;
+
+    // 3. Voor elke speler een rij
+    players.forEach((player1, rowIndex) => {
+        html += `<tr><td><strong>${player1.name}</strong></td>`;
+        
+        // Voor elke tegenstander een cel
+        players.forEach((player2, colIndex) => {
+            if (rowIndex === colIndex) {
+                // Eigen cel (diagonaal)
+                html += `<td class="self-cell">-</td>`;
+            } else {
+                // Zoek match tussen deze twee spelers
+                const match = state.matches.find(m => 
+                    m.completed && 
+                    m.discipline === currentCrossDiscipline && 
+                    m.cat === currentCrossCategory &&
+                    ((m.p1_club_id === player1.id && m.p2_club_id === player2.id) ||
+                     (m.p1_club_id === player2.id && m.p2_club_id === player1.id))
+                );
+
+                if (match) {
+                    // Bepaal of player1 p1 of p2 was
+                    const isP1 = match.p1_club_id === player1.id;
+                    const pointsForPlayer1 = isP1 ? match.p1Score : match.p2Score;
+                    const pointsForPlayer2 = isP1 ? match.p2Score : match.p1Score;
+                    const winner = match.winner;
+                    
+                    // Bepaal cel-klasse
+                    let cellClass = '';
+                    if (winner === player1.name) {
+                        cellClass = 'win-cell';
+                    } else if (winner === player2.name) {
+                        cellClass = 'loss-cell';
+                    }
+                    
+                    html += `<td class="${cellClass}">${pointsForPlayer1}-${pointsForPlayer2}</td>`;
+                } else {
+                    // Nog niet gespeeld
+                    html += `<td class="not-played">-</td>`;
+                }
+            }
+        });
+        
+        html += `</tr>`;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+};
