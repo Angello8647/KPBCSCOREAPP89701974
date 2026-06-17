@@ -155,9 +155,9 @@ window.loadLeaderboardCategory = function(category) {
  * Genereert en toont het klassement op Pagina 20
  */
 window.renderCompetitionLeaderboard = function() {
+    currentCompDiscipline = document.getElementById('compDisc').value;
+    currentCompCategory = parseInt(document.getElementById('compCat').value);
     if (!currentCompDiscipline || !currentCompCategory) return;
-
-    const container = document.getElementById('competitionLeaderboard');
     
     // 1. Filter spelers
     const players = state.players.filter(p => p.discipline === currentCompDiscipline && p.category === currentCompCategory);
@@ -249,9 +249,9 @@ window.loadCrossTableCategory = function(category) {
  * Genereert de volledige kruistabel met correcte 2x2 blokken en TOT structuur
  */
 window.renderCrossTable = function() {
+    currentCrossDiscipline = document.getElementById('compDisc').value;
+    currentCrossCategory = parseInt(document.getElementById('compCat').value);
     if (!currentCrossDiscipline || !currentCrossCategory) return;
-
-    const container = document.getElementById('crossTableContainer');
     // Hulpfunctie: "Wouter BOEDTS" wordt "W. BOEDTS"
     const formatShortName = (fullName) => {
         const parts = fullName.trim().split(' ');
