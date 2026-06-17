@@ -413,6 +413,11 @@ function endMatch() {
     state.currentMatch.winner = state.player1.score >= state.player1.target ? state.currentMatch.p1 : state.currentMatch.p2;
     
     if (typeof saveStateToStorage === 'function') saveStateToStorage();
+    // ✅ NIEUW: Stuur de volledige match-data naar de PythonAnywhere API
+    if (typeof window.syncMatchToAPI === 'function') {
+        console.log("📤 Probeer match te syncen met server...");
+        window.syncMatchToAPI(state.currentMatch);
+    }
     
     updateScoringPage();
     updateHeaderButtons();
