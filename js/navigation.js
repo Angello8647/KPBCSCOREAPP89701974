@@ -98,6 +98,12 @@ window.showPage = function(pageNum) {
             window.loadFilteredMatches();
         }
     }
+    else if (actualPageNum === 20) {
+        // PAGINA 20: Competitie (Rangschikking & Kruistabel)
+        if (typeof window.initCompetitionPage === 'function') {
+            window.initCompetitionPage();
+        }
+    }
 };
 
 // ==========================================
