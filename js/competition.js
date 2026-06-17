@@ -439,9 +439,9 @@ window.initCompetitionPage = function() {
     const disciplines = [...new Set(state.players.map(p => p.discipline))].sort();
     const discSelect = document.getElementById('compDisc');
     
-    discSelect.innerHTML = '<option value="">Kies Discipline</option>';
+    discSelect.innerHTML = '<option value="">🏅Kies Discipline</option>';
     disciplines.forEach(d => {
-        discSelect.innerHTML += `<option value="${d}">🏅 ${d}</option>`;
+        discSelect.innerHTML += `<option value="${d}">${d}</option>`;
     });
     
     document.getElementById('compCat').innerHTML = '<option value="">Kies Categorie</option>';
@@ -454,12 +454,12 @@ window.updateCompCategories = function() {
     const disc = document.getElementById('compDisc').value;
     const catSelect = document.getElementById('compCat');
     
-    catSelect.innerHTML = '<option value="">Categorie...</option>';
+    catSelect.innerHTML = '<option value="">📜Kies Categorie</option>';
     if(!disc) return;
     
     const cats = [...new Set(state.players.filter(p => p.discipline === disc).map(p => p.category))].sort((a,b) => a-b);
     cats.forEach(c => {
-        catSelect.innerHTML += `<option value="${c}">🔢 Cat. ${c}</option>`;
+        catSelect.innerHTML += `<option value="${c}">Cat. ${c}</option>`;
     });
     
     handleCategoryChange();
