@@ -600,6 +600,17 @@ window.startMatch = function() {
     updateScoringPage();
 };
 
+
+function enableScoreButtons() {
+    document.querySelectorAll('.score-btn').forEach(btn => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+    });
+}
+
+
+
 // ==========================================
 // ✅ HELPER: Highlight match (KOPPEL AAN WINDOW ZODAT HIJ ALTIJD GEVONDEN WORDT)
 // ==========================================
