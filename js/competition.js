@@ -158,6 +158,8 @@ window.renderCompetitionLeaderboard = function() {
     currentCompDiscipline = document.getElementById('compDisc').value;
     currentCompCategory = parseInt(document.getElementById('compCat').value);
     if (!currentCompDiscipline || !currentCompCategory) return;
+
+    const container = document.getElementById('competitionLeaderboard');
     
     // 1. Filter spelers
     const players = state.players.filter(p => p.discipline === currentCompDiscipline && p.category === currentCompCategory);
@@ -252,6 +254,9 @@ window.renderCrossTable = function() {
     currentCrossDiscipline = document.getElementById('compDisc').value;
     currentCrossCategory = parseInt(document.getElementById('compCat').value);
     if (!currentCrossDiscipline || !currentCrossCategory) return;
+
+    const container = document.getElementById('crossTableContainer');
+        
     // Hulpfunctie: "Wouter BOEDTS" wordt "W. BOEDTS"
     const formatShortName = (fullName) => {
         const parts = fullName.trim().split(' ');
