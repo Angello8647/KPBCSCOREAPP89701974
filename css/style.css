@@ -4530,7 +4530,7 @@
     background: #3498db;
     border-color: #2980b9;
     font-weight: bold;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5); /* Zwevend/glow effect */
+    /* box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5);  Zwevend/glow effect */
 }
 /* Zorgt dat de dropdown lijst en de placeholder niet bleek zijn */
 .comp-header-controls select {
