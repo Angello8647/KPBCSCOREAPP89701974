@@ -422,3 +422,76 @@ window.renderCrossTable = function() {
         }
     });
 };
+
+// =========================================================================
+// BLOK 5: UI - HEADER CONTROLS & NAVIGATIE
+// =========================================================================
+
+/**
+ * Initialiseert de dropdowns wanneer Pagina 20 wordt geopend
+ */
+window.initCompetitionPage = function() {
+    const disciplines = [...new Set(state.players.map(p => p.discipline))].sort();
+    const discSelect = document.getElementById('compDisc');
+    
+    discSelect.innerHTML = '<option value="">Discipline...</option>';
+    disciplines.forEach(d => {
+        discSelect.innerHTML += `<option value="${d}">${d}</option>`;
+    });
+    
+    document.getElementById('compCat').innerHTML = '<option value="">Categorie...</option>';
+};
+
+/**
+ * Update de categorie-dropdown op basis van de gekozen discipline
+ */
+window.updateCompCategories = function() {
+    const disc = document.getElementById('compDisc').value;
+    const catSelect = document.getElementById('compCat');
+    
+    catSelect.innerHTML = '<option value="">Categorie...</option>';
+    if(!disc) return;
+    
+    const cats = [...new Set(state.players.filter(p => p.discipline === disc).map(p => p.category))].sort((a,b) => a-b);
+    cats.forEach(c => {
+        catSelect.innerHTML += `<option value="${c}">Cat. ${c}</option>`;
+    });
+    
+    handleCategoryChange();
+};
+
+/**
+ * Wordt aangeroepen als de categorie verandert
+ */
+window.handleCategoryChange = function() {
+    const disc = document.getElementById('compDisc').value;
+    const cat = document.getElementById('compCat').value;
+    
+    if(disc && cat) {
+        // Bepaal welke view momenteel actief is en render die
+        const activeView = document.getElementById('viewLeaderboard').style.display !== 'none' ? 'leaderboard' : 'crosstable';
+        switchCompView(activeView);
+    }
+};
+
+/**
+ * Wisselt tussen Rangschikking en Kruistabel
+ */
+window.switchCompView = function(view) {
+    const disc = document.getElementById('compDisc').value;
+    const cat = document.getElementById('compCat').value;
+    
+    // Toggle zichtbaarheid
+    document.getElementById('viewLeaderboard').style.display = view === 'leaderboard' ? 'block' : 'none';
+    document.getElementById('viewCrossTable').style.display = view === 'crosstable' ? 'block' : 'none';
+    
+    // Toggle knop styling
+    document.getElementById('btnLeaderboard').classList.toggle('active', view === 'leaderboard');
+    document.getElementById('btnCrossTable').classList.toggle('active', view === 'crosstable');
+    
+    // Render de actieve view als er een keuze is gemaakt
+    if(disc && cat) {
+        if(view === 'leaderboard') renderCompetitionLeaderboard();
+        if(view === 'crosstable') renderCrossTable();
+    }
+};
