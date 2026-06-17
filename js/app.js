@@ -61,13 +61,15 @@ window.syncMatchToAPI = async function(match) {
                 club_id: match.p1_club_id,
                 score: match.p1Score,
                 beurten: match.p1Turns.length,
-                gemiddelde: match.p1Turns.length > 0 ? parseFloat((match.p1Score / match.p1Turns.length).toFixed(3)) : 0
+                gemiddelde: match.p1Turns.length > 0 ? parseFloat((match.p1Score / match.p1Turns.length).toFixed(3)) : 0,
+                hoogste_reeks: match.p1Highest || 0
             },
             {
                 club_id: match.p2_club_id,
                 score: match.p2Score,
                 beurten: match.p2Turns.length,
-                gemiddelde: match.p2Turns.length > 0 ? parseFloat((match.p2Score / match.p2Turns.length).toFixed(3)) : 0
+                gemiddelde: match.p2Turns.length > 0 ? parseFloat((match.p2Score / match.p2Turns.length).toFixed(3)) : 0,
+                hoogste_reeks: match.p2Highest || 0
             }
         ]
     };
