@@ -4472,16 +4472,29 @@
     margin-top: 10px;
 }
 
-/* Dropdowns: Ronde vorm, custom pijltje, glow bij focus */
+/* =========================================================================
+   COMPETITIE HEADER CONTROLS - Dropdowns & Knoppen
+   ========================================================================= */
+.comp-header-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+/* ✅ DROPDOWNS: Ronde vorm, custom pijltje, strakke tekst */
 .comp-header-controls select {
     background-color: #2c3e50;
-    color: #ecf0f1;
+    color: #ecf0f1;              /* Helder wit voor de tekst */
     border: 1px solid #444;
-    padding: 8px 35px 8px 15px; /* Extra ruimte rechts voor het pijltje */
-    border-radius: 25px; /* Pill shape */
+    padding: 8px 35px 8px 15px;  /* Extra ruimte rechts voor het pijltje */
+    border-radius: 25px;         /* Pill shape */
     font-size: 0.95em;
+    font-weight: 500;            /* Iets vetter, niet bleek */
     cursor: pointer;
     outline: none;
+    transition: all 0.2s ease;
     
     /* Verwijdert standaard browser pijltje */
     appearance: none;
@@ -4493,7 +4506,6 @@
     background-repeat: no-repeat;
     background-position: right 12px top 50%;
     background-size: 10px auto;
-    transition: all 0.2s ease;
 }
 
 .comp-header-controls select:hover {
@@ -4502,16 +4514,24 @@
 
 .comp-header-controls select:focus {
     border-color: #3498db;
-    box-shadow: 0 0 8px rgba(52, 152, 219, 0.6); /* Blauwe glow */
+    /* Geen glow meer - gewoon een strakke blauwe rand */
 }
 
-/* Knoppen: Ronde vorm, zwevend effect bij active */
+/* Stijl voor de opties ZODRA je de dropdown openklikt */
+.comp-header-controls select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 10px;
+    font-weight: 500;
+}
+
+/* ✅ KNOPPEN: Ronde vorm, zwevend effect bij active */
 .view-btn {
     background: #34495e;
     color: #ecf0f1;
     border: 1px solid #444;
     padding: 8px 20px;
-    border-radius: 25px; /* Pill shape */
+    border-radius: 25px;         /* Pill shape */
     cursor: pointer;
     font-size: 0.95em;
     font-weight: 500;
@@ -4530,18 +4550,5 @@
     background: #3498db;
     border-color: #2980b9;
     font-weight: bold;
-    /* box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5);  Zwevend/glow effect */
-}
-/* Zorgt dat de dropdown lijst en de placeholder niet bleek zijn */
-.comp-header-controls select {
-    color: #ecf0f1; /* Helder wit voor de geselecteerde tekst */
-    font-weight: 500; /* Iets vetter, minder dun/bleek */
-}
-
-/* Stijl voor de opties ZODRA je de dropdown openklikt */
-.comp-header-controls select option {
-    background-color: #2c3e50; /* Donkere achtergrond voor de open lijst */
-    color: #ecf0f1; /* Helder witte tekst in de lijst */
-    padding: 10px;
-    font-weight: 500;
+    /* Geen glow - gewoon een heldere blauwe kleur */
 }
