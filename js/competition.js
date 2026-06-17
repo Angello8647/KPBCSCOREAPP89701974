@@ -436,15 +436,31 @@ window.renderCrossTable = function() {
  * Initialiseert de dropdowns wanneer Pagina 20 wordt geopend
  */
 window.initCompetitionPage = function() {
-    const disciplines = [...new Set(state.players.map(p => p.discipline))].sort();
+    // ✅ 1. RESET: Zet dropdowns terug naar standaard (met jouw aangepaste tekst)
     const discSelect = document.getElementById('compDisc');
+    discSelect.value = ""; // Forceer dat er niets geselecteerd is
+    discSelect.innerHTML = '<option value="">🏅 Kies Discipline</option>';
     
-    discSelect.innerHTML = '<option value="">🏅Kies Discipline</option>';
+    document.getElementById('compCat').innerHTML = '<option value="">📜 Kies Categorie</option>';
+    
+    // ✅ 2. RESET: Standaard weergave instellen (Rangschikking zichtbaar, Kruistabel verborgen)
+    document.getElementById('viewLeaderboard').style.display = 'block';
+    document.getElementById('viewCrossTable').style.display = 'none';
+    
+    // ✅ 3. RESET: Knoppen terugzetten (Rangschikking actief)
+    document.getElementById('btnLeaderboard').classList.add('active');
+    document.getElementById('btnCrossTable').classList.remove('active');
+    
+    // ✅ 4. RESET: Inhoud van de tabellen wissen en melding tonen
+    const emptyMsg = '<div class="no-matches"><p>Selecteer een discipline en categorie.</p></div>';
+    document.getElementById('competitionLeaderboard').innerHTML = emptyMsg;
+    document.getElementById('crossTableContainer').innerHTML = emptyMsg;
+    
+    // ✅ 5. VUL: Discipline dropdown opnieuw met de beschikbare opties
+    const disciplines = [...new Set(state.players.map(p => p.discipline))].sort();
     disciplines.forEach(d => {
         discSelect.innerHTML += `<option value="${d}">🏅 ${d}</option>`;
     });
-    
-    document.getElementById('compCat').innerHTML = '<option value="">Kies Categorie</option>';
 };
 
 /**
