@@ -439,12 +439,12 @@ window.initCompetitionPage = function() {
     const disciplines = [...new Set(state.players.map(p => p.discipline))].sort();
     const discSelect = document.getElementById('compDisc');
     
-    discSelect.innerHTML = '<option value="">Discipline...</option>';
+    discSelect.innerHTML = '<option value="">Kies Discipline</option>';
     disciplines.forEach(d => {
         discSelect.innerHTML += `<option value="${d}">🏅 ${d}</option>`;
     });
     
-    document.getElementById('compCat').innerHTML = '<option value="">Categorie...</option>';
+    document.getElementById('compCat').innerHTML = '<option value="">Kies Categorie</option>';
 };
 
 /**
