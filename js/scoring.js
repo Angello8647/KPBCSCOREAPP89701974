@@ -502,7 +502,7 @@ window.selectWhitePlayer = function(playerNum) {
 };
 
 // ==========================================
-// MATCH STARTEN (na bal-selectie)
+// MATCH STARTEN (na bal-selectie) - ✅ FIXED!
 // ==========================================
 window.startMatch = function() {
     if (!state.selectedWhitePlayer) {
@@ -511,6 +511,8 @@ window.startMatch = function() {
 
     const originalP1 = state.currentMatch.p1;
     const originalP2 = state.currentMatch.p2;
+    const originalP1ClubId = state.currentMatch.p1_club_id;  // ✅ VOEG DIT TOE
+    const originalP2ClubId = state.currentMatch.p2_club_id;  // ✅ VOEG DIT TOE
     const originalTarget1 = state.currentMatch.target1;
     const originalTarget2 = state.currentMatch.target2;
 
@@ -539,6 +541,8 @@ window.startMatch = function() {
     if (state.selectedWhitePlayer === 2) {
         state.currentMatch.p1 = originalP2;
         state.currentMatch.p2 = originalP1;
+        state.currentMatch.p1_club_id = originalP2ClubId;  // ✅ SWAP CLUB IDS!
+        state.currentMatch.p2_club_id = originalP1ClubId;  // ✅ SWAP CLUB IDS!
         state.currentMatch.target1 = originalTarget2;
         state.currentMatch.target2 = originalTarget1;
 
@@ -554,6 +558,8 @@ window.startMatch = function() {
     } else {
         state.currentMatch.p1 = originalP1;
         state.currentMatch.p2 = originalP2;
+        state.currentMatch.p1_club_id = originalP1ClubId;  // ✅ Expliciet toewijzen (geen swap nodig)
+        state.currentMatch.p2_club_id = originalP2ClubId;  // ✅ Expliciet toewijzen (geen swap nodig)
         state.currentMatch.target1 = originalTarget1;
         state.currentMatch.target2 = originalTarget2;
 
@@ -593,14 +599,6 @@ window.startMatch = function() {
     showPage(5);
     updateScoringPage();
 };
-
-function enableScoreButtons() {
-    document.querySelectorAll('.score-btn').forEach(btn => {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
-    });
-}
 
 // ==========================================
 // ✅ HELPER: Highlight match (KOPPEL AAN WINDOW ZODAT HIJ ALTIJD GEVONDEN WORDT)
