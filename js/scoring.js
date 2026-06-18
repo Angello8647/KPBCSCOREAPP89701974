@@ -262,7 +262,8 @@ function playScoreSound(score) {
         utterance.rate = 1.1;     // Iets sneller dan standaard
         utterance.pitch = 1.0;    // Normale toonhoogte
         
-        window.speechSynthesis.speak(utterance);
+        // ✅ UITGESCHAKELD VOOR TESTEN - Commentaar terug verwijderen om spraak te activeren
+        // window.speechSynthesis.speak(utterance);
     }
 }
 
