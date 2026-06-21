@@ -62,14 +62,16 @@ window.syncMatchToAPI = async function(match) {
                 score: match.p1Score,
                 beurten: match.p1Turns.length,
                 gemiddelde: match.p1Turns.length > 0 ? parseFloat((match.p1Score / match.p1Turns.length).toFixed(3)) : 0,
-                hoogste_reeks: match.p1Highest || 0
+                hoogste_reeks: match.p1Highest || 0,
+                turns_detail: match.p1Turns || []  // ✅ NIEUW: Array met punten per beurt
             },
             {
                 club_id: match.p2_club_id,
                 score: match.p2Score,
                 beurten: match.p2Turns.length,
                 gemiddelde: match.p2Turns.length > 0 ? parseFloat((match.p2Score / match.p2Turns.length).toFixed(3)) : 0,
-                hoogste_reeks: match.p2Highest || 0
+                hoogste_reeks: match.p2Highest || 0,
+                turns_detail: match.p2Turns || []  // ✅ NIEUW: Array met punten per beurt
             }
         ]
     };
