@@ -99,11 +99,15 @@ window.showPage = function(pageNum) {
         }
     }
     else if (actualPageNum === 20) {
-        // PAGINA 20: Competitie (Rangschikking & Kruistabel)
-        if (typeof window.initCompetitionPage === 'function') {
-            window.initCompetitionPage();
-        }
+    // PAGINA 20: Competitie (Rangschikking & Kruistabel)
+    if (typeof window.initCompetitionPage === 'function') {
+        window.initCompetitionPage();
     }
+    // ✅ NIEUW: Haal verse match results op van de server
+    if (typeof window.fetchMatchResultsFromAPI === 'function') {
+        window.fetchMatchResultsFromAPI();
+    }
+}
 };
 
 // ==========================================
