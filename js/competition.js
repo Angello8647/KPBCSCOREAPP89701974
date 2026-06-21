@@ -160,6 +160,7 @@ window.renderCompetitionLeaderboard = function() {
     if (!currentCompDiscipline || !currentCompCategory) return;
 
     const container = document.getElementById('competitionLeaderboard');
+    const allMatches = state.completedMatches && state.completedMatches.length > 0 ? state.completedMatches : state.matches.filter(m => m.completed);
     
     // 1. Filter spelers
     const players = state.players.filter(p => p.discipline === currentCompDiscipline && p.category === currentCompCategory);
@@ -170,7 +171,7 @@ window.renderCompetitionLeaderboard = function() {
     }
 
     // 2. Bereken stats voor elke speler
-    let leaderboard = players.map(p => calculatePlayerStats(p.id, p.name, currentCompDiscipline, currentCompCategory));
+    let leaderboard = players.map(p => calculatePlayerStatsFromAPI(p.id, p.name, currentCompDiscipline, currentCompCategory, allMatches));
 
     // 3. Sorteer (Tie-breakers: 1. Comp Punten, 2. Coëfficiënt, 3. Hoogste Reeks)
     leaderboard.sort((a, b) => {
