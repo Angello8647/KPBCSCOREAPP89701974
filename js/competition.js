@@ -517,3 +517,73 @@ window.switchCompView = function(view) {
         if(view === 'crosstable') renderCrossTable();
     }
 };
+
+
+/**
+ * Berekent stats voor een speler op basis van API match results
+ * Werkt met de platte structuur van /api/match-results
+ */
+window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, category, allMatches) {
+    // Filter matches voor deze speler in deze discipline/categorie
+    const playerMatches = allMatches.filter(m => {
+        const isCorrectDiscipline = m.discipline === discipline;
+        const isCorrectCategory = String(m.category) === String(category);
+        const isPlayerInMatch = String(m.player1_club_id) === String(playerId) || 
+                                String(m.player2_club_id) === String(playerId);
+        return isCorrectDiscipline && isCorrectCategory && isPlayerInMatch;
+    });
+
+    let totalCompPoints = 0;
+    let totalPointsScored = 0;
+    let totalTurnsPlayed = 0;
+    let highestSeries = 0;
+    let matchesPlayed = 0;
+    let matchesWon = 0;
+
+    playerMatches.forEach(match => {
+        const isP1 = String(match.player1_club_id) === String(playerId);
+        const points = isP1 ? match.player1_score : match.player2_score;
+        const turns = isP1 ? match.player1_beurten : match.player2_beurten;
+        const hr = isP1 ? match.player1_hoogste_reeks : match.player2_hoogste_reeks;
+        const won = String(match.winner_club_id) === String(playerId);
+
+        // Bereken competitiepunten voor deze match
+        const compPoints = window.calculateCompetitionPoints(points, turns, discipline);
+
+        totalCompPoints += compPoints;
+        totalPointsScored += points;
+        totalTurnsPlayed += turns;
+        if (hr > highestSeries) highestSeries = hr;
+        matchesPlayed++;
+        if (won) matchesWon++;
+    });
+
+    // Bereken algemeen gemiddelde
+    const average = totalTurnsPlayed > 0 ? totalPointsScored / totalTurnsPlayed : 0;
+    
+    // Zoek TSG van de speler
+    const playerData = state.players.find(p => p.id === playerId);
+    let tsg = 0;
+    if (playerData && playerData.tsg) {
+        tsg = parseFloat(playerData.tsg.replace(',', '.'));
+    }
+    
+    // Coëfficiënt: gespeeld gemiddelde / TSG
+    const coefficient = tsg > 0 ? average / tsg : 0;
+
+    return {
+        id: playerId,
+        name: playerName,
+        discipline: discipline,
+        category: category,
+        matchesPlayed: matchesPlayed,
+        matchesWon: matchesWon,
+        totalPointsScored: totalPointsScored,
+        totalTurnsPlayed: totalTurnsPlayed,
+        average: average,
+        highestSeries: highestSeries,
+        totalCompPoints: totalCompPoints,
+        coefficient: coefficient,
+        tsg: tsg
+    };
+};
