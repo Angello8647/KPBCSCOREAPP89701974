@@ -519,17 +519,17 @@ window.switchCompView = function(view) {
 };
 
 
+
 /**
  * Berekent stats voor een speler op basis van API match results
- * Werkt met de platte structuur van /api/match-results
+ * Werkt met de players array structuur van /api/match-results
  */
 window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, category, allMatches) {
     // Filter matches voor deze speler in deze discipline/categorie
     const playerMatches = allMatches.filter(m => {
         const isCorrectDiscipline = m.discipline === discipline;
         const isCorrectCategory = String(m.category) === String(category);
-        const isPlayerInMatch = String(m.player1_club_id) === String(playerId) || 
-                                String(m.player2_club_id) === String(playerId);
+        const isPlayerInMatch = m.players.some(p => String(p.club_id) === String(playerId));
         return isCorrectDiscipline && isCorrectCategory && isPlayerInMatch;
     });
 
@@ -541,10 +541,13 @@ window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, 
     let matchesWon = 0;
 
     playerMatches.forEach(match => {
-        const isP1 = String(match.player1_club_id) === String(playerId);
-        const points = isP1 ? match.player1_score : match.player2_score;
-        const turns = isP1 ? match.player1_beurten : match.player2_beurten;
-        const hr = isP1 ? match.player1_hoogste_reeks : match.player2_hoogste_reeks;
+        // Zoek de speler in de players array
+        const playerData = match.players.find(p => String(p.club_id) === String(playerId));
+        if (!playerData) return;
+
+        const points = playerData.score;
+        const turns = playerData.beurten;
+        const hr = playerData.hoogste_reeks;
         const won = String(match.winner_club_id) === String(playerId);
 
         // Bereken competitiepunten voor deze match
