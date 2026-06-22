@@ -348,7 +348,6 @@ window.renderCrossTable = function() {
                     
                     html += `<td class="match-pts">${points}</td>`;
                     html += `<td class="match-avg">${average}</td>`;
-                }
                 } else {
                     // Niet gespeeld - beslaat 2 kolommen in deze rij
                     html += `<td class="not-played" colspan="2"></td>`;
