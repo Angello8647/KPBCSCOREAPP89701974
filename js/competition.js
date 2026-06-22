@@ -341,13 +341,14 @@ window.renderCrossTable = function() {
                 });
 
                 if (match) {
-                    const isP1 = match.p1_club_id === player1.id;
-                    const points = isP1 ? match.p1Score : match.p2Score;
-                    const turns = isP1 ? match.p1Turns.length : match.p2Turns.length;
+                    const playerData = match.players.find(p => String(p.club_id) === String(player1.id));
+                    const points = playerData.score;
+                    const turns = playerData.beurten;
                     const average = turns > 0 ? (points / turns).toFixed(2).replace('.', ',') : '0,00';
                     
                     html += `<td class="match-pts">${points}</td>`;
                     html += `<td class="match-avg">${average}</td>`;
+                }
                 } else {
                     // Niet gespeeld - beslaat 2 kolommen in deze rij
                     html += `<td class="not-played" colspan="2"></td>`;
