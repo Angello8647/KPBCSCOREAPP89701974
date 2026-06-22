@@ -4569,3 +4569,26 @@
     /* Geen glow - gewoon een heldere blauwe kleur */
 }
 
+/* =========================================================================
+   PAGINA 20: COMPETITIE (RANGSCHIKKING & KRUISTABEL)
+   ========================================================================= */
+
+#page20 {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#page20 #viewCrossTable,
+#page20 #viewLeaderboard {
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#page20 #crossTableContainer,
+#page20 #competitionLeaderboard {
+    overflow: auto;
+    flex: 1;
+}
