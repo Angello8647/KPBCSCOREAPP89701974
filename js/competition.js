@@ -459,8 +459,24 @@ window.initCompetitionPage = function() {
     document.getElementById('crossTableContainer').innerHTML = emptyMsg;
     
     // ✅ 5. VUL: Discipline dropdown opnieuw met de beschikbare opties
-    const disciplines = [...new Set(state.players.map(p => p.discipline))].sort();
-    disciplines.forEach(d => {
+    // Haal unieke disciplines op
+    const disciplines = [...new Set(state.players.map(p => p.discipline))];
+    
+    // ✅ Definieer de gewenste volgorde
+    const disciplineOrder = ['Vrijspel', 'Bandstoten', 'Driebanden'];
+    
+    // ✅ Sorteer volgens deze volgorde
+    const sortedDisciplines = disciplines.sort((a, b) => {
+        const indexA = disciplineOrder.indexOf(a);
+        const indexB = disciplineOrder.indexOf(b);
+        // Als discipline niet in de lijst staat, zet hem achteraan
+        const posA = indexA === -1 ? 999 : indexA;
+        const posB = indexB === -1 ? 999 : indexB;
+        return posA - posB;
+    });
+    
+    // Vul de dropdown
+    sortedDisciplines.forEach(d => {
         discSelect.innerHTML += `<option value="${d}">🏅 ${d}</option>`;
     });
 };
