@@ -257,6 +257,7 @@ window.renderCrossTable = function() {
     if (!currentCrossDiscipline || !currentCrossCategory) return;
 
     const container = document.getElementById('crossTableContainer');
+    const allMatches = state.completedMatches && state.completedMatches.length > 0 ? state.completedMatches : state.matches.filter(m => m.completed);
         
     // Hulpfunctie: "Wouter BOEDTS" wordt "W. BOEDTS"
     const formatShortName = (fullName) => {
