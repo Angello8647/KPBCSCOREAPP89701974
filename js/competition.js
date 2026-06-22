@@ -332,13 +332,13 @@ window.renderCrossTable = function() {
                 // Eigen cel (diagonaal) - beslaat 2x2
                 html += `<td class="self-cell" rowspan="2" colspan="2"></td>`;
             } else {
-                const match = state.matches.find(m => 
-                    m.completed && 
-                    m.discipline === currentCrossDiscipline && 
-                    m.cat === currentCrossCategory &&
-                    ((m.p1_club_id === player1.id && m.p2_club_id === player2.id) ||
-                     (m.p1_club_id === player2.id && m.p2_club_id === player1.id))
-                );
+                const match = allMatches.find(m => {
+                    const isCorrectDiscipline = m.discipline === currentCrossDiscipline;
+                    const isCorrectCategory = String(m.category) === String(currentCrossCategory);
+                    const isCorrectPlayers = m.players.some(p => String(p.club_id) === String(player1.id)) &&
+                                             m.players.some(p => String(p.club_id) === String(player2.id));
+                    return isCorrectDiscipline && isCorrectCategory && isCorrectPlayers;
+                });
 
                 if (match) {
                     const isP1 = match.p1_club_id === player1.id;
@@ -372,13 +372,13 @@ window.renderCrossTable = function() {
             if (rowIndex === colIndex) {
                 // Eigen cel - al gedaan in Rij 1 met rowspan, dus niets doen
             } else {
-                const match = state.matches.find(m => 
-                    m.completed && 
-                    m.discipline === currentCrossDiscipline && 
-                    m.cat === currentCrossCategory &&
-                    ((m.p1_club_id === player1.id && m.p2_club_id === player2.id) ||
-                     (m.p1_club_id === player2.id && m.p2_club_id === player1.id))
-                );
+                const match = allMatches.find(m => {
+                    const isCorrectDiscipline = m.discipline === currentCrossDiscipline;
+                    const isCorrectCategory = String(m.category) === String(currentCrossCategory);
+                    const isCorrectPlayers = m.players.some(p => String(p.club_id) === String(player1.id)) &&
+                                             m.players.some(p => String(p.club_id) === String(player2.id));
+                    return isCorrectDiscipline && isCorrectCategory && isCorrectPlayers;
+                });
 
                 if (match) {
                     const isP1 = match.p1_club_id === player1.id;
