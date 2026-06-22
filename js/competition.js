@@ -280,7 +280,7 @@ window.renderCrossTable = function() {
     players.sort((a, b) => a.name.localeCompare(b.name));
 
     // 2. Bereken stats voor elke speler (voor TOT kolommen)
-    const playerStats = players.map(p => calculatePlayerStats(p.id, p.name, currentCrossDiscipline, currentCrossCategory));
+    const playerStats = players.map(p => calculatePlayerStatsFromAPI(p.id, p.name, currentCrossDiscipline, currentCrossCategory, allMatches));
 
     // 3. Bouw de kruistabel
     let html = `<div class="matches-list-title">📊 Kruistabel: ${currentCrossDiscipline} - Categorie ${currentCrossCategory}</div>`;
