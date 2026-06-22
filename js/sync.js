@@ -27,9 +27,9 @@ window.fetchMatchResultsFromAPI = async function() {
         if (state.currentPage === 20 || state.currentPage === 21) {
             const activeView = document.getElementById('viewLeaderboard').style.display !== 'none' ? 'leaderboard' : 'crosstable';
             if (activeView === 'leaderboard') {
-                renderCompetitionLeaderboard();
+                window.renderCompetitionLeaderboard();
             } else {
-                renderCrossTable();
+                window.renderCrossTable();
             }
         }
         
