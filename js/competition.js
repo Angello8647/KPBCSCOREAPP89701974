@@ -184,9 +184,11 @@ window.renderCompetitionLeaderboard = function() {
                 <th>PTN</th>
                 <th>BRTN</th>
                 <th>GGEM</th>
-                <th>COEF</th>
                 <th>MPTN</th>
                 <th>HR</th>
+                <th>TSGVS</th>
+                <th>PTNVS</th>
+                <th>Mode</th>
             </tr>
         </thead>
         <tbody>`;
@@ -207,9 +209,11 @@ window.renderCompetitionLeaderboard = function() {
             <td>${p.totalPointsScored}</td>
             <td>${p.totalTurnsPlayed}</td>
             <td>${p.average.toFixed(3).replace('.', ',')}</td>
-            <td>${p.coefficient.toFixed(4).replace('.', ',')}</td>
             <td class="${mptnClass}">${mptnText}</td>
             <td>${p.highestSeries}</td>
+            <td>${p.tsgvs.toFixed(3).replace('.', ',')}</td>
+            <td>${p.ptnvs}</td>
+            <td>${p.mode}</td>
         </tr>`;
     });
 
