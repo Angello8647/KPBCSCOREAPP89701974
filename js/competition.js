@@ -29,36 +29,23 @@ const COMPETITION_CONFIG = {
  * Berekent de competitiepunten voor één speler in één match.
  * Volgt exact de Excel VBA logica (VBA Int() = JS Math.floor()).
  */
-window.calculateCompetitionPoints = function(points, turns, discipline) {
-    const config = COMPETITION_CONFIG[discipline];
-    if (!config) {
-        console.warn(`⚠️ Geen configuratie gevonden voor discipline: ${discipline}`);
-        return 0;
-    }
-
-    const { targetPoints, targetTurns, minScore } = config;
-
-    // Veiligheidscheck voor delen door nul
-    if (turns <= 0) return minScore;
-
-    let rawPoints;
-
-    if (points >= targetPoints) {
-        // Scenario A: Target gehaald (simpele aftrekking)
-        rawPoints = targetTurns - turns;
+window.calculateCompetitionPoints = function(score, beurten, targetPoints, targetTurns) {
+    const MIN_SCORE = -5;
+    
+    if (beurten <= 0) return MIN_SCORE;
+    
+    if (score < targetPoints) {
+        // ❌ Target NIET gehaald: projectie-formule
+        const actualAvg = score / beurten;
+        if (actualAvg === 0) return MIN_SCORE;
+        const projectedTurns = targetPoints / actualAvg;
+        const raw = targetTurns - projectedTurns;
+        return Math.max(Math.floor(raw), MIN_SCORE);
     } else {
-        // Scenario B: Target NIET gehaald (projectie-formule)
-        const actualAverage = points / turns;
-        const projectedTurns = targetPoints / actualAverage;
-        rawPoints = targetTurns - projectedTurns;
-        
-        // VBA's Int() rondt af naar beneden (naar het dichtstbijzijnde lagere gehele getal)
-        // In JS is dit Math.floor()
-        rawPoints = Math.floor(rawPoints);
+        // ✅ Target gehaald: simpele aftrekking
+        const raw = targetTurns - beurten;
+        return Math.max(Math.floor(raw), MIN_SCORE);
     }
-
-    // Toepassen van de minimum cap (AQ3)
-    return Math.max(rawPoints, minScore);
 };
 
 /**
