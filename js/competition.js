@@ -75,7 +75,12 @@ window.calculatePlayerStats = function(playerId, playerName, discipline, categor
         const won = match.winner === (isP1 ? match.p1 : match.p2);
 
         // Bereken competitiepunten voor deze match
-        const compPoints = window.calculateCompetitionPoints(points, turns, discipline);
+        // Haal persoonlijk target van de speler op (fallback: 100)
+        const playerTarget = state.players.find(p => p.id === playerId)?.target || 100;
+        // Bepaal targetTurns per discipline
+        const targetTurns = discipline === 'Driebanden' ? 40 : 20;
+        // Bereken competitiepunten met persoonlijke target
+        const compPoints = window.calculateCompetitionPoints(points, turns, playerTarget, targetTurns);
 
         totalCompPoints += compPoints;
         totalPointsScored += points;
@@ -555,7 +560,12 @@ window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, 
         const won = String(match.winner_club_id) === String(playerId);
 
         // Bereken competitiepunten voor deze match
-        const compPoints = window.calculateCompetitionPoints(points, turns, discipline);
+        // Haal persoonlijk target van de speler op (fallback: 100)
+        const playerTarget = state.players.find(p => p.id === playerId)?.target || 100;
+        // Bepaal targetTurns per discipline
+        const targetTurns = discipline === 'Driebanden' ? 40 : 20;
+        // Bereken competitiepunten met persoonlijke target
+        const compPoints = window.calculateCompetitionPoints(points, turns, playerTarget, targetTurns);
 
         totalCompPoints += compPoints;
         totalPointsScored += points;
