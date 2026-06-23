@@ -588,6 +588,26 @@ window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, 
     // Coëfficiënt: gespeeld gemiddelde / TSG
     const coefficient = tsg > 0 ? average / tsg : 0;
 
+    // Bereken TSGVS (Te Spelen Gemiddelde Volgend Seizoen)
+    const playerData = state.players.find(p => p.id === playerId);
+    const mode = playerData?.mode || 'max -10%';
+    let tsgvs;
+    
+    if (matchesPlayed === 0) {
+        // Niet gespeeld: blijft gelijk aan TSG
+        tsgvs = tsg;
+    } else if (mode.startsWith('k')) {
+        // "kan niet verminderen"
+        tsgvs = average < tsg ? tsg : average;
+    } else {
+        // "max -10%"
+        tsgvs = average < (tsg * 0.9) ? (tsg * 0.9) : average;
+    }
+    
+    // Bereken PTNVS (Punten Volgend Seizoen)
+    const targetTurns = discipline === 'Driebanden' ? 40 : 20;
+    const ptnvs = Math.ceil(tsgvs * targetTurns);
+    
     return {
         id: playerId,
         name: playerName,
@@ -601,6 +621,9 @@ window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, 
         highestSeries: highestSeries,
         totalCompPoints: totalCompPoints,
         coefficient: coefficient,
-        tsg: tsg
+        tsg: tsg,
+        tsgvs: tsgvs,
+        ptnvs: ptnvs,
+        mode: mode
     };
 };
