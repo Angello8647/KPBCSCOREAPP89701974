@@ -229,7 +229,7 @@ window.renderCompetitionLeaderboard = function() {
             <td>${p.name}</td>
             <td>${p.matchesPlayed}</td>
             <td>${p.tsg.toFixed(3).replace('.', ',')}</td>
-            <td>${p.totalPointsScored}</td>
+            <td class="${p.totalPointsScored >= p.ptnvs ? 'pts-met-doel' : 'pts-onder-doel'}">${p.totalPointsScored}</td>
             <td>${p.totalTurnsPlayed}</td>
             <td>${p.average.toFixed(3).replace('.', ',')}</td>
             <td class="${mptnClass}">${mptnText}</td>
