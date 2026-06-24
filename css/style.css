@@ -4584,3 +4584,33 @@
 #page20 #competitionLeaderboard {
     overflow: visible !important;
 }
+
+
+/* =========================================================================
+   PAGINA 20: COMPETITIE TABEL KLEUREN
+   ========================================================================= */
+
+/* MPTN kleuren: groen als positief, rood als negatief */
+#page20 .comp-pts-positive {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+#page20 .comp-pts-negative {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+#page20 .comp-pts-zero {
+    color: #64748b;
+}
+
+/* PTN kleuren: groen als >= doel, anders zwart */
+#page20 .pts-met-doel {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+#page20 .pts-onder-doel {
+    color: #000000;
+}
