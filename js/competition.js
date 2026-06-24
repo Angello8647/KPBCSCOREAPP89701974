@@ -593,8 +593,8 @@ window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, 
     const coefficient = tsg > 0 ? average / tsg : 0;
 
     // Bereken TSGVS (Te Spelen Gemiddelde Volgend Seizoen)
-    const playerData = state.players.find(p => p.id === playerId);
-    const mode = playerData?.mode || 'max -10%';
+    const playerInfo = state.players.find(p => p.id === playerId);
+    const mode = playerInfo?.mode || 'max -10%';
     let tsgvs;
     
     if (matchesPlayed === 0) {
