@@ -403,7 +403,12 @@ window.renderCrossTable = function() {
                     const playerData = match.players.find(p => String(p.club_id) === String(player1.id));
                     const points = playerData.score;
                     const turns = playerData.beurten;
-                    const compPoints = calculateCompetitionPoints(points, turns, currentCrossDiscipline);
+                    // Haal persoonlijk target van de speler op (fallback: 100)
+                    const playerTarget = state.players.find(p => p.id === player1.id)?.target || 100;
+                    // Bepaal targetTurns per discipline
+                    const targetTurns = currentCrossDiscipline === 'Driebanden' ? 40 : 20;
+                    // Bereken competitiepunten met persoonlijke target
+                    const compPoints = calculateCompetitionPoints(points, turns, playerTarget, targetTurns);
                     const compPointsClass = compPoints > 0 ? 'comp-pts-positive' : compPoints < 0 ? 'comp-pts-negative' : '';
                     const compPointsText = compPoints > 0 ? `+${compPoints}` : compPoints;
                     
