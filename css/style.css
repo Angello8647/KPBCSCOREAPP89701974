@@ -4605,10 +4605,10 @@
     color: #64748b;
 }
 
-/* PTN kleuren: groen als >= doel, anders zwart */
-#page20 .pts-met-doel {
-    color: #16a34a;
-    font-weight: bold;
+/* PTN: gewoon wit (geen speciale kleur) */
+#page20 .pts-met-doel,
+#page20 .pts-onder-doel {
+    color: #ffffff;
 }
 
 #page20 .pts-onder-doel {
