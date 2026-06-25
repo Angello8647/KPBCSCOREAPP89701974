@@ -70,8 +70,8 @@ window.showPage = function(pageNum) {
     } 
     else if (actualPageNum === 8) {
         // PAGINA 8: Spelers Beheer - toon alle spelers
-        if (typeof window.renderAllPlayers === 'function') {
-            window.renderAllPlayers();
+        if (typeof window.loadFilteredPlayers === 'function') {
+            window.loadFilteredPlayers();
         }
     }
     else if (actualPageNum === 9) {
