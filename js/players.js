@@ -205,7 +205,7 @@ window.loadFilteredPlayers = function() {
     playersList.innerHTML = html;
 };
 
-function loadPlayersList() {
+window.loadPlayersList = function() {
     const playersList = document.getElementById('playersList');
     
     // START MET DE KNOPPEN (altijd zichtbaar)
@@ -272,7 +272,7 @@ function loadPlayersList() {
         html += `</div>`;
     });
     playersList.innerHTML = html;
-}
+};
 
 function selectDisciplineAndCategory(discipline, category) {
     selectedDiscipline = discipline; 
