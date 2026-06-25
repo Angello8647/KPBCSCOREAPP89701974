@@ -69,9 +69,9 @@ window.showPage = function(pageNum) {
         if (f) f.value = new Date().toISOString().split('T')[0];
     } 
     else if (actualPageNum === 8) {
-        // PAGINA 8: Spelers Beheer - toon alle spelers
-        if (typeof window.loadFilteredPlayers === 'function') {
-            window.loadFilteredPlayers();
+        // PAGINA 8: Spelers Beheer - toon overzicht met blokken
+        if (typeof window.loadPlayersList === 'function') {
+            window.loadPlayersList();
         }
     }
     else if (actualPageNum === 9) {
