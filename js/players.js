@@ -119,9 +119,46 @@ function clearSelectedFilters() {
 }
 
 function loadFilteredPlayers() {
-    if (!selectedDiscipline || !selectedPlayerCategory) { 
-        loadPlayersList(); 
-        return; 
+    // Als geen selectie, toon alle spelers
+    if (!selectedDiscipline || !selectedPlayerCategory) {
+        const playersList = document.getElementById('playersList');
+        const allPlayers = [...state.players].sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (allPlayers.length === 0) {
+            playersList.innerHTML = '<div class="no-matches"><p>Geen spelers gevonden</p></div>';
+            return;
+        }
+        
+        let html = `<div class="matches-list-title">Alle Spelers (${allPlayers.length})</div>`;
+        html += `<div style="margin-bottom: 20px; display: grid; grid-template-columns: 60px 1fr 70px 90px; gap: 10px; font-weight: bold; padding: 10px; background: #34495e; border-radius: 8px; text-align: center; font-size: 0.9em;">
+            <div>Club ID</div>
+            <div style="text-align: left;">Naam</div>
+            <div>TSG</div>
+            <div>Target</div>
+        </div>`;
+        
+        allPlayers.forEach(player => {
+            const globalIndex = state.players.findIndex(p => p.id === player.id);
+            
+            html += `<div style="padding: 12px; margin: 5px 0; background: rgba(255,255,255,0.05); border-radius: 5px; display: grid; grid-template-columns: 60px 1fr 70px 90px; gap: 10px; align-items: center; font-size: 0.95em;">
+                <div style="text-align: center; font-family: monospace; font-size: 1em; color: #f39c12;">
+                    ${player.id}
+                </div>
+                <div style="text-align: left; line-height: 1.3;">
+                    <strong>${player.name}</strong><br>
+                    <small style="color: #95a5a6; font-size: 0.85em;">${player.discipline} - Cat. ${player.category}</small>
+                </div>
+                <div style="text-align: center; font-size: 1em; color: #f1c40f;">
+                    ${player.tsg || 'N/A'}
+                </div>
+                <div style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                    <span style="font-size: 1em; color: #2ecc71;">${player.target}</span>
+                    <button class="delete-match-btn" onclick="deletePlayerByIndex(${globalIndex})" title="Verwijderen" style="position: relative; top: 0; right: 0; width: 28px; height: 28px; border-radius: 6px; font-size: 16px; display: flex; align-items: center; justify-content: center; padding: 0;">🗑️</button>
+                </div>
+            </div>`;
+        });
+        playersList.innerHTML = html;
+        return;
     }
     const playersList = document.getElementById('playersList');
     const filtered = state.players.filter(p => 
