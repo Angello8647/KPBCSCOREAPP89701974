@@ -118,7 +118,7 @@ function clearSelectedFilters() {
     loadPlayersList();
 }
 
-function loadFilteredPlayers() {
+window.loadFilteredPlayers = function() {
     // Als geen selectie, toon alle spelers
     if (!selectedDiscipline || !selectedPlayerCategory) {
         const playersList = document.getElementById('playersList');
@@ -203,7 +203,7 @@ function loadFilteredPlayers() {
         </div>`;
     });
     playersList.innerHTML = html;
-}
+};
 
 function loadPlayersList() {
     const playersList = document.getElementById('playersList');
