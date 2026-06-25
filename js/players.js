@@ -96,8 +96,10 @@ function selectPlayerCategory(category) {
     loadFilteredPlayers();
 }
 
-function updatePlayerFilterStatus() {
+window.updatePlayerFilterStatus = function() {
     const statusDiv = document.getElementById('playerFilterStatus');
+    if (!statusDiv) return; // Element bestaat niet meer, dus skip
+    
     if (selectedDiscipline && selectedPlayerCategory) {
         statusDiv.innerHTML = `<p>Toont spelers voor: <strong>${selectedDiscipline} - Categorie ${selectedPlayerCategory}</strong></p><button class="clear-all-btn" onclick="clearSelectedFilters()" style="margin-top: 10px;">🔄 Filters Wissen</button>`;
     } else if (selectedDiscipline) {
@@ -107,7 +109,7 @@ function updatePlayerFilterStatus() {
     } else {
         statusDiv.innerHTML = `<p>Selecteer eerst een discipline en categorie om spelers te zien</p>`;
     }
-}
+};
 
 function clearSelectedFilters() {
     selectedDiscipline = null; 
