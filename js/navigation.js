@@ -69,11 +69,11 @@ window.showPage = function(pageNum) {
         if (f) f.value = new Date().toISOString().split('T')[0];
     } 
     else if (actualPageNum === 8) {
-        // PAGINA 8: Speler statistieken
-        if (typeof window.loadStatsPage === 'function') {
-            window.loadStatsPage();
+        // PAGINA 8: Spelers Beheer - toon alle spelers
+        if (typeof window.renderAllPlayers === 'function') {
+            window.renderAllPlayers();
         }
-    } 
+    }
     else if (actualPageNum === 9) {
         // PAGINA 9: Rangschikking
         if (typeof window.loadRankingPage === 'function') {
