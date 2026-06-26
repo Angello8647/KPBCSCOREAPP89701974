@@ -990,18 +990,20 @@ window.resetPage1State = function() {
 // ✅ 2. HOVER LOGICA: Dim het andere vak ZODRA je over een knop gaat
 document.addEventListener("DOMContentLoaded", function() {
     const btnOfficial = document.querySelector('#containerOfficial .next-btn');
-    const btnFriendly = document.querySelector('#containerFriendly .friendly-btn');
+    const btnsFriendly = document.querySelectorAll('#containerFriendly .friendly-btn'); // ✅ Alle knoppen
     const contOfficial = document.getElementById('containerOfficial');
     const contFriendly = document.getElementById('containerFriendly');
 
-    if (btnOfficial && btnFriendly && contOfficial && contFriendly) {
+    if (btnOfficial && contOfficial && contFriendly) {
         // Hover over Officiële knop -> dim Vriendschappelijk vak
         btnOfficial.addEventListener('mouseenter', () => contFriendly.classList.add('inactive-mode'));
         btnOfficial.addEventListener('mouseleave', () => contFriendly.classList.remove('inactive-mode'));
 
-        // Hover over Vriendschappelijke knop -> dim Officieel vak
-        btnFriendly.addEventListener('mouseenter', () => contOfficial.classList.add('inactive-mode'));
-        btnFriendly.addEventListener('mouseleave', () => contOfficial.classList.remove('inactive-mode'));
+        // Hover over ELKE Vriendschappelijke knop -> dim Officieel vak
+        btnsFriendly.forEach(btn => {
+            btn.addEventListener('mouseenter', () => contOfficial.classList.add('inactive-mode'));
+            btn.addEventListener('mouseleave', () => contOfficial.classList.remove('inactive-mode'));
+        });
     }
 });
 
