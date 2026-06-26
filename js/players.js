@@ -285,7 +285,8 @@ function selectDisciplineAndCategory(discipline, category) {
     const cEl = document.getElementById(`categoryOption${category}`); if(cEl) cEl.classList.add('selected');
     updatePlayerFilterStatus(); 
     loadFilteredPlayers();
-    document.querySelector('#page8 .selection-container').scrollIntoView({ behavior: 'smooth' });
+    const statusDiv = document.getElementById('playerFilterStatus');
+	if (statusDiv) statusDiv.scrollIntoView({ behavior: 'smooth' });
 }
 
 function deletePlayerByIndex(playerIndex) {
