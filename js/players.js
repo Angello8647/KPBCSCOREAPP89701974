@@ -256,11 +256,11 @@ window.loadPlayersList = function() {
                     <h4 style="color: #f1c40f; margin: 0;">Categorie ${category} <span style="color: #95a5a6; font-size: 0.9em;">(${categoryPlayers.length} spelers)</span></h4>
                     <button onclick="selectDisciplineAndCategory('${discipline}', ${category})" style="background: #f39c12; color: white; border: none; padding: 6px 12px; border-radius: 5px; font-size: 0.8em; cursor: pointer;">👁️ Bekijk Details</button>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">`;
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 15px;">`;
             
             categoryPlayers.sort((a, b) => a.name.localeCompare(b.name)).forEach(player => {
-				html += `<div style="padding: 20px; min-height: 80px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 4px solid #3498db; display: grid; grid-template-columns: 1fr 90px 90px; gap: 15px; align-items: center; font-size: 1.1em;">
-					<div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.1em;" title="${player.name}">${player.name}</div>
+				html += `<div style="padding: 20px; min-height: 80px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 4px solid #3498db; display: grid; grid-template-columns: minmax(180px, 1fr) 80px 80px; gap: 15px; align-items: center; font-size: 1.1em;">
+					<div style="font-weight: bold; white-space: normal; line-height: 1.3; font-size: 1.1em;" title="${player.name}">${player.name}</div>
 					<div style="text-align: center; color: #f1c40f; font-size: 1.1em; font-weight: bold;">${player.tsg || 'N/A'}</div>
 					<div style="text-align: center; color: #2ecc71; font-size: 1.1em; font-weight: bold;">${player.target}</div>
 				</div>`;
@@ -271,7 +271,6 @@ window.loadPlayersList = function() {
     });
     playersList.innerHTML = html;
 };
-
 function selectDisciplineAndCategory(discipline, category) {
     selectedDiscipline = discipline; 
     selectedPlayerCategory = category;
