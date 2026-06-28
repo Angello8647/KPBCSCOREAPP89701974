@@ -30,6 +30,12 @@ window.onload = function() {
     
     // 6. Initialiseer score display
     updateCurrentScoreDisplay();
+
+    // 7. 🎯 PRESENTER: Focus automatisch op eerste knop bij start
+    setTimeout(() => {
+        const firstBtn = document.querySelector('#page1 .next-btn, #page1 .friendly-btn');
+        if (firstBtn) firstBtn.focus();
+    }, 100);
 };
 
 
