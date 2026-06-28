@@ -729,6 +729,59 @@ function initPresenterControls() {
             return;
         }
 
+        // ✅ PAGINA FRIENDLY: Navigeer door alle elementen
+        if (activePage.id === 'pageFriendly') {
+            // Bouw lijst van alle focusbare elementen in volgorde
+            const focusables = Array.from(document.querySelectorAll(
+                '#pageFriendly .back-btn, ' +
+                '#friendlyResetBtn, ' +
+                '#pageFriendly .config-card:not(.dimmed), ' +
+                '#btnStartFriendlyMatch'
+            )).filter(el => {
+                // Filter uit elementen die verborgen zijn of disabled
+                return el.offsetParent !== null && !el.disabled;
+            });
+            
+            if (focusables.length === 0) return;
+            
+            const currentIndex = focusables.indexOf(document.activeElement);
+            
+            // PageUp: Ga naar vorige element
+            if (event.key === 'PageUp') {
+                event.preventDefault();
+                if (currentIndex === -1 || currentIndex === 0) {
+                    focusables[focusables.length - 1].focus();
+                } else {
+                    focusables[currentIndex - 1].focus();
+                }
+                return;
+            }
+            
+            // PageDown: Ga naar volgende element
+            if (event.key === 'PageDown') {
+                event.preventDefault();
+                if (currentIndex === -1 || currentIndex === focusables.length - 1) {
+                    focusables[0].focus();
+                } else {
+                    focusables[currentIndex + 1].focus();
+                }
+                return;
+            }
+            
+            // Tab: Activeer het geselecteerde element
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (currentIndex !== -1) {
+                    focusables[currentIndex].click();
+                }
+                return;
+            }
+            return;
+        }
+
+
+
+        
         // ✅ PAGINA 2 OF 11: Door matchen navigeren + selecteren
         if (activePage.id === 'page2' || activePage.id === 'page11') {
             const cards = document.querySelectorAll('#matchList .match-card');
