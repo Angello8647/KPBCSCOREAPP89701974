@@ -1906,8 +1906,7 @@
     margin: 0 auto 30px auto !important; /* Mooi gecentreerd met ruimte eronder */
     display: block !important;
         cursor: pointer !important;
-    /* ✅ PRESENTER: Verwijder uit tab volgorde */
-    tabindex: -1 !important;
+    
 }
 
 /* 3. Het kalender-icoontje rechts in het vak ook groter maken (voor Chrome/Raspberry Pi) */
@@ -1975,8 +1974,7 @@
     border: 5px solid transparent !important; /* ✅ Dikker dan hiervoor (was 3px) */
     transition: all 0.2s ease !important;
     outline: none !important; /* Verwijder de standaard browser lijn */
-    /* ✅ PRESENTER: Verwijder uit tab volgorde (alleen pijltjestoetsen gebruiken) */
-    tabindex: -1 !important;
+    
 }
 
 /* 2. De 'GEKOZEN' staat: Focus (presenter Tab), Hover (muis), of Active (ingedrukt) */
