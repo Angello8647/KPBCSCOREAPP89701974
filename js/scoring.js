@@ -909,6 +909,47 @@ function initPresenterControls() {
         }
     });
 
+    // ✅ PAGINA 13: Witte bal selectie
+    if (activePage.id === 'page13') {
+        const ballOptions = Array.from(document.querySelectorAll('#page13 .ball-option'));
+        
+        if (ballOptions.length === 0) return;
+        
+        // Gebruik custom index
+        if (typeof window.ballFocusIndex === 'undefined' || window.ballFocusIndex === -1) {
+            window.ballFocusIndex = 0;
+        }
+        
+        // Verwijder oude focus
+        ballOptions.forEach(el => el.classList.remove('focused'));
+        
+        // PageUp: Vorige speler
+        if (event.key === 'PageUp') {
+            event.preventDefault();
+            window.ballFocusIndex = (window.ballFocusIndex - 1 + ballOptions.length) % ballOptions.length;
+            ballOptions[window.ballFocusIndex].classList.add('focused');
+            return;
+        }
+        
+        // PageDown: Volgende speler
+        if (event.key === 'PageDown') {
+            event.preventDefault();
+            window.ballFocusIndex = (window.ballFocusIndex + 1) % ballOptions.length;
+            ballOptions[window.ballFocusIndex].classList.add('focused');
+            return;
+        }
+        
+        // Tab: Activeer de geselecteerde speler
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            if (window.ballFocusIndex !== -1) {
+                ballOptions[window.ballFocusIndex].click();
+            }
+            return;
+        }
+        return;
+    }
+
     // 🔼 KEYUP: beslis bij PageUp loslaten (alleen voor Pagina 5)
     document.addEventListener('keyup', function(event) {
         const activePage = document.querySelector('.page.active');
