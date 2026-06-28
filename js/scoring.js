@@ -733,29 +733,7 @@ function initPresenterControls() {
         // ✅ MODAL OPEN: Navigeer door spelerslijst
         const modal = document.querySelector('.modal-overlay:not(.hidden)');
         if (modal) {
-            // Check of we in gast-modus zijn
-            if (isGuestMode) {
-                // ✅ GAST-MODUS: Naam is al automatisch ingevuld, alleen bevestigen
-                const confirmBtn = modal.querySelector('#btnConfirmGuest');
-                
-                // PageUp/PageDown: Negeer (niets om door te navigeren)
-                if (event.key === 'PageUp' || event.key === 'PageDown') {
-                    event.preventDefault();
-                    return;
-                }
-                
-                // Tab: Bevestig de naam
-                if (event.key === 'Tab') {
-                    event.preventDefault();
-                    if (confirmBtn) {
-                        confirmBtn.click();
-                    }
-                    return;
-                }
-                return;
-            }
-            
-            // ✅ NORMALE SPELERSLIJST MODUS (Clublid)
+            // Bouw lijst van belangrijke elementen (mode knoppen + spelers + actie knoppen)
             const modeButtons = Array.from(modal.querySelectorAll('#btnModeClub, #btnModeGuest'));
             const players = Array.from(modal.querySelectorAll('.player-list-item'));
             const actionButtons = Array.from(modal.querySelectorAll('.modal-actions .modal-btn'));
@@ -764,55 +742,43 @@ function initPresenterControls() {
             
             if (focusables.length === 0) return;
             
+            // Gebruik custom index
             if (typeof window.modalFocusIndex === 'undefined' || window.modalFocusIndex === -1) {
                 window.modalFocusIndex = 0;
             }
             
+            // Verwijder oude focus
             focusables.forEach(el => el.classList.remove('focused'));
             
+            // PageUp: Vorige speler
             if (event.key === 'PageUp') {
                 event.preventDefault();
                 window.modalFocusIndex = (window.modalFocusIndex - 1 + focusables.length) % focusables.length;
                 focusables[window.modalFocusIndex].classList.add('focused');
+                // Scroll naar zichtbare positie als het een speler is
                 if (focusables[window.modalFocusIndex].classList.contains('player-list-item')) {
                     focusables[window.modalFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 }
                 return;
             }
             
+            // PageDown: Volgende speler
             if (event.key === 'PageDown') {
                 event.preventDefault();
                 window.modalFocusIndex = (window.modalFocusIndex + 1) % focusables.length;
                 focusables[window.modalFocusIndex].classList.add('focused');
+                // Scroll naar zichtbare positie als het een speler is
                 if (focusables[window.modalFocusIndex].classList.contains('player-list-item')) {
                     focusables[window.modalFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 }
                 return;
             }
             
+            // Tab: Activeer het geselecteerde element
             if (event.key === 'Tab') {
                 event.preventDefault();
                 if (window.modalFocusIndex !== -1) {
-                    const selectedElement = focusables[window.modalFocusIndex];
-                    
-                    if (selectedElement.classList.contains('player-list-item')) {
-                        selectedElement.click();
-                        
-                        setTimeout(() => {
-                            const confirmBtn = modal.querySelector('#btnConfirmGuest') || 
-                                              modal.querySelector('.modal-actions .modal-btn.primary');
-                            if (confirmBtn) {
-                                focusables.forEach(el => el.classList.remove('focused'));
-                                const confirmIndex = focusables.indexOf(confirmBtn);
-                                if (confirmIndex !== -1) {
-                                    window.modalFocusIndex = confirmIndex;
-                                    confirmBtn.classList.add('focused');
-                                }
-                            }
-                        }, 100);
-                    } else {
-                        selectedElement.click();
-                    }
+                    focusables[window.modalFocusIndex].click();
                 }
                 return;
             }
@@ -1475,8 +1441,9 @@ window.setMode = function(mode) {
         btnGuest.classList.add('mode-active-guest');
         btnClub.classList.remove('mode-active-club');
         
-        // ✅ NIEUW: Toon gast-naam keuze menu
-        window.showGuestNameSelection();
+        // Toon hint in plaats van spelerslijst
+        document.getElementById('playerList').innerHTML = 
+            '<div class="player-list-item" style="color: #95a5a6; text-align: center; font-style: italic; padding: 40px 20px;">Type de naam van de gast met de letters en de groene spatiebalk...</div>';
     }
 };
 
@@ -3606,55 +3573,4 @@ const render3PTurnsListSummary = (turns, highest) => {
                  </div>`;
     }
     return html + '</div>';
-};
-
-
-
-// ✅ NIEUW: Automatisch gast-naam invullen op basis van icoon
-window.showGuestNameSelection = function() {
-    // Mapping van speler-nummer naar gast-naam
-    const guestNames = {
-        1: 'The Wizard',
-        2: 'The Boss',
-        3: 'The Sheriff',
-        4: 'The Rocket'
-    };
-    
-    // Automatisch de juiste naam invullen
-    const autoName = guestNames[currentPlayerSlot] || 'Guest';
-    
-    // Vul de naam automatisch in
-    currentSearchString = autoName;
-    window.updateSearchDisplay();
-    
-    // Verberg de spelerslijst (we hoeven niets te kiezen)
-    const playerList = document.getElementById('playerList');
-    playerList.innerHTML = '<div class="player-list-item" style="color: #2ecc71; text-align: center; font-weight: 700; padding: 20px;">✅ ' + autoName + ' geselecteerd</div>';
-    
-    // Focus op bevestig knop
-    setTimeout(() => {
-        const confirmBtn = document.querySelector('.modal-overlay:not(.hidden) #btnConfirmGuest');
-        if (confirmBtn) {
-            confirmBtn.classList.add('focused');
-        }
-    }, 100);
-};
-
-
-// ✅ NIEUW: Bevestig gast-naam (nu niet meer nodig, maar houden voor compatibiliteit)
-window.confirmGuestName = function(name) {
-    // Naam is al ingevuld, gewoon bevestigen
-    window.updateSearchDisplay();
-    
-    // Verberg de spelerslijst
-    const playerList = document.getElementById('playerList');
-    playerList.innerHTML = '';
-    
-    // Focus op bevestig knop
-    setTimeout(() => {
-        const confirmBtn = document.querySelector('.modal-overlay:not(.hidden) #btnConfirmGuest');
-        if (confirmBtn) {
-            confirmBtn.classList.add('focused');
-        }
-    }, 100);
 };
