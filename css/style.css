@@ -4630,3 +4630,21 @@
 #pageFriendly .config-card.focused {
     border: 4px solid #00d2d3 !important;
 }
+
+/* ==========================================
+✅ MODAL: FOCUS STYLING VOOR PRESENTER
+========================================== */
+.modal-overlay .player-list-item.focused {
+    background: rgba(46, 204, 113, 0.5) !important;
+    border-left: 5px solid #2ecc71 !important;
+    font-weight: 900 !important;
+    transform: translateX(5px) !important;
+}
+
+.modal-overlay #btnModeClub.focused,
+.modal-overlay #btnModeGuest.focused,
+.modal-overlay .modal-actions .modal-btn.focused {
+    outline: 4px solid #2ecc71 !important;
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.6) !important;
+    transform: scale(1.05) !important;
+}
