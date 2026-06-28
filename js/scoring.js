@@ -657,33 +657,33 @@ function initPresenterControls() {
             return;
         }
 
-        // ✅ PAGINA 1: Datum wijzigen + Matchen ophalen
+        // ✅ PAGINA 1: Navigeer door knoppen met pijltjes, Tab om te bevestigen
         if (activePage.id === 'page1') {
-            if (key === 'ArrowUp' || key === 'PageUp') {
-                event.preventDefault();
-                const dateInput = document.getElementById('dateSelect');
-                if (dateInput && dateInput.value) {
-                    const d = new Date(dateInput.value);
-                    d.setDate(d.getDate() + 1);
-                    dateInput.value = d.toISOString().split('T')[0];
-                    state.selectedDate = dateInput.value;
-                }
-                return;
-            }
+            const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
+            if (buttons.length === 0) return;
+            
+            const currentIndex = buttons.indexOf(document.activeElement);
+            
+            // Pijltjestoetsen: Navigeer door knoppen
             if (key === 'ArrowDown' || key === 'PageDown') {
                 event.preventDefault();
-                const dateInput = document.getElementById('dateSelect');
-                if (dateInput && dateInput.value) {
-                    const d = new Date(dateInput.value);
-                    d.setDate(d.getDate() - 1);
-                    dateInput.value = d.toISOString().split('T')[0];
-                    state.selectedDate = dateInput.value;
-                }
+                const nextIndex = (currentIndex + 1) % buttons.length;
+                buttons[nextIndex].focus();
                 return;
             }
-            if (key === 'Tab' || key === 'Enter') {
+            if (key === 'ArrowUp' || key === 'PageUp') {
                 event.preventDefault();
-                window.syncAndGoToMatches();  // ✅ DIRECT DE JUISTE FUNCTIE
+                const prevIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+                buttons[prevIndex].focus();
+                return;
+            }
+            
+            // Tab: Activeer de geselecteerde knop
+            if (key === 'Tab') {
+                event.preventDefault();
+                if (currentIndex !== -1) {
+                    buttons[currentIndex].click();
+                }
                 return;
             }
             return;
