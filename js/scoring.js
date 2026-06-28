@@ -3597,3 +3597,40 @@ const render3PTurnsListSummary = (turns, highest) => {
     }
     return html + '</div>';
 };
+
+
+// ✅ NIEUW: Gast-naam keuze menu
+window.showGuestNameSelection = function() {
+    const guestNames = [
+        { icon: '🧙‍♂️', name: 'The Wizard' },
+        { icon: '👷‍♂️', name: 'The Boss' },
+        { icon: '👮‍♂️', name: 'The Sheriff' },
+        { icon: '👨‍🚀', name: 'The Rocket' }
+    ];
+    
+    const playerList = document.getElementById('playerList');
+    playerList.innerHTML = guestNames.map((guest, index) => 
+        `<div class="player-list-item guest-name-option" data-name="${guest.name}" data-index="${index}">
+            <span style="font-size: 1.5em; margin-right: 10px;">${guest.icon}</span>
+            <span style="font-weight: 700;">${guest.name}</span>
+        </div>`
+    ).join('');
+    
+    window.guestNameFocusIndex = 0;
+    const items = playerList.querySelectorAll('.guest-name-option');
+    if (items.length > 0) items[0].classList.add('focused');
+};
+
+// ✅ NIEUW: Bevestig gast-naam keuze
+window.confirmGuestName = function(name) {
+    currentSearchString = name;
+    window.updateSearchDisplay();
+    
+    const playerList = document.getElementById('playerList');
+    playerList.innerHTML = '';
+    
+    setTimeout(() => {
+        const confirmBtn = document.querySelector('.modal-overlay:not(.hidden) #btnConfirmGuest');
+        if (confirmBtn) confirmBtn.classList.add('focused');
+    }, 100);
+};
