@@ -645,35 +645,69 @@ function initPresenterControls() {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
         
-        // ✅ PAGINA 1: Navigeer door knoppen met PageUp/PageDown
-        // ✅ PAGINA 1: Navigeer door knoppen met PageUp/PageDown
+
+        // ✅ PAGINA 1: Navigeer door knoppen en datum met PageUp/PageDown
         if (activePage.id === 'page1') {
+            const dateInput = document.getElementById('dateSelect');
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
-            if (buttons.length === 0) return;
+            const focusables = [dateInput, ...buttons].filter(el => el);
             
-            const currentIndex = buttons.indexOf(document.activeElement);
+            const currentIndex = focusables.indexOf(document.activeElement);
+            const isDateFocused = document.activeElement === dateInput;
             
-            // PageUp: Ga naar vorige knop
-            if (event.key === 'PageUp') {
-                event.preventDefault();
-                const prevIndex = (currentIndex - 1 + buttons.length) % buttons.length;
-                buttons[prevIndex].focus();
+            // 🎯 BELANGRIJK: Als datum focus heeft, laat de browser zijn ding doen!
+            // (pijltjes wijzigen datum, Tab navigeert tussen dag/maand/jaar)
+            if (isDateFocused) {
+                // Alleen Tab afvangen als we op het laatste veld (jaar) zijn
+                // De browser handelt de rest af
+                if (key === 'Tab') {
+                    // Check of we op het jaar-veld zijn (laatste sub-veld)
+                    // Als ja, ga naar eerste knop
+                    // De browser zal dit normaal afhandelen, maar we forceren het
+                    setTimeout(() => {
+                        if (buttons.length > 0) {
+                            buttons[0].focus();
+                        }
+                    }, 10);
+                }
+                return; // ✅ Laat browser de rest doen (pijltjes wijzigen datum)
+            }
+            
+            // 🎯 Als GEEN element focus heeft (BODY), focus op eerste knop
+            if (currentIndex === -1) {
+                if (key === 'PageDown' || key === 'ArrowDown') {
+                    event.preventDefault();
+                    if (buttons.length > 0) buttons[0].focus();
+                    return;
+                }
+                if (key === 'PageUp' || key === 'ArrowUp') {
+                    event.preventDefault();
+                    if (dateInput) dateInput.focus();
+                    return;
+                }
                 return;
             }
             
-            // PageDown: Ga naar volgende knop
-            if (event.key === 'PageDown') {
+            // 🎯 Navigeer tussen elementen
+            if (key === 'PageDown' || key === 'ArrowDown') {
                 event.preventDefault();
-                const nextIndex = (currentIndex + 1) % buttons.length;
-                buttons[nextIndex].focus();
+                const nextIndex = (currentIndex + 1) % focusables.length;
+                focusables[nextIndex].focus();
                 return;
             }
             
-            // Tab: Activeer de geselecteerde knop
-            if (event.key === 'Tab') {
+            if (key === 'PageUp' || key === 'ArrowUp') {
                 event.preventDefault();
-                if (currentIndex !== -1) {
-                    buttons[currentIndex].click();
+                const prevIndex = (currentIndex - 1 + focusables.length) % focusables.length;
+                focusables[prevIndex].focus();
+                return;
+            }
+            
+            // 🎯 Tab: Activeer knop OF ga naar datum
+            if (key === 'Tab') {
+                event.preventDefault();
+                if (buttons.includes(document.activeElement)) {
+                    document.activeElement.click();
                 }
                 return;
             }
