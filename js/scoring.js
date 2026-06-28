@@ -646,6 +646,7 @@ function initPresenterControls() {
         if (!activePage) return;
         
         // ✅ PAGINA 1: Navigeer door knoppen met PageUp/PageDown
+        // ✅ PAGINA 1: Navigeer door knoppen met PageUp/PageDown
         if (activePage.id === 'page1') {
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
             if (buttons.length === 0) return;
@@ -653,7 +654,7 @@ function initPresenterControls() {
             const currentIndex = buttons.indexOf(document.activeElement);
             
             // PageUp: Ga naar vorige knop
-            if (key === 'PageUp') {
+            if (event.key === 'PageUp') {
                 event.preventDefault();
                 const prevIndex = (currentIndex - 1 + buttons.length) % buttons.length;
                 buttons[prevIndex].focus();
@@ -661,7 +662,7 @@ function initPresenterControls() {
             }
             
             // PageDown: Ga naar volgende knop
-            if (key === 'PageDown') {
+            if (event.key === 'PageDown') {
                 event.preventDefault();
                 const nextIndex = (currentIndex + 1) % buttons.length;
                 buttons[nextIndex].focus();
@@ -669,7 +670,7 @@ function initPresenterControls() {
             }
             
             // Tab: Activeer de geselecteerde knop
-            if (key === 'Tab') {
+            if (event.key === 'Tab') {
                 event.preventDefault();
                 if (currentIndex !== -1) {
                     buttons[currentIndex].click();
