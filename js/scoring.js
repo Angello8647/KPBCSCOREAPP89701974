@@ -3627,38 +3627,52 @@ const render3PTurnsListSummary = (turns, highest) => {
 };
 
 
-// ✅ NIEUW: Gast-naam keuze menu
-window.showGuestNameSelection = function() {
-    const guestNames = [
-        { icon: '🧙‍♂️', name: 'The Wizard' },
-        { icon: '👷‍♂️', name: 'The Boss' },
-        { icon: '👮‍♂️', name: 'The Sheriff' },
-        { icon: '👨‍🚀', name: 'The Rocket' }
-    ];
-    
-    const playerList = document.getElementById('playerList');
-    playerList.innerHTML = guestNames.map((guest, index) => 
-        `<div class="player-list-item guest-name-option" data-name="${guest.name}" data-index="${index}">
-            <span style="font-size: 1.5em; margin-right: 10px;">${guest.icon}</span>
-            <span style="font-weight: 700;">${guest.name}</span>
-        </div>`
-    ).join('');
-    
-    window.guestNameFocusIndex = 0;
-    const items = playerList.querySelectorAll('.guest-name-option');
-    if (items.length > 0) items[0].classList.add('focused');
-};
 
-// ✅ NIEUW: Bevestig gast-naam keuze
-window.confirmGuestName = function(name) {
-    currentSearchString = name;
+// ✅ NIEUW: Automatisch gast-naam invullen op basis van icoon
+window.showGuestNameSelection = function() {
+    // Mapping van speler-nummer naar gast-naam
+    const guestNames = {
+        1: 'The Wizard',
+        2: 'The Boss',
+        3: 'The Sheriff',
+        4: 'The Rocket'
+    };
+    
+    // Automatisch de juiste naam invullen
+    const autoName = guestNames[currentPlayerSlot] || 'Guest';
+    
+    // Vul de naam automatisch in
+    currentSearchString = autoName;
     window.updateSearchDisplay();
     
+    // Verberg de spelerslijst (we hoeven niets te kiezen)
+    const playerList = document.getElementById('playerList');
+    playerList.innerHTML = '<div class="player-list-item" style="color: #2ecc71; text-align: center; font-weight: 700; padding: 20px;">✅ ' + autoName + ' geselecteerd</div>';
+    
+    // Focus op bevestig knop
+    setTimeout(() => {
+        const confirmBtn = document.querySelector('.modal-overlay:not(.hidden) #btnConfirmGuest');
+        if (confirmBtn) {
+            confirmBtn.classList.add('focused');
+        }
+    }, 100);
+};
+
+
+// ✅ NIEUW: Bevestig gast-naam (nu niet meer nodig, maar houden voor compatibiliteit)
+window.confirmGuestName = function(name) {
+    // Naam is al ingevuld, gewoon bevestigen
+    window.updateSearchDisplay();
+    
+    // Verberg de spelerslijst
     const playerList = document.getElementById('playerList');
     playerList.innerHTML = '';
     
+    // Focus op bevestig knop
     setTimeout(() => {
         const confirmBtn = document.querySelector('.modal-overlay:not(.hidden) #btnConfirmGuest');
-        if (confirmBtn) confirmBtn.classList.add('focused');
+        if (confirmBtn) {
+            confirmBtn.classList.add('focused');
+        }
     }, 100);
 };
