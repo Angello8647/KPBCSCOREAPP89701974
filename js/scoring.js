@@ -646,7 +646,7 @@ function initPresenterControls() {
         if (!activePage) return;
         
 
-        // ✅ PAGINA 1: Navigeer door knoppen en datum met PageUp/PageDown
+
         // ✅ PAGINA 1: Navigeer door knoppen en datum met PageUp/PageDown
         if (activePage.id === 'page1') {
             const dateInput = document.getElementById('dateSelect');
@@ -656,14 +656,34 @@ function initPresenterControls() {
             const currentIndex = focusables.indexOf(document.activeElement);
             const isDateFocused = document.activeElement === dateInput;
             
-            // 🎯 BELANGRIJK: Als datum focus heeft, laat de browser zijn ding doen!
+            // 🎯 Wanneer datum focus heeft: PageUp/PageDown wijzigt datum, Tab gaat naar knoppen
             if (isDateFocused) {
+                if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    if (dateInput && dateInput.value) {
+                        const d = new Date(dateInput.value);
+                        d.setDate(d.getDate() + 1);
+                        dateInput.value = d.toISOString().split('T')[0];
+                        state.selectedDate = dateInput.value;
+                    }
+                    return;
+                }
+                if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    if (dateInput && dateInput.value) {
+                        const d = new Date(dateInput.value);
+                        d.setDate(d.getDate() - 1);
+                        dateInput.value = d.toISOString().split('T')[0];
+                        state.selectedDate = dateInput.value;
+                    }
+                    return;
+                }
                 if (event.key === 'Tab') {
-                    setTimeout(() => {
-                        if (buttons.length > 0) {
-                            buttons[0].focus();
-                        }
-                    }, 10);
+                    event.preventDefault();
+                    if (buttons.length > 0) {
+                        buttons[0].focus();
+                    }
+                    return;
                 }
                 return;
             }
@@ -698,7 +718,7 @@ function initPresenterControls() {
                 return;
             }
             
-            // 🎯 Tab: Activeer knop OF ga naar datum
+            // 🎯 Tab: Activeer knop
             if (event.key === 'Tab') {
                 event.preventDefault();
                 if (buttons.includes(document.activeElement)) {
