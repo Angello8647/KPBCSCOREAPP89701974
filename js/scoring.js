@@ -780,7 +780,60 @@ function initPresenterControls() {
             return;
         }
 
-
+        // ✅ MODAL OPEN: Navigeer door spelerslijst
+        const modal = document.querySelector('.modal-overlay:not(.hidden)');
+        if (modal) {
+            // Bouw lijst van belangrijke elementen (mode knoppen + spelers + actie knoppen)
+            const modeButtons = Array.from(modal.querySelectorAll('#btnModeClub, #btnModeGuest'));
+            const players = Array.from(modal.querySelectorAll('.player-list-item'));
+            const actionButtons = Array.from(modal.querySelectorAll('.modal-actions .modal-btn'));
+            
+            const focusables = [...modeButtons, ...players, ...actionButtons];
+            
+            if (focusables.length === 0) return;
+            
+            // Gebruik custom index
+            if (typeof window.modalFocusIndex === 'undefined' || window.modalFocusIndex === -1) {
+                window.modalFocusIndex = 0;
+            }
+            
+            // Verwijder oude focus
+            focusables.forEach(el => el.classList.remove('focused'));
+            
+            // PageUp: Vorige speler
+            if (event.key === 'PageUp') {
+                event.preventDefault();
+                window.modalFocusIndex = (window.modalFocusIndex - 1 + focusables.length) % focusables.length;
+                focusables[window.modalFocusIndex].classList.add('focused');
+                // Scroll naar zichtbare positie als het een speler is
+                if (focusables[window.modalFocusIndex].classList.contains('player-list-item')) {
+                    focusables[window.modalFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+                return;
+            }
+            
+            // PageDown: Volgende speler
+            if (event.key === 'PageDown') {
+                event.preventDefault();
+                window.modalFocusIndex = (window.modalFocusIndex + 1) % focusables.length;
+                focusables[window.modalFocusIndex].classList.add('focused');
+                // Scroll naar zichtbare positie als het een speler is
+                if (focusables[window.modalFocusIndex].classList.contains('player-list-item')) {
+                    focusables[window.modalFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+                return;
+            }
+            
+            // Tab: Activeer het geselecteerde element
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (window.modalFocusIndex !== -1) {
+                    focusables[window.modalFocusIndex].click();
+                }
+                return;
+            }
+            return;
+        }
 
         
         // ✅ PAGINA 2 OF 11: Door matchen navigeren + selecteren
