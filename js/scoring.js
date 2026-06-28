@@ -647,6 +647,7 @@ function initPresenterControls() {
         
 
         // ✅ PAGINA 1: Navigeer door knoppen en datum met PageUp/PageDown
+        // ✅ PAGINA 1: Navigeer door knoppen en datum met PageUp/PageDown
         if (activePage.id === 'page1') {
             const dateInput = document.getElementById('dateSelect');
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
@@ -656,31 +657,25 @@ function initPresenterControls() {
             const isDateFocused = document.activeElement === dateInput;
             
             // 🎯 BELANGRIJK: Als datum focus heeft, laat de browser zijn ding doen!
-            // (pijltjes wijzigen datum, Tab navigeert tussen dag/maand/jaar)
             if (isDateFocused) {
-                // Alleen Tab afvangen als we op het laatste veld (jaar) zijn
-                // De browser handelt de rest af
-                if (key === 'Tab') {
-                    // Check of we op het jaar-veld zijn (laatste sub-veld)
-                    // Als ja, ga naar eerste knop
-                    // De browser zal dit normaal afhandelen, maar we forceren het
+                if (event.key === 'Tab') {
                     setTimeout(() => {
                         if (buttons.length > 0) {
                             buttons[0].focus();
                         }
                     }, 10);
                 }
-                return; // ✅ Laat browser de rest doen (pijltjes wijzigen datum)
+                return;
             }
             
             // 🎯 Als GEEN element focus heeft (BODY), focus op eerste knop
             if (currentIndex === -1) {
-                if (key === 'PageDown' || key === 'ArrowDown') {
+                if (event.key === 'PageDown' || event.key === 'ArrowDown') {
                     event.preventDefault();
                     if (buttons.length > 0) buttons[0].focus();
                     return;
                 }
-                if (key === 'PageUp' || key === 'ArrowUp') {
+                if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                     event.preventDefault();
                     if (dateInput) dateInput.focus();
                     return;
@@ -689,14 +684,14 @@ function initPresenterControls() {
             }
             
             // 🎯 Navigeer tussen elementen
-            if (key === 'PageDown' || key === 'ArrowDown') {
+            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
                 event.preventDefault();
                 const nextIndex = (currentIndex + 1) % focusables.length;
                 focusables[nextIndex].focus();
                 return;
             }
             
-            if (key === 'PageUp' || key === 'ArrowUp') {
+            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 const prevIndex = (currentIndex - 1 + focusables.length) % focusables.length;
                 focusables[prevIndex].focus();
@@ -704,7 +699,7 @@ function initPresenterControls() {
             }
             
             // 🎯 Tab: Activeer knop OF ga naar datum
-            if (key === 'Tab') {
+            if (event.key === 'Tab') {
                 event.preventDefault();
                 if (buttons.includes(document.activeElement)) {
                     document.activeElement.click();
