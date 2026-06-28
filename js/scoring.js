@@ -731,6 +731,7 @@ function initPresenterControls() {
 
 
         // ✅ MODAL OPEN: Navigeer door spelerslijst
+        // ✅ MODAL OPEN: Navigeer door spelerslijst
         const modal = document.querySelector('.modal-overlay:not(.hidden)');
         if (modal) {
             // Bouw lijst van belangrijke elementen (mode knoppen + spelers + actie knoppen)
@@ -755,7 +756,6 @@ function initPresenterControls() {
                 event.preventDefault();
                 window.modalFocusIndex = (window.modalFocusIndex - 1 + focusables.length) % focusables.length;
                 focusables[window.modalFocusIndex].classList.add('focused');
-                // Scroll naar zichtbare positie als het een speler is
                 if (focusables[window.modalFocusIndex].classList.contains('player-list-item')) {
                     focusables[window.modalFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 }
@@ -767,7 +767,6 @@ function initPresenterControls() {
                 event.preventDefault();
                 window.modalFocusIndex = (window.modalFocusIndex + 1) % focusables.length;
                 focusables[window.modalFocusIndex].classList.add('focused');
-                // Scroll naar zichtbare positie als het een speler is
                 if (focusables[window.modalFocusIndex].classList.contains('player-list-item')) {
                     focusables[window.modalFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 }
@@ -778,7 +777,32 @@ function initPresenterControls() {
             if (event.key === 'Tab') {
                 event.preventDefault();
                 if (window.modalFocusIndex !== -1) {
-                    focusables[window.modalFocusIndex].click();
+                    const selectedElement = focusables[window.modalFocusIndex];
+                    
+                    // Als het een speler is, klik erop en ga dan naar de bevestig knop
+                    if (selectedElement.classList.contains('player-list-item')) {
+                        selectedElement.click();
+                        
+                        // ✅ NIEUW: Verplaats focus naar de bevestig knop
+                        setTimeout(() => {
+                            const confirmBtn = modal.querySelector('#btnConfirmGuest') || 
+                                              modal.querySelector('.modal-actions .modal-btn.primary');
+                            if (confirmBtn) {
+                                // Verwijder focus van speler
+                                focusables.forEach(el => el.classList.remove('focused'));
+                                
+                                // Zoek de index van de bevestig knop
+                                const confirmIndex = focusables.indexOf(confirmBtn);
+                                if (confirmIndex !== -1) {
+                                    window.modalFocusIndex = confirmIndex;
+                                    confirmBtn.classList.add('focused');
+                                }
+                            }
+                        }, 100);
+                    } else {
+                        // Anders gewoon klikken
+                        selectedElement.click();
+                    }
                 }
                 return;
             }
