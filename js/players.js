@@ -262,11 +262,10 @@ window.loadPlayersList = function() {
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">`;
             
             categoryPlayers.sort((a, b) => a.name.localeCompare(b.name)).forEach(player => {
-				html += `<div style="padding: 10px; background: rgba(255,255,255,0.03); border-radius: 5px; border-left: 3px solid #3498db; display: grid; grid-template-columns: 60px minmax(150px, 2fr) 70px 70px; gap: 10px; align-items: center; font-size: 0.9em;">
-					<div style="text-align: center; font-family: monospace; color: #f39c12;">${player.id}</div>
-					<div style="font-weight: bold; white-space: normal; word-wrap: break-word; line-height: 1.2; font-size: 0.95em;" title="${player.name}">${player.name}</div>
-					<div style="text-align: center; color: #f1c40f;">${player.tsg || 'N/A'}</div>
-					<div style="text-align: center; color: #2ecc71;">${player.target}</div>
+				html += `<div style="padding: 20px; min-height: 80px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 4px solid #3498db; display: grid; grid-template-columns: 1fr 90px 90px; gap: 15px; align-items: center; font-size: 1.1em;">
+					<div style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.1em;" title="${player.name}">${player.name}</div>
+					<div style="text-align: center; color: #f1c40f; font-size: 1.1em; font-weight: bold;">${player.tsg || 'N/A'}</div>
+					<div style="text-align: center; color: #2ecc71; font-size: 1.1em; font-weight: bold;">${player.target}</div>
 				</div>`;
 			});
             html += `</div></div>`;
