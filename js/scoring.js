@@ -644,6 +644,64 @@ function initPresenterControls() {
     document.addEventListener('keydown', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
+        
+        // ✅ PAGINA 1: Speciale behandeling (geen INPUT check!)
+        if (activePage.id === 'page1') {
+            const dateInput = document.getElementById('dateSelect');
+            const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
+            
+            // Bouw een lijst van alle focusbare elementen in volgorde
+            const focusables = [dateInput, ...buttons].filter(el => el);
+            const currentIndex = focusables.indexOf(document.activeElement);
+            
+            // Pijltje Omhoog: Ga naar vorige element
+            if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (currentIndex === -1 || currentIndex === 0) {
+                    focusables[focusables.length - 1].focus();
+                } else {
+                    focusables[currentIndex - 1].focus();
+                }
+                return;
+            }
+            
+            // Pijltje Omlaag: Ga naar volgende element
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (currentIndex === -1 || currentIndex === focusables.length - 1) {
+                    focusables[0].focus();
+                } else {
+                    focusables[currentIndex + 1].focus();
+                }
+                return;
+            }
+            
+            // Pijltje Links/Rechts: Wijzig datum (alleen als datum focus heeft)
+            if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && document.activeElement === dateInput) {
+                event.preventDefault();
+                if (dateInput && dateInput.value) {
+                    const d = new Date(dateInput.value);
+                    d.setDate(d.getDate() + (event.key === 'ArrowRight' ? 1 : -1));
+                    dateInput.value = d.toISOString().split('T')[0];
+                    state.selectedDate = dateInput.value;
+                }
+                return;
+            }
+            
+            // Tab: Bevestig de geselecteerde knop (of open datum-kalender)
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (document.activeElement === dateInput) {
+                    dateInput.showPicker(); // Open de kalender
+                } else if (buttons.includes(document.activeElement)) {
+                    document.activeElement.click();
+                }
+                return;
+            }
+            return;
+        }
+        
+        // Voor alle andere pagina's: negeer INPUT/TEXTAREA
         if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
 
         const key = event.key;
@@ -657,81 +715,6 @@ function initPresenterControls() {
             return;
         }
 
-        // ✅ PAGINA 1: Navigeer door knoppen en datum met pijltjes
-        if (activePage.id === 'page1') {
-            const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
-            const dateInput = document.getElementById('dateSelect');
-            
-            // Bepaal waar we nu zijn
-            const isDateFocused = document.activeElement === dateInput;
-            const currentButtonIndex = buttons.indexOf(document.activeElement);
-            
-            // Pijltje Links/Rechts: Wissel tussen datum en knoppen
-            if (key === 'ArrowLeft' || key === 'ArrowRight') {
-                event.preventDefault();
-                if (isDateFocused) {
-                    // Ga naar eerste knop
-                    if (buttons.length > 0) buttons[0].focus();
-                } else if (currentButtonIndex !== -1) {
-                    // Ga naar datum-input
-                    if (dateInput) dateInput.focus();
-                }
-                return;
-            }
-            
-            // Pijltje Omhoog/Omlaag: Navigeer door knoppen OF wijzig datum
-            if (key === 'ArrowUp') {
-                event.preventDefault();
-                if (isDateFocused) {
-                    // Wijzig datum: +1 dag
-                    if (dateInput && dateInput.value) {
-                        const d = new Date(dateInput.value);
-                        d.setDate(d.getDate() + 1);
-                        dateInput.value = d.toISOString().split('T')[0];
-                        state.selectedDate = dateInput.value;
-                    }
-                } else if (currentButtonIndex !== -1) {
-                    // Navigeer door knoppen
-                    const prevIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
-                    buttons[prevIndex].focus();
-                }
-                return;
-            }
-            
-            if (key === 'ArrowDown') {
-                event.preventDefault();
-                if (isDateFocused) {
-                    // Wijzig datum: -1 dag
-                    if (dateInput && dateInput.value) {
-                        const d = new Date(dateInput.value);
-                        d.setDate(d.getDate() - 1);
-                        dateInput.value = d.toISOString().split('T')[0];
-                        state.selectedDate = dateInput.value;
-                    }
-                } else if (currentButtonIndex !== -1) {
-                    // Navigeer door knoppen
-                    const nextIndex = (currentButtonIndex + 1) % buttons.length;
-                    buttons[nextIndex].focus();
-                }
-                return;
-            }
-            
-            // Tab: Activeer de geselecteerde knop OF ga terug naar knoppen
-            if (key === 'Tab') {
-                event.preventDefault();
-                if (isDateFocused) {
-                    // Ga terug naar eerste knop
-                    if (buttons.length > 0) buttons[0].focus();
-                } else if (currentButtonIndex !== -1) {
-                    // Activeer de knop
-                    buttons[currentButtonIndex].click();
-                }
-                return;
-            }
-            return;
-        }
-
-     
         // ✅ PAGINA 2 OF 11: Door matchen navigeren + selecteren
         if (activePage.id === 'page2' || activePage.id === 'page11') {
             const cards = document.querySelectorAll('#matchList .match-card');
@@ -740,11 +723,11 @@ function initPresenterControls() {
                 if (key === 'PageDown' || key === 'ArrowDown') {
                     event.preventDefault();
                     window.matchListFocusIndex = Math.min(window.matchListFocusIndex + 1, cards.length - 1);
-                    window.highlightMatch(cards); // ✅ Gebruik nu window.highlightMatch
+                    window.highlightMatch(cards);
                 } else if (key === 'PageUp' || key === 'ArrowUp') {
                     event.preventDefault();
                     window.matchListFocusIndex = Math.max(window.matchListFocusIndex - 1, 0);
-                    window.highlightMatch(cards); // ✅ Gebruik nu window.highlightMatch
+                    window.highlightMatch(cards);
                 } else if (key === 'Tab') {
                     event.preventDefault();
                     cards[window.matchListFocusIndex].click();
@@ -828,7 +811,6 @@ function initPresenterControls() {
         }
     });
 }
-
 
 // ==========================================
 // MATCH SAMENVATTING RENDEREN (Pagina 6)
