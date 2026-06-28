@@ -645,17 +645,17 @@ function initPresenterControls() {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
         
-        // ✅ PAGINA 1: Speciale behandeling (geen INPUT check!)
+        // ✅ PAGINA 1: Navigeer door knoppen en datum met pijltjes OF PageUp/PageDown
         if (activePage.id === 'page1') {
             const dateInput = document.getElementById('dateSelect');
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
             
-            // Bouw een lijst van alle focusable elementen in volgorde
+            // Bouw een lijst van alle focusbare elementen in volgorde
             const focusables = [dateInput, ...buttons].filter(el => el);
             const currentIndex = focusables.indexOf(document.activeElement);
             
-            // Pijltje Omhoog: Ga naar vorige element
-            if (event.key === 'ArrowUp') {
+            // Pijltje Omhoog OF PageUp: Ga naar vorige element
+            if (key === 'ArrowUp' || key === 'PageUp') {
                 event.preventDefault();
                 if (currentIndex === -1 || currentIndex === 0) {
                     focusables[focusables.length - 1].focus();
@@ -665,8 +665,8 @@ function initPresenterControls() {
                 return;
             }
             
-            // Pijltje Omlaag: Ga naar volgende element
-            if (event.key === 'ArrowDown') {
+            // Pijltje Omlaag OF PageDown: Ga naar volgende element
+            if (key === 'ArrowDown' || key === 'PageDown') {
                 event.preventDefault();
                 if (currentIndex === -1 || currentIndex === focusables.length - 1) {
                     focusables[0].focus();
@@ -677,11 +677,11 @@ function initPresenterControls() {
             }
             
             // Pijltje Links/Rechts: Wijzig datum (alleen als datum focus heeft)
-            if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && document.activeElement === dateInput) {
+            if ((key === 'ArrowLeft' || key === 'ArrowRight') && document.activeElement === dateInput) {
                 event.preventDefault();
                 if (dateInput && dateInput.value) {
                     const d = new Date(dateInput.value);
-                    d.setDate(d.getDate() + (event.key === 'ArrowRight' ? 1 : -1));
+                    d.setDate(d.getDate() + (key === 'ArrowRight' ? 1 : -1));
                     dateInput.value = d.toISOString().split('T')[0];
                     state.selectedDate = dateInput.value;
                 }
@@ -689,7 +689,7 @@ function initPresenterControls() {
             }
             
             // Tab: Bevestig de geselecteerde knop (of open datum-kalender)
-            if (event.key === 'Tab') {
+            if (key === 'Tab') {
                 event.preventDefault();
                 if (document.activeElement === dateInput) {
                     // Probeer showPicker, maar vang errors op
@@ -697,30 +697,16 @@ function initPresenterControls() {
                         if (typeof dateInput.showPicker === 'function') {
                             dateInput.showPicker();
                         } else {
-                            dateInput.click(); // Fallback: klik op de input
+                            dateInput.click();
                         }
                     } catch (e) {
-                        dateInput.click(); // Fallback bij error
+                        dateInput.click();
                     }
                 } else if (buttons.includes(document.activeElement)) {
                     document.activeElement.click();
                 }
                 return;
             }
-            return;
-        }
-        
-        // Voor alle andere pagina's: negeer INPUT/TEXTAREA
-        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
-
-        const key = event.key;
-        const code = event.code;
-        const now = Date.now();
-
-        // 🚫 BLOKKEER ESCAPE OP SCORE-SCHERM
-        if (activePage.id === 'page5' && (key === 'Escape' || code === 'Escape')) {
-            event.preventDefault();
-            event.stopPropagation();
             return;
         }
 
