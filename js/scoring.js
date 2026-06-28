@@ -657,32 +657,86 @@ function initPresenterControls() {
             return;
         }
 
-        // ✅ PAGINA 1: Navigeer door knoppen met pijltjes, Tab om te bevestigen
+        // ✅ PAGINA 1: Navigeer door knoppen en datum met pijltjes
         if (activePage.id === 'page1') {
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
-            if (buttons.length === 0) return;
+            const dateInput = document.getElementById('dateSelect');
             
-            const currentIndex = buttons.indexOf(document.activeElement);
+            // Bepaal waar we nu zijn: -1 = knoppen, 0 = datum-input
+            const isDateFocused = document.activeElement === dateInput;
+            const currentButtonIndex = buttons.indexOf(document.activeElement);
             
-            // Pijltjestoetsen: Navigeer door knoppen
-            if (key === 'ArrowDown' || key === 'PageDown') {
+            // Pijltje Links/Rechts: Wissel tussen datum en knoppen
+            if (key === 'ArrowLeft' || key === 'PageUp') {
                 event.preventDefault();
-                const nextIndex = (currentIndex + 1) % buttons.length;
-                buttons[nextIndex].focus();
+                if (isDateFocused) {
+                    // Ga naar eerste knop
+                    if (buttons.length > 0) buttons[0].focus();
+                } else if (currentButtonIndex !== -1) {
+                    // Ga naar datum-input
+                    if (dateInput) dateInput.focus();
+                }
                 return;
             }
-            if (key === 'ArrowUp' || key === 'PageUp') {
+            
+            if (key === 'ArrowRight' || key === 'PageDown') {
                 event.preventDefault();
-                const prevIndex = (currentIndex - 1 + buttons.length) % buttons.length;
-                buttons[prevIndex].focus();
+                if (isDateFocused) {
+                    // Ga naar eerste knop
+                    if (buttons.length > 0) buttons[0].focus();
+                } else if (currentButtonIndex !== -1) {
+                    // Ga naar datum-input
+                    if (dateInput) dateInput.focus();
+                }
                 return;
             }
             
-            // Tab: Activeer de geselecteerde knop
+            // Pijltje Omhoog/Omlaag: Navigeer door knoppen OF wijzig datum
+            if (key === 'ArrowUp') {
+                event.preventDefault();
+                if (isDateFocused) {
+                    // Wijzig datum: +1 dag
+                    if (dateInput && dateInput.value) {
+                        const d = new Date(dateInput.value);
+                        d.setDate(d.getDate() + 1);
+                        dateInput.value = d.toISOString().split('T')[0];
+                        state.selectedDate = dateInput.value;
+                    }
+                } else if (currentButtonIndex !== -1) {
+                    // Navigeer door knoppen
+                    const prevIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
+                    buttons[prevIndex].focus();
+                }
+                return;
+            }
+            
+            if (key === 'ArrowDown') {
+                event.preventDefault();
+                if (isDateFocused) {
+                    // Wijzig datum: -1 dag
+                    if (dateInput && dateInput.value) {
+                        const d = new Date(dateInput.value);
+                        d.setDate(d.getDate() - 1);
+                        dateInput.value = d.toISOString().split('T')[0];
+                        state.selectedDate = dateInput.value;
+                    }
+                } else if (currentButtonIndex !== -1) {
+                    // Navigeer door knoppen
+                    const nextIndex = (currentButtonIndex + 1) % buttons.length;
+                    buttons[nextIndex].focus();
+                }
+                return;
+            }
+            
+            // Tab: Activeer de geselecteerde knop OF ga terug naar knoppen
             if (key === 'Tab') {
                 event.preventDefault();
-                if (currentIndex !== -1) {
-                    buttons[currentIndex].click();
+                if (isDateFocused) {
+                    // Ga terug naar eerste knop
+                    if (buttons.length > 0) buttons[0].focus();
+                } else if (currentButtonIndex !== -1) {
+                    // Activeer de knop
+                    buttons[currentButtonIndex].click();
                 }
                 return;
             }
