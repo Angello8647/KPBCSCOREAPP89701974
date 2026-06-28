@@ -142,22 +142,19 @@ window.loadFilteredPlayers = function() {
         allPlayers.forEach(player => {
             const globalIndex = state.players.findIndex(p => p.id === player.id);
             
-            html += `<div style="padding: 20px; min-height: 80px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 4px solid #3498db; display: grid; grid-template-columns: 1fr 90px 90px; gap: 15px; align-items: center; font-size: 1em;">
-                <div style="text-align: center; font-family: monospace; font-size: 1em; color: #f39c12;">
-                    ${player.id}
-                </div>
-                <div style="text-align: left; line-height: 1.3;">
-                    <strong>${player.name}</strong><br>
-                    <small style="color: #95a5a6; font-size: 0.85em;">${player.discipline} - Cat. ${player.category}</small>
-                </div>
-                <div style="text-align: center; font-size: 1em; color: #f1c40f;">
-                    ${player.tsg || 'N/A'}
-                </div>
-                <div style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;">
-                    <span style="font-size: 1em; color: #2ecc71;">${player.target}</span>
-                    <button class="delete-match-btn" onclick="deletePlayerByIndex(${globalIndex})" title="Verwijderen" style="position: relative; top: 0; right: 0; width: 28px; height: 28px; border-radius: 6px; font-size: 16px; display: flex; align-items: center; justify-content: center; padding: 0;">🗑️</button>
-                </div>
-            </div>`;
+            html += `<div style="padding: 20px; min-height: 80px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 4px solid #3498db; display: grid; grid-template-columns: minmax(150px, 1fr) 80px 80px; gap: 15px; align-items: center; font-size: 1em;">
+			    <div style="text-align: left; line-height: 1.3;">
+			        <strong style="font-size: 1.1em;">${player.name}</strong><br>
+			        <small style="color: #95a5a6; font-size: 0.85em;">${player.discipline} - Cat. ${player.category}</small>
+			    </div>
+			    <div style="text-align: center; font-size: 1.1em; color: #f1c40f; font-weight: bold;">
+			        ${player.tsg || 'N/A'}
+			    </div>
+			    <div style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 8px;">
+			        <span style="font-size: 1.1em; color: #2ecc71; font-weight: bold;">${player.target}</span>
+			        <button class="delete-match-btn" onclick="deletePlayerByIndex(${globalIndex})" title="Verwijderen" style="position: relative; top: 0; right: 0; width: 28px; height: 28px; border-radius: 6px; font-size: 16px; display: flex; align-items: center; justify-content: center; padding: 0;">🗑️</button>
+			    </div>
+			</div>`;
         });
         playersList.innerHTML = html;
         return;
