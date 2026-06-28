@@ -1905,7 +1905,9 @@
     max-width: 400px !important; /* Niet te breed, maar groot genoeg */
     margin: 0 auto 30px auto !important; /* Mooi gecentreerd met ruimte eronder */
     display: block !important;
-    cursor: pointer !important;
+        cursor: pointer !important;
+    /* ✅ PRESENTER: Verwijder uit tab volgorde */
+    tabindex: -1 !important;
 }
 
 /* 3. Het kalender-icoontje rechts in het vak ook groter maken (voor Chrome/Raspberry Pi) */
