@@ -1975,6 +1975,8 @@
     border: 5px solid transparent !important; /* ✅ Dikker dan hiervoor (was 3px) */
     transition: all 0.2s ease !important;
     outline: none !important; /* Verwijder de standaard browser lijn */
+    /* ✅ PRESENTER: Verwijder uit tab volgorde (alleen pijltjestoetsen gebruiken) */
+    tabindex: -1 !important;
 }
 
 /* 2. De 'GEKOZEN' staat: Focus (presenter Tab), Hover (muis), of Active (ingedrukt) */
@@ -4619,9 +4621,15 @@ document.addEventListener('keydown', function(e) {
     const page1 = document.getElementById('page1');
     if (!page1 || !page1.classList.contains('active')) return;
 
+    // 🛑 BLOKKEER Tab toets (we gebruiken alleen pijltjestoetsen)
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        return;
+    }
+
     // 🛑 BLOKKEER de pijltjestoetsen voor de datum-kiezer
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault(); 
+        e.preventDefault();
     }
 
     const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
