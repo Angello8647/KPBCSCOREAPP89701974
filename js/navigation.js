@@ -28,7 +28,13 @@ window.showPage = function(pageNum) {
         if (typeof window.resetPage1State === 'function') {
             window.resetPage1State();
         }
-    } 
+        
+        // 🎯 PRESENTER: Focus automatisch op de eerste knop na 200ms
+        setTimeout(() => {
+            const firstBtn = document.querySelector('#page1 .next-btn, #page1 .friendly-btn');
+            if (firstBtn) firstBtn.focus();
+        }, 200);
+    }
     else if (actualPageNum === 2) {
 
         // PAGINA 2: Matchen lijst (handmatige matches)
