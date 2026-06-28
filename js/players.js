@@ -142,7 +142,7 @@ window.loadFilteredPlayers = function() {
         allPlayers.forEach(player => {
             const globalIndex = state.players.findIndex(p => p.id === player.id);
             
-            html += `<div style="padding: 12px; margin: 5px 0; background: rgba(255,255,255,0.05); border-radius: 5px; display: grid; grid-template-columns: 60px 1fr 70px 90px; gap: 10px; align-items: center; font-size: 0.95em;">
+            html += `<div style="padding: 20px; min-height: 80px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 4px solid #3498db; display: grid; grid-template-columns: 1fr 90px 90px; gap: 15px; align-items: center; font-size: 1em;">
                 <div style="text-align: center; font-family: monospace; font-size: 1em; color: #f39c12;">
                     ${player.id}
                 </div>
