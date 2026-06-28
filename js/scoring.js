@@ -645,65 +645,34 @@ function initPresenterControls() {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
         
-        // ✅ PAGINA 1: Navigeer door knoppen en datum met pijltjes OF PageUp/PageDown
+        // ✅ PAGINA 1: Navigeer door knoppen met PageUp/PageDown
         if (activePage.id === 'page1') {
-            const dateInput = document.getElementById('dateSelect');
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
+            if (buttons.length === 0) return;
             
-            // Bouw een lijst van alle focusbare elementen in volgorde
-            const focusables = [dateInput, ...buttons].filter(el => el);
-            const currentIndex = focusables.indexOf(document.activeElement);
+            const currentIndex = buttons.indexOf(document.activeElement);
             
-            // Pijltje Omhoog OF PageUp: Ga naar vorige element
-            if (key === 'ArrowUp' || key === 'PageUp') {
+            // PageUp: Ga naar vorige knop
+            if (key === 'PageUp') {
                 event.preventDefault();
-                if (currentIndex === -1 || currentIndex === 0) {
-                    focusables[focusables.length - 1].focus();
-                } else {
-                    focusables[currentIndex - 1].focus();
-                }
+                const prevIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+                buttons[prevIndex].focus();
                 return;
             }
             
-            // Pijltje Omlaag OF PageDown: Ga naar volgende element
-            if (key === 'ArrowDown' || key === 'PageDown') {
+            // PageDown: Ga naar volgende knop
+            if (key === 'PageDown') {
                 event.preventDefault();
-                if (currentIndex === -1 || currentIndex === focusables.length - 1) {
-                    focusables[0].focus();
-                } else {
-                    focusables[currentIndex + 1].focus();
-                }
+                const nextIndex = (currentIndex + 1) % buttons.length;
+                buttons[nextIndex].focus();
                 return;
             }
             
-            // Pijltje Links/Rechts: Wijzig datum (alleen als datum focus heeft)
-            if ((key === 'ArrowLeft' || key === 'ArrowRight') && document.activeElement === dateInput) {
-                event.preventDefault();
-                if (dateInput && dateInput.value) {
-                    const d = new Date(dateInput.value);
-                    d.setDate(d.getDate() + (key === 'ArrowRight' ? 1 : -1));
-                    dateInput.value = d.toISOString().split('T')[0];
-                    state.selectedDate = dateInput.value;
-                }
-                return;
-            }
-            
-            // Tab: Bevestig de geselecteerde knop (of open datum-kalender)
+            // Tab: Activeer de geselecteerde knop
             if (key === 'Tab') {
                 event.preventDefault();
-                if (document.activeElement === dateInput) {
-                    // Probeer showPicker, maar vang errors op
-                    try {
-                        if (typeof dateInput.showPicker === 'function') {
-                            dateInput.showPicker();
-                        } else {
-                            dateInput.click();
-                        }
-                    } catch (e) {
-                        dateInput.click();
-                    }
-                } else if (buttons.includes(document.activeElement)) {
-                    document.activeElement.click();
+                if (currentIndex !== -1) {
+                    buttons[currentIndex].click();
                 }
                 return;
             }
