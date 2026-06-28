@@ -731,49 +731,31 @@ function initPresenterControls() {
 
 
         // ✅ MODAL OPEN: Navigeer door spelerslijst
-        // ✅ MODAL OPEN: Navigeer door spelerslijst
-        // ✅ MODAL OPEN: Navigeer door spelerslijst OF gast-namen
         const modal = document.querySelector('.modal-overlay:not(.hidden)');
         if (modal) {
-            // Check of we in gast-modus zijn met naam-keuze
-            const guestNameOptions = modal.querySelectorAll('.guest-name-option');
-            
-            if (guestNameOptions.length > 0) {
-                // ✅ GAST-NAAM KEUZE MODUS
-                if (typeof window.guestNameFocusIndex === 'undefined' || window.guestNameFocusIndex === -1) {
-                    window.guestNameFocusIndex = 0;
-                }
+            // Check of we in gast-modus zijn
+            if (isGuestMode) {
+                // ✅ GAST-MODUS: Naam is al automatisch ingevuld, alleen bevestigen
+                const confirmBtn = modal.querySelector('#btnConfirmGuest');
                 
-                // Verwijder oude focus
-                guestNameOptions.forEach(el => el.classList.remove('focused'));
-                
-                // PageUp: Vorige gast-naam
-                if (event.key === 'PageUp') {
+                // PageUp/PageDown: Negeer (niets om door te navigeren)
+                if (event.key === 'PageUp' || event.key === 'PageDown') {
                     event.preventDefault();
-                    window.guestNameFocusIndex = (window.guestNameFocusIndex - 1 + guestNameOptions.length) % guestNameOptions.length;
-                    guestNameOptions[window.guestNameFocusIndex].classList.add('focused');
                     return;
                 }
                 
-                // PageDown: Volgende gast-naam
-                if (event.key === 'PageDown') {
-                    event.preventDefault();
-                    window.guestNameFocusIndex = (window.guestNameFocusIndex + 1) % guestNameOptions.length;
-                    guestNameOptions[window.guestNameFocusIndex].classList.add('focused');
-                    return;
-                }
-                
-                // Tab: Bevestig gekozen gast-naam
+                // Tab: Bevestig de naam
                 if (event.key === 'Tab') {
                     event.preventDefault();
-                    const selectedName = guestNameOptions[window.guestNameFocusIndex].dataset.name;
-                    window.confirmGuestName(selectedName);
+                    if (confirmBtn) {
+                        confirmBtn.click();
+                    }
                     return;
                 }
                 return;
             }
             
-            // ✅ NORMALE SPELERSLIJST MODUS
+            // ✅ NORMALE SPELERSLIJST MODUS (Clublid)
             const modeButtons = Array.from(modal.querySelectorAll('#btnModeClub, #btnModeGuest'));
             const players = Array.from(modal.querySelectorAll('.player-list-item'));
             const actionButtons = Array.from(modal.querySelectorAll('.modal-actions .modal-btn'));
