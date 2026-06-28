@@ -662,24 +662,12 @@ function initPresenterControls() {
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
             const dateInput = document.getElementById('dateSelect');
             
-            // Bepaal waar we nu zijn: -1 = knoppen, 0 = datum-input
+            // Bepaal waar we nu zijn
             const isDateFocused = document.activeElement === dateInput;
             const currentButtonIndex = buttons.indexOf(document.activeElement);
             
             // Pijltje Links/Rechts: Wissel tussen datum en knoppen
-            if (key === 'ArrowLeft' || key === 'PageUp') {
-                event.preventDefault();
-                if (isDateFocused) {
-                    // Ga naar eerste knop
-                    if (buttons.length > 0) buttons[0].focus();
-                } else if (currentButtonIndex !== -1) {
-                    // Ga naar datum-input
-                    if (dateInput) dateInput.focus();
-                }
-                return;
-            }
-            
-            if (key === 'ArrowRight' || key === 'PageDown') {
+            if (key === 'ArrowLeft' || key === 'ArrowRight') {
                 event.preventDefault();
                 if (isDateFocused) {
                     // Ga naar eerste knop
