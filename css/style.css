@@ -4611,4 +4611,30 @@
     color: #ffffff;
 }
 
+// 🎯 PRESENTER NAVIGATIE: Pijltjestoetsen voor Pagina 1
+document.addEventListener('keydown', function(e) {
+    // Werkt alleen als Pagina 1 actief is
+    const page1 = document.getElementById('page1');
+    if (!page1 || !page1.classList.contains('active')) return;
 
+    // 🛑 BLOKKEER de pijltjestoetsen voor de datum-kiezer
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault(); 
+    }
+
+    const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
+    if (buttons.length === 0) return;
+
+    const currentIndex = buttons.indexOf(document.activeElement);
+
+    if (e.key === 'ArrowDown') {
+        // Ga naar de volgende knop
+        const nextIndex = (currentIndex + 1) % buttons.length;
+        buttons[nextIndex].focus();
+    } 
+    else if (e.key === 'ArrowUp') {
+        // Ga naar de vorige knop
+        const prevIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+        buttons[prevIndex].focus();
+    }
+}, true); // ✅ 'true' zorgt dat dit VÓÓR de datum-kiezer wordt uitgevoerd!
