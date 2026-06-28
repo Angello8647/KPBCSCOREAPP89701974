@@ -4615,7 +4615,8 @@
     color: #ffffff;
 }
 
-// 🎯 PRESENTER NAVIGATIE: Pijltjes om te kiezen, Tab om te bevestigen
+
+//  PRESENTER NAVIGATIE: Pijltjes om te kiezen, Tab om te bevestigen
 document.addEventListener('keydown', function(e) {
     // Werkt alleen als Pagina 1 actief is
     const page1 = document.getElementById('page1');
@@ -4642,8 +4643,8 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'Tab') {
         // Alleen als er een van onze knoppen geselecteerd is
         if (currentIndex !== -1) {
-            e.preventDefault(); // Voorkomt dat de focus verspringt
+            e.preventDefault(); // Voorkomt dat de focus verspringt naar de datum input
             buttons[currentIndex].click(); // Simuleer een klik (Enter)
         }
     }
-}, true);
+}, true); // 'true' zorgt dat dit VÓÓR de datum-kiezer wordt uitgevoerd!
