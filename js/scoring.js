@@ -730,6 +730,7 @@ function initPresenterControls() {
         }
 
         // ✅ PAGINA FRIENDLY: Navigeer door alle elementen
+        // ✅ PAGINA FRIENDLY: Navigeer door alle elementen met visuele highlight
         if (activePage.id === 'pageFriendly') {
             // Bouw lijst van alle focusbare elementen in volgorde
             const focusables = Array.from(document.querySelectorAll(
@@ -744,35 +745,35 @@ function initPresenterControls() {
             
             if (focusables.length === 0) return;
             
-            const currentIndex = focusables.indexOf(document.activeElement);
+            // Gebruik een custom index als er geen focus is
+            if (typeof window.friendlyFocusIndex === 'undefined' || window.friendlyFocusIndex === -1) {
+                window.friendlyFocusIndex = 0;
+            }
+            
+            // Verwijder oude focus
+            focusables.forEach(el => el.classList.remove('focused'));
             
             // PageUp: Ga naar vorige element
             if (event.key === 'PageUp') {
                 event.preventDefault();
-                if (currentIndex === -1 || currentIndex === 0) {
-                    focusables[focusables.length - 1].focus();
-                } else {
-                    focusables[currentIndex - 1].focus();
-                }
+                window.friendlyFocusIndex = (window.friendlyFocusIndex - 1 + focusables.length) % focusables.length;
+                focusables[window.friendlyFocusIndex].classList.add('focused');
                 return;
             }
             
             // PageDown: Ga naar volgende element
             if (event.key === 'PageDown') {
                 event.preventDefault();
-                if (currentIndex === -1 || currentIndex === focusables.length - 1) {
-                    focusables[0].focus();
-                } else {
-                    focusables[currentIndex + 1].focus();
-                }
+                window.friendlyFocusIndex = (window.friendlyFocusIndex + 1) % focusables.length;
+                focusables[window.friendlyFocusIndex].classList.add('focused');
                 return;
             }
             
             // Tab: Activeer het geselecteerde element
             if (event.key === 'Tab') {
                 event.preventDefault();
-                if (currentIndex !== -1) {
-                    focusables[currentIndex].click();
+                if (window.friendlyFocusIndex !== -1) {
+                    focusables[window.friendlyFocusIndex].click();
                 }
                 return;
             }
