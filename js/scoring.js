@@ -650,7 +650,7 @@ function initPresenterControls() {
             const dateInput = document.getElementById('dateSelect');
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
             
-            // Bouw een lijst van alle focusbare elementen in volgorde
+            // Bouw een lijst van alle focusable elementen in volgorde
             const focusables = [dateInput, ...buttons].filter(el => el);
             const currentIndex = focusables.indexOf(document.activeElement);
             
@@ -692,7 +692,16 @@ function initPresenterControls() {
             if (event.key === 'Tab') {
                 event.preventDefault();
                 if (document.activeElement === dateInput) {
-                    dateInput.showPicker(); // Open de kalender
+                    // Probeer showPicker, maar vang errors op
+                    try {
+                        if (typeof dateInput.showPicker === 'function') {
+                            dateInput.showPicker();
+                        } else {
+                            dateInput.click(); // Fallback: klik op de input
+                        }
+                    } catch (e) {
+                        dateInput.click(); // Fallback bij error
+                    }
                 } else if (buttons.includes(document.activeElement)) {
                     document.activeElement.click();
                 }
