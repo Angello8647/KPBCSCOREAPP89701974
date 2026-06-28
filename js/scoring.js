@@ -1465,9 +1465,8 @@ window.setMode = function(mode) {
         btnGuest.classList.add('mode-active-guest');
         btnClub.classList.remove('mode-active-club');
         
-        // Toon hint in plaats van spelerslijst
-        document.getElementById('playerList').innerHTML = 
-            '<div class="player-list-item" style="color: #95a5a6; text-align: center; font-style: italic; padding: 40px 20px;">Type de naam van de gast met de letters en de groene spatiebalk...</div>';
+        // ✅ NIEUW: Toon gast-naam keuze menu
+        window.showGuestNameSelection();
     }
 };
 
