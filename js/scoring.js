@@ -729,56 +729,6 @@ function initPresenterControls() {
             return;
         }
 
-        // ✅ PAGINA FRIENDLY: Navigeer door alle elementen
-        // ✅ PAGINA FRIENDLY: Navigeer door alle elementen met visuele highlight
-        if (activePage.id === 'pageFriendly') {
-            // Bouw lijst van alle focusbare elementen in volgorde
-            const focusables = Array.from(document.querySelectorAll(
-                '#pageFriendly .back-btn, ' +
-                '#friendlyResetBtn, ' +
-                '#pageFriendly .config-card:not(.dimmed), ' +
-                '#btnStartFriendlyMatch'
-            )).filter(el => {
-                // Filter uit elementen die verborgen zijn of disabled
-                return el.offsetParent !== null && !el.disabled;
-            });
-            
-            if (focusables.length === 0) return;
-            
-            // Gebruik een custom index als er geen focus is
-            if (typeof window.friendlyFocusIndex === 'undefined' || window.friendlyFocusIndex === -1) {
-                window.friendlyFocusIndex = 0;
-            }
-            
-            // Verwijder oude focus
-            focusables.forEach(el => el.classList.remove('focused'));
-            
-            // PageUp: Ga naar vorige element
-            if (event.key === 'PageUp') {
-                event.preventDefault();
-                window.friendlyFocusIndex = (window.friendlyFocusIndex - 1 + focusables.length) % focusables.length;
-                focusables[window.friendlyFocusIndex].classList.add('focused');
-                return;
-            }
-            
-            // PageDown: Ga naar volgende element
-            if (event.key === 'PageDown') {
-                event.preventDefault();
-                window.friendlyFocusIndex = (window.friendlyFocusIndex + 1) % focusables.length;
-                focusables[window.friendlyFocusIndex].classList.add('focused');
-                return;
-            }
-            
-            // Tab: Activeer het geselecteerde element
-            if (event.key === 'Tab') {
-                event.preventDefault();
-                if (window.friendlyFocusIndex !== -1) {
-                    focusables[window.friendlyFocusIndex].click();
-                }
-                return;
-            }
-            return;
-        }
 
         // ✅ MODAL OPEN: Navigeer door spelerslijst
         const modal = document.querySelector('.modal-overlay:not(.hidden)');
@@ -834,6 +784,60 @@ function initPresenterControls() {
             }
             return;
         }
+
+        
+        // ✅ PAGINA FRIENDLY: Navigeer door alle elementen
+        // ✅ PAGINA FRIENDLY: Navigeer door alle elementen met visuele highlight
+        if (activePage.id === 'pageFriendly') {
+            // Bouw lijst van alle focusbare elementen in volgorde
+            const focusables = Array.from(document.querySelectorAll(
+                '#pageFriendly .back-btn, ' +
+                '#friendlyResetBtn, ' +
+                '#pageFriendly .config-card:not(.dimmed), ' +
+                '#btnStartFriendlyMatch'
+            )).filter(el => {
+                // Filter uit elementen die verborgen zijn of disabled
+                return el.offsetParent !== null && !el.disabled;
+            });
+            
+            if (focusables.length === 0) return;
+            
+            // Gebruik een custom index als er geen focus is
+            if (typeof window.friendlyFocusIndex === 'undefined' || window.friendlyFocusIndex === -1) {
+                window.friendlyFocusIndex = 0;
+            }
+            
+            // Verwijder oude focus
+            focusables.forEach(el => el.classList.remove('focused'));
+            
+            // PageUp: Ga naar vorige element
+            if (event.key === 'PageUp') {
+                event.preventDefault();
+                window.friendlyFocusIndex = (window.friendlyFocusIndex - 1 + focusables.length) % focusables.length;
+                focusables[window.friendlyFocusIndex].classList.add('focused');
+                return;
+            }
+            
+            // PageDown: Ga naar volgende element
+            if (event.key === 'PageDown') {
+                event.preventDefault();
+                window.friendlyFocusIndex = (window.friendlyFocusIndex + 1) % focusables.length;
+                focusables[window.friendlyFocusIndex].classList.add('focused');
+                return;
+            }
+            
+            // Tab: Activeer het geselecteerde element
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (window.friendlyFocusIndex !== -1) {
+                    focusables[window.friendlyFocusIndex].click();
+                }
+                return;
+            }
+            return;
+        }
+
+        
 
         
         // ✅ PAGINA 2 OF 11: Door matchen navigeren + selecteren
