@@ -86,41 +86,84 @@ function updateScoringPage() {
                 return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
             }
             
-            // ✅ DAMES: 20 beurten tonen, HEREN: 56 beurten tonen
-            const minBeurten = state.currentMatch.discipline === "Dames" ? 20 : 56;
+            // ✅ DAMES: 20 beurten tonen (4 rijen van 5), HEREN: 56 beurten tonen
+            const isDames = state.currentMatch.discipline === "Dames";
+            const minBeurten = isDames ? 20 : 56;
             const totalToShow = Math.max(minBeurten, turns.length);
             const highest = player.highestSeries || 0;
             let html = '';
             
-            for (let i = 1; i <= totalToShow; i++) {
-                const isPlayed = i <= turns.length;
-                let scoreDisplay = '−';
-                let classes = 'turn-row';
-                
-                if (isPlayed) {
-                    const score = turns[i - 1];
+            // ✅ DAMES: Groepeer per 5 beurten (4 rijen van 5)
+            if (isDames) {
+                for (let group = 0; group < 4; group++) {
+                    html += '<div class="turn-group">';
                     
-                    if (score === 0) {
-                        scoreDisplay = '-';
-                        classes += ' played zero-turn';
-                    } else {
-                        scoreDisplay = score;
-                        classes += ' played';
+                    for (let i = 1; i <= 5; i++) {
+                        const turnIndex = (group * 5) + i;
+                        const isPlayed = turnIndex <= turns.length;
+                        let scoreDisplay = '−';
+                        let classes = 'turn-row';
                         
-                        if (score === highest && highest > 0) {
-                            classes += ' highest-series';
+                        if (isPlayed) {
+                            const score = turns[turnIndex - 1];
+                            
+                            if (score === 0) {
+                                scoreDisplay = '-';
+                                classes += ' played zero-turn';
+                            } else {
+                                scoreDisplay = score;
+                                classes += ' played';
+                                
+                                if (score === highest && highest > 0) {
+                                    classes += ' highest-series';
+                                }
+                            }
+                            
+                            if (turnIndex === turns.length && score !== highest) {
+                                classes += ' latest-turn';
+                            }
+                        } else {
+                            classes += ' pending';
                         }
+                        
+                        html += `<div class="${classes}"><span>B${turnIndex}: ${scoreDisplay}</span></div>`;
                     }
                     
-                    if (i === turns.length && score !== highest) {
-                        classes += ' latest-turn';
-                    }
-                } else {
-                    classes += ' pending';
+                    html += '</div>';
                 }
-                
-                html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
+            } else {
+                // ✅ HEREN: Normale lange lijst
+                for (let i = 1; i <= totalToShow; i++) {
+                    const isPlayed = i <= turns.length;
+                    let scoreDisplay = '−';
+                    let classes = 'turn-row';
+                    
+                    if (isPlayed) {
+                        const score = turns[i - 1];
+                        
+                        if (score === 0) {
+                            scoreDisplay = '-';
+                            classes += ' played zero-turn';
+                        } else {
+                            scoreDisplay = score;
+                            classes += ' played';
+                            
+                            if (score === highest && highest > 0) {
+                                classes += ' highest-series';
+                            }
+                        }
+                        
+                        if (i === turns.length && score !== highest) {
+                            classes += ' latest-turn';
+                        }
+                    } else {
+                        classes += ' pending';
+                    }
+                    
+                    html += `<div class="${classes}"><span>B${i}: ${scoreDisplay}</span></div>`;
+                }
             }
+            
             return html;
         };
 
