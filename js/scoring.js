@@ -316,6 +316,15 @@ window.addScore = function() {
         }
     }
 
+    // ✅ NIEUW: DAMES-COMPETITIE - Check op 20 beurten limiet
+    if (state.currentMatch.discipline === "Dames") {
+        // Beide spelers hebben 20 beurten gespeeld? Match eindigt!
+        if (state.player1.turns.length >= 20 && state.player2.turns.length >= 20) {
+            endMatch();
+            return;
+        }
+    }
+
     const reached = p.score >= t;
 
     if (reached && state.firstToTarget === null) {
