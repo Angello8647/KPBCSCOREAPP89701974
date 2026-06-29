@@ -450,7 +450,7 @@ window.undoLastAdd = function() {
 };
 
 function endMatch() {
-    console.log("🔥 END MATCH FUNCTIE AANGEROEPEN!"); // ✅ VOEG DEZE REGEL TOE
+    console.log("🔥 END MATCH FUNCTIE AANGEROEPEN!");
     
     state.matchEnded = true;
     state.currentMatch.completed = true;
@@ -464,9 +464,32 @@ function endMatch() {
     state.currentMatch.p2Turns = [...state.player2.turns];
     state.currentMatch.p1Highest = state.player1.highestSeries;
     state.currentMatch.p2Highest = state.player2.highestSeries;
-    state.currentMatch.winner = state.player1.score >= state.player1.target ? state.currentMatch.p1 : state.currentMatch.p2;
+    
+    // ✅ DAMES-COMPETITIE: Winner op basis van hoogste score + puntenverdeling (3-2-1)
+    if (state.currentMatch.discipline === "Dames") {
+        if (state.player1.score > state.player2.score) {
+            // Speler 1 wint
+            state.currentMatch.winner = state.currentMatch.p1;
+            state.currentMatch.p1MatchPoints = 3;
+            state.currentMatch.p2MatchPoints = 1;
+        } else if (state.player2.score > state.player1.score) {
+            // Speler 2 wint
+            state.currentMatch.winner = state.currentMatch.p2;
+            state.currentMatch.p1MatchPoints = 1;
+            state.currentMatch.p2MatchPoints = 3;
+        } else {
+            // Gelijkspel
+            state.currentMatch.winner = "Gelijk";
+            state.currentMatch.p1MatchPoints = 2;
+            state.currentMatch.p2MatchPoints = 2;
+        }
+    } else {
+        // ✅ HEREN: Oude logica (wie haalt target)
+        state.currentMatch.winner = state.player1.score >= state.player1.target ? state.currentMatch.p1 : state.currentMatch.p2;
+    }
     
     if (typeof saveStateToStorage === 'function') saveStateToStorage();
+    
     // ✅ NIEUW: Stuur de volledige match-data naar de PythonAnywhere API
     if (typeof window.syncMatchToAPI === 'function') {
         console.log("📤 Probeer match te syncen met server...");
