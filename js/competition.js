@@ -4,9 +4,9 @@
 // =========================================================================
 const COMPETITION_CONFIG = {
     'Vrijspel': {
-        targetPoints: 20,      // Minimum punten
-        targetTurns: 20,       // Beurten (AQ2)
-        minScore: -5           // Maximum minpunten (AQ3)
+        targetPoints: 20,
+        targetTurns: 20,
+        minScore: -5
     },
     'Bandstoten': {
         targetPoints: 15,
@@ -17,6 +17,12 @@ const COMPETITION_CONFIG = {
         targetPoints: 13,
         targetTurns: 40,
         minScore: -5
+    },
+    'Dames': {
+        targetPoints: 20,
+        targetTurns: 20,
+        minScore: -5,
+        isDames: true  // ✅ Markering voor 3/2/1 systeem
     }
 };
 
@@ -29,9 +35,17 @@ const COMPETITION_CONFIG = {
  * Berekent de competitiepunten voor één speler in één match.
  * Volgt exact de Excel VBA logica (VBA Int() = JS Math.floor()).
  */
-window.calculateCompetitionPoints = function(score, beurten, targetPoints, targetTurns) {
+window.calculateCompetitionPoints = function(score, beurten, targetPoints, targetTurns, isDames = false, won = false, isDraw = false) {
     const MIN_SCORE = -5;
     
+    // ✅ Dames: 3/2/1 systeem
+    if (isDames) {
+        if (won) return 3;      // Winnaar
+        if (isDraw) return 2;   // Gelijkspel
+        return 1;               // Verliezer
+    }
+    
+    // Normale berekening voor andere disciplines
     if (beurten <= 0) return MIN_SCORE;
     
     if (score < targetPoints) {
@@ -403,12 +417,20 @@ window.renderCrossTable = function() {
                     const playerData = match.players.find(p => String(p.club_id) === String(player1.id));
                     const points = playerData.score;
                     const turns = playerData.beurten;
+                    
+                    // ✅ Check voor gelijkspel (Dames)
+                    const opponentData = match.players.find(p => String(p.club_id) !== String(player1.id));
+                    const isDraw = opponentData && opponentData.score === points;
+                    const won = String(match.winner_club_id) === String(player1.id);
+                    
                     // Haal persoonlijk target van de speler op (fallback: 100)
                     const playerTarget = state.players.find(p => p.id === player1.id)?.target || 100;
                     // Bepaal targetTurns per discipline
                     const targetTurns = currentCrossDiscipline === 'Driebanden' ? 40 : 20;
-                    // Bereken competitiepunten met persoonlijke target
-                    const compPoints = calculateCompetitionPoints(points, turns, playerTarget, targetTurns);
+                    
+                    // ✅ Dames: 3/2/1 systeem
+                    const isDames = currentCrossDiscipline === 'Dames';
+                    const compPoints = calculateCompetitionPoints(points, turns, playerTarget, targetTurns, isDames, won, isDraw);
                     const compPointsClass = compPoints > 0 ? 'comp-pts-positive' : compPoints < 0 ? 'comp-pts-negative' : '';
                     const compPointsText = compPoints > 0 ? `+${compPoints}` : compPoints;
                     
@@ -487,7 +509,7 @@ window.initCompetitionPage = function() {
     const disciplines = [...new Set(state.players.map(p => p.discipline))];
     
     // ✅ Definieer de gewenste volgorde
-    const disciplineOrder = ['Vrijspel', 'Bandstoten', 'Driebanden'];
+    const disciplineOrder = ['Vrijspel', 'Bandstoten', 'Driebanden', 'Dames'];
     
     // ✅ Sorteer volgens deze volgorde
     const sortedDisciplines = disciplines.sort((a, b) => {
@@ -590,14 +612,20 @@ window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, 
         const turns = playerData.beurten;
         const hr = playerData.hoogste_reeks;
         const won = String(match.winner_club_id) === String(playerId);
+        
+        // ✅ Check voor gelijkspel (Dames)
+        const opponentData = match.players.find(p => String(p.club_id) !== String(playerId));
+        const isDraw = opponentData && opponentData.score === points;
 
         // Bereken competitiepunten voor deze match
         // Haal persoonlijk target van de speler op (fallback: 100)
         const playerTarget = state.players.find(p => p.id === playerId)?.target || 100;
         // Bepaal targetTurns per discipline
         const targetTurns = discipline === 'Driebanden' ? 40 : 20;
-        // Bereken competitiepunten met persoonlijke target
-        const compPoints = window.calculateCompetitionPoints(points, turns, playerTarget, targetTurns);
+        
+        // ✅ Dames: 3/2/1 systeem
+        const isDames = discipline === 'Dames';
+        const compPoints = window.calculateCompetitionPoints(points, turns, playerTarget, targetTurns, isDames, won, isDraw);
 
         totalCompPoints += compPoints;
         totalPointsScored += points;
@@ -624,21 +652,29 @@ window.calculatePlayerStatsFromAPI = function(playerId, playerName, discipline, 
     const playerInfo = state.players.find(p => p.id === playerId);
     const mode = playerInfo?.mode || 'max -10%';
     let tsgvs;
+    let ptnvs;
     
-    if (matchesPlayed === 0) {
-        // Niet gespeeld: blijft gelijk aan TSG
-        tsgvs = tsg;
-    } else if (mode.startsWith('k')) {
-        // "kan niet verminderen"
-        tsgvs = average < tsg ? tsg : average;
+    // ✅ Dames: Vaste waarden
+    if (discipline === 'Dames') {
+        tsgvs = 20.0;
+        ptnvs = 1;
     } else {
-        // "max -10%"
-        tsgvs = average < (tsg * 0.9) ? (tsg * 0.9) : average;
+        // Normale berekening
+        if (matchesPlayed === 0) {
+            // Niet gespeeld: blijft gelijk aan TSG
+            tsgvs = tsg;
+        } else if (mode.startsWith('k')) {
+            // "kan niet verminderen"
+            tsgvs = average < tsg ? tsg : average;
+        } else {
+            // "max -10%"
+            tsgvs = average < (tsg * 0.9) ? (tsg * 0.9) : average;
+        }
+        
+        // Bereken PTNVS (Punten Volgend Seizoen)
+        const targetTurns = discipline === 'Driebanden' ? 40 : 20;
+        ptnvs = Math.ceil(tsgvs * targetTurns);
     }
-    
-    // Bereken PTNVS (Punten Volgend Seizoen)
-    const targetTurns = discipline === 'Driebanden' ? 40 : 20;
-    const ptnvs = Math.ceil(tsgvs * targetTurns);
     
     return {
         id: playerId,
