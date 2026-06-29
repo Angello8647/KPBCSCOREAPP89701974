@@ -86,7 +86,8 @@ function updateScoringPage() {
                 return '<div style="text-align:center;color:#666;padding:20px;font-size:0.9em;">Nog geen beurten</div>';
             }
             
-            const minBeurten = 56;
+            // ✅ DAMES: 20 beurten tonen, HEREN: 56 beurten tonen
+            const minBeurten = state.currentMatch.discipline === "Dames" ? 20 : 56;
             const totalToShow = Math.max(minBeurten, turns.length);
             const highest = player.highestSeries || 0;
             let html = '';
