@@ -953,13 +953,13 @@ function initPresenterControls() {
         // ✅ PAGINA 5: SCORING
         if (activePage.id === 'page5') {
             if (!state.currentMatch || state.matchEnded) return;
-
-            if (key === 'PageUp' || key === 'ArrowUp') {
+        
+            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 pageUpStartTime = Date.now();
                 return;
             }
-            if (key === 'PageDown' || key === 'ArrowDown') {
+            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
                 event.preventDefault();
                 if (now - lastScoreTime >= COOLDOWN) {
                     if (typeof window.changeScore === 'function') window.changeScore(-1);
@@ -967,13 +967,13 @@ function initPresenterControls() {
                 }
                 return;
             }
-            if (key === 'b' || key === 'B' || code === 'KeyB') {
+            if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
                 event.preventDefault();
                 if (typeof window.undoLastAdd === 'function') window.undoLastAdd();
                 lastScoreTime = now;
                 return;
             }
-            if (key === 'Tab') {
+            if (event.key === 'Tab') {
                 event.preventDefault();
                 if (now - lastTabTime < 500) return;
                 lastTabTime = now;
