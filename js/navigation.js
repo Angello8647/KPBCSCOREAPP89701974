@@ -1,14 +1,28 @@
 // js/navigation.js
 
 window.showPage = function(pageNum) {
-    let actualPageNum = typeof pageNum === 'string' ? parseInt(pageNum) : pageNum;
-    if (isNaN(actualPageNum) || actualPageNum < 1) actualPageNum = 1;
+    // ✅ ONDERSTEUN ZOWEL NUMMERS ALS STRINGS
+    let pageId;
+    let actualPageNum;
     
-    const pageId = `page${actualPageNum}`;
+    if (typeof pageNum === 'string' && pageNum.startsWith('page')) {
+        // Het is een string ID zoals 'pageFriendlyQR', 'pageFriendly', 'page13'
+        pageId = pageNum;
+        actualPageNum = pageNum; // Behoud de string voor state
+    } else {
+        // Het is een nummer zoals 1, 2, 3
+        actualPageNum = typeof pageNum === 'string' ? parseInt(pageNum) : pageNum;
+        if (isNaN(actualPageNum) || actualPageNum < 1) actualPageNum = 1;
+        pageId = `page${actualPageNum}`;
+    }
+    
+    // ✅ VERBERG ALLE PAGINA'S
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    
+    // ✅ TOON DE JUISTE PAGINA
     const target = document.getElementById(pageId);
     if (!target) {
-        console.warn(`⚠️ Pagina ${actualPageNum} bestaat niet!`);
+        console.warn(`⚠️ Pagina ${pageId} bestaat niet!`);
         return;
     }
     
@@ -105,15 +119,46 @@ window.showPage = function(pageNum) {
         }
     }
     else if (actualPageNum === 20) {
-    // PAGINA 20: Competitie (Rangschikking & Kruistabel)
-    if (typeof window.initCompetitionPage === 'function') {
-        window.initCompetitionPage();
+        // PAGINA 20: Competitie (Rangschikking & Kruistabel)
+        if (typeof window.initCompetitionPage === 'function') {
+            window.initCompetitionPage();
+        }
+        // ✅ NIEUW: Haal verse match results op van de server
+        if (typeof window.fetchMatchResultsFromAPI === 'function') {
+            window.fetchMatchResultsFromAPI();
+        }
     }
-    // ✅ NIEUW: Haal verse match results op van de server
-    if (typeof window.fetchMatchResultsFromAPI === 'function') {
-        window.fetchMatchResultsFromAPI();
+    
+    // ==========================================
+    // ✅ NIEUWE PAGINA'S: String-based ID's
+    // ==========================================
+    
+    else if (pageId === 'pageFriendly') {
+        // PAGINA FRIENDLY: Vriendschappelijke match configuratie
+        // Geen specifieke setup nodig, pagina is al klaar
     }
-}
+    else if (pageId === 'pageFriendlyQR') {
+        // PAGINA FRIENDLY QR: QR code pagina
+        // Geen specifieke setup nodig, pagina is al klaar
+    }
+    else if (pageId === 'page13') {
+        // PAGINA 13: Vriendschappelijke bal selectie
+        if (typeof window.prepareFriendlyBallSelection === 'function') {
+            window.prepareFriendlyBallSelection();
+        }
+    }
+    else if (pageId === 'page14' || pageId === 'page14-3player') {
+        // PAGINA 14: Vriendschappelijk scorebord (2 of 4 spelers)
+        if (typeof window.initFriendlyScoring === 'function') {
+            window.initFriendlyScoring();
+        }
+    }
+    else if (pageId === 'page15-3player-summary') {
+        // PAGINA 15: 3-speler samenvatting
+        if (typeof window.render3PlayerSummary === 'function') {
+            window.render3PlayerSummary();
+        }
+    }
 };
 
 // ==========================================
