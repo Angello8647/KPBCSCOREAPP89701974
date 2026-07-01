@@ -3715,3 +3715,169 @@ const render3PTurnsListSummary = (turns, highest) => {
     }
     return html + '</div>';
 };
+
+// ==========================================
+// 📱 QR CODE VOOR VRIENDSCHAPPELIJKE MATCH
+// ==========================================
+
+let qrPollingInterval = null;
+let qrSessionId = null;
+
+/**
+ * Open de QR code pagina en genereer een QR code
+ */
+window.openFriendlyQRPage = async function() {
+    console.log("📱 Open QR code pagina voor vriendschappelijke match");
+    
+    // Reset state
+    qrSessionId = null;
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+    
+    // Toon de pagina
+    showPage('pageFriendlyQR');
+    
+    // Update status
+    document.getElementById('qrStatus').innerHTML = '⏳ QR code genereren...';
+    document.getElementById('qrCodeDisplay').innerHTML = '<div style="color: #7f8c8d;">⏳ Laden...</div>';
+    
+    try {
+        // 1. Maak nieuwe sessie aan op PythonAnywhere
+        const response = await fetch('https://kpbc.pythonanywhere.com/api/friendly-setup/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Server fout: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        qrSessionId = data.session_id;
+        
+        console.log(`✅ Sessie aangemaakt: ${qrSessionId}`);
+        console.log(`⏰ Vervalt op: ${data.expires_at}`);
+        
+        // 2. Toon session info (debug)
+        document.getElementById('qrSessionInfo').innerHTML = `
+            Sessie: ${qrSessionId.substring(0, 8)}...<br>
+            Geldig tot: ${data.expires_at}
+        `;
+        
+        // 3. Genereer QR code
+        const qrUrl = `https://kpbc.pythonanywhere.com/friendly-setup/${qrSessionId}`;
+        const qrDisplay = document.getElementById('qrCodeDisplay');
+        
+        // Maak canvas element
+        qrDisplay.innerHTML = '<canvas id="qrCanvas"></canvas>';
+        const canvas = document.getElementById('qrCanvas');
+        
+        // Genereer QR code
+        await QRCode.toCanvas(canvas, qrUrl, {
+            width: 280,
+            margin: 2,
+            color: {
+                dark: '#000000',
+                light: '#ffffff'
+            }
+        });
+        
+        // 4. Update status
+        document.getElementById('qrStatus').innerHTML = '📱 Scan de QR code met je GSM';
+        
+        // 5. Start polling (check elke 2 seconden)
+        startQRPolling();
+        
+    } catch (error) {
+        console.error('❌ Fout bij genereren QR code:', error);
+        document.getElementById('qrStatus').innerHTML = '❌ Fout bij genereren QR code';
+        document.getElementById('qrCodeDisplay').innerHTML = `
+            <div style="color: #e74c3c; padding: 20px;">
+                <p style="font-size: 1.1rem; margin-bottom: 10px;">❌ Kan geen verbinding maken met de server</p>
+                <p style="font-size: 0.9rem; color: #7f8c8d;">Check je internetverbinding en probeer opnieuw</p>
+            </div>
+        `;
+    }
+};
+
+/**
+ * Start polling om te checken of de match setup compleet is
+ */
+function startQRPolling() {
+    console.log('🔄 Start polling voor match setup...');
+    
+    qrPollingInterval = setInterval(async () => {
+        if (!qrSessionId) return;
+        
+        try {
+            const response = await fetch(`https://kpbc.pythonanywhere.com/api/friendly-setup/status/${qrSessionId}`);
+            const data = await response.json();
+            
+            if (data.status === 'completed') {
+                console.log('✅ Match setup compleet!', data);
+                
+                // Stop polling
+                clearInterval(qrPollingInterval);
+                qrPollingInterval = null;
+                
+                // Update status
+                document.getElementById('qrStatus').innerHTML = '✅ Match data ontvangen! Starten...';
+                
+                // Start de match met de ontvangen data
+                setTimeout(() => {
+                    startMatchFromQRData(data);
+                }, 1000);
+                
+            } else if (data.status === 'expired') {
+                console.log('⏰ Sessie verlopen');
+                clearInterval(qrPollingInterval);
+                qrPollingInterval = null;
+                document.getElementById('qrStatus').innerHTML = '⏰ Sessie verlopen. Genereer een nieuwe QR code.';
+                
+            } else if (data.status === 'waiting') {
+                // Nog steeds wachten - update status met animatie
+                const dots = '.'.repeat((Math.floor(Date.now() / 500) % 3) + 1);
+                document.getElementById('qrStatus').innerHTML = `📱 Wachten op invoer${dots}`;
+            }
+            
+        } catch (error) {
+            console.error('❌ Polling fout:', error);
+        }
+        
+    }, 2000); // Elke 2 seconden
+}
+
+/**
+ * Start de match met de data van de QR code setup
+ */
+function startMatchFromQRData(data) {
+    console.log('🚀 Start match met QR data:', data);
+    
+    // Zet de data om naar het formaat dat de score app verwacht
+    state.friendlyMatch = {
+        numPlayers: data.num_players,
+        gameType: data.game_type,
+        players: {},
+        teams: data.teams || null,
+        orders: data.orders || null,
+        whiteBallOwner: parseInt(data.white_ball)
+    };
+    
+    // Zet spelers om naar het juiste formaat
+    data.players.forEach((player, index) => {
+        state.friendlyMatch.players[index + 1] = {
+            name: player.name,
+            target: player.target || 20,
+            average: 0,
+            isGuest: player.isGuest || false
+        };
+    });
+    
+    console.log('✅ Friendly match state gezet:', state.friendlyMatch);
+    
+    // Ga naar de bal selectie pagina (of direct starten bij 2 spelers)
+    window.prepareFriendlyBallSelection();
+    showPage(13);
+}
