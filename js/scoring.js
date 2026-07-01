@@ -3872,6 +3872,9 @@ function startQRPolling() {
 /**
  * Start de match met de data van de QR code setup
  */
+/**
+ * Start de match met de data van de QR code setup
+ */
 function startMatchFromQRData(data) {
     console.log('🚀 Start match met QR data:', data);
     
@@ -3882,7 +3885,7 @@ function startMatchFromQRData(data) {
         players: {},
         teams: data.teams || null,
         orders: data.orders || null,
-        whiteBallOwner: parseInt(data.white_ball)
+        whiteBallOwner: parseInt(data.white_ball) // ✅ FIX: Gebruik white_ball van GSM
     };
     
     // Zet spelers om naar het juiste formaat
@@ -3897,7 +3900,15 @@ function startMatchFromQRData(data) {
     
     console.log('✅ Friendly match state gezet:', state.friendlyMatch);
     
-    // Ga naar de bal selectie pagina (of direct starten bij 2 spelers)
-    window.prepareFriendlyBallSelection();
-    showPage(13);
+    // ✅ FIX: Ga DIRECT naar het scorebord (sla bal selectie over)
+    // Omdat de witte bal al gekozen is op de GSM
+    if (state.friendlyMatch.numPlayers === 3) {
+        // Voor 3 spelers: ga naar 3-speler scorebord
+        window.initFriendlyScoring3Player();
+        showPage('page14-3player');
+    } else {
+        // Voor 2 of 4 spelers: ga naar standaard scorebord
+        window.initFriendlyScoring();
+        showPage('page14');
+    }
 }
