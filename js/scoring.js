@@ -3782,7 +3782,7 @@ window.openFriendlyQRPage = async function() {
             colorLight: '#ffffff',
             correctLevel: QRCode.CorrectLevel.H
         });
-        
+                
         // 4. Update status
         document.getElementById('qrStatus').innerHTML = '📱 Scan de QR code met je GSM';
         
