@@ -3770,18 +3770,17 @@ window.openFriendlyQRPage = async function() {
         const qrUrl = `https://kpbc.pythonanywhere.com/friendly-setup/${qrSessionId}`;
         const qrDisplay = document.getElementById('qrCodeDisplay');
         
-        // Maak canvas element
-        qrDisplay.innerHTML = '<canvas id="qrCanvas"></canvas>';
-        const canvas = document.getElementById('qrCanvas');
+        // Maak een div element voor de QR code
+        qrDisplay.innerHTML = '<div id="qrcode"></div>';
         
-        // Genereer QR code
-        await QRCode.toCanvas(canvas, qrUrl, {
+        // Genereer QR code met qrcodejs library
+        new QRCode(document.getElementById('qrcode'), {
+            text: qrUrl,
             width: 280,
-            margin: 2,
-            color: {
-                dark: '#000000',
-                light: '#ffffff'
-            }
+            height: 280,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
         });
         
         // 4. Update status
