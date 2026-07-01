@@ -3767,21 +3767,42 @@ window.openFriendlyQRPage = async function() {
         `;
         
         // 3. Genereer QR code
+        console.log('🎯 Stap 3: QR code genereren...');
         const qrUrl = `https://kpbc.pythonanywhere.com/friendly-setup/${qrSessionId}`;
+        console.log('📱 QR URL:', qrUrl);
+        
         const qrDisplay = document.getElementById('qrCodeDisplay');
+        console.log('📦 qrDisplay element:', qrDisplay);
+        
+        if (!qrDisplay) {
+            console.error('❌ qrDisplay element niet gevonden!');
+            return;
+        }
         
         // Maak een div element voor de QR code
         qrDisplay.innerHTML = '<div id="qrcode"></div>';
+        console.log('✅ Div element aangemaakt');
+        
+        const qrElement = document.getElementById('qrcode');
+        console.log('📦 qrElement:', qrElement);
         
         // Genereer QR code met qrcodejs library
-        new QRCode(document.getElementById('qrcode'), {
-            text: qrUrl,
-            width: 280,
-            height: 280,
-            colorDark: '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-        });
+        console.log('🔍 QRCode type:', typeof QRCode);
+        console.log('🔍 QRCode.CorrectLevel:', QRCode.CorrectLevel);
+        
+        try {
+            new QRCode(qrElement, {
+                text: qrUrl,
+                width: 280,
+                height: 280,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            console.log('✅ QR code gegenereerd!');
+        } catch (error) {
+            console.error('❌ Fout bij genereren QR code:', error);
+        }
                 
         // 4. Update status
         document.getElementById('qrStatus').innerHTML = '📱 Scan de QR code met je GSM';
