@@ -3916,13 +3916,13 @@ function startMatchFromQRData(data) {
  * Toggle QR code sectie op basis van aantal geselecteerde spelers
  */
 function toggleQRSection() {
-    // Check of er een actieve speler card is
-    const activeCard = document.querySelector('#step1Players .config-card.active');
+    // Check of er een speler card is met 'selected' class (niet 'active'!)
+    const selectedCard = document.querySelector('#step1Players .config-card.selected');
     const qrSection = document.getElementById('qrCodeSection');
     
     if (!qrSection) return;
     
-    if (activeCard) {
+    if (selectedCard) {
         // Er is een speler aantal geselecteerd → verberg QR sectie
         qrSection.style.display = 'none';
         console.log('📱 QR sectie verborgen (spelers geselecteerd)');
