@@ -1462,8 +1462,13 @@ window.resetFriendlyConfig = function() {
     }
     
     // 2. Verberg Stap 2, Stap 3 en Stap 4 expliciet
+    // ✅ Verberg Stap 1 (aantal spelers) voor meer ruimte
+    const step1 = document.getElementById('step1Players');
+    if (step1) step1.classList.add('hidden');
+    
+    // ✅ Toon Stap 2 (speltype)
     const step2 = document.getElementById('step2GameType');
-    if (step2) step2.classList.add('hidden');
+    if (step2) step2.classList.remove('hidden');
     
     const step3 = document.getElementById('step3PlayersDisplay');
     if (step3) step3.classList.add('hidden');
