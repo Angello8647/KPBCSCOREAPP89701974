@@ -3913,21 +3913,19 @@ function startMatchFromQRData(data) {
 
 
 /**
- * Toggle QR code sectie op basis van aantal geselecteerde spelers
+ * Toggle QR code sectie op basis van state
  */
 function toggleQRSection() {
-    // Check of er een speler card is met 'selected' class (niet 'active'!)
-    const selectedCard = document.querySelector('#step1Players .config-card.selected');
     const qrSection = document.getElementById('qrCodeSection');
-    
     if (!qrSection) return;
     
-    if (selectedCard) {
-        // Er is een speler aantal geselecteerd → verberg QR sectie
+    // Check of er spelers zijn geselecteerd in de state
+    const hasPlayers = state.friendlyMatch && state.friendlyMatch.numPlayers;
+    
+    if (hasPlayers) {
         qrSection.style.display = 'none';
         console.log('📱 QR sectie verborgen (spelers geselecteerd)');
     } else {
-        // Geen speler aantal geselecteerd → toon QR sectie
         qrSection.style.display = 'block';
         console.log('📱 QR sectie getoond (geen spelers)');
     }
