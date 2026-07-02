@@ -3882,7 +3882,8 @@ function startMatchFromQRData(data) {
         players: {},
         teams: data.teams || null,
         orders: data.orders || null,
-        whiteBallOwner: parseInt(data.white_ball)
+        colorAssignments: data.color_assignments || null,
+        whiteBallOwner: data.white_ball ? parseInt(data.white_ball) : null
     };
     
     // Zet spelers om naar het juiste formaat
@@ -3896,7 +3897,6 @@ function startMatchFromQRData(data) {
     });
     
     console.log('✅ Friendly match state gezet:', state.friendlyMatch);
-    console.log('🎯 White ball owner:', state.friendlyMatch.whiteBallOwner);
     
     // ✅ GEBRUIK DE BESTAANDE FUNCTIE die de swap logica al bevat!
     window.startFriendlyMatchFromBallSelection();
