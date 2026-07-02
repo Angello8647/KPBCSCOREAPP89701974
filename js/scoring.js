@@ -3901,3 +3901,24 @@ function startMatchFromQRData(data) {
     // ✅ GEBRUIK DE BESTAANDE FUNCTIE die de swap logica al bevat!
     window.startFriendlyMatchFromBallSelection();
 }
+
+
+/**
+ * Toggle QR code sectie op basis van aantal geselecteerde spelers
+ */
+function toggleQRSection() {
+    const numPlayers = parseInt(document.getElementById('numPlayersSelect')?.value || 0);
+    const qrSection = document.getElementById('qrCodeSection');
+    
+    if (!qrSection) return;
+    
+    if (numPlayers > 0) {
+        // Er zijn spelers geselecteerd → verberg QR sectie
+        qrSection.style.display = 'none';
+        console.log('📱 QR sectie verborgen (spelers geselecteerd)');
+    } else {
+        // Geen spelers geselecteerd → toon QR sectie
+        qrSection.style.display = 'block';
+        console.log('📱 QR sectie getoond (geen spelers)');
+    }
+}
