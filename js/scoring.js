@@ -1373,6 +1373,9 @@ window.selectPlayers = function(numPlayers) {
     
     state.friendlyMatch = state.friendlyMatch || {};
     state.friendlyMatch.numPlayers = numPlayers;
+
+    // ✅ NIEUW: Verberg QR sectie na selectie
+    toggleQRSection();
 };
 
 
@@ -1451,6 +1454,12 @@ window.resetFriendlyConfig = function() {
     document.querySelectorAll('#step2GameType .config-card').forEach(card => {
         card.style.display = '';
     });
+
+    // ✅ NIEUW: Toon QR sectie weer bij reset
+    const qrSection = document.getElementById('qrCodeSection');
+    if (qrSection) {
+        qrSection.style.display = 'block';
+    }
     
     // 2. Verberg Stap 2, Stap 3 en Stap 4 expliciet
     const step2 = document.getElementById('step2GameType');
@@ -3907,17 +3916,18 @@ function startMatchFromQRData(data) {
  * Toggle QR code sectie op basis van aantal geselecteerde spelers
  */
 function toggleQRSection() {
-    const numPlayers = parseInt(document.getElementById('numPlayersSelect')?.value || 0);
+    // Check of er een actieve speler card is
+    const activeCard = document.querySelector('#step1Players .config-card.active');
     const qrSection = document.getElementById('qrCodeSection');
     
     if (!qrSection) return;
     
-    if (numPlayers > 0) {
-        // Er zijn spelers geselecteerd → verberg QR sectie
+    if (activeCard) {
+        // Er is een speler aantal geselecteerd → verberg QR sectie
         qrSection.style.display = 'none';
         console.log('📱 QR sectie verborgen (spelers geselecteerd)');
     } else {
-        // Geen spelers geselecteerd → toon QR sectie
+        // Geen speler aantal geselecteerd → toon QR sectie
         qrSection.style.display = 'block';
         console.log('📱 QR sectie getoond (geen spelers)');
     }
