@@ -1365,6 +1365,11 @@ window.selectPlayers = function(numPlayers) {
         });
     }
     
+    // ✅ VERBERG STAP 1 (aantal spelers) voor meer ruimte
+    const step1 = document.getElementById('step1Players');
+    if (step1) step1.classList.add('hidden');
+    
+    // ✅ TOON STAP 2 (speltype)
     const step2 = document.getElementById('step2GameType');
     if (step2) step2.classList.remove('hidden');
     
