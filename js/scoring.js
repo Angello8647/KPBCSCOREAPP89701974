@@ -1353,16 +1353,21 @@ window.selectPlayers = function(numPlayers) {
     // ✅ NIEUW: Filter de speltype-opties op basis van het aantal spelers
     const allGameCards = document.querySelectorAll('#step2GameType .config-card');
     
-    if (numPlayers === 4) {
-        // Bij 4 spelers: toon ALLEEN triatlon-small, triatlon-large en dubbeltje
-        allGameCards.forEach(card => {
-            const type = card.getAttribute('data-gametype');
-            if (type === 'vrijspel' || type === 'bandstoten' || type === 'driebanden') {
-                card.style.display = 'none'; // Verberg de onmogelijke opties
-            } else {
-                card.style.display = ''; // Toon de mogelijke opties
-            }
-        });
+    // ✅ FILTER SPELTYPE OP BASIS VAN AANTAL SPELERS
+    allGameCards.forEach(card => {
+        const type = card.getAttribute('data-gametype');
+        
+        if (numPlayers < 4 && type === 'dubbeltje') {
+            // ❌ Bij 2 of 3 spelers: verberg dubbeltje (alleen voor 4 spelers)
+            card.style.display = 'none';
+        } else if (numPlayers === 4) {
+            // ✅ Bij 4 spelers: toon ALLE opties
+            card.style.display = '';
+        } else {
+            // ✅ Bij 2 of 3 spelers: toon alle opties behalve dubbeltje
+            card.style.display = '';
+        }
+    });
     } else {
         // Bij 2 of 3 spelers: toon ALLE opties weer
         allGameCards.forEach(card => {
