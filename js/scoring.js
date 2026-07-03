@@ -1460,11 +1460,11 @@ window.resetFriendlyConfig = function() {
         card.style.display = '';
     });
 
-    // ✅ FIX: Toon QR sectie opnieuw
+    // ✅ FIX: Toon QR sectie opnieuw (expliciet display: block)
     const qrSection = document.getElementById('qrCodeSection');
     if (qrSection) {
         qrSection.style.display = 'block';
-        console.log('📱 QR sectie opnieuw getoond');
+        console.log('📱 QR sectie opnieuw getoond met display: block');
     }
 
     // ✅ NIEUW: Reset QR code sectie
