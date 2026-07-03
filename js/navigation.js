@@ -135,7 +135,10 @@ window.showPage = function(pageNum) {
     
     else if (pageId === 'pageFriendly') {
         // PAGINA FRIENDLY: Vriendschappelijke match configuratie
-        // Geen specifieke setup nodig, pagina is al klaar
+        // ✅ AUTOMATISCHE QR GENERATIE wanneer pagina opent
+        if (typeof window.initFriendlyQRPage === 'function') {
+            window.initFriendlyQRPage();
+        }
     }
     else if (pageId === 'pageFriendlyQR') {
         // PAGINA FRIENDLY QR: QR code pagina
@@ -159,6 +162,7 @@ window.showPage = function(pageNum) {
             window.render3PlayerSummary();
         }
     }
+    
 };
 
 // ==========================================
