@@ -1366,7 +1366,7 @@ window.selectPlayers = function(numPlayers) {
     }
     
     // ✅ VERBERG STAP 1 (aantal spelers) voor meer ruimte
-    const step1 = document.getElementById('step1Players');
+    let step1 = document.getElementById('step1Players');
     if (step1) step1.classList.add('hidden');
     
     // ✅ TOON STAP 2 (speltype)
@@ -1438,7 +1438,7 @@ window.selectGameType = function(gameType) {
     console.log(`✅ Speltype gekozen: ${gameType}`);
     
     // ✅ NIEUW: Verberg Stap 1 (Aantal spelers) voor meer ruimte
-    const step1 = document.getElementById('step1Players');
+    let step1 = document.getElementById('step1Players');
     if (step1) step1.classList.add('hidden');
     
     // ✅ NIEUW: Open direct de speler-selectie modal voor Speler 1
@@ -1478,10 +1478,10 @@ window.resetFriendlyConfig = function() {
     if (step4) step4.classList.add('hidden');
     
     // 3. Zorg dat Stap 1 weer ZICHTBAAR en AANKLIKBAR wordt
-    const step1 = document.getElementById('step1Players');
+    let step1 = document.getElementById('step1Players');
     if (step1) {
         step1.classList.remove('hidden');
-        step1.style.display = ''; // ✅ Verwijder de geforceerde inline 'display: none'
+        step1.style.display = '';
         console.log("✅ Stap 1 is weer zichtbaar en aanklikbaar gemaakt");
     }
     
