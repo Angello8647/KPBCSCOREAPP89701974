@@ -2256,6 +2256,7 @@ window.updateFriendly3PlayerUI = function() {
     }
 };
 
+
 // 5. Finale start van de vriendschappelijke match (MET WITTE BAL SWAP LOGICA)
 window.startFriendlyMatchFromBallSelection = function() {
     console.log("🚀 VRIENDSCHAPPELIJKE MATCH GESTART!", state.friendlyMatch);
@@ -2266,7 +2267,7 @@ window.startFriendlyMatchFromBallSelection = function() {
     // ✅ SWAP LOGICA: Zorg dat de speler/team met de witte bal ALTIJD links (positie 1) staat
     if (fm.numPlayers === 2) {
         // 2 SPELERS: Als speler 2 de witte bal heeft, swap spelers 1 en 2
-        if (fm.whiteBallOwner === 2) {
+        if (fm.whiteBallOwner === 2 || fm.whiteBallOwner === '2') {
             console.log("🔄 Swap: Speler 2 heeft witte bal → wissel posities");
             const tempPlayer = fm.players[1];
             fm.players[1] = fm.players[2];
@@ -2276,7 +2277,8 @@ window.startFriendlyMatchFromBallSelection = function() {
     }
     else if (fm.numPlayers === 4) {
         // 4 SPELERS (TEAMS): Als Team 2 de witte bal heeft, swap team-toewijzingen
-        if (fm.whiteBallOwner === 'T2') {
+        // ✅ FIX: Accepteer zowel integer 2 als string 'T2' of '2'
+        if (fm.whiteBallOwner === 2 || fm.whiteBallOwner === '2' || fm.whiteBallOwner === 'T2') {
             console.log("🔄 Swap: Team 2 heeft witte bal → wissel teams");
             for (let i = 1; i <= 4; i++) {
                 if (fm.teams[i] === 1) {
@@ -2285,7 +2287,7 @@ window.startFriendlyMatchFromBallSelection = function() {
                     fm.teams[i] = 1;
                 }
             }
-            fm.whiteBallOwner = 'T1';
+            fm.whiteBallOwner = 1;
         }
     }
     else if (fm.numPlayers === 3) {
@@ -2325,16 +2327,16 @@ window.startFriendlyMatchFromBallSelection = function() {
         // ✅ VERBERG ALLE PAGINA'S EN RUIM OP
         document.querySelectorAll('.page').forEach(p => {
             p.classList.remove('active');
-            p.classList.remove('hidden'); // ✅ Ruim .hidden op
-            p.style.display = ''; // ✅ Wis inline display
+            p.classList.remove('hidden');
+            p.style.display = '';
         });
         
         // ✅ TOON 3-SPELER PAGINA
         const page3p = document.getElementById('page14-3player');
         if (page3p) {
             page3p.classList.add('active');
-            page3p.classList.remove('hidden'); // ✅ Voor het geval die er is
-            page3p.style.display = ''; // ✅ Wis inline display
+            page3p.classList.remove('hidden');
+            page3p.style.display = '';
             state.currentPage = 14;
         }
         
