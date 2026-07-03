@@ -1485,7 +1485,7 @@ window.resetFriendlyConfig = function() {
     let step1 = document.getElementById('step1Players');
     if (step1) {
         step1.classList.remove('hidden');
-        step1.style.display = ''; // ✅ Verwijder de geforceerde inline 'display: none'
+        step1.style.display = '';
         console.log("✅ Stap 1 is weer zichtbaar en aanklikbaar gemaakt");
     }
     
@@ -1496,12 +1496,11 @@ window.resetFriendlyConfig = function() {
     // 5. Scroll netjes naar boven voor de beste gebruikerservaring
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // ✅ NIEUW: Genereer automatisch een nieuwe QR code na reset
-    setTimeout(() => {
-        if (typeof window.initFriendlyQRPage === 'function') {
-            window.initFriendlyQRPage();
-        }
-    }, 300);
+    // ✅ FIX: Genereer automatisch een nieuwe QR code na reset (zonder setTimeout)
+    console.log('📱 Nieuwe QR code genereren na reset...');
+    if (typeof window.initFriendlyQRPage === 'function') {
+        window.initFriendlyQRPage();
+    }
 };
 
 // 4. ZORG DAT RESET OOK Werkt als we via "Terug" naar Pagina 1 gaan
