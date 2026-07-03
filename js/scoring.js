@@ -1490,6 +1490,17 @@ window.resetFriendlyConfig = function() {
     state.friendlyMatch = null;
     console.log("🗑️ Friendly match state gewist");
     
+    // ✅ NIEUW: Reset QR code sectie
+    qrSessionId = null;
+    if (qrPollingInterval) clearInterval(qrPollingInterval);
+    qrPollingInterval = null;
+    const qrDisplay = document.getElementById('qrCodeDisplay');
+    if (qrDisplay) qrDisplay.innerHTML = '<div style="color: #7f8c8d; padding: 20px;">⏳ QR code genereren...</div>';
+    const qrStatus = document.getElementById('qrStatus');
+    if (qrStatus) qrStatus.textContent = '⏳ Wachten op setup...';
+    const qrSessionInfo = document.getElementById('qrSessionInfo');
+    if (qrSessionInfo) qrSessionInfo.textContent = '';
+    
     // 5. Scroll netjes naar boven voor de beste gebruikerservaring
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
