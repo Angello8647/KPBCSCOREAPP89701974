@@ -1255,18 +1255,22 @@ function renderMatchSummary() {
 }
 // ✅ NAVIGATIE NAAR VRIENDSCHAPPELIJKE MATCH PAGINA
 window.startFriendlyMatch = function() {
-    // 1. Verberg alle pagina's
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-    });
-    
-    // 2. Toon de vriendschappelijke configuratiepagina
-    const friendlyPage = document.getElementById('pageFriendly');
-    if (friendlyPage) {
-        friendlyPage.classList.add('active');
-    }
-    
     console.log("🍻 Navigatie naar Vriendschappelijke Match configuratie");
+    
+    // ✅ GEBRUIK showPage in plaats van manueel tonen
+    // Dit zorgt ervoor dat initFriendlyQRPage automatisch wordt aangeroepen
+    if (typeof window.showPage === 'function') {
+        window.showPage('pageFriendly');
+    } else {
+        // Fallback als showPage niet bestaat
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        const friendlyPage = document.getElementById('pageFriendly');
+        if (friendlyPage) {
+            friendlyPage.classList.add('active');
+        }
+    }
 };
 
 // ✅ 1. RESET FUNCTIE: Zorgt dat alles normaal is bij terugkeer naar Pagina 1
