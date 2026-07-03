@@ -1,5 +1,6 @@
 // js/scoring.js - SCHONE VERSIE (GEEN DUBBELE FUNCTIES)
 
+
 // ==========================================
 // 📡 MATCH STATUS UPDATEN NAAR SERVER
 // ==========================================
