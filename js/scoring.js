@@ -1460,13 +1460,6 @@ window.resetFriendlyConfig = function() {
         card.style.display = '';
     });
 
-    // ✅ FIX: Toon QR sectie opnieuw (expliciet display: block)
-    const qrSection = document.getElementById('qrCodeSection');
-    if (qrSection) {
-        qrSection.style.display = 'block';
-        console.log('📱 QR sectie opnieuw getoond met display: block');
-    }
-
     // ✅ NIEUW: Reset QR code sectie
     qrSessionId = null;
     if (qrPollingInterval) clearInterval(qrPollingInterval);
@@ -1499,6 +1492,11 @@ window.resetFriendlyConfig = function() {
     // 4. Wis de data volledig uit de state
     state.friendlyMatch = null;
     console.log("🗑️ Friendly match state gewist");
+    
+    // ✅ FIX: Roep toggleQRSection aan om QR sectie te tonen
+    if (typeof toggleQRSection === 'function') {
+        toggleQRSection();
+    }
     
     // 5. Scroll netjes naar boven voor de beste gebruikerservaring
     window.scrollTo({ top: 0, behavior: 'smooth' });
