@@ -1460,6 +1460,13 @@ window.resetFriendlyConfig = function() {
         card.style.display = '';
     });
 
+    // ✅ FIX: Toon QR sectie opnieuw
+    const qrSection = document.getElementById('qrCodeSection');
+    if (qrSection) {
+        qrSection.style.display = 'block';
+        console.log('📱 QR sectie opnieuw getoond');
+    }
+
     // ✅ NIEUW: Reset QR code sectie
     qrSessionId = null;
     if (qrPollingInterval) clearInterval(qrPollingInterval);
@@ -1496,7 +1503,7 @@ window.resetFriendlyConfig = function() {
     // 5. Scroll netjes naar boven voor de beste gebruikerservaring
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // ✅ FIX: Genereer automatisch een nieuwe QR code na reset (zonder setTimeout)
+    // ✅ FIX: Genereer automatisch een nieuwe QR code na reset
     console.log('📱 Nieuwe QR code genereren na reset...');
     if (typeof window.initFriendlyQRPage === 'function') {
         window.initFriendlyQRPage();
