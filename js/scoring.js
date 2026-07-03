@@ -1350,30 +1350,19 @@ window.selectPlayers = function(numPlayers) {
         card.classList.remove('dimmed', 'selected');
     });
     
-    // ✅ NIEUW: Filter de speltype-opties op basis van het aantal spelers
-    const allGameCards = document.querySelectorAll('#step2GameType .config-card');
-    
     // ✅ FILTER SPELTYPE OP BASIS VAN AANTAL SPELERS
+    const allGameCards = document.querySelectorAll('#step2GameType .config-card');
     allGameCards.forEach(card => {
         const type = card.getAttribute('data-gametype');
         
         if (numPlayers < 4 && type === 'dubbeltje') {
             // ❌ Bij 2 of 3 spelers: verberg dubbeltje (alleen voor 4 spelers)
             card.style.display = 'none';
-        } else if (numPlayers === 4) {
-            // ✅ Bij 4 spelers: toon ALLE opties
-            card.style.display = '';
         } else {
-            // ✅ Bij 2 of 3 spelers: toon alle opties behalve dubbeltje
+            // ✅ Bij 4 spelers of andere speltypen: toon
             card.style.display = '';
         }
     });
-    } else {
-        // Bij 2 of 3 spelers: toon ALLE opties weer
-        allGameCards.forEach(card => {
-            card.style.display = '';
-        });
-    }
     
     // ✅ VERBERG STAP 1 (aantal spelers) voor meer ruimte
     let step1 = document.getElementById('step1Players');
