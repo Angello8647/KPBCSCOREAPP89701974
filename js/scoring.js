@@ -1460,11 +1460,16 @@ window.resetFriendlyConfig = function() {
         card.style.display = '';
     });
 
-    // ✅ NIEUW: Toon QR sectie weer bij reset
-    const qrSection = document.getElementById('qrCodeSection');
-    if (qrSection) {
-        qrSection.style.display = 'block';
-    }
+    // ✅ NIEUW: Reset QR code sectie
+    qrSessionId = null;
+    if (qrPollingInterval) clearInterval(qrPollingInterval);
+    qrPollingInterval = null;
+    const qrDisplay = document.getElementById('qrCodeDisplay');
+    if (qrDisplay) qrDisplay.innerHTML = '<div style="color: #7f8c8d; padding: 20px;">⏳ QR code genereren...</div>';
+    const qrStatus = document.getElementById('qrStatus');
+    if (qrStatus) qrStatus.textContent = '⏳ Wachten op setup...';
+    const qrSessionInfo = document.getElementById('qrSessionInfo');
+    if (qrSessionInfo) qrSessionInfo.textContent = '';
     
     // 2. Verberg Stap 2, Stap 3 en Stap 4 expliciet
     const step2 = document.getElementById('step2GameType');
@@ -1480,7 +1485,7 @@ window.resetFriendlyConfig = function() {
     let step1 = document.getElementById('step1Players');
     if (step1) {
         step1.classList.remove('hidden');
-        step1.style.display = '';
+        step1.style.display = ''; // ✅ Verwijder de geforceerde inline 'display: none'
         console.log("✅ Stap 1 is weer zichtbaar en aanklikbaar gemaakt");
     }
     
@@ -1488,19 +1493,15 @@ window.resetFriendlyConfig = function() {
     state.friendlyMatch = null;
     console.log("🗑️ Friendly match state gewist");
     
-    // ✅ NIEUW: Reset QR code sectie
-    qrSessionId = null;
-    if (qrPollingInterval) clearInterval(qrPollingInterval);
-    qrPollingInterval = null;
-    const qrDisplay = document.getElementById('qrCodeDisplay');
-    if (qrDisplay) qrDisplay.innerHTML = '<div style="color: #7f8c8d; padding: 20px;">⏳ QR code genereren...</div>';
-    const qrStatus = document.getElementById('qrStatus');
-    if (qrStatus) qrStatus.textContent = '⏳ Wachten op setup...';
-    const qrSessionInfo = document.getElementById('qrSessionInfo');
-    if (qrSessionInfo) qrSessionInfo.textContent = '';
-    
     // 5. Scroll netjes naar boven voor de beste gebruikerservaring
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // ✅ NIEUW: Genereer automatisch een nieuwe QR code na reset
+    setTimeout(() => {
+        if (typeof window.initFriendlyQRPage === 'function') {
+            window.initFriendlyQRPage();
+        }
+    }, 300);
 };
 
 // 4. ZORG DAT RESET OOK Werkt als we via "Terug" naar Pagina 1 gaan
