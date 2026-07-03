@@ -1546,7 +1546,17 @@ window.initFriendlyQRPage = async function() {
         qrSessionId = data.session_id;
         
         console.log(`✅ QR Sessie aangemaakt: ${qrSessionId}`);
-        qrSessionInfo.textContent = `Sessie: ${qrSessionId.substring(0, 8)}... | Geldig tot: ${data.expires_at}`;
+        // ✅ Converteer UTC naar lokale tijd en formatteer mooi
+        const expiresUTC = new Date(data.expires_at + ' UTC');
+        const expiresLocal = new Date(expiresUTC.getTime());
+        const dag = String(expiresLocal.getDate()).padStart(2, '0');
+        const maand = String(expiresLocal.getMonth() + 1).padStart(2, '0');
+        const jaar = expiresLocal.getFullYear();
+        const uur = String(expiresLocal.getHours()).padStart(2, '0');
+        const minuut = String(expiresLocal.getMinutes()).padStart(2, '0');
+        const geldigTot = `${dag}-${maand}-${jaar} ${uur}:${minuut}`;
+        
+        qrSessionInfo.textContent = `Sessie: ${qrSessionId.substring(0, 8)}... | Geldig tot: ${geldigTot}`;
         
         const qrUrl = `https://kpbc.pythonanywhere.com/friendly-setup/${qrSessionId}`;
         qrDisplay.innerHTML = '<div id="qrcode"></div>';
