@@ -1502,6 +1502,61 @@ window.resetPage1State = function() {
 };
 
 
+/**
+ * Genereer QR code automatisch wanneer pageFriendly opent
+ */
+window.initFriendlyQRPage = async function() {
+    // Voorkom dubbele generatie
+    if (document.getElementById('qrcode')?.innerHTML) return;
+    if (qrSessionId) return;
+    
+    const qrDisplay = document.getElementById('qrCodeDisplay');
+    const qrStatus = document.getElementById('qrStatus');
+    const qrSessionInfo = document.getElementById('qrSessionInfo');
+    
+    if (!qrDisplay) return;
+    
+    qrDisplay.innerHTML = '<div style="color: #7f8c8d; padding: 20px;">⏳ QR code genereren...</div>';
+    qrStatus.textContent = '⏳ Genereren...';
+    qrSessionInfo.textContent = '';
+    
+    try {
+        const response = await fetch('https://kpbc.pythonanywhere.com/api/friendly-setup/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) throw new Error(`Server fout: ${response.status}`);
+        const data = await response.json();
+        qrSessionId = data.session_id;
+        
+        console.log(`✅ QR Sessie aangemaakt: ${qrSessionId}`);
+        qrSessionInfo.textContent = `Sessie: ${qrSessionId.substring(0, 8)}... | Geldig tot: ${data.expires_at}`;
+        
+        const qrUrl = `https://kpbc.pythonanywhere.com/friendly-setup/${qrSessionId}`;
+        qrDisplay.innerHTML = '<div id="qrcode"></div>';
+        
+        new QRCode(document.getElementById('qrcode'), {
+            text: qrUrl,
+            width: 250,
+            height: 250,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        qrStatus.textContent = '📱 Scan de QR code met je GSM';
+        startQRPolling();
+        
+    } catch (error) {
+        console.error('❌ Fout bij QR generatie:', error);
+        qrDisplay.innerHTML = '<div style="color: #e74c3c; padding: 20px;">❌ Fout bij genereren</div>';
+        qrStatus.textContent = '❌ Controleer je internetverbinding';
+    }
+};
+
+
+
 /* =========================================================================
    ✅ PLAYER SELECTIE MODAL LOGICA
    ========================================================================= */
