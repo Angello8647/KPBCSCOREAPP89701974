@@ -135,9 +135,13 @@ window.showPage = function(pageNum) {
     
     else if (pageId === 'pageFriendly') {
         // PAGINA FRIENDLY: Vriendschappelijke match configuratie
+        console.log('🎯 pageFriendly case bereikt!'); // ✅ NIEUW
         // ✅ AUTOMATISCHE QR GENERATIE wanneer pagina opent
         if (typeof window.initFriendlyQRPage === 'function') {
+            console.log('📱 initFriendlyQRPage wordt aangeroepen...'); // ✅ NIEUW
             window.initFriendlyQRPage();
+        } else {
+            console.error('❌ initFriendlyQRPage bestaat niet!'); // ✅ NIEUW
         }
     }
     else if (pageId === 'pageFriendlyQR') {
