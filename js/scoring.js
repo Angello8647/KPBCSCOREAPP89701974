@@ -690,28 +690,9 @@ function enableScoreButtons() {
 
 
 // ==========================================
-// ✅ HELPER: Highlight match (KOPPEL AAN WINDOW ZODAT HIJ ALTIJD GEVONDEN WORDT)
-// ==========================================
-window.highlightMatch = function(cards) {
-    if (!cards || cards.length === 0) return;
-    
-    if (typeof window.matchListFocusIndex !== 'number') {
-        window.matchListFocusIndex = 0;
-    }
-    
-    cards.forEach(c => c.classList.remove('focused'));
-    
-    // Voeg 'focused' toe aan de huidige kaart en scroll ernaartoe
-    if (cards[window.matchListFocusIndex]) {
-        cards[window.matchListFocusIndex].classList.add('focused');
-        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-};
-
-// ==========================================
 // PRESENTER CONTROLS (fixed + opgeruimd)
 // ==========================================
- 
+
 // 🔧 Kleine helper: koppelt een "index" aan een bestaande window-variabele
 // (bv. window.modalFocusIndex), zodat andere delen van de code die er
 // nog direct naar verwijzen gewoon blijven werken.
@@ -721,7 +702,7 @@ function windowIndexRef(propName) {
         set value(v) { window[propName] = v; }
     };
 }
- 
+
 // 🔧 Generieke "door een lijst navigeren met PageUp/PageDown/Tab"-logica.
 // Dit is het recept dat voorheen 4x apart was uitgeschreven voor:
 // de modal, de pageFriendly-pagina, page13 (witte bal) en page2/page11.
@@ -735,11 +716,11 @@ function windowIndexRef(propName) {
 function navigateFocusableList(event, items, indexRef, options = {}) {
     if (!items || items.length === 0) return false;
     const { highlight, onTab, wrap = true } = options;
- 
+
     if (indexRef.value === undefined || indexRef.value === -1) {
         indexRef.value = 0;
     }
- 
+
     if (event.key === 'PageUp' || event.key === 'ArrowUp') {
         event.preventDefault();
         indexRef.value = wrap
@@ -748,7 +729,7 @@ function navigateFocusableList(event, items, indexRef, options = {}) {
         if (highlight) highlight(items, indexRef.value);
         return true;
     }
- 
+
     if (event.key === 'PageDown' || event.key === 'ArrowDown') {
         event.preventDefault();
         indexRef.value = wrap
@@ -757,7 +738,7 @@ function navigateFocusableList(event, items, indexRef, options = {}) {
         if (highlight) highlight(items, indexRef.value);
         return true;
     }
- 
+
     if (event.key === 'Tab') {
         event.preventDefault();
         if (onTab) {
@@ -767,32 +748,32 @@ function navigateFocusableList(event, items, indexRef, options = {}) {
         }
         return true;
     }
- 
+
     return false;
 }
- 
+
 function initPresenterControls() {
     let pageUpStartTime = null;
     let lastScoreTime = 0;
     const COOLDOWN = 1000;
     let lastTabTime = 0;
     window.matchListFocusIndex = 0;
- 
+
     document.addEventListener('keydown', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
- 
- 
- 
+
+
+
         // ✅ PAGINA 1: Navigeer door knoppen en datum met PageUp/PageDown
         if (activePage.id === 'page1') {
             const dateInput = document.getElementById('dateSelect');
             const buttons = Array.from(document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn'));
             const focusables = [dateInput, ...buttons].filter(el => el);
- 
+
             const currentIndex = focusables.indexOf(document.activeElement);
             const isDateFocused = document.activeElement === dateInput;
- 
+
             // 🎯 Wanneer datum focus heeft: PageUp/PageDown wijzigt datum, Tab gaat naar knoppen
             if (isDateFocused) {
                 if (event.key === 'PageUp' || event.key === 'ArrowUp') {
@@ -824,7 +805,7 @@ function initPresenterControls() {
                 }
                 return;
             }
- 
+
             // 🎯 Als GEEN element focus heeft (BODY), focus op eerste knop
             if (currentIndex === -1) {
                 if (event.key === 'PageDown' || event.key === 'ArrowDown') {
@@ -839,7 +820,7 @@ function initPresenterControls() {
                 }
                 return;
             }
- 
+
             // 🎯 Navigeer tussen elementen
             if (event.key === 'PageDown' || event.key === 'ArrowDown') {
                 event.preventDefault();
@@ -847,14 +828,14 @@ function initPresenterControls() {
                 focusables[nextIndex].focus();
                 return;
             }
- 
+
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 const prevIndex = (currentIndex - 1 + focusables.length) % focusables.length;
                 focusables[prevIndex].focus();
                 return;
             }
- 
+
             // 🎯 Tab: Activeer knop
             if (event.key === 'Tab') {
                 event.preventDefault();
@@ -865,8 +846,24 @@ function initPresenterControls() {
             }
             return;
         }
- 
- 
+
+
+        // ✅ PAGINA FRIENDLYQR: QR-pagina bij starten vriendschappelijke match
+        // (2 knoppen: "Handmatig instellen" en "Terug naar hoofdmenu")
+        if (activePage.id === 'pageFriendlyQR') {
+            const buttons = Array.from(document.querySelectorAll('#pageFriendlyQR button'));
+
+            if (buttons.length === 0) return;
+
+            buttons.forEach(el => el.classList.remove('focused'));
+
+            navigateFocusableList(event, buttons, windowIndexRef('friendlyQRFocusIndex'), {
+                highlight: (items, idx) => items[idx].classList.add('focused')
+            });
+            return;
+        }
+
+
         // ✅ MODAL OPEN: Navigeer door spelerslijst
         const modal = document.querySelector('.modal-overlay:not(.hidden)');
         if (modal) {
@@ -875,11 +872,11 @@ function initPresenterControls() {
             const players = Array.from(modal.querySelectorAll('.player-list-item'));
             const actionButtons = Array.from(modal.querySelectorAll('.modal-actions .modal-btn'));
             const focusables = [...modeButtons, ...players, ...actionButtons];
- 
+
             if (focusables.length === 0) return;
- 
+
             focusables.forEach(el => el.classList.remove('focused'));
- 
+
             navigateFocusableList(event, focusables, windowIndexRef('modalFocusIndex'), {
                 highlight: (items, idx) => {
                     items[idx].classList.add('focused');
@@ -891,8 +888,8 @@ function initPresenterControls() {
             });
             return;
         }
- 
- 
+
+
         // ✅ PAGINA FRIENDLY: Navigeer door alle elementen met visuele highlight
         if (activePage.id === 'pageFriendly') {
             // Bouw lijst van alle focusbare elementen in volgorde
@@ -905,25 +902,25 @@ function initPresenterControls() {
                 // Filter uit elementen die verborgen zijn of disabled
                 return el.offsetParent !== null && !el.disabled;
             });
- 
+
             if (focusables.length === 0) return;
- 
+
             focusables.forEach(el => el.classList.remove('focused'));
- 
+
             navigateFocusableList(event, focusables, windowIndexRef('friendlyFocusIndex'), {
                 highlight: (items, idx) => items[idx].classList.add('focused')
             });
             return;
         }
- 
+
         // ✅ PAGINA 13: Witte bal selectie (Vriendschappelijk)
         if (activePage.id === 'page13') {
             const ballOptions = Array.from(document.querySelectorAll('#page13 .ball-option'));
- 
+
             if (ballOptions.length === 0) return;
- 
+
             ballOptions.forEach(el => el.classList.remove('focused'));
- 
+
             navigateFocusableList(event, ballOptions, windowIndexRef('ballFocusIndex'), {
                 highlight: (items, idx) => items[idx].classList.add('focused'),
                 onTab: (items, idx) => {
@@ -939,8 +936,8 @@ function initPresenterControls() {
             });
             return;
         }
- 
- 
+
+
         // ✅ PAGINA 2 OF 11: Door matchen navigeren + selecteren
         if (activePage.id === 'page2' || activePage.id === 'page11') {
             const cards = Array.from(document.querySelectorAll('#matchList .match-card'));
@@ -953,7 +950,18 @@ function initPresenterControls() {
             }
             return;
         }
- 
+
+        // ✅ PAGINA 15-3PLAYER-SUMMARY: Samenvatting na 3-speler vriendschappelijke match
+        // Er is hier maar 1 knop ("Terug naar Hoofdmenu"), dus enkel Tab is nodig.
+        if (activePage.id === 'page15-3player-summary') {
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                const backBtn = document.querySelector('#page15-3player-summary .summary3p-back-btn');
+                if (backBtn) backBtn.click();
+            }
+            return;
+        }
+
         // ✅ PAGINA 4: Witte bal kiezen + match starten
         // FIX: gebruikte voorheen een niet-bestaande variabele `key` i.p.v. `event.key`
         if (activePage.id === 'page4') {
@@ -969,15 +977,52 @@ function initPresenterControls() {
             }
             return;
         }
- 
- 
+
+
+        // ✅ PAGINA 14 / PAGINA 14-3PLAYER: VRIENDSCHAPPELIJKE SCORING (2, 3 of 4 spelers)
+        // FIX: stond voorheen (deels dood) in de keyup-listener, waardoor preventDefault()
+        // te laat kwam en de browser Tab/PageUp al zijn eigen standaardgedrag had uitgevoerd
+        // (focus verspringen / scrollen) vóórdat onze eigen actie liep. Nu net als alle
+        // andere pagina's afgehandeld op keydown.
+        if (activePage.id === 'page14' || activePage.id === 'page14-3player') {
+            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (typeof window.friendlyChangeScore === 'function') {
+                    window.friendlyChangeScore(1);
+                }
+                return;
+            }
+            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (typeof window.friendlyChangeScore === 'function') {
+                    window.friendlyChangeScore(-1);
+                }
+                return;
+            }
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (typeof window.friendlyMiss === 'function') {
+                    window.friendlyMiss();
+                }
+                return;
+            }
+            if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
+                event.preventDefault();
+                if (typeof window.friendlyUndo === 'function') {
+                    window.friendlyUndo();
+                }
+                return;
+            }
+            return;
+        }
+
         // ✅ PAGINA 5: SCORING
         // FIX: `now` was nergens gedefinieerd — toegevoegd als Date.now()
         if (activePage.id === 'page5') {
             if (!state.currentMatch || state.matchEnded) return;
- 
+
             const now = Date.now();
- 
+
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 pageUpStartTime = Date.now();
@@ -1006,25 +1051,24 @@ function initPresenterControls() {
             return;
         }
     });
- 
- 
-    // 🔼 KEYUP: beslis bij PageUp loslaten
-    // FIX: de vroege `return` bij "!== page5" maakte de page14 / page14-3player
-    // blokken hieronder volledig onbereikbaar (dode code). Nu splitst de handler
-    // eerst op pagina en gaat elk blok zijn eigen weg.
+
+
+    // 🔼 KEYUP: enkel nog nodig voor pagina 5 (beslissen bij loslaten van PageUp:
+    // kort indrukken = score+1, lang ingedrukt houden = terug naar hoofdmenu).
+    // Pagina 14 / 14-3player zijn verplaatst naar keydown (zie hierboven).
     document.addEventListener('keyup', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
- 
+
         // ✅ PAGINA 5: hold-to-go-back logica bij loslaten van PageUp
         if (activePage.id === 'page5') {
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 if (pageUpStartTime === null) return;
- 
+
                 const holdDuration = Date.now() - pageUpStartTime;
                 pageUpStartTime = null;
- 
+
                 if (holdDuration >= 2000) {
                     const p1T = state.player1.turns?.length || 0;
                     const p2T = state.player2.turns?.length || 0;
@@ -1040,51 +1084,8 @@ function initPresenterControls() {
             }
             return;
         }
- 
-        // ✅ PAGINA 14 / PAGINA 14-3PLAYER: VRIENDSCHAPPELIJKE SCORING (2, 3 of 4 spelers)
-        // Beide pagina's hadden identieke logica, nu samengevoegd.
-        if (activePage.id === 'page14' || activePage.id === 'page14-3player') {
-            // PageUp: +1 score
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
-                event.preventDefault();
-                if (typeof window.friendlyChangeScore === 'function') {
-                    window.friendlyChangeScore(1);
-                }
-                return;
-            }
- 
-            // PageDown: -1 score
-            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
-                event.preventDefault();
-                if (typeof window.friendlyChangeScore === 'function') {
-                    window.friendlyChangeScore(-1);
-                }
-                return;
-            }
- 
-            // Tab: Einde beurt (wissel speler)
-            if (event.key === 'Tab') {
-                event.preventDefault();
-                if (typeof window.friendlyMiss === 'function') {
-                    window.friendlyMiss();
-                }
-                return;
-            }
- 
-            // B: Undo
-            if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
-                event.preventDefault();
-                if (typeof window.friendlyUndo === 'function') {
-                    window.friendlyUndo();
-                }
-                return;
-            }
- 
-            return;
-        }
     });
 }
-
 // ==========================================
 // MATCH SAMENVATTING RENDEREN (Pagina 6)
 // ==========================================
