@@ -914,7 +914,7 @@ function initPresenterControls() {
             return;
         }
 
-        // ✅ PAGINA 13: Witte bal selectie
+        // ✅ PAGINA 13: Witte bal selectie (Vriendschappelijk)
         if (activePage.id === 'page13') {
             const ballOptions = Array.from(document.querySelectorAll('#page13 .ball-option'));
             
@@ -928,7 +928,7 @@ function initPresenterControls() {
             // Verwijder oude focus
             ballOptions.forEach(el => el.classList.remove('focused'));
             
-            // PageUp: Vorige speler
+            // PageUp: Vorige speler/team
             if (event.key === 'PageUp') {
                 event.preventDefault();
                 window.ballFocusIndex = (window.ballFocusIndex - 1 + ballOptions.length) % ballOptions.length;
@@ -936,7 +936,7 @@ function initPresenterControls() {
                 return;
             }
             
-            // PageDown: Volgende speler
+            // PageDown: Volgende speler/team
             if (event.key === 'PageDown') {
                 event.preventDefault();
                 window.ballFocusIndex = (window.ballFocusIndex + 1) % ballOptions.length;
@@ -944,11 +944,19 @@ function initPresenterControls() {
                 return;
             }
             
-            // Tab: Activeer de geselecteerde speler
+            // Tab: Activeer de geselecteerde speler/team OF start de match
             if (event.key === 'Tab') {
                 event.preventDefault();
                 if (window.ballFocusIndex !== -1) {
+                    // Klik op de geselecteerde optie
                     ballOptions[window.ballFocusIndex].click();
+                    
+                    // ✅ NIEUW: Start automatisch de match na selectie
+                    setTimeout(() => {
+                        if (typeof window.startFriendlyMatchFromBallSelection === 'function') {
+                            window.startFriendlyMatchFromBallSelection();
+                        }
+                    }, 300);
                 }
                 return;
             }
