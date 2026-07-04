@@ -944,9 +944,14 @@ function initPresenterControls() {
             if (ballOptions.length === 0) return;
  
             ballOptions.forEach(el => el.classList.remove('focused'));
- 
+
             navigateFocusableList(event, ballOptions, windowIndexRef('ballFocusIndex'), {
-                highlight: (items, idx) => items[idx].classList.add('focused'),
+                highlight: (items, idx) => {
+                    items[idx].classList.add('focused');
+                    // ✅ NIEUW: simuleer een klik zodat de wit/geel-kleuren live meebewegen
+                    // tijdens het navigeren met de afstandsbediening, net als bij een muisklik.
+                    items[idx].click();
+                },
                 onTab: (items, idx) => {
                     // Klik op de geselecteerde optie
                     items[idx].click();
