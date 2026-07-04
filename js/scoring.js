@@ -994,28 +994,7 @@ function initPresenterControls() {
         }
 
 
-        // ✅ PAGINA 13: Witte bal kiezen + match starten (Vriendschappelijk)
-        if (activePage.id === 'page13') {
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
-                event.preventDefault();
-                if (typeof window.selectFriendlyWhite === 'function') {
-                    const option1 = document.querySelector('#page13 .ball-option:first-child');
-                    window.selectFriendlyWhite(1, option1);
-                }
-            } else if (event.key === 'PageDown' || event.key === 'ArrowDown') {
-                event.preventDefault();
-                if (typeof window.selectFriendlyWhite === 'function') {
-                    const option2 = document.querySelector('#page13 .ball-option:last-child');
-                    window.selectFriendlyWhite(2, option2);
-                }
-            } else if (event.key === 'Tab') {
-                event.preventDefault();
-                if (typeof window.startFriendlyMatch === 'function' && state.friendlyMatch?.whiteBallOwner) {
-                    window.startFriendlyMatch();
-                }
-            }
-            return;
-        }
+        
         
         // ✅ PAGINA 5: SCORING
         if (activePage.id === 'page5') {
