@@ -4697,6 +4697,12 @@
     font-size: 0.8rem;
 }
 
+/* ✅ PAGINA 13: FOCUS STYLING (navigatie met afstandsbediening, nog niet bevestigd) */
+#page13 .ball-option.focused .ball-circle {
+    border: 4px dashed #ffffff !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6) !important;
+}
+
 
 /* =========================================================================
    ✅ PAGINA 13: VISUELE WIT/GEEL FEEDBACK (GEÏSOLEERD VAN COMPETITIE)
