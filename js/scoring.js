@@ -1063,6 +1063,92 @@ function initPresenterControls() {
                 }
             }
         }
+
+        // ✅ PAGINA 14: VRIENDSCHAPPELIJKE SCORING (2 of 4 spelers)
+        if (activePage.id === 'page14') {
+            const now = Date.now();
+            
+            // PageUp: +1 score
+            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (typeof window.friendlyChangeScore === 'function') {
+                    window.friendlyChangeScore(1);
+                }
+                return;
+            }
+            
+            // PageDown: -1 score
+            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (typeof window.friendlyChangeScore === 'function') {
+                    window.friendlyChangeScore(-1);
+                }
+                return;
+            }
+            
+            // Tab: Einde beurt (wissel speler)
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (typeof window.friendlyMiss === 'function') {
+                    window.friendlyMiss();
+                }
+                return;
+            }
+            
+            // B: Undo
+            if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
+                event.preventDefault();
+                if (typeof window.friendlyUndo === 'function') {
+                    window.friendlyUndo();
+                }
+                return;
+            }
+            
+            return;
+        }
+        
+        // ✅ PAGINA 14-3PLAYER: VRIENDSCHAPPELIJKE SCORING (3 spelers)
+        if (activePage.id === 'page14-3player') {
+            const now = Date.now();
+            
+            // PageUp: +1 score
+            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (typeof window.friendlyChangeScore === 'function') {
+                    window.friendlyChangeScore(1);
+                }
+                return;
+            }
+            
+            // PageDown: -1 score
+            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (typeof window.friendlyChangeScore === 'function') {
+                    window.friendlyChangeScore(-1);
+                }
+                return;
+            }
+            
+            // Tab: Einde beurt (wissel speler)
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (typeof window.friendlyMiss === 'function') {
+                    window.friendlyMiss();
+                }
+                return;
+            }
+            
+            // B: Undo
+            if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
+                event.preventDefault();
+                if (typeof window.friendlyUndo === 'function') {
+                    window.friendlyUndo();
+                }
+                return;
+            }
+            
+            return;
+        }
     });
 }
 
