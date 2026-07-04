@@ -689,6 +689,26 @@ function enableScoreButtons() {
 
 
 
+ 
+// ==========================================
+// ✅ HELPER: Highlight match (KOPPEL AAN WINDOW ZODAT HIJ ALTIJD GEVONDEN WORDT)
+// ==========================================
+window.highlightMatch = function(cards) {
+    if (!cards || cards.length === 0) return;
+    
+    if (typeof window.matchListFocusIndex !== 'number') {
+        window.matchListFocusIndex = 0;
+    }
+    
+    cards.forEach(c => c.classList.remove('focused'));
+    
+    // Voeg 'focused' toe aan de huidige kaart en scroll ernaartoe
+    if (cards[window.matchListFocusIndex]) {
+        cards[window.matchListFocusIndex].classList.add('focused');
+        cards[window.matchListFocusIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+};
+ 
 // ==========================================
 // PRESENTER CONTROLS (fixed + opgeruimd)
 // ==========================================
@@ -757,6 +777,10 @@ function initPresenterControls() {
     let lastScoreTime = 0;
     const COOLDOWN = 1000;
     let lastTabTime = 0;
+    // ✅ NIEUW: aparte cooldown voor het vriendschappelijke scorebord (pagina 14 / 14-3player),
+    // zodat 2x snel na elkaar op de afstandsbediening drukken niet 2x een punt bijschrijft.
+    let friendlyLastScoreTime = 0;
+    const FRIENDLY_COOLDOWN = 1000;
     window.matchListFocusIndex = 0;
  
     document.addEventListener('keydown', function(event) {
@@ -967,31 +991,57 @@ function initPresenterControls() {
         // te laat kwam en de browser Tab/PageUp al zijn eigen standaardgedrag had uitgevoerd
         // (focus verspringen / scrollen) vóórdat onze eigen actie liep. Nu net als alle
         // andere pagina's afgehandeld op keydown.
+        // FIX: pagina 14-3player gebruikt een ANDERE score-engine dan pagina 14 (2/4 spelers):
+        // window.change3PlayerScore / window.end3PlayerTurn / window.undo3PlayerAction i.p.v.
+        // window.friendlyChangeScore / window.friendlyMiss / window.friendlyUndo. Voorheen werden
+        // bij 3 spelers altijd de verkeerde (friendly*) functies aangeroepen, die niets deden
+        // omdat ze op een andere state-structuur werken (state3p i.p.v. turnState) — vandaar dat
+        // de afstandsbediening met 3 spelers niet werkte.
         if (activePage.id === 'page14' || activePage.id === 'page14-3player') {
+            const isThreePlayer = activePage.id === 'page14-3player';
+ 
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
-                if (typeof window.friendlyChangeScore === 'function') {
+                // ✅ NIEUW: cooldown zodat 2x snel na elkaar drukken niet 2x scoort
+                const now = Date.now();
+                if (now - friendlyLastScoreTime < FRIENDLY_COOLDOWN) return;
+                friendlyLastScoreTime = now;
+ 
+                if (isThreePlayer) {
+                    if (typeof window.change3PlayerScore === 'function') window.change3PlayerScore(1);
+                } else if (typeof window.friendlyChangeScore === 'function') {
                     window.friendlyChangeScore(1);
                 }
                 return;
             }
             if (event.key === 'PageDown' || event.key === 'ArrowDown') {
                 event.preventDefault();
-                if (typeof window.friendlyChangeScore === 'function') {
+                // ✅ NIEUW: cooldown zodat 2x snel na elkaar drukken niet 2x scoort
+                const now = Date.now();
+                if (now - friendlyLastScoreTime < FRIENDLY_COOLDOWN) return;
+                friendlyLastScoreTime = now;
+ 
+                if (isThreePlayer) {
+                    if (typeof window.change3PlayerScore === 'function') window.change3PlayerScore(-1);
+                } else if (typeof window.friendlyChangeScore === 'function') {
                     window.friendlyChangeScore(-1);
                 }
                 return;
             }
             if (event.key === 'Tab') {
                 event.preventDefault();
-                if (typeof window.friendlyMiss === 'function') {
+                if (isThreePlayer) {
+                    if (typeof window.end3PlayerTurn === 'function') window.end3PlayerTurn();
+                } else if (typeof window.friendlyMiss === 'function') {
                     window.friendlyMiss();
                 }
                 return;
             }
             if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
                 event.preventDefault();
-                if (typeof window.friendlyUndo === 'function') {
+                if (isThreePlayer) {
+                    if (typeof window.undo3PlayerAction === 'function') window.undo3PlayerAction();
+                } else if (typeof window.friendlyUndo === 'function') {
                     window.friendlyUndo();
                 }
                 return;
