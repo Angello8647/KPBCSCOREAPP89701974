@@ -4696,3 +4696,26 @@
 .turn-group .turn-row span {
     font-size: 0.8rem;
 }
+
+
+/* =========================================================================
+   ✅ PAGINA 13: VISUELE WIT/GEEL FEEDBACK (GEÏSOLEERD VAN COMPETITIE)
+   ========================================================================= */
+
+#page13 .ball-circle {
+    transition: all 0.3s ease;
+}
+
+/* ✅ GELE BAL (alleen op pagina 13) */
+#page13 .ball-circle.yellow {
+    background: radial-gradient(circle at 30% 30%, #f1c40f, #d4ac0d) !important;
+    color: #333 !important;
+    border-color: rgba(241, 196, 15, 0.5) !important;
+}
+
+/* ✅ GEKOZEN WITTE BAL (alleen op pagina 13) */
+#page13 .ball-option.selected .ball-circle {
+    border: 4px solid #2ecc71 !important;
+    box-shadow: 0 0 25px rgba(46, 204, 113, 0.8) !important;
+    transform: scale(1.05);
+}
