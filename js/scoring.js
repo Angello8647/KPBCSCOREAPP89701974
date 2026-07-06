@@ -777,6 +777,8 @@ function initPresenterControls() {
     let lastScoreTime = 0;
     const COOLDOWN = 1000;
     let lastTabTime = 0;
+    // ✅ NIEUW: voor pagina 20 (Competitie) — lang PageUp indrukken = terug naar hoofdmenu
+    let compPageUpStartTime = null;
     // ✅ NIEUW: aparte cooldown voor het vriendschappelijke scorebord (pagina 14 / 14-3player),
     // zodat 2x snel na elkaar op de afstandsbediening drukken niet 2x een punt bijschrijft.
     let friendlyLastScoreTime = 0;
@@ -1053,6 +1055,32 @@ function initPresenterControls() {
             }
             return;
         }
+        // ✅ PAGINA 20: Competitie — doorbladeren door alle discipline+categorie
+        // combinaties i.p.v. dropdowns. PageDown = direct volgende. PageUp start
+        // enkel de timer (de echte actie gebeurt in keyup, zie onderaan: kort = vorige,
+        // lang ingedrukt houden = terug naar hoofdmenu).
+        if (activePage.id === 'page20') {
+            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                compPageUpStartTime = Date.now();
+                return;
+            }
+            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (typeof window.goToCompCombo === 'function' && window.compComboList && window.compComboList.length > 0) {
+                    window.goToCompCombo(window.compComboIndex + 1);
+                }
+                return;
+            }
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                if (typeof window.toggleCompView === 'function') window.toggleCompView();
+                return;
+            }
+            return;
+        }
+
+
  
         // ✅ PAGINA 4: Witte bal kiezen + match starten
         // FIX: gebruikte voorheen een niet-bestaande variabele `key` i.p.v. `event.key`
@@ -1115,6 +1143,23 @@ function initPresenterControls() {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
  
+        // ✅ PAGINA 20: kort PageUp = vorige combinatie, lang ingedrukt (≥2s) = terug naar hoofdmenu
+        if (activePage.id === 'page20') {
+            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (compPageUpStartTime === null) return;
+                const holdDuration = Date.now() - compPageUpStartTime;
+                compPageUpStartTime = null;
+
+                if (holdDuration >= 2000) {
+                    if (typeof window.showPage === 'function') window.showPage(1);
+                } else if (typeof window.goToCompCombo === 'function' && window.compComboList && window.compComboList.length > 0) {
+                    window.goToCompCombo(window.compComboIndex - 1);
+                }
+            }
+            return;
+        }
+
         // ✅ PAGINA 5: hold-to-go-back logica bij loslaten van PageUp
         if (activePage.id === 'page5') {
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
