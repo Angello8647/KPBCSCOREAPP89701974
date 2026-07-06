@@ -474,6 +474,50 @@ window.renderCrossTable = function() {
             cell.style.fontSize = fontSize + 'px';
         }
     });
+
+    // ✅ NIEUW: Schaal de volledige tabel zodat ze op het scherm past (geen scrollen meer nodig,
+    // ook niet bij veel spelers). Draait na elke render, dus ook telkens je met de
+    // afstandsbediening naar een andere discipline/categorie bladert.
+    window.fitCrossTableToScreen();
+};
+
+/**
+ * ✅ NIEUW: Verkleint de kruistabel proportioneel (transform: scale) zodat ze past
+ * binnen de beschikbare breedte én hoogte van het scherm. Gaat niet verder omlaag
+ * dan MIN_SCALE — daaronder wordt tekst onleesbaar, dan valt hij terug op scrollen.
+ */
+window.fitCrossTableToScreen = function() {
+    const container = document.getElementById('crossTableContainer');
+    const table = container.querySelector('table.cross-table');
+    if (!table) return;
+
+    const MIN_SCALE = 0.5;
+
+    // Reset om de natuurlijke, ongeschaalde afmetingen te kunnen meten
+    table.style.transform = 'none';
+    container.style.height = '';
+
+    const availableWidth = container.clientWidth;
+    // Beschikbare hoogte = van de bovenkant van de tabel tot onderaan het scherm, min wat marge
+    const availableHeight = window.innerHeight - container.getBoundingClientRect().top - 20;
+
+    const tableWidth = table.scrollWidth;
+    const tableHeight = table.scrollHeight;
+
+    let scale = Math.min(availableWidth / tableWidth, availableHeight / tableHeight, 1);
+
+    if (scale < MIN_SCALE) {
+        scale = MIN_SCALE;
+        container.style.overflow = 'auto'; // past écht niet: val terug op scrollen
+    } else {
+        container.style.overflow = 'hidden';
+    }
+
+    table.style.transformOrigin = 'top left';
+    table.style.transform = `scale(${scale})`;
+    // Compenseer de ruimte: transform verandert het uiterlijk, niet de layout-hoogte,
+    // dus zonder dit zou er een lege ruimte onder de verkleinde tabel overblijven.
+    container.style.height = (tableHeight * scale) + 'px';
 };
 
 // =========================================================================
