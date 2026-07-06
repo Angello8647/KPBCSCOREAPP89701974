@@ -941,12 +941,13 @@
             
             <!-- NIEUWE HEADER CONTROLS -->
             <div class="comp-header-controls">
-                <select id="compDisc" onchange="updateCompCategories()">
+                <select id="compDisc" onchange="updateCompCategories()" style="display:none;">
                     <option value="">Discipline...</option>
                 </select>
-                <select id="compCat" onchange="handleCategoryChange()">
+                <select id="compCat" onchange="handleCategoryChange()" style="display:none;">
                     <option value="">Categorie...</option>
                 </select>
+                <div id="compCurrentLabel" style="font-size:1.3rem; font-weight:900; color:#fff; padding:0 15px; white-space:nowrap;">Laden...</div>
                 <button class="view-btn active" id="btnLeaderboard" onclick="switchCompView('leaderboard')">Rangschikking</button>
                 <button class="view-btn" id="btnCrossTable" onclick="switchCompView('crosstable')">Kruistabel</button>
             </div>
