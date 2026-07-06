@@ -36,9 +36,12 @@ async function updateMatchStatusOnServer(matchId, status) {
 function updateScoringPage() {
     if (!state.currentMatch) return;
 
+    // ✅ NIEUW: bij Dames bestaat er geen target, dus tonen we dat cijfer niet in de header
+    const isDamesForHeader = state.currentMatch.discipline === "Dames";
+
     // 1. Header update
-    document.getElementById('headerTarget1').textContent = state.player1.target;
-    document.getElementById('headerTarget2').textContent = state.player2.target;
+    document.getElementById('headerTarget1').textContent = isDamesForHeader ? '' : state.player1.target;
+    document.getElementById('headerTarget2').textContent = isDamesForHeader ? '' : state.player2.target;
     document.getElementById('headerName1').textContent = state.currentMatch.p1;
     document.getElementById('headerName2').textContent = state.currentMatch.p2;
 
