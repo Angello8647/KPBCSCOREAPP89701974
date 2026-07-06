@@ -281,9 +281,23 @@ function updateCurrentScoreDisplay() {
 
     // ✅ NIEUW: bij Dames bestaat er geen "te bereiken doel" (altijd vaste 20 beurten),
     // dus het groene aftelblok heeft daar geen betekenis en tonen we niet.
+    // FIX: gewone .style.display werd overschreven door een CSS-regel met !important
+    // (op .needed-cell), dus we moeten hier zelf ook !important gebruiken via setProperty.
     const isDamesMatch = state.currentMatch && state.currentMatch.discipline === "Dames";
-    if (p1NeededCell) p1NeededCell.style.display = isDamesMatch ? 'none' : '';
-    if (p2NeededCell) p2NeededCell.style.display = isDamesMatch ? 'none' : '';
+    if (p1NeededCell) {
+        if (isDamesMatch) {
+            p1NeededCell.style.setProperty('display', 'none', 'important');
+        } else {
+            p1NeededCell.style.removeProperty('display');
+        }
+    }
+    if (p2NeededCell) {
+        if (isDamesMatch) {
+            p2NeededCell.style.setProperty('display', 'none', 'important');
+        } else {
+            p2NeededCell.style.removeProperty('display');
+        }
+    }
     
     if (p1TotalCell) p1TotalCell.classList.toggle('dimmed', state.currentPlayer !== 1);
     if (p2TotalCell) p2TotalCell.classList.toggle('dimmed', state.currentPlayer !== 2);
