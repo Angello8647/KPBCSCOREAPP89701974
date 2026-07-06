@@ -4339,9 +4339,19 @@
 .comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
 .comp-pts-zero { color: #bdc3c7 !important; font-weight: bold; }
 
-.rank-1 { background-color: rgba(241, 196, 15, 0.2) !important; font-weight: bold; }
-.rank-2 { background-color: rgba(189, 195, 199, 0.2) !important; }
-.rank-3 { background-color: rgba(211, 84, 0, 0.2) !important; }
+.rank-1 {
+    background-color: rgba(255, 215, 0, 0.15) !important;
+    border-left: 4px solid #FFD700 !important;
+    font-weight: bold;
+}
+.rank-2 {
+    background-color: rgba(232, 237, 242, 0.15) !important;
+    border-left: 4px solid #E8EDF2 !important;
+}
+.rank-3 {
+    background-color: rgba(205, 127, 50, 0.18) !important;
+    border-left: 4px solid #CD7F32 !important;
+}
 
 
 /* =========================================================================
