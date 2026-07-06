@@ -525,6 +525,89 @@ window.initCompetitionPage = function() {
     sortedDisciplines.forEach(d => {
         discSelect.innerHTML += `<option value="${d}">🏅 ${d}</option>`;
     });
+
+    // ✅ NIEUW: bouw de doorloop-lijst voor de afstandsbediening en toon meteen
+    // de eerste combinatie, zodat er altijd direct iets te zien is.
+    window.buildCompComboList();
+    if (window.compComboList.length > 0) {
+        window.goToCompCombo(0);
+    } else {
+        const label = document.getElementById('compCurrentLabel');
+        if (label) label.textContent = 'Geen spelers gevonden';
+    }
+};
+
+/**
+ * ✅ NIEUW: Bouwt de platte, doorlopende lijst van alle discipline+categorie
+ * combinaties, in dezelfde volgorde als de (voormalige) dropdowns.
+ */
+window.buildCompComboList = function() {
+    const disciplineOrder = ['Vrijspel', 'Bandstoten', 'Driebanden', 'Dames'];
+    const disciplines = [...new Set(state.players.map(p => p.discipline))];
+    const sortedDisciplines = disciplines.sort((a, b) => {
+        const indexA = disciplineOrder.indexOf(a);
+        const indexB = disciplineOrder.indexOf(b);
+        const posA = indexA === -1 ? 999 : indexA;
+        const posB = indexB === -1 ? 999 : indexB;
+        return posA - posB;
+    });
+
+    const list = [];
+    sortedDisciplines.forEach(disc => {
+        const cats = [...new Set(state.players.filter(p => p.discipline === disc).map(p => p.category))].sort((a, b) => a - b);
+        cats.forEach(cat => list.push({ discipline: disc, category: cat }));
+    });
+
+    window.compComboList = list;
+};
+
+/**
+ * ✅ NIEUW: Toont de discipline+categorie op de gegeven positie in de doorloop-lijst.
+ * Springt rond (wrap-around) aan begin en einde van de volledige lijst.
+ */
+window.goToCompCombo = function(index) {
+    const list = window.compComboList;
+    if (!list || list.length === 0) return;
+
+    const len = list.length;
+    window.compComboIndex = ((index % len) + len) % len;
+    const combo = list[window.compComboIndex];
+
+    const discSelect = document.getElementById('compDisc');
+    const catSelect = document.getElementById('compCat');
+
+    discSelect.value = combo.discipline;
+
+    // Categorie-opties opbouwen voor deze discipline (los van updateCompCategories,
+    // want die reset de categorie altijd naar leeg — hier willen we een specifieke waarde zetten)
+    catSelect.innerHTML = '';
+    const cats = [...new Set(state.players.filter(p => p.discipline === combo.discipline).map(p => p.category))].sort((a, b) => a - b);
+    cats.forEach(c => {
+        catSelect.innerHTML += `<option value="${c}">📜 Cat. ${c}</option>`;
+    });
+    catSelect.value = combo.category;
+
+    window.updateCompCurrentLabel();
+    window.handleCategoryChange();
+};
+
+/**
+ * ✅ NIEUW: Werkt het grote leesbare label bij (vervangt de dropdown-tekst visueel).
+ */
+window.updateCompCurrentLabel = function() {
+    const label = document.getElementById('compCurrentLabel');
+    if (!label) return;
+    const disc = document.getElementById('compDisc').value;
+    const cat = document.getElementById('compCat').value;
+    label.textContent = (disc && cat) ? `🏅 ${disc} • 📜 Categorie ${cat}` : 'Geen gegevens';
+};
+
+/**
+ * ✅ NIEUW: Wisselt Rangschikking ↔ Kruistabel voor de huidige combinatie (voor Tab).
+ */
+window.toggleCompView = function() {
+    const isLeaderboard = document.getElementById('viewLeaderboard').style.display !== 'none';
+    window.switchCompView(isLeaderboard ? 'crosstable' : 'leaderboard');
 };
 
 /**
