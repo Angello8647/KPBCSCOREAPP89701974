@@ -4339,18 +4339,23 @@
 .comp-pts-negative { color: #e74c3c !important; font-weight: bold; }
 .comp-pts-zero { color: #bdc3c7 !important; font-weight: bold; }
 
-.rank-1 {
-    background-color: rgba(255, 215, 0, 0.15) !important;
-    border-left: 4px solid #FFD700 !important;
-    font-weight: bold;
+.rank-1 td:first-child {
+    background-color: #FFD700 !important;
+    color: #1a1a2e !important;
+    font-weight: 900;
+    text-align: center;
 }
-.rank-2 {
-    background-color: rgba(232, 237, 242, 0.15) !important;
-    border-left: 4px solid #E8EDF2 !important;
+.rank-2 td:first-child {
+    background-color: #E8EDF2 !important;
+    color: #1a1a2e !important;
+    font-weight: 900;
+    text-align: center;
 }
-.rank-3 {
-    background-color: rgba(205, 127, 50, 0.18) !important;
-    border-left: 4px solid #CD7F32 !important;
+.rank-3 td:first-child {
+    background-color: #CD7F32 !important;
+    color: #1a1a2e !important;
+    font-weight: 900;
+    text-align: center;
 }
 
 
