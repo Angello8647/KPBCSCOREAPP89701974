@@ -278,6 +278,12 @@ function updateCurrentScoreDisplay() {
     if (p2NeededCell) p2NeededCell.classList.toggle('dimmed', state.currentPlayer !== 2);
     if (p1NeededCell) p1NeededCell.classList.toggle('danger', n1 <= 5 && n1 > 0);
     if (p2NeededCell) p2NeededCell.classList.toggle('danger', n2 <= 5 && n2 > 0);
+
+    // ✅ NIEUW: bij Dames bestaat er geen "te bereiken doel" (altijd vaste 20 beurten),
+    // dus het groene aftelblok heeft daar geen betekenis en tonen we niet.
+    const isDamesMatch = state.currentMatch && state.currentMatch.discipline === "Dames";
+    if (p1NeededCell) p1NeededCell.style.display = isDamesMatch ? 'none' : '';
+    if (p2NeededCell) p2NeededCell.style.display = isDamesMatch ? 'none' : '';
     
     if (p1TotalCell) p1TotalCell.classList.toggle('dimmed', state.currentPlayer !== 1);
     if (p2TotalCell) p2TotalCell.classList.toggle('dimmed', state.currentPlayer !== 2);
