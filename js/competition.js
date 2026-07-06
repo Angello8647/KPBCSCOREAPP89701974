@@ -519,6 +519,23 @@ window.fitCrossTableToScreen = function() {
     // dus zonder dit zou er een lege ruimte onder de verkleinde tabel overblijven.
     container.style.height = (tableHeight * scale) + 'px';
 };
+/**
+ * ✅ NIEUW: Herbereken de kruistabel-schaal wanneer het venster van grootte verandert
+ * (bv. F11 volledig scherm aan/uit), maar alleen als de kruistabel op dat moment
+ * ook echt zichtbaar is — anders zou dit ook draaien terwijl je de rangschikking bekijkt.
+ */
+window.addEventListener('resize', function() {
+    const view = document.getElementById('viewCrossTable');
+    if (view && view.style.display !== 'none') {
+        // Kleine vertraging: bij F11 is de vensterovergang soms nog niet volledig
+        // afgerond op het exacte moment van het resize-event.
+        setTimeout(() => {
+            if (typeof window.fitCrossTableToScreen === 'function') {
+                window.fitCrossTableToScreen();
+            }
+        }, 50);
+    }
+});
 
 // =========================================================================
 // BLOK 5: UI - HEADER CONTROLS & NAVIGATIE
