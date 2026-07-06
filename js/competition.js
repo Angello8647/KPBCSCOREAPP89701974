@@ -497,14 +497,16 @@ window.fitCrossTableToScreen = function() {
     table.style.transform = 'none';
     container.style.height = '';
 
-    const availableWidth = container.clientWidth;
+    const availableWidth = container.clientWidth - 10; // iets meer buffer tegen afronding/scrollbar
     // Beschikbare hoogte = van de bovenkant van de tabel tot onderaan het scherm, min wat marge
-    const availableHeight = window.innerHeight - container.getBoundingClientRect().top - 20;
+    const availableHeight = window.innerHeight - container.getBoundingClientRect().top - 30;
 
     const tableWidth = table.scrollWidth;
     const tableHeight = table.scrollHeight;
 
     let scale = Math.min(availableWidth / tableWidth, availableHeight / tableHeight, 1);
+    // ✅ NIEUW: kleine veiligheidsmarge (3%) zodat afrondingsfouten nooit net de rand afsnijden
+    scale *= 0.97;
 
     if (scale < MIN_SCALE) {
         scale = MIN_SCALE;
