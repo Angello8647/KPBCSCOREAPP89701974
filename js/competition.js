@@ -526,18 +526,22 @@ window.fitCrossTableToScreen = function() {
  * (bv. F11 volledig scherm aan/uit), maar alleen als de kruistabel op dat moment
  * ook echt zichtbaar is — anders zou dit ook draaien terwijl je de rangschikking bekijkt.
  */
-window.addEventListener('resize', function() {
+function refitCrossTableIfVisible() {
     const view = document.getElementById('viewCrossTable');
     if (view && view.style.display !== 'none') {
         // Kleine vertraging: bij F11 is de vensterovergang soms nog niet volledig
-        // afgerond op het exacte moment van het resize-event.
+        // afgerond op het exacte moment van het event zelf.
         setTimeout(() => {
             if (typeof window.fitCrossTableToScreen === 'function') {
                 window.fitCrossTableToScreen();
             }
-        }, 50);
+        }, 100);
     }
-});
+}
+// ✅ NIEUW: luister zowel naar 'resize' als naar 'fullscreenchange' — F11 triggert
+// niet in elke browser op hetzelfde moment/dezelfde manier een resize-event.
+window.addEventListener('resize', refitCrossTableIfVisible);
+document.addEventListener('fullscreenchange', refitCrossTableIfVisible);
 
 // =========================================================================
 // BLOK 5: UI - HEADER CONTROLS & NAVIGATIE
