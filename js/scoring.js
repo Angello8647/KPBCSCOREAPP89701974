@@ -66,6 +66,10 @@ function updateScoringPage() {
     } else if (disc.includes("vrij")) {
         abbr = "VS";
         colorClass = "badge-vs";
+    } else if (disc.includes("dames")) {
+        // ✅ NIEUW: anders viel dit terug op de standaardwaarde "??"
+        abbr = "D";
+        colorClass = "badge-dames";
     }
 
     // Update het HTML element met de nieuwe gekleurde box
