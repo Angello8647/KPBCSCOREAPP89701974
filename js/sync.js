@@ -247,14 +247,4 @@ window.restoreCompletedMatchesFromAPI = async function() {
     }
 };
 
-/**
- * Bij het opstarten: spelers ophalen als die lokaal ontbreken, en daarna
- * de voltooide matchen aanvullen (namen-lookup heeft de spelers nodig).
- */
-document.addEventListener('DOMContentLoaded', async function() {
-    if (state.players.length === 0 && typeof fetchPlayersFromAPI === 'function') {
-        console.log("🔄 Geen spelers lokaal — automatisch ophalen van de server...");
-        await fetchPlayersFromAPI();
-    }
-    window.restoreCompletedMatchesFromAPI();
-});
+
