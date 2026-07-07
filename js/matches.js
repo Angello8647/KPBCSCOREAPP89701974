@@ -292,7 +292,18 @@ function loadCompletedMatches() {
     sortedDates.forEach(date => {
         html += `<div style="margin-bottom: 20px;"><h3 style="color: #27ae60; border-bottom: 1px solid #34495e; padding-bottom: 5px;">📅 ${formatDateDisplay(date)} (${byDate[date].length} matchen)</h3>`;
         byDate[date].forEach(m => {
-            const winner = m.p1Score >= m.target1 ? m.p1 : m.p2;
+            // ✅ FIX: gebruik het opgeslagen winner-veld (correct gezet door endMatch,
+            // óók voor Dames waar de winnaar op hoogste score wordt bepaald i.p.v. target).
+            // Fallback voor oude matchen zonder winner-veld: Dames → hoogste score,
+            // andere disciplines → wie zijn target haalde (de oude logica).
+            let winner = m.winner;
+            if (!winner) {
+                if (m.discipline === "Dames") {
+                    winner = m.p1Score > m.p2Score ? m.p1 : (m.p2Score > m.p1Score ? m.p2 : "Gelijk");
+                } else {
+                    winner = m.p1Score >= m.target1 ? m.p1 : m.p2;
+                }
+            }
             html += `<div class="match-card completed" style="cursor: default;"><button class="delete-match-btn" onclick="deleteMatch(${m.id})" title="Verwijderen">×</button><h3>${m.discipline} - Cat. ${m.cat} <span class="status-badge status-completed">Voltooid</span></h3><p class="match-info"><strong>${m.p1}</strong> vs <strong>${m.p2}</strong><br>🎯 Te maken punten: ${m.target1} - ${m.target2}<br>📊 Eindscore: ${m.p1Score || 0} - ${m.p2Score || 0}<br>🏆 Winnaar: ${winner}<br>📅 Datum: ${formatDateDisplay(m.date)}</p></div>`;
         });
         html += `</div>`;
