@@ -2,7 +2,7 @@
 (function() {
     const UNLOCK_KEY = 'biljartAppUnlocked';
     const URL_CODE = 'OPENSESAME';   // ⚙️ pas aan: de geheime URL-parameter
-    const PIN_CODE = '7931';           // ⚙️ pas aan: de pincode voor het vangnet
+    const PIN_CODE = '738291';           // ⚙️ pas aan: de pincode voor het vangnet
 
     // 1. Al ontgrendeld op dit toestel? Niets doen.
     if (localStorage.getItem(UNLOCK_KEY) === 'yes') return;
