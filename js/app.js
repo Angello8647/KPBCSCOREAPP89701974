@@ -3,7 +3,20 @@
 window.onload = function() {
     // 1. Laad opgeslagen data
     loadStateFromStorage();
-    
+
+    // ✅ NIEUW: herstel van server — NA loadStateFromStorage(), zodat we correct
+    // zien wat er al lokaal aanwezig is. (Eerder hing dit aan DOMContentLoaded in
+    // sync.js, maar die vuurt vóór window.onload, dus vóór het laden van localStorage.)
+    (async function() {
+        if (state.players.length === 0 && typeof fetchPlayersFromAPI === 'function') {
+            console.log("🔄 Geen spelers lokaal — automatisch ophalen van de server...");
+            await fetchPlayersFromAPI();
+        }
+        if (typeof window.restoreCompletedMatchesFromAPI === 'function') {
+            window.restoreCompletedMatchesFromAPI();
+        }
+    })();
+
     // 2. Zet standaardwachtwoord als het nog niet bestaat
     if (!localStorage.getItem('biljartAdminPassword')) {
         setAdminPassword(DEFAULT_PASSWORD);
