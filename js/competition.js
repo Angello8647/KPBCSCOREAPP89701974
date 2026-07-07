@@ -189,7 +189,10 @@ window.renderCompetitionLeaderboard = function() {
     if (!currentCompDiscipline || !currentCompCategory) return;
 
     const container = document.getElementById('competitionLeaderboard');
-    const allMatches = state.completedMatches && state.completedMatches.length > 0 ? state.completedMatches : state.matches.filter(m => m.completed);
+    // ✅ FIX: filter matches zonder players-array weg (lokale matches hebben een ander
+    // formaat dan de API-matches en lieten calculatePlayerStatsFromAPI crashen)
+    const allMatchesRaw = state.completedMatches && state.completedMatches.length > 0 ? state.completedMatches : state.matches.filter(m => m.completed);
+    const allMatches = allMatchesRaw.filter(m => m && Array.isArray(m.players));
     
     // 1. Filter spelers
     const players = state.players.filter(p => p.discipline === currentCompDiscipline && p.category === currentCompCategory);
@@ -290,7 +293,9 @@ window.renderCrossTable = function() {
     if (!currentCrossDiscipline || !currentCrossCategory) return;
 
     const container = document.getElementById('crossTableContainer');
-    const allMatches = state.completedMatches && state.completedMatches.length > 0 ? state.completedMatches : state.matches.filter(m => m.completed);
+    // ✅ FIX: zelfde beveiliging als bij de rangschikking
+    const allMatchesRaw = state.completedMatches && state.completedMatches.length > 0 ? state.completedMatches : state.matches.filter(m => m.completed);
+    const allMatches = allMatchesRaw.filter(m => m && Array.isArray(m.players));
         
     // Hulpfunctie: "Wouter BOEDTS" wordt "W. BOEDTS"
     const formatShortName = (fullName) => {
@@ -551,6 +556,13 @@ document.addEventListener('fullscreenchange', refitCrossTableIfVisible);
  * Initialiseert de dropdowns wanneer Pagina 20 wordt geopend
  */
 window.initCompetitionPage = function() {
+    // ✅ NIEUW: haal de gespeelde matches op van de server. Dit is async; de pagina
+    // rendert eerst met wat er lokaal is, en fetchMatchResultsFromAPI rendert daarna
+    // automatisch opnieuw zodra de data binnen is (die checkt zelf op currentPage 20/21).
+    if (typeof window.fetchMatchResultsFromAPI === 'function') {
+        window.fetchMatchResultsFromAPI();
+    }
+
     // ✅ 1. RESET: Zet dropdowns terug naar standaard (met jouw aangepaste tekst)
     const discSelect = document.getElementById('compDisc');
     discSelect.value = ""; // Forceer dat er niets geselecteerd is
