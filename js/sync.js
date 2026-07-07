@@ -168,3 +168,93 @@ window.addEventListener('online', () => {
     console.log("🌐 Internetverbinding hersteld. Starten met synchroniseren...");
     window.syncPendingMatches();
 });
+
+
+/* =========================================================================
+   ✅ NIEUW: HERSTEL VAN SERVER — spelers & voltooide matchen terughalen
+   zodat elke browser (TV, laptop, gsm) hetzelfde beeld toont.
+   ========================================================================= */
+
+/**
+ * Haalt voltooide matchen op van de server en voegt toe wat lokaal ontbreekt.
+ * Bestaande lokale matchen worden NOOIT overschreven of verwijderd.
+ * Let op: de API geeft geen beurten-detail of targets terug; targets worden
+ * opgezocht via state.players, beurtenlijsten blijven leeg bij herstelde matchen.
+ */
+window.restoreCompletedMatchesFromAPI = async function() {
+    try {
+        const response = await fetch("https://kpbc.pythonanywhere.com/api/match-results");
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const results = await response.json();
+
+        let added = 0;
+        results.forEach(r => {
+            if (!r.players || r.players.length < 2) return;
+            const [pd1, pd2] = r.players;
+            const c1 = String(pd1.club_id), c2 = String(pd2.club_id);
+            const date = r.played_date;
+
+            // Bestaat deze match lokaal al? Vergelijk op club_id-paar + datum
+            // (lokaal id-formaat "40011-40111" verschilt van server "40011_40111_datum")
+            const exists = state.matches.some(m =>
+                m.completed &&
+                m.date === date &&
+                ((String(m.p1_club_id) === c1 && String(m.p2_club_id) === c2) ||
+                 (String(m.p1_club_id) === c2 && String(m.p2_club_id) === c1))
+            );
+            if (exists) return;
+
+            // Namen + targets opzoeken via state.players
+            const pl1 = state.players.find(p => String(p.id) === c1);
+            const pl2 = state.players.find(p => String(p.id) === c2);
+            const p1Name = pl1 ? pl1.name : `ONBEKEND (ID: ${c1})`;
+            const p2Name = pl2 ? pl2.name : `ONBEKEND (ID: ${c2})`;
+
+            const winnerName = String(r.winner_club_id) === c1 ? p1Name : p2Name;
+
+            state.matches.push({
+                id: `${Math.min(+c1, +c2)}-${Math.max(+c1, +c2)}`,
+                date: date,
+                p1: p1Name,
+                p2: p2Name,
+                p1_club_id: parseInt(c1),
+                p2_club_id: parseInt(c2),
+                target1: pl1 ? pl1.target : 0,
+                target2: pl2 ? pl2.target : 0,
+                discipline: r.discipline,
+                cat: parseInt(r.category) || r.category,
+                completed: true,
+                p1Score: pd1.score,
+                p2Score: pd2.score,
+                p1Turns: [],   // niet beschikbaar via de API
+                p2Turns: [],
+                p1Highest: pd1.hoogste_reeks || 0,
+                p2Highest: pd2.hoogste_reeks || 0,
+                winner: winnerName,
+                restoredFromServer: true
+            });
+            added++;
+        });
+
+        if (added > 0) {
+            saveStateToStorage();
+            console.log(`✅ ${added} voltooide match(en) hersteld van de server`);
+        } else {
+            console.log("ℹ️ Alle voltooide matchen waren al lokaal aanwezig");
+        }
+    } catch (e) {
+        console.warn("⚠️ Kon voltooide matchen niet herstellen:", e);
+    }
+};
+
+/**
+ * Bij het opstarten: spelers ophalen als die lokaal ontbreken, en daarna
+ * de voltooide matchen aanvullen (namen-lookup heeft de spelers nodig).
+ */
+document.addEventListener('DOMContentLoaded', async function() {
+    if (state.players.length === 0 && typeof fetchPlayersFromAPI === 'function') {
+        console.log("🔄 Geen spelers lokaal — automatisch ophalen van de server...");
+        await fetchPlayersFromAPI();
+    }
+    window.restoreCompletedMatchesFromAPI();
+});
