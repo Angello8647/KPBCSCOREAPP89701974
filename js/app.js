@@ -62,7 +62,16 @@ window.onload = function() {
  */
 window.syncMatchToAPI = async function(match) {
     // 1. Bepaal de winnaar op basis van de score
-    const winnerClubId = match.p1Score > match.p2Score ? match.p1_club_id : match.p2_club_id;
+    // ✅ FIX: bij een exact gelijkspel (mogelijk bij Dames) is er géén winnaar;
+    // voorheen werd dan onterecht speler 2 als winnaar doorgestuurd omdat
+    // `p1Score > p2Score` onwaar is bij gelijke scores.
+    let winnerClubId = null;
+    if (match.p1Score > match.p2Score) {
+        winnerClubId = match.p1_club_id;
+    } else if (match.p2Score > match.p1Score) {
+        winnerClubId = match.p2_club_id;
+    }
+    // gelijk → winnerClubId blijft null (gelijkspel)
     
     // 2. Genereer unieke match_id (formaat: speler1_speler2_datum)
     const matchId = match.match_id || `${match.p1_club_id}_${match.p2_club_id}_${match.date}`;
