@@ -1635,9 +1635,13 @@ window.resetFriendlyConfig = function() {
     // 5. Scroll netjes naar boven voor de beste gebruikerservaring
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // ✅ FIX: Genereer automatisch een nieuwe QR code na reset
-    console.log('📱 Nieuwe QR code genereren na reset...');
-    if (typeof window.initFriendlyQRPage === 'function') {
+    // ✅ FIX: Genereer alleen een nieuwe QR code als de vriendschappelijke
+    // configuratie-pagina ook echt zichtbaar is. resetFriendlyConfig wordt namelijk
+    // óók aangeroepen via resetPage1State bij elke terugkeer naar het hoofdmenu,
+    // en dan werd er telkens onnodig een QR-sessie aangemaakt + polling gestart.
+    const friendlyPageActive = document.getElementById('pageFriendly')?.classList.contains('active');
+    if (friendlyPageActive && typeof window.initFriendlyQRPage === 'function') {
+        console.log('📱 Nieuwe QR code genereren na reset...');
         window.initFriendlyQRPage();
     }
 };
