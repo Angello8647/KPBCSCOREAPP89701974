@@ -2141,7 +2141,7 @@ window.finalizePlayerSelection = function(playerData) {
             }, 500);
         } else {
             setTimeout(() => {
-                console.log(`🎱 Ga naar Pagina 13 voor ${totalPlayers} spelers`);
+                console.log(`⚪🟡🔴 Ga naar Pagina 13 voor ${totalPlayers} spelers`);
                 window.prepareFriendlyBallSelection();
                 showPage(13);
             }, 500);
