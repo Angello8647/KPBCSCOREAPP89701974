@@ -923,9 +923,18 @@ function initPresenterControls() {
     const FRIENDLY_COOLDOWN = 1000;
     window.matchListFocusIndex = 0;
  
-    document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
+
+        // ✅ VEILIGHEIDSFIX: enkel op pagina 5 (scoringsscherm) blokkeren we
+        // Escape/F5 — daar mag een lange druk NOOIT een browserherlaad
+        // veroorzaken (verlies van match-voortgang). Op andere pagina's
+        // (bv. pagina 6/20) is dit signaal net bewust gebruikt om "lang
+        // indrukken = naar hoofdmenu" te laten werken, dus daar niet blokkeren.
+        if (activePage.id === 'page5' && (event.key === 'F5' || event.key === 'Escape')) {
+            event.preventDefault();
+        }
  
  
  
