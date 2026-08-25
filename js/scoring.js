@@ -4419,3 +4419,112 @@ window.startDamesAvond = function() {
 
     renderDamesDigits();
 };
+window.showDamesSpelersKeuze = async function() {
+    const res = await fetch('https://kpbc.pythonanywhere.com/api/dames/spelers-en-paren');
+    const data = await res.json();
+    const spelers = data.spelers;
+    const gespeeldeParen = new Set(data.gespeelde_paren);
+
+    let gekozen = [];
+
+    const overlay = document.createElement('div');
+    overlay.id = 'damesKeuzeOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:#1a1a2e;display:flex;flex-direction:column;align-items:center;padding:20px;color:#fff;overflow-y:auto;';
+    overlay.innerHTML = `
+        <h2 style="margin:10px 0;">🎀 Dames-avond — kies 2 speelsters</h2>
+        <div id="damesSpelersLijst" style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:400px;"></div>
+        <button id="damesStartBtn" disabled style="margin-top:20px;background:#22c55e;color:white;border:none;padding:14px 24px;border-radius:10px;font-weight:700;font-size:1.1rem;cursor:pointer;opacity:0.5;">▶️ Match starten</button>
+        <button onclick="document.getElementById('damesKeuzeOverlay').remove()" style="margin-top:10px;background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Annuleren</button>
+    `;
+    document.body.appendChild(overlay);
+
+    const lijstEl = document.getElementById('damesSpelersLijst');
+    spelers.forEach(s => {
+        const btn = document.createElement('button');
+        btn.textContent = s.name;
+        btn.dataset.clubId = s.club_id;
+        btn.style.cssText = 'padding:12px;border-radius:8px;border:2px solid #34495e;background:#2c3e50;color:#fff;font-weight:600;cursor:pointer;text-align:left;';
+        btn.onclick = () => toggleSpeler(s, btn);
+        lijstEl.appendChild(btn);
+    });
+
+    function heeftAlGespeeld(cid1, cid2) {
+        return gespeeldeParen.has(`${cid1}_${cid2}`);
+    }
+
+    function toggleSpeler(speler, btn) {
+        const idx = gekozen.findIndex(g => g.club_id === speler.club_id);
+        if (idx >= 0) {
+            gekozen.splice(idx, 1);
+            btn.style.background = '#2c3e50';
+            btn.style.borderColor = '#34495e';
+        } else {
+            if (gekozen.length >= 2) return;
+            gekozen.push(speler);
+            btn.style.background = '#ec4899';
+            btn.style.borderColor = '#ec4899';
+        }
+        updateStartKnop();
+    }
+
+    function updateStartKnop() {
+        const startBtn = document.getElementById('damesStartBtn');
+        const errorDiv = document.getElementById('damesKeuzeError');
+        if (errorDiv) errorDiv.remove();
+
+        if (gekozen.length === 2) {
+            const alGespeeld = heeftAlGespeeld(gekozen[0].club_id, gekozen[1].club_id);
+            if (alGespeeld) {
+                startBtn.disabled = true;
+                startBtn.style.opacity = '0.5';
+                const err = document.createElement('div');
+                err.id = 'damesKeuzeError';
+                err.textContent = '⚠️ Deze twee speelden al tegen elkaar!';
+                err.style.cssText = 'color:#f87171;font-weight:700;margin-top:10px;';
+                overlay.insertBefore(err, document.getElementById('damesStartBtn'));
+            } else {
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+            }
+        } else {
+            startBtn.disabled = true;
+            startBtn.style.opacity = '0.5';
+        }
+    }
+
+    document.getElementById('damesStartBtn').onclick = () => {
+        if (gekozen.length !== 2) return;
+        const [s1, s2] = gekozen;
+        const clubIds = [s1.club_id, s2.club_id].sort((a, b) => a - b);
+        const matchId = `${clubIds[0]}-${clubIds[1]}`;
+
+        state.currentMatch = {
+            id: matchId,
+            date: new Date().toISOString().split('T')[0],
+            time: '',
+            table: 1,
+            p1: s1.name,
+            p2: s2.name,
+            referee: null,
+            p1_club_id: parseInt(s1.club_id),
+            p2_club_id: parseInt(s2.club_id),
+            target1: 20,
+            target2: 20,
+            discipline: 'Dames',
+            cat: 0,
+            match_type: 'Regular',
+            completed: false,
+            whitePlayer: null,
+            p1Score: 0,
+            p2Score: 0,
+            p1Turns: [],
+            p2Turns: [],
+            p1Highest: 0,
+            p2Highest: 0,
+            synced_at: new Date().toISOString()
+        };
+        state.selectedWhitePlayer = null;
+        overlay.remove();
+        window.showPage(4);
+    };
+};
