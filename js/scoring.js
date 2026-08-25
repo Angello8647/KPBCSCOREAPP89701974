@@ -4364,3 +4364,58 @@ function toggleQRSection() {
         console.log('📱 QR sectie getoond (geen spelers)');
     }
 }
+
+
+// ==========================================
+// 🎀 DAMES-AVOND: live wedstrijd starten
+// ==========================================
+const DAMES_PIN = '8970';
+
+window.startDamesAvond = function() {
+    let pinInput = '';
+    const overlay = document.createElement('div');
+    overlay.id = 'damesPinOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(26,26,46,0.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;color:#fff;text-align:center;';
+    overlay.innerHTML = `
+        <div style="font-size:3rem;">🎀</div>
+        <h2 style="margin:0;">Dames-avond code</h2>
+        <div id="damesPinDisplay" style="font-size:2.2rem;letter-spacing:12px;font-weight:900;min-height:1.2em;"></div>
+        <div id="damesDigits" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:400px;"></div>
+        <div id="damesPinError" style="color:#e74c3c;font-weight:bold;min-height:1.5em;"></div>
+        <button onclick="document.getElementById('damesPinOverlay').remove()" style="background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;">Annuleren</button>
+    `;
+    document.body.appendChild(overlay);
+
+    let digitIdx = 0;
+    function renderDamesDigits() {
+        const container = document.getElementById('damesDigits');
+        container.innerHTML = '';
+        for (let d = 0; d <= 9; d++) {
+            const btn = document.createElement('button');
+            btn.textContent = d;
+            btn.style.cssText = 'width:50px;height:50px;font-size:1.3rem;font-weight:900;border-radius:10px;border:3px solid ' +
+                (d === digitIdx ? '#ec4899' : '#34495e') + ';background:' +
+                (d === digitIdx ? '#ec4899' : '#2c3e50') + ';color:#fff;cursor:pointer;';
+            btn.onclick = () => { digitIdx = d; addDamesDigit(); };
+            container.appendChild(btn);
+        }
+        document.getElementById('damesPinDisplay').textContent = '●'.repeat(pinInput.length) + '_'.repeat(Math.max(0, DAMES_PIN.length - pinInput.length));
+    }
+
+    function addDamesDigit() {
+        pinInput += String(digitIdx);
+        document.getElementById('damesPinError').textContent = '';
+        if (pinInput.length >= DAMES_PIN.length) {
+            if (pinInput === DAMES_PIN) {
+                overlay.remove();
+                window.showDamesSpelersKeuze();
+            } else {
+                pinInput = '';
+                document.getElementById('damesPinError').textContent = '❌ Foute code';
+            }
+        }
+        renderDamesDigits();
+    }
+
+    renderDamesDigits();
+};
