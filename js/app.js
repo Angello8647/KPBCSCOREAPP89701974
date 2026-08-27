@@ -213,9 +213,9 @@ window.addEventListener('online', () => {
 // presenter-toetsaanslag (pijl omhoog/omlaag). Verschijnt terug bij
 // echte muisbeweging, voor het geval je toch ooit de muis gebruikt.
 (function() {
-  function hideCursor() {
+  window.hideCursor = function() {
     document.body.classList.add('hide-cursor');
-  }
+  };
 
   function showCursor() {
     document.body.classList.remove('hide-cursor');
