@@ -4743,3 +4743,11 @@
     box-shadow: 0 0 25px rgba(46, 204, 113, 0.8) !important;
     transform: scale(1.05);
 }
+
+body.hide-cursor, body.hide-cursor * {
+  cursor: none !important;
+}
+
+
+
+
