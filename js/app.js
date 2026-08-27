@@ -209,27 +209,35 @@ window.addEventListener('online', () => {
 });
 
 
-// ✅ Cursor verbergen (kiosk-mode): meteen bij laden, en direct bij elke
-// presenter-toetsaanslag (pijl omhoog/omlaag). Verschijnt terug bij
-// echte muisbeweging, voor het geval je toch ooit de muis gebruikt.
 (function() {
   window.hideCursor = function() {
     document.body.classList.add('hide-cursor');
   };
-
   function showCursor() {
     document.body.classList.remove('hide-cursor');
   }
-
   document.addEventListener('mousemove', showCursor);
 
+  // Tijdelijk diagnose-paneeltje, altijd zichtbaar
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;top:0;left:0;background:yellow;color:black;padding:8px;font-size:16px;z-index:999999;';
+  panel.innerHTML = 'Laatste toets: <span id="dbg-key">-</span> | Aantal: <span id="dbg-count">0</span> <button id="dbg-btn" style="margin-left:10px;">Verberg cursor (test)</button>';
+  document.body.appendChild(panel);
+
+  let count = 0;
   document.addEventListener('keydown', function(e) {
+    count++;
+    document.getElementById('dbg-key').textContent = e.key;
+    document.getElementById('dbg-count').textContent = count;
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
       hideCursor();
     }
-});
+  });
 
-  hideCursor(); // Verberg meteen bij laden
+  document.getElementById('dbg-btn') // wordt hieronder pas na append gekoppeld
+  panel.querySelector('#dbg-btn').addEventListener('click', hideCursor);
+
+  hideCursor();
 })();
 
 
