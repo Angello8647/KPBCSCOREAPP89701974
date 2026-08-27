@@ -228,6 +228,7 @@ window.addEventListener('online', () => {
   document.addEventListener('mousedown', showCursorAndResetTimer);
   document.addEventListener('touchstart', showCursorAndResetTimer);
 
+  hideCursor(); // ✅ Verberg meteen bij laden, niet pas na eerste beweging
   cursorTimer = setTimeout(hideCursor, HIDE_DELAY);
 })();
 
