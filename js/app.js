@@ -208,39 +208,20 @@ window.addEventListener('online', () => {
     window.syncPendingMatches();
 });
 
-
-let showCount = 0;
-function showCursor() {
-    showCount++;
+(function() {
+  window.hideCursor = function() {
+    document.body.classList.add('hide-cursor');
+  };
+  function showCursor() {
     document.body.classList.remove('hide-cursor');
-    const el = document.getElementById('dbg-show');
-    if (el) el.textContent = showCount;
-}
-document.addEventListener('mousemove', showCursor);
   }
   document.addEventListener('mousemove', showCursor);
-
-  // Tijdelijk diagnose-paneeltje, altijd zichtbaar
-  const panel = document.createElement('div');
-  panel.style.cssText = 'position:fixed;top:0;left:0;background:yellow;color:black;padding:8px;font-size:16px;z-index:999999;';
-  panel.innerHTML = 'Laatste toets: <span id="dbg-key">-</span> | Toetsen: <span id="dbg-count">0</span> | Cursor getoond: <span id="dbg-show">0</span> <button id="dbg-btn" style="margin-left:10px;">Verberg cursor (test)</button>';
-  document.body.appendChild(panel);
-
-  let count = 0;
   document.addEventListener('keydown', function(e) {
-    count++;
-    document.getElementById('dbg-key').textContent = e.key;
-    document.getElementById('dbg-count').textContent = count;
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
       hideCursor();
     }
   });
-
-  document.getElementById('dbg-btn') // wordt hieronder pas na append gekoppeld
-  panel.querySelector('#dbg-btn').addEventListener('click', hideCursor);
-
   hideCursor();
 })();
-
 
 
