@@ -881,6 +881,7 @@ function navigateFocusableList(event, items, indexRef, options = {}) {
  
     if (event.key === 'PageUp' || event.key === 'ArrowUp') {
         event.preventDefault();
+        if (typeof hideCursor === 'function') hideCursor();
         indexRef.value = wrap
             ? (indexRef.value - 1 + items.length) % items.length
             : Math.max(indexRef.value - 1, 0);
@@ -890,6 +891,7 @@ function navigateFocusableList(event, items, indexRef, options = {}) {
  
     if (event.key === 'PageDown' || event.key === 'ArrowDown') {
         event.preventDefault();
+        if (typeof hideCursor === 'function') hideCursor();
         indexRef.value = wrap
             ? (indexRef.value + 1) % items.length
             : Math.min(indexRef.value + 1, items.length - 1);
