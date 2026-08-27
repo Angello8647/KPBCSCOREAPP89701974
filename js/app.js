@@ -224,10 +224,10 @@ window.addEventListener('online', () => {
   document.addEventListener('mousemove', showCursor);
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
       hideCursor();
     }
-  });
+});
 
   hideCursor(); // Verberg meteen bij laden
 })();
