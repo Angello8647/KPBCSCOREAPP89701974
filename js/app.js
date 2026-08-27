@@ -209,27 +209,27 @@ window.addEventListener('online', () => {
 });
 
 
-// ✅ Cursor automatisch verbergen bij stilstand (kiosk-mode)
+// ✅ Cursor verbergen (kiosk-mode): meteen bij laden, en direct bij elke
+// presenter-toetsaanslag (pijl omhoog/omlaag). Verschijnt terug bij
+// echte muisbeweging, voor het geval je toch ooit de muis gebruikt.
 (function() {
-  let cursorTimer;
-  const HIDE_DELAY = 3000; // 3 seconden
-
   function hideCursor() {
     document.body.classList.add('hide-cursor');
   }
 
-  function showCursorAndResetTimer() {
+  function showCursor() {
     document.body.classList.remove('hide-cursor');
-    clearTimeout(cursorTimer);
-    cursorTimer = setTimeout(hideCursor, HIDE_DELAY);
   }
 
-  document.addEventListener('mousemove', showCursorAndResetTimer);
-  document.addEventListener('mousedown', showCursorAndResetTimer);
-  document.addEventListener('touchstart', showCursorAndResetTimer);
+  document.addEventListener('mousemove', showCursor);
 
-  hideCursor(); // ✅ Verberg meteen bij laden, niet pas na eerste beweging
-  cursorTimer = setTimeout(hideCursor, HIDE_DELAY);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      hideCursor();
+    }
+  });
+
+  hideCursor(); // Verberg meteen bij laden
 })();
 
 
