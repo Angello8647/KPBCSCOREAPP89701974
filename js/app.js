@@ -207,3 +207,29 @@ window.addEventListener('online', () => {
     console.log("🌐 Internetverbinding hersteld. Starten met synchroniseren...");
     window.syncPendingMatches();
 });
+
+
+// ✅ Cursor automatisch verbergen bij stilstand (kiosk-mode)
+(function() {
+  let cursorTimer;
+  const HIDE_DELAY = 3000; // 3 seconden
+
+  function hideCursor() {
+    document.body.classList.add('hide-cursor');
+  }
+
+  function showCursorAndResetTimer() {
+    document.body.classList.remove('hide-cursor');
+    clearTimeout(cursorTimer);
+    cursorTimer = setTimeout(hideCursor, HIDE_DELAY);
+  }
+
+  document.addEventListener('mousemove', showCursorAndResetTimer);
+  document.addEventListener('mousedown', showCursorAndResetTimer);
+  document.addEventListener('touchstart', showCursorAndResetTimer);
+
+  cursorTimer = setTimeout(hideCursor, HIDE_DELAY);
+})();
+
+
+
