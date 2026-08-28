@@ -4458,11 +4458,12 @@ window.showDamesSpelersKeuze = async function() {
         <h2 style="margin:10px 0;">🎀 Dames-avond — kies 2 speelsters</h2>
         <div id="damesSpelersLijst" style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:400px;"></div>
         <button id="damesStartBtn" disabled style="margin-top:20px;background:#22c55e;color:white;border:none;padding:14px 24px;border-radius:10px;font-weight:700;font-size:1.1rem;cursor:pointer;opacity:0.5;">▶️ Match starten</button>
-        <button onclick="document.getElementById('damesKeuzeOverlay').remove()" style="margin-top:10px;background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Annuleren</button>
+        <button onclick="document.getElementById('damesKeuzeOverlay').remove(); document.removeEventListener('keydown', damesKeuzeKeydownHandler, true);" style="margin-top:10px;background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Annuleren</button>
     `;
     document.body.appendChild(overlay);
 
     const lijstEl = document.getElementById('damesSpelersLijst');
+    const damesButtons = [];
     spelers.forEach(s => {
         const btn = document.createElement('button');
         btn.textContent = s.name;
@@ -4470,7 +4471,42 @@ window.showDamesSpelersKeuze = async function() {
         btn.style.cssText = 'padding:12px;border-radius:8px;border:2px solid #34495e;background:#2c3e50;color:#fff;font-weight:600;cursor:pointer;text-align:left;';
         btn.onclick = () => toggleSpeler(s, btn);
         lijstEl.appendChild(btn);
+        damesButtons.push(btn);
     });
+
+    // ✅ NIEUW: presenter-navigatie door de lijst (PageUp/PageDown), Tab om
+    // te (de)selecteren, en op de "Match starten"-knop navigeren om te
+    // bevestigen zodra 2 geldige speelsters gekozen zijn.
+    let damesFocusIndex = 0;
+    function updateDamesFocusStyle() {
+        damesButtons.forEach((b, i) => {
+            b.style.outline = (i === damesFocusIndex) ? '3px solid #ec4899' : 'none';
+        });
+        const startBtn = document.getElementById('damesStartBtn');
+        startBtn.style.outline = (damesFocusIndex === damesButtons.length) ? '3px solid #ec4899' : 'none';
+    }
+    function damesKeuzeKeydownHandler(e) {
+        if (!document.getElementById('damesKeuzeOverlay')) return;
+        const maxIndex = damesButtons.length; // laatste positie = de "Match starten"-knop
+        if (e.key === 'PageDown' || e.key === 'ArrowDown') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            damesFocusIndex = Math.min(damesFocusIndex + 1, maxIndex);
+            updateDamesFocusStyle();
+        } else if (e.key === 'PageUp' || e.key === 'ArrowUp') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            damesFocusIndex = Math.max(damesFocusIndex - 1, 0);
+            updateDamesFocusStyle();
+        } else if (e.key === 'Tab') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            if (damesFocusIndex === maxIndex) {
+                document.getElementById('damesStartBtn').click();
+            } else {
+                damesButtons[damesFocusIndex].click();
+            }
+        }
+    }
+    document.addEventListener('keydown', damesKeuzeKeydownHandler, true);
+    updateDamesFocusStyle();
 
     function heeftAlGespeeld(cid1, cid2) {
         return gespeeldeParen.has(`${cid1}_${cid2}`);
@@ -4518,6 +4554,7 @@ window.showDamesSpelersKeuze = async function() {
 
     document.getElementById('damesStartBtn').onclick = () => {
         if (gekozen.length !== 2) return;
+        document.removeEventListener('keydown', damesKeuzeKeydownHandler, true);
         const [s1, s2] = gekozen;
         const clubIds = [s1.club_id, s2.club_id].sort((a, b) => a - b);
         const matchId = `${clubIds[0]}-${clubIds[1]}`;
