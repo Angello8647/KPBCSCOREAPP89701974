@@ -4468,7 +4468,7 @@ window.showDamesSpelersKeuze = async function() {
         const btn = document.createElement('button');
         btn.textContent = s.name;
         btn.dataset.clubId = s.club_id;
-        btn.style.cssText = 'padding:12px;border-radius:8px;border:2px solid #34495e;background:#2c3e50;color:#fff;font-weight:600;cursor:pointer;text-align:left;';
+        btn.style.cssText = 'padding:18px;border-radius:8px;border:2px solid #34495e;background:#2c3e50;color:#fff;font-weight:600;cursor:pointer;text-align:left;font-size:1.3rem;';
         btn.onclick = () => toggleSpeler(s, btn);
         lijstEl.appendChild(btn);
         damesButtons.push(btn);
