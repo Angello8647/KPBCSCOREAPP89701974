@@ -1568,22 +1568,33 @@ window.clearPage1Dim = function() {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
-    const btnOfficial = document.querySelector('#containerOfficial .next-btn');
-    const btnsFriendly = document.querySelectorAll('#containerFriendly .friendly-btn');
-    if (btnOfficial) {
-        btnOfficial.addEventListener('mouseenter', () => window.highlightPage1Button(btnOfficial));
-        btnOfficial.addEventListener('mouseleave', () => window.clearPage1Dim());
-        // ✅ NIEUW: ook bij ECHTE browserfocus (bv. via de presenter, die op
-        // pagina 1 gewoon .focus() gebruikt in plaats van een .focused-klasse)
-        btnOfficial.addEventListener('focus', () => window.highlightPage1Button(btnOfficial));
-        btnOfficial.addEventListener('blur', () => window.clearPage1Dim());
+    // ✅ NIEUW: ALLE knoppen op pagina 1 verzamelen (ongeacht kader/klasse),
+    // zodat ELKE knop apart kan oplichten met alle anderen gedimd — in
+    // plaats van enkel het "andere kader" te dimmen.
+    const alleKnoppenPagina1 = document.querySelectorAll('#page1 .next-btn, #page1 .friendly-btn');
+
+    function dimAlleAnderen(actieveBtn) {
+        alleKnoppenPagina1.forEach(btn => {
+            if (btn !== actieveBtn) {
+                btn.style.opacity = '0.35';
+            }
+        });
     }
-    btnsFriendly.forEach(btn => {
-        btn.addEventListener('mouseenter', () => window.highlightPage1Button(btn));
-        btn.addEventListener('mouseleave', () => window.clearPage1Dim());
-        btn.addEventListener('focus', () => window.highlightPage1Button(btn));
-        btn.addEventListener('blur', () => window.clearPage1Dim());
+    function herstelAlleKnoppen() {
+        alleKnoppenPagina1.forEach(btn => {
+            btn.style.opacity = '1';
+        });
+    }
+
+    alleKnoppenPagina1.forEach(btn => {
+        btn.addEventListener('mouseenter', () => dimAlleAnderen(btn));
+        btn.addEventListener('mouseleave', () => herstelAlleKnoppen());
+        btn.addEventListener('focus', () => dimAlleAnderen(btn));
+        btn.addEventListener('blur', () => herstelAlleKnoppen());
     });
+
+    window.highlightPage1Button = dimAlleAnderen;
+    window.clearPage1Dim = herstelAlleKnoppen;
 });
 
 // ✅ 3. KLIK LOGICA: Dim definitief en voer actie uit
