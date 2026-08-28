@@ -4375,6 +4375,7 @@ const DAMES_PIN = '8970';
 
 window.startDamesAvond = function() {
     let pinInput = '';
+    let damesDigitIndex = 0;
     const overlay = document.createElement('div');
     overlay.id = 'damesPinOverlay';
     overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(26,26,46,0.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;color:#fff;text-align:center;';
@@ -4384,7 +4385,7 @@ window.startDamesAvond = function() {
         <div id="damesPinDisplay" style="font-size:2.2rem;letter-spacing:12px;font-weight:900;min-height:1.2em;"></div>
         <div id="damesDigits" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:400px;"></div>
         <div id="damesPinError" style="color:#e74c3c;font-weight:bold;min-height:1.5em;"></div>
-        <button onclick="document.getElementById('damesPinOverlay').remove()" style="background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;">Annuleren</button>
+<button onclick="document.getElementById('damesPinOverlay').remove(); document.removeEventListener('keydown', damesKeydownHandler, true);" style="background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;">Annuleren</button>
     `;
     document.body.appendChild(overlay);
 
@@ -4404,12 +4405,33 @@ window.startDamesAvond = function() {
         document.getElementById('damesPinDisplay').textContent = '●'.repeat(pinInput.length) + '_'.repeat(Math.max(0, DAMES_PIN.length - pinInput.length));
     }
 
+    function damesKeydownHandler(e) {
+        if (!document.getElementById('damesPinOverlay')) return;
+        if (e.key === 'PageUp' || e.key === 'ArrowUp') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            damesDigitIndex = (damesDigitIndex + 1) % 10;
+            digitIdx = damesDigitIndex;
+            renderDamesDigits();
+        } else if (e.key === 'PageDown' || e.key === 'ArrowDown') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            damesDigitIndex = (damesDigitIndex - 1 + 10) % 10;
+            digitIdx = damesDigitIndex;
+            renderDamesDigits();
+        } else if (e.key === 'Tab') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            digitIdx = damesDigitIndex;
+            addDamesDigit();
+        }
+    }
+    document.addEventListener('keydown', damesKeydownHandler, true);
+
     function addDamesDigit() {
         pinInput += String(digitIdx);
         document.getElementById('damesPinError').textContent = '';
         if (pinInput.length >= DAMES_PIN.length) {
             if (pinInput === DAMES_PIN) {
                 overlay.remove();
+                document.removeEventListener('keydown', damesKeydownHandler, true);
                 window.showDamesSpelersKeuze();
             } else {
                 pinInput = '';
