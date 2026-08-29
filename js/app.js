@@ -221,7 +221,16 @@ window.addEventListener('online', () => {
       hideCursor();
     }
   });
+
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;top:0;left:0;background:yellow;color:black;padding:8px;font-size:20px;z-index:999999;';
+  panel.textContent = 'Toetsen: 0';
+  document.body.appendChild(panel);
+  let count = 0;
+  document.addEventListener('keydown', function(e) {
+    count++;
+    panel.textContent = 'Toetsen: ' + count + ' | laatste: ' + e.key + ' | hide-cursor class: ' + document.body.classList.contains('hide-cursor');
+  });
+
   hideCursor();
 })();
-
-
