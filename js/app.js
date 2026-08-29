@@ -210,8 +210,11 @@ window.addEventListener('online', () => {
 
 (function() {
   window.hideCursor = function() {
-    document.body.classList.add('hide-cursor');
-  };
+  document.body.classList.add('hide-cursor');
+  // Forceer Chromium om de cursor-weergave te verversen
+  document.body.style.cursor = 'none';
+  void document.body.offsetHeight; // forceer reflow
+};
   function showCursor() {
     document.body.classList.remove('hide-cursor');
   }
