@@ -210,30 +210,20 @@ window.addEventListener('online', () => {
 
 
 (function() {
-  window.hideCursor = function() {
-    document.body.classList.add('hide-cursor');
-  };
+  const htmlEl = document.documentElement;
+  let cursorTimeout;
+  function hideCursor() {
+    htmlEl.classList.remove('show-cursor');
+  }
   function showCursor() {
-    document.body.classList.remove('hide-cursor');
+    htmlEl.classList.add('show-cursor');
+    clearTimeout(cursorTimeout);
+    cursorTimeout = setTimeout(hideCursor, 3000);
   }
   document.addEventListener('mousemove', showCursor);
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
+    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(e.key)) {
       hideCursor();
     }
   });
-
-  // ✅ Forceer een minieme, onzichtbare muisbeweging bij het laden,
-  // zodat Chromium de cursor-weergave "activeert" — zonder dit blijft
-  // de allereerste hideCursor() onzichtbaar tot de echte eerste
-  // muisbeweging van de gebruiker.
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      const ev = new MouseEvent('mousemove', { clientX: 1, clientY: 1, bubbles: true });
-      document.dispatchEvent(ev);
-      setTimeout(hideCursor, 50);
-    }, 500);
-  });
-
-  hideCursor();
 })();
