@@ -208,13 +208,11 @@ window.addEventListener('online', () => {
     window.syncPendingMatches();
 });
 
+
 (function() {
   window.hideCursor = function() {
-  document.body.classList.add('hide-cursor');
-  // Forceer Chromium om de cursor-weergave te verversen
-  document.body.style.cursor = 'none';
-  void document.body.offsetHeight; // forceer reflow
-};
+    document.body.classList.add('hide-cursor');
+  };
   function showCursor() {
     document.body.classList.remove('hide-cursor');
   }
@@ -225,14 +223,16 @@ window.addEventListener('online', () => {
     }
   });
 
-  const panel = document.createElement('div');
-  panel.style.cssText = 'position:fixed;top:0;left:0;background:yellow;color:black;padding:8px;font-size:20px;z-index:999999;';
-  panel.textContent = 'Toetsen: 0';
-  document.body.appendChild(panel);
-  let count = 0;
-  document.addEventListener('keydown', function(e) {
-    count++;
-    panel.textContent = 'Toetsen: ' + count + ' | laatste: ' + e.key + ' | hide-cursor class: ' + document.body.classList.contains('hide-cursor');
+  // ✅ Forceer een minieme, onzichtbare muisbeweging bij het laden,
+  // zodat Chromium de cursor-weergave "activeert" — zonder dit blijft
+  // de allereerste hideCursor() onzichtbaar tot de echte eerste
+  // muisbeweging van de gebruiker.
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      const ev = new MouseEvent('mousemove', { clientX: 1, clientY: 1, bubbles: true });
+      document.dispatchEvent(ev);
+      setTimeout(hideCursor, 50);
+    }, 500);
   });
 
   hideCursor();
