@@ -4746,8 +4746,11 @@
     transform: scale(1.05);
 }
 
-body.hide-cursor, body.hide-cursor * {
+html, html * {
   cursor: none !important;
+}
+html.show-cursor, html.show-cursor * {
+  cursor: auto !important;
 }
 
 
