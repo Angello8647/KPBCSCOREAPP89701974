@@ -227,3 +227,82 @@ window.addEventListener('online', () => {
     }
   });
 })();
+
+
+// ✅ Automatische afsluiting om 24u, 00u30 en 01u00
+(function() {
+  const SHUTDOWN_TIMES = ['00:00', '00:30', '01:00']; // 24u = 00:00
+  let countdownActive = false;
+  let countdownValue = 30;
+  let countdownInterval = null;
+  let overlay = null;
+  let triggeredThisMinute = {};
+
+  function createOverlay() {
+    overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999999;font-family:system-ui;text-align:center;';
+    overlay.innerHTML = `
+      <div style="font-size:1.5rem;margin-bottom:20px;">⏻ Scorebord wordt afgesloten</div>
+      <div id="shutdown-countdown" style="font-size:4rem;font-weight:bold;margin-bottom:20px;">30</div>
+      <div style="font-size:1.1rem;color:#ccc;">Druk op de Tab-knop van de presenter om te annuleren</div>
+    `;
+    document.body.appendChild(overlay);
+  }
+
+  function removeOverlay() {
+    if (overlay) {
+      overlay.remove();
+      overlay = null;
+    }
+  }
+
+  function startCountdown() {
+    if (countdownActive) return;
+    countdownActive = true;
+    countdownValue = 30;
+    createOverlay();
+    document.getElementById('shutdown-countdown').textContent = countdownValue;
+
+    countdownInterval = setInterval(function() {
+      countdownValue--;
+      const el = document.getElementById('shutdown-countdown');
+      if (el) el.textContent = countdownValue;
+      if (countdownValue <= 0) {
+        clearInterval(countdownInterval);
+        fetch('http://127.0.0.1:5005/shutdown').catch(function() {});
+      }
+    }, 1000);
+  }
+
+  function cancelCountdown() {
+    if (!countdownActive) return;
+    countdownActive = false;
+    clearInterval(countdownInterval);
+    removeOverlay();
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Tab' && countdownActive) {
+      e.preventDefault();
+      cancelCountdown();
+    }
+  });
+
+  setInterval(function() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const current = hh + ':' + mm;
+
+    if (SHUTDOWN_TIMES.includes(current)) {
+      if (!triggeredThisMinute[current]) {
+        triggeredThisMinute[current] = true;
+        startCountdown();
+      }
+    } else {
+      // reset zodra de minuut voorbij is, zodat het morgen weer kan triggeren
+      triggeredThisMinute = {};
+    }
+  }, 1000);
+})();
+
