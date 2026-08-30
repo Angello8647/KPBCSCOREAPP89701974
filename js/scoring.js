@@ -938,7 +938,12 @@ document.addEventListener('keydown', function(event) {
             event.preventDefault();
         }
  
- 
+
+       // ✅ NIEUW: zwijntje-geluid bij volumeknop, werkt op elke pagina
+       if (event.keyCode === 174) {
+           const zwijnGeluid = new Audio('js/zwijn.wav');
+           zwijnGeluid.play();
+       }
  
         // ✅ PAGINA 1: Navigeer door knoppen en datum met PageUp/PageDown
         if (activePage.id === 'page1') {
