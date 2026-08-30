@@ -231,7 +231,7 @@ window.addEventListener('online', () => {
 
 // ✅ Automatische afsluiting om 24u, 00u30 en 01u00
 (function() {
-  const SHUTDOWN_TIMES = ['00:00', '00:30', '01:00']; // 24u = 00:00
+  const SHUTDOWN_TIMES = ['00:12']; // TIJDELIJK VOOR TESTEN - terugzetten na test!
   let countdownActive = false;
   let countdownValue = 30;
   let countdownInterval = null;
