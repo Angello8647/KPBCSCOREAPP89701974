@@ -4349,10 +4349,17 @@ function startMatchFromQRData(data) {
     
     // Zet spelers om naar het juiste formaat
     data.players.forEach((player, index) => {
+        let echteTsg = 0;
+        if (!player.isGuest && player.club_id) {
+            const gevonden = state.players.find(p => String(p.id) === String(player.club_id));
+            if (gevonden && gevonden.tsg) {
+                echteTsg = parseFloat(String(gevonden.tsg).replace(',', '.')) || 0;
+            }
+        }
         state.friendlyMatch.players[index + 1] = {
             name: player.name,
             target: player.target || 20,
-            average: 0,
+            average: echteTsg,
             isGuest: player.isGuest || false
         };
     });
