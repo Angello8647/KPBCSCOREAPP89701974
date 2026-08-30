@@ -4612,3 +4612,79 @@ window.showDamesSpelersKeuze = async function() {
         window.showPage(4);
     };
 };
+
+
+// ==========================================
+// 🔑 QR-CODE VOOR INLOG (activatie zonder e-mail)
+// ==========================================
+window.showQRInlogKeuze = function() {
+    let zoekTimeout = null;
+    const overlay = document.createElement('div');
+    overlay.id = 'qrInlogOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:#1a1a2e;display:flex;flex-direction:column;align-items:center;padding:20px;color:#fff;overflow-y:auto;';
+    overlay.innerHTML = `
+        <h2 style="margin:10px 0;">🔑 QR code voor inlog</h2>
+        <input type="text" id="qrInlogZoek" placeholder="Naam van de speler..." style="padding:12px;border-radius:8px;border:none;width:100%;max-width:400px;font-size:1.1rem;margin-bottom:15px;">
+        <div id="qrInlogResultaten" style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:400px;"></div>
+        <div id="qrInlogWeergave" style="margin-top:20px;text-align:center;"></div>
+        <button onclick="document.getElementById('qrInlogOverlay').remove()" style="margin-top:20px;background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;">Sluiten</button>
+    `;
+    document.body.appendChild(overlay);
+
+    document.getElementById('qrInlogZoek').addEventListener('input', function() {
+        clearTimeout(zoekTimeout);
+        const zoekterm = this.value.trim().toLowerCase();
+        const resultatenEl = document.getElementById('qrInlogResultaten');
+        if (zoekterm.length < 2) {
+            resultatenEl.innerHTML = '';
+            return;
+        }
+        zoekTimeout = setTimeout(() => {
+            const gevonden = (state.players || []).filter(p =>
+                p.name && p.name.toLowerCase().includes(zoekterm)
+            );
+            // ✅ Uniek maken op naam (een speler kan meerdere disciplines/rijen hebben)
+            const uniekeNamen = {};
+            gevonden.forEach(p => { uniekeNamen[p.name] = p; });
+
+            resultatenEl.innerHTML = '';
+            Object.values(uniekeNamen).forEach(p => {
+                const btn = document.createElement('button');
+                btn.textContent = p.name;
+                btn.style.cssText = 'padding:12px;border-radius:8px;border:2px solid #34495e;background:#2c3e50;color:#fff;font-weight:600;cursor:pointer;text-align:left;';
+                btn.onclick = () => genereerQRVoorSpeler(p);
+                resultatenEl.appendChild(btn);
+            });
+        }, 300);
+    });
+
+    async function genereerQRVoorSpeler(speler) {
+        const weergaveEl = document.getElementById('qrInlogWeergave');
+        weergaveEl.innerHTML = '⏳ Bezig...';
+        try {
+            const res = await fetch('https://kpbc.pythonanywhere.com/api/genereer-setup-token', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: speler.user_id})
+            });
+            const data = await res.json();
+            if (data.error) {
+                weergaveEl.innerHTML = `❌ ${data.error}`;
+                return;
+            }
+            weergaveEl.innerHTML = `<p style="font-weight:700;margin-bottom:10px;">${data.naam}</p><div id="qrInlogCode"></div><p style="font-size:0.9rem;color:#94a3b8;margin-top:10px;">Laat de speler deze code scannen met zijn/haar eigen GSM</p>`;
+            new QRCode(document.getElementById('qrInlogCode'), {
+                text: data.setup_url,
+                width: 250,
+                height: 250,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        } catch (e) {
+            weergaveEl.innerHTML = '❌ Er ging iets mis, probeer opnieuw.';
+        }
+    }
+};
+
+
