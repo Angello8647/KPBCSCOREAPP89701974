@@ -209,24 +209,7 @@ window.addEventListener('online', () => {
 });
 
 
-(function() {
-  const htmlEl = document.documentElement;
-  let cursorTimeout;
-  function hideCursor() {
-    htmlEl.classList.remove('show-cursor');
-  }
-  function showCursor() {
-    htmlEl.classList.add('show-cursor');
-    clearTimeout(cursorTimeout);
-    cursorTimeout = setTimeout(hideCursor, 3000);
-  }
-  document.addEventListener('mousemove', showCursor);
-  document.addEventListener('keydown', function(e) {
-    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(e.key)) {
-      hideCursor();
-    }
-  });
-})();
+
 
 
 // ✅ Automatische afsluiting om 24u, 00u30 en 01u00
