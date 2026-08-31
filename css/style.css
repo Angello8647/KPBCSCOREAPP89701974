@@ -4746,9 +4746,8 @@
     transform: scale(1.05);
 }
 
-* {
+html body * {
   cursor: none !important;
 }
-
 
 
