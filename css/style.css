@@ -4746,13 +4746,9 @@
     transform: scale(1.05);
 }
 
-html, html * {
+* {
   cursor: none !important;
 }
-html.show-cursor, html.show-cursor * {
-  cursor: auto !important;
-}
-
 
 
 
