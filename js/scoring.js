@@ -404,6 +404,29 @@ window.changeScore = function(delta) {
     updateCurrentScoreDisplay();
 }
 
+
+
+// ==========================================
+// 💾 TUSSENTIJDSE BACKUP (bij elke beurt), voorkomt volledig gegevensverlies
+// bij een onderbreking (stroomuitval, harde herlaad, enz.) tijdens een match.
+// ==========================================
+function backupMatchSilently(data) {
+    try {
+        localStorage.setItem('kpbc_match_backup', JSON.stringify({...data, savedAt: Date.now()}));
+    } catch (e) {
+        console.error('Backup mislukt:', e);
+    }
+}
+
+function clearMatchBackup() {
+    localStorage.removeItem('kpbc_match_backup');
+}
+
+
+
+
+
+
 window.addScore = function() {
     if (state.matchEnded) return;
 
