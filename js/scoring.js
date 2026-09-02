@@ -556,10 +556,48 @@ window.addScore = function() {
 
 window.smartUndo = function() {
     if (state.currentInput > 0) {
+        // ✅ Nog een niet-bevestigd cijfer: gewoon 1 punt aftrekken
         window.changeScore(-1);
-    } else {
-        if (typeof window.undoLastAdd === 'function') window.undoLastAdd();
+        return;
     }
+
+    // ✅ NIEUW: geen niet-bevestigd cijfer meer — haal gewoon de laatst
+    // gespeelde, bevestigde beurt van de beurtenlijst zelf af, in plaats
+    // van enkel 1 enkele snapshot te gebruiken. Dit maakt MEERDERE stappen
+    // terug mogelijk, zoveel als er beurten gespeeld zijn.
+    if (!state.currentMatch) return;
+
+    // Bepaal wie het laatst speelde: als isFirstPlayerInRound nu FALSE is,
+    // betekent dat speler 1 net speelde (binnen dezelfde ronde). Als TRUE,
+    // speelde speler 2 net (en begon een nieuwe ronde).
+    const laatsteSpelerNum = state.isFirstPlayerInRound ? 2 : 1;
+    const p = laatsteSpelerNum === 1 ? state.player1 : state.player2;
+
+    if (!p.turns || p.turns.length === 0) {
+        alert('Niets meer om terug te draaien voor deze match.');
+        return;
+    }
+
+    // Haal de laatste beurt eraf, en trek de punten af
+    const verwijderdeScore = p.turns.pop();
+    p.score -= verwijderdeScore;
+    p.beurtNummer = Math.max(1, p.beurtNummer - 1);
+    p.highestSeries = p.turns.length > 0 ? Math.max(...p.turns) : 0;
+
+    // Herstel wie er nu weer aan de beurt is (vóór die beurt)
+    state.currentPlayer = laatsteSpelerNum;
+    if (laatsteSpelerNum === 1) {
+        state.isFirstPlayerInRound = true;
+    } else {
+        state.isFirstPlayerInRound = false;
+        state.turnNumber = Math.max(1, state.turnNumber - 1);
+    }
+    state.currentInput = 0;
+    state.matchEnded = false;
+
+    if (typeof updateCurrentScoreDisplay === 'function') updateCurrentScoreDisplay();
+    if (typeof updateSideScoreDisplays === 'function') updateSideScoreDisplays();
+    if (typeof updateScoringPage === 'function') updateScoringPage();
 };
 
 
