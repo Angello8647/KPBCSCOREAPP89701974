@@ -1302,6 +1302,16 @@ document.addEventListener('keydown', function(event) {
         }
  
  
+        // ✅ PAGINA 6: Match Overzicht — simpelweg elke presenter-knop = naar Hoofdmenu
+        if (activePage.id === 'page6') {
+            if (event.key === 'Tab' || event.key === 'PageUp' || event.key === 'ArrowUp' || event.key === 'PageDown' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                const homeBtn = document.querySelector('#page6 .home-btn');
+                if (homeBtn) homeBtn.click();
+            }
+            return;
+        }
+
         // ✅ PAGINA 5: SCORING
         // FIX: `now` was nergens gedefinieerd — toegevoegd als Date.now()
         if (activePage.id === 'page5') {
