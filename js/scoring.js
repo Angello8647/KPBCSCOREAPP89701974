@@ -4493,20 +4493,25 @@ window.startDamesAvond = function() {
 
     function damesKeydownHandler(e) {
         if (!document.getElementById('damesPinOverlay')) return;
+        // ✅ NIEUW: 11 posities (0-9 + "Annuleren" op positie 10)
         if (e.key === 'PageUp' || e.key === 'ArrowUp') {
             e.preventDefault(); e.stopImmediatePropagation();
-            damesDigitIndex = (damesDigitIndex + 1) % 10;
+            damesDigitIndex = (damesDigitIndex + 1) % 11;
             digitIdx = damesDigitIndex;
             renderDamesDigits();
         } else if (e.key === 'PageDown' || e.key === 'ArrowDown') {
             e.preventDefault(); e.stopImmediatePropagation();
-            damesDigitIndex = (damesDigitIndex - 1 + 10) % 10;
+            damesDigitIndex = (damesDigitIndex - 1 + 11) % 11;
             digitIdx = damesDigitIndex;
             renderDamesDigits();
         } else if (e.key === 'Tab') {
             e.preventDefault(); e.stopImmediatePropagation();
             digitIdx = damesDigitIndex;
-            addDamesDigit();
+            if (digitIdx === 10) {
+                document.getElementById('damesPinAnnuleerBtn').click();
+            } else {
+                addDamesDigit();
+            }
         }
     }
     document.addEventListener('keydown', damesKeydownHandler, true);
