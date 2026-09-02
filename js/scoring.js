@@ -4467,7 +4467,7 @@ window.startDamesAvond = function() {
         <div id="damesPinDisplay" style="font-size:2.2rem;letter-spacing:12px;font-weight:900;min-height:1.2em;"></div>
         <div id="damesDigits" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:400px;"></div>
         <div id="damesPinError" style="color:#e74c3c;font-weight:bold;min-height:1.5em;"></div>
-<button onclick="document.getElementById('damesPinOverlay').remove(); document.removeEventListener('keydown', damesKeydownHandler, true);" style="background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;">Annuleren</button>
+<button id="damesPinAnnuleerBtn" onclick="document.getElementById('damesPinOverlay').remove(); document.removeEventListener('keydown', damesKeydownHandler, true);" style="background:#64748b;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;">Annuleren</button>
     `;
     document.body.appendChild(overlay);
 
