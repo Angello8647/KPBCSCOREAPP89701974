@@ -4485,6 +4485,10 @@ window.startDamesAvond = function() {
             container.appendChild(btn);
         }
         document.getElementById('damesPinDisplay').textContent = '●'.repeat(pinInput.length) + '_'.repeat(Math.max(0, DAMES_PIN.length - pinInput.length));
+
+        // ✅ NIEUW: "Annuleren"-knop visueel markeren als hij de focus heeft
+        const annuleerBtn = document.getElementById('damesPinAnnuleerBtn');
+        if (annuleerBtn) annuleerBtn.style.outline = (digitIdx === 10) ? '3px solid #ec4899' : 'none';
     }
 
     function damesKeydownHandler(e) {
