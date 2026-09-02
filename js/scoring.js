@@ -2144,6 +2144,24 @@ window.renderPlayerList = function() {
             window.updatePlayerTargetInfo(currentSearchString);
             
             console.log(`📝 Naam in zoekbalk gezet: ${player}`);
+
+            // ✅ NIEUW: automatisch naar de "Bevestigen"-knop springen, zodat
+            // je met de presenter meteen op Tab kan drukken om te bevestigen.
+            const modal = document.querySelector('.modal-overlay:not(.hidden)');
+            if (modal) {
+                const modeButtons = Array.from(modal.querySelectorAll('#btnModeClub, #btnModeGuest'));
+                const players = Array.from(modal.querySelectorAll('.player-list-item'));
+                const actionButtons = Array.from(modal.querySelectorAll('.modal-actions .modal-btn'));
+                const focusables = [...modeButtons, ...players, ...actionButtons];
+
+                const bevestigIndex = modeButtons.length + players.length; // eerste actieknop
+                window.modalFocusIndex = bevestigIndex;
+
+                focusables.forEach(el => el.classList.remove('focused'));
+                if (focusables[bevestigIndex]) {
+                    focusables[bevestigIndex].classList.add('focused');
+                }
+            }
         };
         
         listContainer.appendChild(item);
