@@ -397,8 +397,28 @@ window.changeScore = function(delta) {
     state.currentInput = newInput;
     
     // ✅ HIER ROEPEN WE DE SPRAAKFUNCTIE AAN ALS ER PUNTEN BIJ KOMEN (+)
-    if (delta > 0) {
-        playScoreSound(state.currentInput);
+    // ✅ UITGESCHAKELD voor vanavond (veiligheid/eenvoud) - Commentaar terug
+    // verwijderen om spraak te activeren
+    // if (delta > 0) {
+    //     playScoreSound(state.currentInput);
+    // }
+
+    // ✅ NIEUW: ook het huidige, nog niet bevestigde cijfer meenemen in de
+    // tussentijdse backup, zodat zelfs een onderbreking MIDDEN in een beurt
+    // zo goed als niets meer kost.
+    if (typeof backupMatchSilently === 'function' && state.currentMatch) {
+        backupMatchSilently({
+            matchId: state.currentMatch.id, player1: state.currentMatch.p1, player2: state.currentMatch.p2,
+            date: state.currentMatch.date, p1Score: state.player1.score, p2Score: state.player2.score,
+            p1Turns: [...state.player1.turns], p2Turns: [...state.player2.turns],
+            p1Target: state.player1.target, p2Target: state.player2.target,
+            p1Highest: state.player1.highestSeries, p2Highest: state.player2.highestSeries,
+            p1BeurtNummer: state.player1.beurtNummer, p2BeurtNummer: state.player2.beurtNummer,
+            currentPlayer: state.currentPlayer, isNabeurt: state.isNabeurt,
+            isFirstPlayerInRound: state.isFirstPlayerInRound, turnNumber: state.turnNumber,
+            firstToTarget: state.firstToTarget, completed: state.matchEnded,
+            currentInput: state.currentInput
+        });
     }
     
     updateCurrentScoreDisplay();
@@ -520,7 +540,11 @@ window.addScore = function() {
             matchId: state.currentMatch.id, player1: state.currentMatch.p1, player2: state.currentMatch.p2,
             date: state.currentMatch.date, p1Score: state.player1.score, p2Score: state.player2.score,
             p1Turns: [...state.player1.turns], p2Turns: [...state.player2.turns],
+            p1Target: state.player1.target, p2Target: state.player2.target,
+            p1Highest: state.player1.highestSeries, p2Highest: state.player2.highestSeries,
+            p1BeurtNummer: state.player1.beurtNummer, p2BeurtNummer: state.player2.beurtNummer,
             currentPlayer: state.currentPlayer, isNabeurt: state.isNabeurt,
+            isFirstPlayerInRound: state.isFirstPlayerInRound, turnNumber: state.turnNumber,
             firstToTarget: state.firstToTarget, completed: state.matchEnded
         });
     }
@@ -598,7 +622,9 @@ function endMatch() {
 
     state.matchEnded = true;
     state.currentMatch.completed = true;
-    
+
+    if (typeof clearMatchBackup === 'function') clearMatchBackup();
+
     // ✅ STUUR SIGNAAL NAAR SERVER DAT MATCH GESPEELD IS
     updateMatchStatusOnServer(state.currentMatch.id, "voltooid");
     
