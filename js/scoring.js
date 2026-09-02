@@ -554,6 +554,18 @@ window.addScore = function() {
     updateScoringPage();
 }
 
+window.smartUndo = function() {
+    if (state.currentInput > 0) {
+        window.changeScore(-1);
+    } else {
+        if (typeof window.undoLastAdd === 'function') window.undoLastAdd();
+    }
+};
+
+
+
+
+
 window.undoLastAdd = function() {
     if (!window.lastStateBeforeAdd) return;
     
@@ -1334,7 +1346,7 @@ document.addEventListener('keydown', function(event) {
             }
             if (event.key === 'b' || event.key === 'B' || event.code === 'KeyB') {
                 event.preventDefault();
-                if (typeof window.undoLastAdd === 'function') window.undoLastAdd();
+                if (typeof window.smartUndo === 'function') window.smartUndo();
                 lastScoreTime = now;
                 return;
             }
