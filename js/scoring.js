@@ -2154,7 +2154,7 @@ window.renderPlayerList = function() {
                 const actionButtons = Array.from(modal.querySelectorAll('.modal-actions .modal-btn'));
                 const focusables = [...modeButtons, ...players, ...actionButtons];
 
-                const bevestigIndex = modeButtons.length + players.length; // eerste actieknop
+                const bevestigIndex = modeButtons.length + players.length + 1; // 2de actieknop = "Bevestigen naam"
                 window.modalFocusIndex = bevestigIndex;
 
                 focusables.forEach(el => el.classList.remove('focused'));
