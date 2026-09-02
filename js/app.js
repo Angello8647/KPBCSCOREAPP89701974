@@ -55,7 +55,65 @@ window.onload = function() {
         const firstBtn = document.querySelector('#page1 .next-btn, #page1 .friendly-btn');
         if (firstBtn) firstBtn.focus();
     }, 100);
+
+    checkVoorOnderbrokenMatch();
 };
+
+function checkVoorOnderbrokenMatch() {
+    try {
+        const backup = JSON.parse(localStorage.getItem('kpbc_match_backup') || 'null');
+        if (!backup) return;
+
+        const bevestiging = confirm(
+            `⚠️ Er is een onderbroken match gevonden:\n` +
+            `${backup.player1} vs ${backup.player2}\n` +
+            `Stand: ${backup.p1Score} - ${backup.p2Score}\n\n` +
+            `Wil je deze match herstellen en verderzetten?`
+        );
+
+        if (bevestiging) {
+            herstelOnderbrokenMatch(backup);
+        } else {
+            localStorage.removeItem('kpbc_match_backup');
+        }
+    } catch (e) {
+        console.error('Fout bij het checken van een onderbroken match:', e);
+    }
+}
+
+function herstelOnderbrokenMatch(backup) {
+    const match = state.matches.find(m => String(m.id).trim() === String(backup.matchId).trim());
+    if (!match) {
+        alert('❌ Kon de bijhorende match niet meer terugvinden. De backup wordt genegeerd.');
+        localStorage.removeItem('kpbc_match_backup');
+        return;
+    }
+
+    state.currentMatch = match;
+    state.player1.score = backup.p1Score;
+    state.player1.turns = backup.p1Turns || [];
+    state.player1.target = backup.p1Target || match.target1;
+    state.player1.highestSeries = backup.p1Highest || 0;
+    state.player1.beurtNummer = backup.p1BeurtNummer || 1;
+    state.player2.score = backup.p2Score;
+    state.player2.turns = backup.p2Turns || [];
+    state.player2.target = backup.p2Target || match.target2;
+    state.player2.highestSeries = backup.p2Highest || 0;
+    state.player2.beurtNummer = backup.p2BeurtNummer || 1;
+    state.currentPlayer = backup.currentPlayer;
+    state.isNabeurt = backup.isNabeurt;
+    state.isFirstPlayerInRound = backup.isFirstPlayerInRound;
+    state.turnNumber = backup.turnNumber || 1;
+    state.firstToTarget = backup.firstToTarget;
+    state.matchEnded = false;
+    state.currentInput = backup.currentInput || 0;
+
+    if (typeof window.showPage === 'function') window.showPage(5);
+    if (typeof updateCurrentScoreDisplay === 'function') updateCurrentScoreDisplay();
+    if (typeof updateScoringPage === 'function') updateScoringPage();
+
+    alert('✅ Match hersteld! Je kan verdergaan waar je gebleven was.');
+}
 
 
 /* =========================================================================
