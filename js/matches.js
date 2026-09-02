@@ -240,6 +240,8 @@ window.selectMatch = function(id) {
         return;
     }
     
+    if (typeof clearMatchBackup === 'function') clearMatchBackup();
+
     // Stel de match in
     state.currentMatch = match;
     state.selectedWhitePlayer = null;
