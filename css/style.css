@@ -4751,3 +4751,14 @@ html body * {
 }
 
 
+/* ✅ PAGINA 4: FOCUS STYLING (navigatie met afstandsbediening) */
+#page4 .ball-option.focused .ball-circle {
+    border: 4px dashed #00d2d3 !important;
+    box-shadow: 0 0 20px rgba(0, 210, 211, 0.6) !important;
+}
+#page4 .start-match-btn.focused,
+#page4 .back-btn.focused,
+#page4 .home-btn.focused {
+    outline: 3px solid #00d2d3 !important;
+    box-shadow: 0 0 20px rgba(0, 210, 211, 0.6) !important;
+}
