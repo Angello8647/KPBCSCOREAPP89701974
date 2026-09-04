@@ -1237,11 +1237,16 @@ document.addEventListener('keydown', function(event) {
                     highlight: (items, idx) => {
                         cards.forEach(c => c.classList.remove('focused'));
                         if (backBtn) backBtn.style.outline = 'none';
+                        const matchListEl = document.getElementById('matchList');
                         if (idx === 0) {
                             if (backBtn) backBtn.style.outline = '3px solid #00d2d3';
+                            // ✅ NIEUW: dim de rest van het scherm (de matchenlijst)
+                            // als de "Terug"-knop geselecteerd is, voor extra nadruk.
+                            if (matchListEl) matchListEl.style.opacity = '0.3';
                         } else {
                             cards[idx - 1].classList.add('focused');
                             cards[idx - 1].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                            if (matchListEl) matchListEl.style.opacity = '1';
                         }
                     },
                     wrap: true
