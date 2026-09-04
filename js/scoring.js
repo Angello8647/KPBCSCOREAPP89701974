@@ -1356,18 +1356,45 @@ document.addEventListener('keydown', function(event) {
 
  
         // ✅ PAGINA 4: Witte bal kiezen + match starten
-        // FIX: gebruikte voorheen een niet-bestaande variabele `key` i.p.v. `event.key`
+        // ✅ NIEUW: volledige navigatie i.p.v. directe PageUp/PageDown-acties.
+        // Tab is context-afhankelijk: start de match als een bal-optie
+        // gemarkeerd is, klikt anders gewoon de gemarkeerde knop (Terug/
+        // Hoofdmenu) — voorkomt dat je per ongeluk de match start terwijl
+        // "Terug" gemarkeerd staat.
         if (activePage.id === 'page4') {
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+            const ballOptions = Array.from(document.querySelectorAll('#page4 .ball-option'));
+            const backBtn = document.querySelector('#page4 .back-btn');
+            const homeBtn = document.querySelector('#page4 .home-btn');
+            const focusables = [...ballOptions, backBtn, homeBtn].filter(el => el);
+
+            if (focusables.length === 0) return;
+
+            if (event.key === 'Tab') {
                 event.preventDefault();
-                if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(1);
-            } else if (event.key === 'PageDown' || event.key === 'ArrowDown') {
-                event.preventDefault();
-                if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(2);
-            } else if (event.key === 'Tab') {
-                event.preventDefault();
-                if (typeof window.startMatch === 'function' && state.selectedWhitePlayer) window.startMatch();
+                const huidigeIdx = window.page4FocusIndex || 0;
+                const gemarkeerd = focusables[huidigeIdx];
+                if (gemarkeerd === backBtn) {
+                    backBtn.click();
+                } else if (gemarkeerd === homeBtn) {
+                    homeBtn.click();
+                } else {
+                    if (typeof window.startMatch === 'function' && state.selectedWhitePlayer) window.startMatch();
+                }
+                return;
             }
+
+            focusables.forEach(el => el.classList.remove('focused'));
+
+            navigateFocusableList(event, focusables, windowIndexRef('page4FocusIndex'), {
+                highlight: (items, idx) => {
+                    items[idx].classList.add('focused');
+                    if (idx === 0 && typeof window.selectWhitePlayer === 'function') {
+                        window.selectWhitePlayer(1);
+                    } else if (idx === 1 && typeof window.selectWhitePlayer === 'function') {
+                        window.selectWhitePlayer(2);
+                    }
+                }
+            });
             return;
         }
  
