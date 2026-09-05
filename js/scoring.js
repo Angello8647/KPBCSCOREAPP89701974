@@ -395,11 +395,10 @@ window.changeScore = function(delta) {
     state.currentInput = newInput;
     
     // ✅ HIER ROEPEN WE DE SPRAAKFUNCTIE AAN ALS ER PUNTEN BIJ KOMEN (+)
-    // ✅ UITGESCHAKELD voor vanavond (veiligheid/eenvoud) - Commentaar terug
-    // verwijderen om spraak te activeren
-    // if (delta > 0) {
-    //     playScoreSound(state.currentInput);
-    // }
+    // ✅ HIER ROEPEN WE DE SPRAAKFUNCTIE AAN ALS ER PUNTEN BIJ KOMEN (+)
+    if (delta > 0) {
+        playScoreSound(state.currentInput);
+    }
 
     // ✅ NIEUW: ook het huidige, nog niet bevestigde cijfer meenemen in de
     // tussentijdse backup, zodat zelfs een onderbreking MIDDEN in een beurt
