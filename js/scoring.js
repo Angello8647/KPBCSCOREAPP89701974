@@ -360,16 +360,14 @@ function updateCurrentScoreDisplay() {
 // ==========================================
 function playScoreSound(score) {
     if ('speechSynthesis' in window) {
-        // Annuleer lopende spraak om overlapping te voorkomen bij snel klikken
         window.speechSynthesis.cancel();
         
         const utterance = new SpeechSynthesisUtterance(String(score));
-        utterance.lang = 'nl-NL'; // Spreek uit in het Nederlands
-        utterance.rate = 1.1;     // Iets sneller dan standaard
-        utterance.pitch = 1.0;    // Normale toonhoogte
+        utterance.lang = 'nl-BE';
+        utterance.rate = 1.1;
+        utterance.pitch = 1.0;
         
-        // ✅ UITGESCHAKELD VOOR TESTEN - Commentaar terug verwijderen om spraak te activeren
-        // window.speechSynthesis.speak(utterance);
+        window.speechSynthesis.speak(utterance);
     }
 }
 
