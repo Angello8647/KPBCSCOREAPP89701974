@@ -355,20 +355,24 @@ function updateCurrentScoreDisplay() {
     document.getElementById('p2TargetAvg').textContent = fmtTarget(state.player2.fixedTSG || '−');
 }
 
+let geluidGemute = false;
+
+
 // ==========================================
 // 🗣️ SPRAAKFEEDBACK VOOR PUNTEN
 // ==========================================
 function playScoreSound(score) {
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        
-        const utterance = new SpeechSynthesisUtterance(String(score));
-        utterance.lang = 'nl-BE';
-        utterance.rate = 1.1;
-        utterance.pitch = 1.0;
-        
-        window.speechSynthesis.speak(utterance);
-    }
+    if (geluidGemute) return;
+    if (score < 1 || score > 500) return;
+
+    const batchNum = Math.ceil(score / 100);
+    const batchStart = String((batchNum - 1) * 100 + 1).padStart(3, '0');
+    const batchEnd = String(batchNum * 100).padStart(3, '0');
+    const bestandsnaam = String(score).padStart(3, '0') + '.mp3';
+    const pad = `js/batch_${batchNum}_${batchStart}-${batchEnd}/${bestandsnaam}`;
+
+    const audio = new Audio(pad);
+    audio.play().catch(e => console.error('Geluid afspelen mislukt:', e));
 }
 
 // ==========================================
@@ -1024,6 +1028,18 @@ function initPresenterControls() {
 document.addEventListener('keydown', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
+
+        // ✅ ZWIJNTJE + MUTE: werkt op ELKE pagina, ongeacht waar je bent
+        if (event.key === 'p' || event.key === 'P' || event.code === 'KeyP') {
+            if (!geluidGemute) {
+                const zwijnGeluid = new Audio('js/zwijn.wav');
+                zwijnGeluid.play();
+            }
+        }
+        if (event.key === 'm' || event.key === 'M' || event.code === 'KeyM') {
+            geluidGemute = !geluidGemute;
+            console.log(geluidGemute ? '🔇 Geluid uitgeschakeld' : '🔊 Geluid ingeschakeld');
+        }
 
         // ✅ VEILIGHEIDSFIX: enkel op pagina 5 (scoringsscherm) blokkeren we
         // Escape/F5 — daar mag een lange druk NOOIT een browserherlaad
