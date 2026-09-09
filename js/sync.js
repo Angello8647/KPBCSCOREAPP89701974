@@ -131,6 +131,15 @@ function saveToPendingQueue(payload) {
         localStorage.setItem('pendingMatches', JSON.stringify(pending));
         console.log(`💾 Match ${payload.match_id} toegevoegd aan wachtrij (${pending.length} totaal)`);
     }
+
+    // ✅ NIEUW: ALTIJD ook naar de lokale Pi-dienst sturen — die overleeft,
+    // in tegenstelling tot localStorage, wél een volledige Pi-herstart
+    // (incognito wist localStorage, maar niet het bestand op de SD-kaart).
+    fetch('http://localhost:5000/pending-match', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    }).catch(e => console.error('Lokale Pi-wachtrij-backup mislukt (normaal als het programmaatje nog niet actief is):', e));
 }
 
 /**
