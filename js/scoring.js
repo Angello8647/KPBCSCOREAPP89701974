@@ -432,11 +432,25 @@ window.changeScore = function(delta) {
 // bij een onderbreking (stroomuitval, harde herlaad, enz.) tijdens een match.
 // ==========================================
 function backupMatchSilently(data) {
+    const dataMetTijd = {...data, savedAt: Date.now()};
+
     try {
-        localStorage.setItem('kpbc_match_backup', JSON.stringify({...data, savedAt: Date.now()}));
+        localStorage.setItem('kpbc_match_backup', JSON.stringify(dataMetTijd));
     } catch (e) {
-        console.error('Backup mislukt:', e);
+        console.error('localStorage backup mislukt:', e);
     }
+
+    // ✅ NIEUW: ALTIJD ook naar het lokale, Pi-eigen programmaatje sturen
+    // (werkt via localhost, dus zonder internet) — dat schrijft de data naar
+    // een echt bestand op de SD-kaart, wat een volledige Pi-herstart WEL
+    // overleeft (in tegenstelling tot localStorage, dat gewist wordt door de
+    // incognito-modus). We steunen hier NIET op navigator.onLine (onbetrouwbaar),
+    // maar sturen dit gewoon telkens mee — het is lokaal en dus snel/goedkoop.
+    fetch('http://localhost:5000/backup', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(dataMetTijd)
+    }).catch(e => console.error('Lokale Pi-backup mislukt (normaal als het programmaatje nog niet actief is):', e));
 }
 
 function clearMatchBackup() {
