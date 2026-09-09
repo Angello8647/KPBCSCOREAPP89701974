@@ -149,13 +149,35 @@ function removeFromPendingQueue(matchId) {
     let pending = JSON.parse(localStorage.getItem('pendingMatches') || '[]');
     pending = pending.filter(m => m.match_id !== matchId);
     localStorage.setItem('pendingMatches', JSON.stringify(pending));
+
+    // ✅ NIEUW: ook uit de lokale Pi-wachtrij verwijderen
+    fetch(`http://localhost:5000/pending-match/${matchId}`, { method: 'DELETE' })
+        .catch(e => console.error('Lokaal verwijderen uit Pi-wachtrij mislukt:', e));
 }
 
 /**
  * Probeert alle opgeslagen matches alsnog te verzenden
  */
 window.syncPendingMatches = async function() {
-    const pending = JSON.parse(localStorage.getItem('pendingMatches') || '[]');
+    let pending = JSON.parse(localStorage.getItem('pendingMatches') || '[]');
+
+    // ✅ NIEUW: ook checken of er matchen in de LOKALE Pi-wachtrij staan
+    // (bv. na een Pi-herstart, waarbij localStorage gewist werd maar de
+    // lokale, SD-kaart-gebaseerde wachtrij dit wel overleefde).
+    try {
+        const lokaalResponse = await fetch('http://localhost:5000/pending-matches', { method: 'GET' });
+        if (lokaalResponse.ok) {
+            const lokalePending = await lokaalResponse.json();
+            for (const lokaleMatch of lokalePending) {
+                if (!pending.some(m => m.match_id === lokaleMatch.match_id)) {
+                    pending.push(lokaleMatch);
+                }
+            }
+        }
+    } catch (e) {
+        // Lokaal programmaatje niet bereikbaar — geen probleem, gewoon verdergaan met wat we al hadden
+    }
+
     if (pending.length === 0) return;
 
     console.log(`🔄 Bezig met het synchroniseren van ${pending.length} achterstallige match(es)...`);
