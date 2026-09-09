@@ -57,7 +57,8 @@ window.onload = function() {
     }, 100);
 
     checkVoorOnderbrokenMatch();
-};
+    if (typeof window.syncPendingMatches === 'function') window.syncPendingMatches();
+};;
 
 async function checkVoorOnderbrokenMatch() {
     try {
