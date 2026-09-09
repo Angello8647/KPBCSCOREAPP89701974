@@ -59,9 +59,25 @@ window.onload = function() {
     checkVoorOnderbrokenMatch();
 };
 
-function checkVoorOnderbrokenMatch() {
+async function checkVoorOnderbrokenMatch() {
     try {
-        const backup = JSON.parse(localStorage.getItem('kpbc_match_backup') || 'null');
+        let backup = JSON.parse(localStorage.getItem('kpbc_match_backup') || 'null');
+
+        // ✅ NIEUW: ook checken of er een NIEUWERE back-up op de Pi zelf ligt
+        // (bv. als localStorage gewist werd door een herstart, maar de lokale
+        // back-up dat wél overleefde).
+        try {
+            const lokaalResponse = await fetch('http://localhost:5000/backup', { method: 'GET' });
+            if (lokaalResponse.ok) {
+                const lokaleBackup = await lokaalResponse.json();
+                if (lokaleBackup && (!backup || lokaleBackup.savedAt > backup.savedAt)) {
+                    backup = lokaleBackup;
+                }
+            }
+        } catch (e) {
+            // Lokaal programmaatje niet bereikbaar — geen probleem, gewoon verdergaan met wat we al hadden
+        }
+
         if (!backup) return;
 
         const bevestiging = confirm(
