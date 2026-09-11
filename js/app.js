@@ -62,25 +62,39 @@ window.onload = function() {
 
 async function checkVoorOnderbrokenMatch() {
     try {
-        let backup = JSON.parse(localStorage.getItem('kpbc_match_backup') || 'null');
+        const localStorageBackup = JSON.parse(localStorage.getItem('kpbc_match_backup') || 'null');
 
-        // ✅ NIEUW: ook checken of er een NIEUWERE back-up op de Pi zelf ligt
-        // (bv. als localStorage gewist werd door een herstart, maar de lokale
-        // back-up dat wél overleefde).
+        // ✅ NIEUW: haal ALLE nog openstaande back-ups op de Pi op (meerdere
+        // matches kunnen tegelijk onderbroken zijn), niet enkel de laatste.
+        let alleBackups = [];
         try {
-            const lokaalResponse = await fetch('http://localhost:5000/backup', { method: 'GET' });
+            const lokaalResponse = await fetch('http://localhost:5000/backups', { method: 'GET' });
             if (lokaalResponse.ok) {
-                const lokaleBackup = await lokaalResponse.json();
-                if (lokaleBackup && (!backup || lokaleBackup.savedAt > backup.savedAt)) {
-                    backup = lokaleBackup;
-                }
+                alleBackups = await lokaalResponse.json();
             }
         } catch (e) {
-            // Lokaal programmaatje niet bereikbaar — geen probleem, gewoon verdergaan met wat we al hadden
+            // Lokaal programmaatje niet bereikbaar — geen probleem
         }
 
-        if (!backup) return;
+        // Voeg de localStorage-versie toe als die niet al in de lijst zit
+        if (localStorageBackup && !alleBackups.some(b => b.matchId === localStorageBackup.matchId)) {
+            alleBackups.push(localStorageBackup);
+        }
 
+        if (alleBackups.length === 0) return;
+
+        // ✅ Bied voor ELKE gevonden, onderbroken match een herstel aan, één voor één
+        for (const backup of alleBackups) {
+            await behandelEenBackup(backup);
+        }
+        return;
+    } catch (e) {
+        console.error('Fout bij het checken van onderbroken matches:', e);
+    }
+}
+
+async function behandelEenBackup(backup) {
+    try {
         const bevestiging = confirm(
             `⚠️ Er is een onderbroken match gevonden:\n` +
             `${backup.player1} vs ${backup.player2}\n` +
@@ -91,7 +105,11 @@ async function checkVoorOnderbrokenMatch() {
         if (bevestiging) {
             herstelOnderbrokenMatch(backup);
         } else {
+            // ✅ FIX: bij annuleren ook de Pi-eigen back-up wissen, niet enkel
+            // localStorage — anders blijft deze melding steeds terugkomen.
             localStorage.removeItem('kpbc_match_backup');
+            fetch(`http://localhost:5000/backup/${backup.matchId}`, { method: 'DELETE' })
+                .catch(e => console.error('Kon Pi-backup niet verwijderen:', e));
         }
     } catch (e) {
         console.error('Fout bij het checken van een onderbroken match:', e);
@@ -101,7 +119,14 @@ async function checkVoorOnderbrokenMatch() {
 function herstelOnderbrokenMatch(backup) {
     const match = state.matches.find(m => String(m.id).trim() === String(backup.matchId).trim());
     if (!match) {
-        alert('❌ Kon de bijhorende match niet meer terugvinden. De backup wordt genegeerd.');
+        // ✅ FIX: dit is precies het kwetsbare pad dat gisteren tot
+        // dataverlies leidde — de match kon (tijdelijk?) niet in state.matches
+        // gevonden worden, en toen werd de HELE backup stilzwijgend gewist.
+        // We wissen de backup nu NIET meer automatisch hier — enkel
+        // localStorage (dat toch al kwetsbaar is), de Pi-eigen, persistente
+        // versie blijft bewust bestaan zodat een volgende poging (bv. na een
+        // verse data-ophaling van de server) haar nog kan terugvinden.
+        alert('❌ Kon de bijhorende match niet meteen terugvinden. Probeer het later opnieuw — de back-up blijft bewaard.');
         localStorage.removeItem('kpbc_match_backup');
         return;
     }
