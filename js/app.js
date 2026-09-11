@@ -95,6 +95,18 @@ async function checkVoorOnderbrokenMatch() {
 
 async function behandelEenBackup(backup) {
     try {
+        // ✅ NIEUW: als deze backup al AFGEWERKT was (completed:true), toon
+        // dan NOOIT het "wil je verderspelen?"-scherm — de match is immers al
+        // gedaan, enkel de server-verzending mislukte. Probeer in plaats
+        // daarvan stil, op de achtergrond, opnieuw te synchroniseren.
+        if (backup.completed) {
+            console.log(`ℹ️ Backup voor afgewerkte match ${backup.matchId} gevonden — stille hersynchronisatie proberen.`);
+            if (typeof window.syncPendingMatches === 'function') {
+                await window.syncPendingMatches();
+            }
+            return;
+        }
+
         const bevestiging = confirm(
             `⚠️ Er is een onderbroken match gevonden:\n` +
             `${backup.player1} vs ${backup.player2}\n` +
