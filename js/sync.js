@@ -64,7 +64,12 @@ window.syncMatchToAPI = async function(match) {
     // gelijk → winnerClubId blijft null (gelijkspel)
     
     // 2. Genereer unieke match_id (formaat: speler1_speler2_datum)
-    const matchId = match.match_id || `${match.p1_club_id}_${match.p2_club_id}_${match.date}`;
+    // ✅ FIX: match-objecten hebben soms enkel '.id' (niet '.match_id'),
+    // afhankelijk van welk pad ze doorliepen — we checken nu beide, vóór we
+    // terugvallen op het minder betrouwbare, alternatieve formaat. Dit was
+    // de kern van de "voltooid maar toont Bezig"-problemen die we vandaag
+    // meermaals tegenkwamen.
+    const matchId = match.id || match.match_id || `${match.p1_club_id}_${match.p2_club_id}_${match.date}`;
 
     // 3. Bouw de payload
     const payload = {
