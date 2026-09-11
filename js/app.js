@@ -64,8 +64,6 @@ async function checkVoorOnderbrokenMatch() {
     try {
         const localStorageBackup = JSON.parse(localStorage.getItem('kpbc_match_backup') || 'null');
 
-        // ✅ NIEUW: haal ALLE nog openstaande back-ups op de Pi op (meerdere
-        // matches kunnen tegelijk onderbroken zijn), niet enkel de laatste.
         let alleBackups = [];
         try {
             const lokaalResponse = await fetch('http://localhost:5000/backups', { method: 'GET' });
@@ -73,17 +71,15 @@ async function checkVoorOnderbrokenMatch() {
                 alleBackups = await lokaalResponse.json();
             }
         } catch (e) {
-            // Lokaal programmaatje niet bereikbaar — geen probleem
+            // Lokaal programmaatje niet bereikbaar
         }
 
-        // Voeg de localStorage-versie toe als die niet al in de lijst zit
         if (localStorageBackup && !alleBackups.some(b => b.matchId === localStorageBackup.matchId)) {
             alleBackups.push(localStorageBackup);
         }
 
         if (alleBackups.length === 0) return;
 
-        // ✅ Bied voor ELKE gevonden, onderbroken match een herstel aan, één voor één
         for (const backup of alleBackups) {
             await behandelEenBackup(backup);
         }
@@ -95,36 +91,23 @@ async function checkVoorOnderbrokenMatch() {
 
 async function behandelEenBackup(backup) {
     try {
-        // ✅ NIEUW: als deze backup al AFGEWERKT was (completed:true), toon
-        // dan NOOIT het "wil je verderspelen?"-scherm — de match is immers al
-        // gedaan, enkel de server-verzending mislukte. Probeer in plaats
-        // daarvan stil, op de achtergrond, opnieuw te synchroniseren.
+        // ✅ NIEUW: GEEN dialoogvenster meer, in geen enkel geval — de scheids
+        // bedient dit scherm via de presenter, waar per-ongeluk-annuleren te
+        // riskant is. Alles gebeurt nu automatisch, stil, op de achtergrond.
         if (backup.completed) {
+            // Match was al afgelopen, enkel de verzending faalde — stil hersynchroniseren
             console.log(`ℹ️ Backup voor afgewerkte match ${backup.matchId} gevonden — stille hersynchronisatie proberen.`);
             if (typeof window.syncPendingMatches === 'function') {
                 await window.syncPendingMatches();
             }
-            return;
-        }
-
-        const bevestiging = confirm(
-            `⚠️ Er is een onderbroken match gevonden:\n` +
-            `${backup.player1} vs ${backup.player2}\n` +
-            `Stand: ${backup.p1Score} - ${backup.p2Score}\n\n` +
-            `Wil je deze match herstellen en verderzetten?`
-        );
-
-        if (bevestiging) {
-            herstelOnderbrokenMatch(backup);
         } else {
-            // ✅ FIX: bij annuleren ook de Pi-eigen back-up wissen, niet enkel
-            // localStorage — anders blijft deze melding steeds terugkomen.
-            localStorage.removeItem('kpbc_match_backup');
-            fetch(`http://localhost:5000/backup/${backup.matchId}`, { method: 'DELETE' })
-                .catch(e => console.error('Kon Pi-backup niet verwijderen:', e));
+            // Match was nog bezig — automatisch herstellen en rechtstreeks
+            // naar het scoringsscherm, klaar om verder te spelen.
+            console.log(`ℹ️ Onderbroken, nog-lopende match ${backup.matchId} gevonden — automatisch herstellen.`);
+            herstelOnderbrokenMatch(backup);
         }
     } catch (e) {
-        console.error('Fout bij het checken van een onderbroken match:', e);
+        console.error('Fout bij het verwerken van een backup:', e);
     }
 }
 
@@ -170,8 +153,7 @@ function herstelOnderbrokenMatch(backup) {
     if (typeof window.showPage === 'function') window.showPage(5);
     if (typeof updateCurrentScoreDisplay === 'function') updateCurrentScoreDisplay();
     if (typeof updateScoringPage === 'function') updateScoringPage();
-
-    alert('✅ Match hersteld! Je kan verdergaan waar je gebleven was.');
+    // ✅ Geen alert meer — het herstel gebeurt nu volledig stil/automatisch
 }
 
 
