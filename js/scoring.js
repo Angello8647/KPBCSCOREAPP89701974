@@ -453,10 +453,16 @@ function backupMatchSilently(data) {
     }).catch(e => console.error('Lokale Pi-backup mislukt (normaal als het programmaatje nog niet actief is):', e));
 }
 
-function clearMatchBackup() {
+function clearMatchBackup(matchId) {
     localStorage.removeItem('kpbc_match_backup');
+    // ✅ NIEUW: ook de Pi-eigen, matchId-specifieke back-up wissen — maar
+    // ENKEL wanneer dit aangeroepen wordt NA een bevestigd succesvolle
+    // server-sync (zie de aangepaste aanroep in endMatch()/syncMatchToAPI()).
+    if (matchId) {
+        fetch(`http://localhost:5000/backup/${matchId}`, { method: 'DELETE' })
+            .catch(e => console.error('Kon Pi-backup niet verwijderen:', e));
+    }
 }
-
 
 
 
@@ -688,7 +694,9 @@ function endMatch() {
     state.matchEnded = true;
     state.currentMatch.completed = true;
 
-    if (typeof clearMatchBackup === 'function') clearMatchBackup();
+    // ✅ FIX: de backup NIET meer hier wissen — dat gebeurt nu pas ná een
+    // BEVESTIGD succesvolle server-sync (zie syncMatchToAPI()), zodat een
+    // mislukte verzending de backup niet langer verloren laat gaan.
 
     // ✅ STUUR SIGNAAL NAAR SERVER DAT MATCH GESPEELD IS
     updateMatchStatusOnServer(state.currentMatch.id, "voltooid");
