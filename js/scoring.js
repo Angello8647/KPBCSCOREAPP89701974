@@ -694,6 +694,24 @@ function endMatch() {
     state.matchEnded = true;
     state.currentMatch.completed = true;
 
+    // ✅ NIEUW: de actieve-match-backup bijwerken met completed:true, zodat
+    // een latere herstel-check (bv. na een Pi-herstart, als de sync hierna
+    // toch zou falen) weet dat dit een AFGEWERKTE match is, geen nog-lopende.
+    if (typeof backupMatchSilently === 'function' && state.currentMatch) {
+        backupMatchSilently({
+            matchId: state.currentMatch.id, player1: state.currentMatch.p1, player2: state.currentMatch.p2,
+            date: state.currentMatch.date, p1Score: state.player1.score, p2Score: state.player2.score,
+            p1Turns: [...state.player1.turns], p2Turns: [...state.player2.turns],
+            p1Target: state.player1.target, p2Target: state.player2.target,
+            p1Highest: state.player1.highestSeries, p2Highest: state.player2.highestSeries,
+            p1BeurtNummer: state.player1.beurtNummer, p2BeurtNummer: state.player2.beurtNummer,
+            currentPlayer: state.currentPlayer, isNabeurt: state.isNabeurt,
+            isFirstPlayerInRound: state.isFirstPlayerInRound, turnNumber: state.turnNumber,
+            firstToTarget: state.firstToTarget, completed: true,
+            currentInput: state.currentInput
+        });
+    }
+
     // ✅ FIX: de backup NIET meer hier wissen — dat gebeurt nu pas ná een
     // BEVESTIGD succesvolle server-sync (zie syncMatchToAPI()), zodat een
     // mislukte verzending de backup niet langer verloren laat gaan.
