@@ -209,6 +209,13 @@ window.renderCompetitionLeaderboard = function() {
 
     // 3. Sorteer (Tie-breakers: 1. Comp Punten, 2. Coëfficiënt, 3. Hoogste Reeks)
     leaderboard.sort((a, b) => {
+        // ✅ FIX: spelers die nog geen enkele match speelden (matchesPlayed=0)
+        // altijd onderaan zetten, ongeacht hun (dan toch altijd 0) MPTN —
+        // anders kon iemand op plaats 1 staan zonder ooit gespeeld te hebben.
+        const aHeeftGespeeld = a.matchesPlayed > 0;
+        const bHeeftGespeeld = b.matchesPlayed > 0;
+        if (aHeeftGespeeld !== bHeeftGespeeld) return bHeeftGespeeld ? 1 : -1;
+
         if (b.totalCompPoints !== a.totalCompPoints) return b.totalCompPoints - a.totalCompPoints;
         if (b.coefficient !== a.coefficient) return b.coefficient - a.coefficient;
         return b.highestSeries - a.highestSeries;
