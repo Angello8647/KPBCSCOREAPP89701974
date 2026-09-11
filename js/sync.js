@@ -110,6 +110,9 @@ window.syncMatchToAPI = async function(match) {
         if (response.ok) {
             console.log("✅ Match succesvol gesynchroniseerd met de server!");
             removeFromPendingQueue(matchId);
+            // ✅ NIEUW: pas HIER, na bevestigd succes, de backup wissen —
+            // niet meteen bij het beëindigen van de match zelf.
+            if (typeof clearMatchBackup === 'function') clearMatchBackup(matchId);
             return true;
         } else {
             throw new Error(`Server fout: ${response.status} ${response.statusText}`);
@@ -195,6 +198,8 @@ window.syncPendingMatches = async function() {
             if (response.ok) {
                 console.log(`✅ Achterstallige match ${payload.match_id} succesvol verstuurd!`);
                 removeFromPendingQueue(payload.match_id);
+                // ✅ NIEUW: ook hier de backup pas wissen na bevestigd succes
+                if (typeof clearMatchBackup === 'function') clearMatchBackup(payload.match_id);
             }
         } catch (error) {
             console.warn(`⚠️ Kon match ${payload.match_id} nog niet versturen.`);
