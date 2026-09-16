@@ -1318,6 +1318,11 @@ document.addEventListener('keydown', function(event) {
                         if (idx === cards.length) {
                             if (backBtn) backBtn.style.outline = '3px solid #00d2d3';
                             if (matchListEl) matchListEl.style.opacity = '0.3';
+                            // ✅ NIEUW: expliciet naar de "Terug"-knop scrollen,
+                            // aangezien die zich boven de matchenlijst bevindt en
+                            // anders niet automatisch in beeld komt na het
+                            // scrollen door een lange lijst matchen.
+                            if (backBtn) backBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                         } else {
                             cards[idx].classList.add('focused');
                             cards[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
