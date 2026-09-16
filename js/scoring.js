@@ -1294,7 +1294,12 @@ document.addEventListener('keydown', function(event) {
         if (activePage.id === 'page2' || activePage.id === 'page11') {
             const cards = Array.from(document.querySelectorAll('#matchList .match-card'));
             const backBtn = document.querySelector(`#${activePage.id} .back-btn`);
-            const focusables = backBtn ? [backBtn, ...cards] : cards;
+            // ✅ FIX: kaarten EERST, "Terug" LAATST — dit moet overeenkomen met de
+            // index-0-reset die matches.js doet bij het laden van de lijst
+            // (window.matchListFocusIndex = 0, wat toen "eerste kaart" betekende).
+            // Dankzij wrap:true blijft "Terug" alsnog bereikbaar via PageUp vanaf de
+            // eerste kaart (wrapt naar het einde), zonder de aanvangspositie te breken.
+            const focusables = backBtn ? [...cards, backBtn] : cards;
         
             if (focusables.length > 0) {
                 window.matchListFocusIndex = Math.max(0, Math.min(window.matchListFocusIndex, focusables.length - 1));
@@ -1303,14 +1308,19 @@ document.addEventListener('keydown', function(event) {
                         cards.forEach(c => c.classList.remove('focused'));
                         if (backBtn) backBtn.style.outline = 'none';
                         const matchListEl = document.getElementById('matchList');
-                        if (idx === 0) {
+                        // ✅ FIX: kaarten staan nu EERST in focusables, "Terug"
+                        // LAATST — dit stemt overeen met hoe matchListFocusIndex=0
+                        // elders (highlightMatch, bij het laden) al "eerste kaart"
+                        // betekende. Voorheen stond backBtn vooraan, waardoor
+                        // index 0 "Terug" betekende i.p.v. de eerste match —
+                        // spelers dachten op de eerste match te staan, maar
+                        // Tab stuurde hen onverwacht naar het hoofdmenu.
+                        if (idx === cards.length) {
                             if (backBtn) backBtn.style.outline = '3px solid #00d2d3';
-                            // ✅ NIEUW: dim de rest van het scherm (de matchenlijst)
-                            // als de "Terug"-knop geselecteerd is, voor extra nadruk.
                             if (matchListEl) matchListEl.style.opacity = '0.3';
                         } else {
-                            cards[idx - 1].classList.add('focused');
-                            cards[idx - 1].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                            cards[idx].classList.add('focused');
+                            cards[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                             if (matchListEl) matchListEl.style.opacity = '1';
                         }
                     },
