@@ -1398,6 +1398,14 @@ document.addEventListener('keydown', function(event) {
         // enkel de timer (de echte actie gebeurt in keyup, zie onderaan: kort = vorige,
         // lang ingedrukt houden = terug naar hoofdmenu).
         if (activePage.id === 'page20') {
+            // ✅ NIEUW: de presenter stuurt bij een LANGE druk op omhoog soms
+            // F5, soms Escape (alterneert willekeurig) — beide moeten hier
+            // rechtstreeks naar het hoofdmenu leiden.
+            if (event.key === 'F5' || event.key === 'Escape') {
+                event.preventDefault();
+                if (typeof window.showPage === 'function') window.showPage(1);
+                return;
+            }
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 compPageUpStartTime = Date.now();
