@@ -510,11 +510,23 @@ window.addScore = function() {
     }
 
     const isKoningMatch = state.currentMatch.cat === 'heren' || state.currentMatch.cat === 'dames';
+    // ✅ NIEUW: tornooi-matchen eindigen ONMIDDELLIJK, zonder nabeurt, zodra
+    // wie dan ook (wit of geel) het doel bereikt — anders dan de gewone
+    // competitie, die WEL een nabeurt geeft aan speler 2 wanneer speler
+    // 1/wit als eerste zijn doel bereikt.
+    const isTornooiMatch = state.currentMatch.discipline === 'Tornooi' && !isKoningMatch;
+
     if (isKoningMatch) {
         // ✅ NIEUW: tijdens een verlenging (bij een gelijke stand) is het
         // vereiste aantal beurten 5 i.p.v. de normale 15.
         const turnsNeeded = (state.koningExtensionRound && state.koningExtensionRound > 0) ? 5 : 15;
         if (state.player1.turns.length >= turnsNeeded && state.player2.turns.length >= turnsNeeded) {
+            endMatch();
+            return;
+        }
+    } else if (isTornooiMatch) {
+        const reached = p.score >= t;
+        if (reached) {
             endMatch();
             return;
         }
@@ -538,6 +550,12 @@ window.addScore = function() {
                 return;
             }
         }
+
+        if (state.isNabeurt) {
+            endMatch();
+            return;
+        }
+    }
 
         if (state.isNabeurt) {
             endMatch();
