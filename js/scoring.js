@@ -551,11 +551,7 @@ window.addScore = function() {
             }
         }
 
-        if (state.isNabeurt) {
-            endMatch();
-            return;
-        }
-    }
+
 
         if (state.isNabeurt) {
             endMatch();
