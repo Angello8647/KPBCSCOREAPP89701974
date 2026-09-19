@@ -36,13 +36,23 @@ function setAdminPassword(newPassword) {
 }
 
 function saveStateToStorage() {
-    const toSave = {
-        players: state.players,
-        matches: state.matches,
-        downloadedMatches: state.downloadedMatches,
-        adminPassword: localStorage.getItem('biljartAdminPassword') || DEFAULT_PASSWORD
-    };
-    localStorage.setItem('billiardTournamentState', JSON.stringify(toSave));
+    try {
+        const toSave = {
+            players: state.players,
+            matches: state.matches,
+            downloadedMatches: state.downloadedMatches,
+            adminPassword: localStorage.getItem('biljartAdminPassword') || DEFAULT_PASSWORD
+        };
+        localStorage.setItem('billiardTournamentState', JSON.stringify(toSave));
+    } catch (e) {
+        // ✅ NIEUW: een falende localStorage-opslag (bv. vol, of quota
+        // overschreden) mag NOOIT de rest van endMatch() blokkeren — dat
+        // veroorzaakte een reëel dataverlies-scenario, waarbij de match wel
+        // als 'completed' gemarkeerd werd, maar NOOIT de kans kreeg om
+        // effectief naar de server verstuurd te worden (of, bij falen, in
+        // de wachtrij te belanden).
+        console.error('⚠️ saveStateToStorage mislukt (waarschijnlijk localStorage vol), maar dit blokkeert de rest van de match-afhandeling niet:', e);
+    }
 }
 
 function loadStateFromStorage() {
