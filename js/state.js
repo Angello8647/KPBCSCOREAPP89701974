@@ -74,5 +74,9 @@ function loadStateFromStorage() {
 }
 
 function savePlayersToStorage() {
-    localStorage.setItem('biljartPlayers', JSON.stringify(state.players));
+    try {
+        localStorage.setItem('biljartPlayers', JSON.stringify(state.players));
+    } catch (e) {
+        console.error('⚠️ savePlayersToStorage mislukt (waarschijnlijk localStorage vol):', e);
+    }
 }
