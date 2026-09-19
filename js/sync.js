@@ -115,9 +115,13 @@ window.syncMatchToAPI = async function(match) {
         if (response.ok) {
             console.log("✅ Match succesvol gesynchroniseerd met de server!");
             removeFromPendingQueue(matchId);
-            // ✅ NIEUW: pas HIER, na bevestigd succes, de backup wissen —
-            // niet meteen bij het beëindigen van de match zelf.
-            if (typeof clearMatchBackup === 'function') clearMatchBackup(matchId);
+            // ✅ FIX: voor het opruimen van de LOKALE Pi-backup gebruiken we
+            // ALTIJD match.id rechtstreeks (nooit de payload-matchId met zijn
+            // fallback-logica) — dat is namelijk exact wat backupMatchSilently()
+            // gebruikte tijdens het scoren zelf, dus enkel dát ID bestaat
+            // effectief op de Pi. Een mismatch hier liet backups voor altijd
+            // hangen, ook al lukte de sync zelf perfect.
+            if (typeof clearMatchBackup === 'function') clearMatchBackup(match.id);
             return true;
         } else {
             throw new Error(`Server fout: ${response.status} ${response.statusText}`);
