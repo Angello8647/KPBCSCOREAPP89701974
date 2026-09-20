@@ -251,6 +251,8 @@ function updateScoringPage() {
     if (typeof updateSideScoreDisplays === 'function') updateSideScoreDisplays();
     updateCurrentScoreDisplay();
     updateHeaderButtons();
+    // ✅ NIEUW: alternatief scorebord (pagina 50) live meebewegen, indien actief
+    if (typeof window.updateAltScoreboard === 'function') window.updateAltScoreboard();
     
     const ub = document.getElementById('undoBtn');
     if (ub) ub.disabled = !window.lastStateBeforeAdd;
@@ -423,6 +425,9 @@ window.changeScore = function(delta) {
     }
     
     updateCurrentScoreDisplay();
+    // ✅ NIEUW: het huidige, nog niet bevestigde cijfer + "nog te maken"
+    // live bijwerken op het alternatieve scorebord (pagina 50).
+    if (typeof window.updateAltCurrentInputDisplay === 'function') window.updateAltCurrentInputDisplay();
 }
 
 
@@ -1083,35 +1088,47 @@ document.addEventListener('keydown', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
 
-        // ✅ ZWIJNTJE + MUTE: werkt op ELKE pagina, ongeacht waar je bent
-        if (event.key === 'p' || event.key === 'P' || event.code === 'KeyP') {
-            if (!geluidGemute) {
-                const zwijnGeluid = new Audio('js/zwijn.wav');
-                zwijnGeluid.play();
-            }
-        }
-        if (event.key === 'm' || event.key === 'M' || event.code === 'KeyM') {
-            geluidGemute = !geluidGemute;
-            console.log(geluidGemute ? '🔇 Geluid uitgeschakeld' : '🔊 Geluid ingeschakeld');
-        }
-
         // ✅ VEILIGHEIDSFIX: enkel op pagina 5 (scoringsscherm) blokkeren we
         // Escape/F5 — daar mag een lange druk NOOIT een browserherlaad
         // veroorzaken (verlies van match-voortgang). Op andere pagina's
         // (bv. pagina 6/20) is dit signaal net bewust gebruikt om "lang
         // indrukken = naar hoofdmenu" te laten werken, dus daar niet blokkeren.
-        if (activePage.id === 'page5' && (event.key === 'F5' || event.key === 'Escape')) {
+        // ✅ NIEUW: volumeknop-omhoog ("m") wisselt tussen de 2 scoreborden,
+        // altijd, ongeacht of er al gescoord is — een betrouwbaar, enkel
+        // signaal, in tegenstelling tot F5/Escape (die willekeurig alterneren).
+        if ((activePage.id === 'page5' || activePage.id === 'page50') && (event.key === 'm' || event.key === 'M' || event.code === 'KeyM')) {
+            event.preventDefault();
+            if (activePage.id === 'page5') {
+                if (typeof window.showPage === 'function') window.showPage(50);
+                if (typeof window.updateAltScoreboard === 'function') window.updateAltScoreboard();
+            } else {
+                if (typeof window.showPage === 'function') window.showPage(5);
+            }
+            return;
+        }
+
+        if ((activePage.id === 'page5' || activePage.id === 'page50') && (event.key === 'F5' || event.key === 'Escape')) {
             event.preventDefault();
             // ✅ NIEUW: dit is het signaal dat de presenter stuurt bij een
             // LANGE druk op "omhoog" — gebruiken we nu om de match te
             // annuleren/verlaten, maar ENKEL als er nog geen enkel punt
-            // ingegeven is (geen bevestigde beurt, EN geen niet-bevestigd
-            // cijfer aan het intikken).
+            // ingegeven is (zelfde veiligheidsvoorwaarde als voorheen).
             if (state.currentMatch && !state.matchEnded) {
                 const p1T = state.player1.turns?.length || 0;
                 const p2T = state.player2.turns?.length || 0;
+                // ✅ FIX: ook checken of er al een niet-bevestigd cijfer
+                // staat (state.currentInput) — zodra er al iets ingetikt is,
+                // mag annuleren niet meer, ook al is er nog geen bevestigde
+                // beurt.
                 if (p1T === 0 && p2T === 0 && state.currentInput === 0) {
                     if (typeof window.showPage === 'function') window.showPage(1);
+                } else {
+                    // ✅ NIEUW: zodra er al gescoord is, gebruiken we F5/Escape
+                    // (het signaal van de presenter bij een lange druk) voor
+                    // de mute-functie — scorebord-wisselen gebeurt voortaan
+                    // via de volumeknop-omhoog ("m").
+                    geluidGemute = !geluidGemute;
+                    console.log(geluidGemute ? '🔇 Geluid uitgeschakeld' : '🔊 Geluid ingeschakeld');
                 }
             }
         }
@@ -1513,7 +1530,7 @@ document.addEventListener('keydown', function(event) {
 
         // ✅ PAGINA 5: SCORING
         // FIX: `now` was nergens gedefinieerd — toegevoegd als Date.now()
-        if (activePage.id === 'page5') {
+        if (activePage.id === 'page5' || activePage.id === 'page50') {
             if (!state.currentMatch || state.matchEnded) return;
  
             const now = Date.now();
@@ -1573,7 +1590,7 @@ document.addEventListener('keydown', function(event) {
         }
 
         // ✅ PAGINA 5: hold-to-go-back logica bij loslaten van PageUp
-        if (activePage.id === 'page5') {
+        if (activePage.id === 'page5' || activePage.id === 'page50') {
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 if (pageUpStartTime === null) return;
@@ -4977,3 +4994,96 @@ window.showQRInlogKeuze = function() {
 };
 
 
+window.updateAltCurrentInputDisplay = function() {
+    const altInputEl = document.getElementById('altCurrentInput');
+    const altRestEl = document.getElementById('altCurrentInputRest');
+    if (!altInputEl || !altRestEl || !state.currentMatch) return;
+
+    const p = state.currentPlayer === 1 ? state.player1 : state.player2;
+    const nogTeMaken = Math.max(0, p.target - p.score - state.currentInput);
+
+    altInputEl.firstChild.textContent = state.currentInput;
+    altRestEl.textContent = `/${nogTeMaken}`;
+
+    // ✅ NIEUW: de totaalscore van de SPELENDE speler live meetellen met het
+    // huidige, nog niet bevestigde cijfer — de andere kant blijft ongewijzigd
+    // (die toont nog steeds enkel zijn eigen, laatst bevestigde score).
+    const liveTotaal = p.score + state.currentInput;
+    const scoreElId = state.currentPlayer === 1 ? 'altP1Score' : 'altP2Score';
+    const scoreEl = document.getElementById(scoreElId);
+    if (scoreEl) {
+        scoreEl.innerHTML = `${liveTotaal}<span class="alt-score-target">/${p.target}</span>`;
+    }
+};
+
+
+window.updateAltScoreboard = function() {
+    if (!state.currentMatch) return;
+
+    const getFirstName = (fullName) => (fullName || '').split(' ')[0];
+    const getLastName = (fullName) => (fullName || '').split(' ').slice(1).join(' ');
+
+    document.getElementById('altP1First').textContent = getFirstName(state.currentMatch.p1);
+    document.getElementById('altP1Last').textContent = getLastName(state.currentMatch.p1);
+    document.getElementById('altP2First').textContent = getFirstName(state.currentMatch.p2);
+    document.getElementById('altP2Last').textContent = getLastName(state.currentMatch.p2);
+
+    document.getElementById('altDiscipline').textContent = state.currentMatch.discipline || '';
+    document.getElementById('altCategory').textContent = state.currentMatch.cat ? `Categorie ${state.currentMatch.cat}` : '';
+
+    // ✅ FIX: beide kanten tonen nu hetzelfde, GEDEELDE state.turnNumber
+    // (i.p.v. elk hun eigen, per-speler beurtNummer) — die liepen bewust
+    // 1 stap op elkaar voor, wat hier, met beide zichtbaar naast elkaar,
+    // verwarrend overkwam. Nu blijven beide kanten altijd exact gelijk.
+    // ✅ NIEUW: Nabeurt-melding, gecentreerd in het midden, op dezelfde
+    // hoogte als de beurtnummers — exact dezelfde 2 voorwaarden als op
+    // pagina 5 (gewone nabeurt, en de Koning(in)sprijskamp-variant).
+    const isKoningCatMatchAlt = state.currentMatch && (state.currentMatch.cat === 'heren' || state.currentMatch.cat === 'dames');
+    const isWhiteAlt = (state.currentPlayer === 1 && state.player1.isWhite) || (state.currentPlayer === 2 && state.player2.isWhite);
+    const currentBeurtAlt = state.currentPlayer === 1 ? state.player1.beurtNummer : state.player2.beurtNummer;
+    const altNabeurtEl = document.getElementById('altNabeurt');
+    if (altNabeurtEl) {
+        if (state.isNabeurt || (isKoningCatMatchAlt && !isWhiteAlt && currentBeurtAlt === 15)) {
+            altNabeurtEl.textContent = '⚠️ NABEURT';
+        } else {
+            altNabeurtEl.textContent = '';
+        }
+    }
+
+    document.getElementById('altP1Turns').textContent = state.turnNumber;
+    // ✅ FIX: beurtNummer van speler 2 toont eigenlijk al de VOLGENDE,
+    // aankomende beurt (verhoogd net na het afronden van zijn vorige beurt).
+    // Zolang hij niet aan de beurt is (gedimd), tonen we daarom 1 minder —
+    // de laatst voltooide beurt, consistent met wat speler 1 op dat moment toont.
+    document.getElementById('altP2Turns').textContent = state.currentPlayer === 2
+        ? state.player2.beurtNummer
+        : state.player2.beurtNummer - 1;
+
+    document.getElementById('altP1Score').innerHTML = `${state.player1.score}<span class="alt-score-target">/${state.player1.target}</span>`;
+    document.getElementById('altP2Score').innerHTML = `${state.player2.score}<span class="alt-score-target">/${state.player2.target}</span>`;
+
+    document.getElementById('altP1Highest').textContent = state.player1.highestSeries;
+    document.getElementById('altP2Highest').textContent = state.player2.highestSeries;
+
+    document.getElementById('altP1TSG').textContent = state.player1.fixedTSG || '';
+    document.getElementById('altP2TSG').textContent = state.player2.fixedTSG || '';
+
+    const gem1 = state.player1.turns.length > 0 ? (state.player1.score / state.player1.turns.length).toFixed(3) : '0.000';
+    const gem2 = state.player2.turns.length > 0 ? (state.player2.score / state.player2.turns.length).toFixed(3) : '0.000';
+    document.getElementById('altP1Gem').textContent = gem1;
+    document.getElementById('altP2Gem').textContent = gem2;
+
+    // ✅ NIEUW: het middelste veld toont altijd "[huidig]/[nog te maken]",
+    // voor de speler die momenteel aan de beurt is — "nog te maken" wordt
+    // LIVE herberekend (doel min bevestigde score min huidig, nog niet
+    // bevestigd cijfer), en daalt dus mee terwijl er binnen de beurt
+    // gescoord wordt.
+    window.updateAltCurrentInputDisplay();
+
+    // ✅ NIEUW: de kant die NIET aan de beurt is, dimmen — voor extra
+    // duidelijkheid wie er momenteel speelt.
+    const witKolommen = document.querySelectorAll('.alt-col-white');
+    const geelKolommen = document.querySelectorAll('.alt-col-yellow');
+    witKolommen.forEach(el => el.classList.toggle('alt-dimmed', state.currentPlayer !== 1));
+    geelKolommen.forEach(el => el.classList.toggle('alt-dimmed', state.currentPlayer !== 2));
+};
