@@ -212,8 +212,12 @@ window.syncPendingMatches = async function() {
             if (response.ok) {
                 console.log(`✅ Achterstallige match ${payload.match_id} succesvol verstuurd!`);
                 removeFromPendingQueue(payload.match_id);
-                // ✅ NIEUW: ook hier de backup pas wissen na bevestigd succes
-                if (typeof clearMatchBackup === 'function') clearMatchBackup(payload.match_id);
+                // ✅ FIX: het ORIGINELE match.id gebruiken voor de Pi-backup-
+                // opruiming (net als in syncMatchToAPI), met een veilige
+                // terugval naar payload.match_id voor matchen die al vóór
+                // deze fix in de wachtrij stonden.
+                const opruimId = payload._origineel_match_id || payload.match_id;
+                if (typeof clearMatchBackup === 'function') clearMatchBackup(opruimId);
             }
         } catch (error) {
             console.warn(`⚠️ Kon match ${payload.match_id} nog niet versturen.`);
