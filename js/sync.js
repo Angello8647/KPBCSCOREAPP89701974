@@ -74,6 +74,11 @@ window.syncMatchToAPI = async function(match) {
     // 3. Bouw de payload
     const payload = {
         match_id: matchId,
+        // ✅ NIEUW: het ORIGINELE match.id apart bewaren (naast het
+        // server-gerichte match_id, dat soms het fallback-formaat gebruikt).
+        // Enkel voor lokaal gebruik bij het opruimen van de Pi-backup — de
+        // server zelf negeert dit extra veld gewoon.
+        _origineel_match_id: match.id,
         played_date: match.date,
         discipline: match.discipline,
         categorie: match.cat,
