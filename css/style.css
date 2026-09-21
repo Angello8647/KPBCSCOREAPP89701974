@@ -37,11 +37,7 @@
 
 		/* PAGINA 50: ALTERNATIEF SCOREBORD - geen scroll, geen padding toegestaan */
 		#page50.page {
-		    overflow-y: hidden !important;
-		    overflow: hidden !important;
-		    overscroll-behavior: none !important;
-		    -webkit-overflow-scrolling: none !important;
-		    touch-action: none !important;
+		    overflow-y: auto !important;
 		    padding: 0 !important;
 		}
 
@@ -4853,6 +4849,13 @@ html body * {
     font-size:13rem;
     font-weight:700;
     text-align:center;
+    color:#2ecc71;
+    transition: color 0.3s ease;
+}
+.alt-current-input.alt-input-bijna{
+    color:#f97316;
+}
+.alt-current-input.alt-input-gehaald{
     color:#3b82f6;
 }
 
@@ -4866,4 +4869,24 @@ html body * {
     font-size:0.25em;
     color:#94a3b8;
     font-weight:500;
+}
+.alt-progress-wrap{
+    height: 40px;
+    margin: 20px 40px 0;
+    border: 3px solid #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    background: transparent;
+}
+.alt-progress-bar{
+    height: 100%;
+    width: 0%;
+    background: #2ecc71;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+.alt-progress-bar.alt-progress-bijna{
+    background: #f97316;
+}
+.alt-progress-bar.alt-progress-gehaald{
+    background: #3b82f6;
 }
