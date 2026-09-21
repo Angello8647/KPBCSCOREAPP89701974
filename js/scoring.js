@@ -5041,6 +5041,11 @@ window.updateAltProgressBar = function(playerNum, score, target) {
     } else if (nogTeMaken <= 5) {
         bar.classList.add('alt-progress-bijna');
     }
+
+    // ✅ NIEUW: percentage gecentreerd tonen, bovenop de balk.
+    const pctElId = playerNum === 1 ? 'altP1ProgressPct' : 'altP2ProgressPct';
+    const pctEl = document.getElementById(pctElId);
+    if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
 };
 
 
