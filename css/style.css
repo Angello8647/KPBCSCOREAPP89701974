@@ -4871,12 +4871,27 @@ html body * {
     font-weight:500;
 }
 .alt-progress-wrap{
+    position: relative;
     height: 40px;
     margin: 20px 40px 0;
     border: 3px solid #fff;
     border-radius: 8px;
     overflow: hidden;
     background: transparent;
+}
+.alt-progress-pct{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 .alt-progress-bar{
     height: 100%;
