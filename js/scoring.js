@@ -5014,6 +5014,33 @@ window.updateAltCurrentInputDisplay = function() {
     if (scoreEl) {
         scoreEl.innerHTML = `${liveTotaal}<span class="alt-score-target">/${p.target}</span>`;
     }
+
+    window.updateAltProgressBar(state.currentPlayer, liveTotaal, p.target);
+
+    const nogTeMakenVoorKleur = p.target - liveTotaal;
+    altInputEl.classList.remove('alt-input-bijna', 'alt-input-gehaald');
+    if (nogTeMakenVoorKleur <= 0) {
+        altInputEl.classList.add('alt-input-gehaald');
+    } else if (nogTeMakenVoorKleur <= 5) {
+        altInputEl.classList.add('alt-input-bijna');
+    }
+};
+
+window.updateAltProgressBar = function(playerNum, score, target) {
+    const barId = playerNum === 1 ? 'altP1Progress' : 'altP2Progress';
+    const bar = document.getElementById(barId);
+    if (!bar || target <= 0) return;
+
+    const nogTeMaken = target - score;
+    const pct = Math.min(100, (score / target) * 100);
+
+    bar.style.width = `${pct}%`;
+    bar.classList.remove('alt-progress-bijna', 'alt-progress-gehaald');
+    if (nogTeMaken <= 0) {
+        bar.classList.add('alt-progress-gehaald');
+    } else if (nogTeMaken <= 5) {
+        bar.classList.add('alt-progress-bijna');
+    }
 };
 
 
@@ -5072,6 +5099,9 @@ window.updateAltScoreboard = function() {
     const gem2 = state.player2.turns.length > 0 ? (state.player2.score / state.player2.turns.length).toFixed(3) : '0.000';
     document.getElementById('altP1Gem').textContent = gem1;
     document.getElementById('altP2Gem').textContent = gem2;
+
+    window.updateAltProgressBar(1, state.player1.score, state.player1.target);
+    window.updateAltProgressBar(2, state.player2.score, state.player2.target);
 
     // ✅ NIEUW: het middelste veld toont altijd "[huidig]/[nog te maken]",
     // voor de speler die momenteel aan de beurt is — "nog te maken" wordt
