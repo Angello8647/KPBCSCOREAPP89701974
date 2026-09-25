@@ -727,7 +727,14 @@ function endMatch() {
             currentPlayer: state.currentPlayer, isNabeurt: state.isNabeurt,
             isFirstPlayerInRound: state.isFirstPlayerInRound, turnNumber: state.turnNumber,
             firstToTarget: state.firstToTarget, completed: true,
-            currentInput: state.currentInput
+            currentInput: state.currentInput,
+            // ✅ NIEUW: deze velden ontbraken hier — nodig om, bij een latere
+            // herstel-poging (bv. na een onvolledige verzending), de match
+            // opnieuw correct naar de server te kunnen sturen.
+            discipline: state.currentMatch.discipline,
+            cat: state.currentMatch.cat,
+            p1_club_id: state.currentMatch.p1_club_id,
+            p2_club_id: state.currentMatch.p2_club_id
         });
     }
 
