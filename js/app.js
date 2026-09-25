@@ -95,8 +95,29 @@ async function behandelEenBackup(backup) {
         // bedient dit scherm via de presenter, waar per-ongeluk-annuleren te
         // riskant is. Alles gebeurt nu automatisch, stil, op de achtergrond.
         if (backup.completed) {
-            // Match was al afgelopen, enkel de verzending faalde — stil hersynchroniseren
-            console.log(`ℹ️ Backup voor afgewerkte match ${backup.matchId} gevonden — stille hersynchronisatie proberen.`);
+            // ✅ FIX: voorheen riep dit enkel syncPendingMatches() aan, wat
+            // ENKEL de aparte wachtrij (pendingMatches) checkt — als een
+            // match NOOIT in die wachtrij terechtkwam (bv. omdat de Pi
+            // herstartte/de pagina herlaadde TERWIJL de eerste verzendpoging
+            // nog liep, vóór een falen ooit werd opgevangen), deed dit dus
+            // NIETS voor die specifieke match. We proberen nu de backup-data
+            // zelf, rechtstreeks, opnieuw te versturen.
+            console.log(`ℹ️ Backup voor afgewerkte match ${backup.matchId} gevonden — rechtstreekse hersynchronisatie proberen.`);
+            if (typeof window.syncMatchToAPI === 'function') {
+                const matchDataVoorSync = {
+                    id: backup.matchId,
+                    p1: backup.player1, p2: backup.player2,
+                    date: backup.date,
+                    discipline: backup.discipline, cat: backup.cat,
+                    p1_club_id: backup.p1_club_id, p2_club_id: backup.p2_club_id,
+                    p1Score: backup.p1Score, p2Score: backup.p2Score,
+                    p1Turns: backup.p1Turns, p2Turns: backup.p2Turns,
+                    p1Highest: backup.p1Highest, p2Highest: backup.p2Highest
+                };
+                await window.syncMatchToAPI(matchDataVoorSync);
+            }
+            // Extra vangnet: ook de gewone wachtrij nog checken, voor het
+            // geval deze match daar via een ANDER pad wél terechtkwam.
             if (typeof window.syncPendingMatches === 'function') {
                 await window.syncPendingMatches();
             }
