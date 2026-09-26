@@ -1208,12 +1208,15 @@ document.addEventListener('keydown', function(event) {
                 if (p1T === 0 && p2T === 0 && state.currentInput === 0) {
                     if (typeof window.showPage === 'function') window.showPage(1);
                 } else {
-                    // ✅ NIEUW: zodra er al gescoord is, gebruiken we F5/Escape
-                    // (het signaal van de presenter bij een lange druk) voor
-                    // de mute-functie — scorebord-wisselen gebeurt voortaan
-                    // via de volumeknop-omhoog ("m").
-                    geluidGemute = !geluidGemute;
-                    console.log(geluidGemute ? '🔇 Geluid uitgeschakeld' : '🔊 Geluid ingeschakeld');
+                    // ✅ NIEUW: zodra er al gescoord is, speelt F5/Escape (het
+                    // signaal van de presenter bij een lange druk op omhoog)
+                    // het zwijntje-geluid af — een leuk entertainment-geluidje
+                    // dat de scheids handmatig kan triggeren bij een
+                    // onbedoelde speler-fout.
+                    if (!geluidGemute) {
+                        const zwijnGeluid = new Audio('js/zwijn.wav');
+                        zwijnGeluid.play();
+                    }
                 }
             }
         }
@@ -1617,9 +1620,22 @@ document.addEventListener('keydown', function(event) {
         // FIX: `now` was nergens gedefinieerd — toegevoegd als Date.now()
         if (activePage.id === 'page5' || activePage.id === 'page50') {
             if (!state.currentMatch || state.matchEnded) return;
- 
+
             const now = Date.now();
- 
+
+            // ✅ NIEUW: lange druk op Tab (via de presenter) stuurt "Alt" —
+            // gebruiken we om te wisselen tussen de 2 scoreborden.
+            if (event.key === 'Alt') {
+                event.preventDefault();
+                if (activePage.id === 'page5') {
+                    if (typeof window.showPage === 'function') window.showPage(50);
+                    if (typeof window.updateAltScoreboard === 'function') window.updateAltScoreboard();
+                } else {
+                    if (typeof window.showPage === 'function') window.showPage(5);
+                }
+                return;
+            }
+
             if (event.key === 'PageUp' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 pageUpStartTime = Date.now();
