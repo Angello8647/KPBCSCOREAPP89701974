@@ -363,6 +363,55 @@ let geluidGemute = false;
 // ==========================================
 // 🗣️ SPRAAKFEEDBACK VOOR PUNTEN
 // ==========================================
+// ==========================================
+// 🗣️ SPRAAKFEEDBACK VOOR PUNTEN
+// ==========================================
+// ✅ NIEUW: gedeelde AudioContext, hergebruikt over alle afspeel-aanroepen
+// heen (een nieuwe aanmaken per geluid is onnodig zwaar, en sommige
+// browsers beperken het aantal AudioContext-instanties).
+let sharedAudioContext = null;
+let wekToonGestart = false;
+
+function getSharedAudioContext() {
+    if (!sharedAudioContext) {
+        sharedAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return sharedAudioContext;
+}
+
+// ✅ NIEUW: een continue, quasi-onhoorbare toon die de versterker/speakers
+// voortdurend "wakker" houdt — voorkomt dat het EERSTE geluid na een
+// periode van stilte vervormd/zwak klinkt (hardware-verschijnsel: de
+// versterker valt na inactiviteit in een soort spaarstand).
+function startWekToon() {
+    if (wekToonGestart) return;
+    wekToonGestart = true;
+    try {
+        const ctx = getSharedAudioContext();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        oscillator.frequency.value = 20;
+        gainNode.gain.value = 0.003;
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        oscillator.start();
+        console.log('🔊 Wektoon gestart — versterker blijft actief');
+    } catch (e) {
+        console.error('Wektoon kon niet starten:', e);
+    }
+}
+
+document.addEventListener('click', startWekToon, { once: true });
+document.addEventListener('keydown', startWekToon, { once: true });
+
+// ✅ Uitgeschakeld: de wektoon loste het echte probleem (koude start) al op —
+// extra versterking op specifieke getallen zorgde voor lichte vervorming.
+// Leeg laten (niet verwijderen) voor het geval dit ooit terug nodig is.
+const EXTRA_VERSTERKTE_SCORES = new Set([]);
+const ZEER_STERK_VERSTERKTE_SCORES = new Set([]);
+const VERSTERKINGSFACTOR = 3.0;
+const STERKE_VERSTERKINGSFACTOR = 6.0;
+
 function playScoreSound(score) {
     if (geluidGemute) return;
     if (score < 1 || score > 500) return;
@@ -370,11 +419,40 @@ function playScoreSound(score) {
     const batchNum = Math.ceil(score / 100);
     const batchStart = String((batchNum - 1) * 100 + 1).padStart(3, '0');
     const batchEnd = String(batchNum * 100).padStart(3, '0');
-    const bestandsnaam = String(score).padStart(3, '0') + '.mp3';
+    const bestandsnaam = String(score).padStart(3, '0') + '.wav';
+    // ✅ FIX: WAV-bestanden i.p.v. MP3 — live gebruikt de eenvoudige,
+    // NIET-geneste mapstructuur.
     const pad = `js/batch_${batchNum}_${batchStart}-${batchEnd}/${bestandsnaam}`;
 
-    const audio = new Audio(pad);
-    audio.play().catch(e => console.error('Geluid afspelen mislukt:', e));
+    let factor = null;
+    if (EXTRA_VERSTERKTE_SCORES.has(score)) factor = VERSTERKINGSFACTOR;
+    else if (ZEER_STERK_VERSTERKTE_SCORES.has(score)) factor = STERKE_VERSTERKINGSFACTOR;
+
+    if (factor !== null) {
+        try {
+            const ctx = getSharedAudioContext();
+            fetch(pad)
+                .then(res => res.arrayBuffer())
+                .then(buf => ctx.decodeAudioData(buf))
+                .then(audioBuffer => {
+                    const source = ctx.createBufferSource();
+                    source.buffer = audioBuffer;
+                    const gainNode = ctx.createGain();
+                    gainNode.gain.value = factor;
+                    source.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    source.start(0);
+                })
+                .catch(e => console.error('Versterkt geluid afspelen mislukt:', e));
+        } catch (e) {
+            console.error('Web Audio API niet beschikbaar, gewone afspeling:', e);
+            const audio = new Audio(pad);
+            audio.play().catch(err => console.error('Geluid afspelen mislukt:', err));
+        }
+    } else {
+        const audio = new Audio(pad);
+        audio.play().catch(e => console.error('Geluid afspelen mislukt:', e));
+    }
 }
 
 // ==========================================
