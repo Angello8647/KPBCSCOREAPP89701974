@@ -692,7 +692,7 @@ window.smartUndo = function() {
     const p = laatsteSpelerNum === 1 ? state.player1 : state.player2;
 
     if (!p.turns || p.turns.length === 0) {
-        alert('Niets meer om terug te draaien voor deze match.');
+        toonTijdelijkeMelding('Niets meer om terug te draaien voor deze match.', '#dc2626');
         return;
     }
 
@@ -5223,3 +5223,32 @@ window.updateAltScoreboard = function() {
     witKolommen.forEach(el => el.classList.toggle('alt-dimmed', state.currentPlayer !== 1));
     geelKolommen.forEach(el => el.classList.toggle('alt-dimmed', state.currentPlayer !== 2));
 };
+
+// ✅ NIEUW: niet-blokkerende melding, in plaats van de browser-eigen alert()
+// — die vereist een muisklik om weg te klikken, wat onmogelijk is met enkel
+// een presenter (geen muis/aanraking beschikbaar). Verdwijnt na een paar
+// seconden vanzelf.
+function toonTijdelijkeMelding(tekst, kleur = '#1e293b') {
+    let el = document.getElementById('tijdelijkeMeldingBox');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'tijdelijkeMeldingBox';
+        el.style.cssText = `
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: white; border: 3px solid ${kleur}; color: ${kleur};
+            padding: 16px 24px; border-radius: 10px; font-size: 1.1rem;
+            font-weight: 700; z-index: 99999; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 90vw; text-align: center;
+        `;
+        document.body.appendChild(el);
+    }
+    el.style.borderColor = kleur;
+    el.style.color = kleur;
+    el.textContent = tekst;
+    el.style.display = 'block';
+
+    clearTimeout(el._verbergTimer);
+    el._verbergTimer = setTimeout(() => {
+        el.style.display = 'none';
+    }, 3000);
+}
