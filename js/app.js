@@ -142,7 +142,7 @@ function herstelOnderbrokenMatch(backup) {
         // localStorage (dat toch al kwetsbaar is), de Pi-eigen, persistente
         // versie blijft bewust bestaan zodat een volgende poging (bv. na een
         // verse data-ophaling van de server) haar nog kan terugvinden.
-        alert('❌ Kon de bijhorende match niet meteen terugvinden. Probeer het later opnieuw — de back-up blijft bewaard.');
+        toonTijdelijkeMelding('❌ Kon de bijhorende match niet meteen terugvinden. Probeer het later opnieuw.', '#dc2626');
         localStorage.removeItem('kpbc_match_backup');
         return;
     }
