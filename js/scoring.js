@@ -1173,6 +1173,25 @@ document.addEventListener('keydown', function(event) {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
 
+        // ✅ NIEUW: universele detectie van "verkeerde modus" bij de presenter —
+        // ArrowUp/ArrowDown/ArrowLeft/ArrowRight komen NERGENS meer normaal voor
+        // (we vervingen overal PageUp/PageDown als enige geldige signalen),
+        // dus als ze toch verschijnen, staat de presenter gegarandeerd in de
+        // verkeerde modus. Niet tonen als de focus op een invulveld staat.
+        const isInputFocused = ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName);
+        const isArrowKey = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key);
+        const popupZichtbaar = document.getElementById('verkeerdeModusPopup')?.style.display === 'flex';
+
+        if (!isInputFocused && isArrowKey) {
+            event.preventDefault();
+            if (popupZichtbaar) {
+                document.getElementById('verkeerdeModusPopup').style.display = 'none';
+            } else {
+                toonVerkeerdeModusPopup();
+            }
+            return;
+        }
+
         // ✅ VEILIGHEIDSFIX: enkel op pagina 5 (scoringsscherm) blokkeren we
         // Escape/F5 — daar mag een lange druk NOOIT een browserherlaad
         // veroorzaken (verlies van match-voortgang). Op andere pagina's
@@ -5251,4 +5270,31 @@ function toonTijdelijkeMelding(tekst, kleur = '#1e293b') {
     el._verbergTimer = setTimeout(() => {
         el.style.display = 'none';
     }, 3000);
+}
+
+function toonVerkeerdeModusPopup() {
+    let el = document.getElementById('verkeerdeModusPopup');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'verkeerdeModusPopup';
+        el.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 999999;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box;
+        `;
+        el.innerHTML = `
+            <div style="background:white; border-radius:16px; padding:30px; max-width:500px; text-align:center;">
+                <div style="font-size:3rem; margin-bottom:10px;">⚠️</div>
+                <div style="font-size:1.3rem; font-weight:700; color:#1e293b; margin-bottom:15px;">
+                    De afstandsbediening staat in de verkeerde modus
+                </div>
+                <div style="font-size:1.1rem; color:#475569;">
+                    Houd pijltje-omhoog en pijltje-omlaag <b>samen</b> ingedrukt tot het blauwe lampje knippert, en probeer opnieuw.
+                </div>
+            </div>
+        `;
+        document.body.appendChild(el);
+    }
+    el.style.display = 'flex';
 }
