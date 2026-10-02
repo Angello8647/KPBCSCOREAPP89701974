@@ -1182,13 +1182,19 @@ document.addEventListener('keydown', function(event) {
         const isArrowKey = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key);
         const popupZichtbaar = document.getElementById('verkeerdeModusPopup')?.style.display === 'flex';
 
+        // ✅ De pop-up sluit ENKEL bij een correct PageUp/PageDown-signaal —
+        // dat bevestigt meteen dat de presenter effectief in de juiste modus
+        // staat. Een Arrow-toets (nog steeds verkeerde modus) toont de pop-up
+        // gewoon opnieuw, in plaats van ze te sluiten.
+        if (popupZichtbaar && (event.key === 'PageUp' || event.key === 'PageDown')) {
+            event.preventDefault();
+            document.getElementById('verkeerdeModusPopup').style.display = 'none';
+            return;
+        }
+
         if (!isInputFocused && isArrowKey) {
             event.preventDefault();
-            if (popupZichtbaar) {
-                document.getElementById('verkeerdeModusPopup').style.display = 'none';
-            } else {
-                toonVerkeerdeModusPopup();
-            }
+            toonVerkeerdeModusPopup();
             return;
         }
 
@@ -5293,7 +5299,7 @@ function toonVerkeerdeModusPopup() {
                     Houd pijltje-omhoog en pijltje-omlaag <b>samen</b> ingedrukt tot het blauwe lampje knippert.
                 </div>
                 <div style="font-size:1rem; color:#1e293b; font-weight:600; margin-top:12px;">
-                    Sluit dit venster daarna eerst met een druk op eender welke knop, vóór je verder gaat.
+                    Klik daarna op pijltje omhoog. Als deze pop-up niet verdwijnt, herhaal tot deze verdwijnt met pijltje omhoog.
                 </div>
             </div>
         `;
