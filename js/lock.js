@@ -55,10 +55,10 @@
     function onLockKeydown(e) {
         const lock = document.getElementById('lockScreen');
         if (!lock || lock.style.display === 'none') return;
-        if (e.key === 'PageUp' || e.key === 'ArrowUp') {
+        if (e.key === 'PageUp') {
             e.preventDefault(); e.stopImmediatePropagation();
             digitIndex = (digitIndex + 1) % 10; renderDigits();
-        } else if (e.key === 'PageDown' || e.key === 'ArrowDown') {
+        } else if (e.key === 'PageDown') {
             e.preventDefault(); e.stopImmediatePropagation();
             digitIndex = (digitIndex - 1 + 10) % 10; renderDigits();
         } else if (e.key === 'Tab') {
