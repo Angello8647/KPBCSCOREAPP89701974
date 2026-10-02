@@ -1123,7 +1123,7 @@ function navigateFocusableList(event, items, indexRef, options = {}) {
         indexRef.value = 0;
     }
  
-    if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+    if (event.key === 'PageUp') {
         event.preventDefault();
         if (typeof hideCursor === 'function') hideCursor();
         indexRef.value = wrap
@@ -1133,7 +1133,7 @@ function navigateFocusableList(event, items, indexRef, options = {}) {
         return true;
     }
  
-    if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+    if (event.key === 'PageDown') {
         event.preventDefault();
         if (typeof hideCursor === 'function') hideCursor();
         indexRef.value = wrap
@@ -1239,7 +1239,7 @@ document.addEventListener('keydown', function(event) {
  
             // 🎯 Wanneer datum focus heeft: PageUp/PageDown wijzigt datum, Tab gaat naar knoppen
             if (isDateFocused) {
-                if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                if (event.key === 'PageUp') {
                     event.preventDefault();
                     if (dateInput && dateInput.value) {
                         const d = new Date(dateInput.value);
@@ -1249,7 +1249,7 @@ document.addEventListener('keydown', function(event) {
                     }
                     return;
                 }
-                if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+                if (event.key === 'PageDown') {
                     event.preventDefault();
                     if (dateInput && dateInput.value) {
                         const d = new Date(dateInput.value);
@@ -1271,12 +1271,12 @@ document.addEventListener('keydown', function(event) {
  
             // 🎯 Als GEEN element focus heeft (BODY), focus op eerste knop
             if (currentIndex === -1) {
-                if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+                if (event.key === 'PageDown') {
                     event.preventDefault();
                     if (buttons.length > 0) buttons[0].focus();
                     return;
                 }
-                if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+                if (event.key === 'PageUp') {
                     event.preventDefault();
                     if (dateInput) dateInput.focus();
                     return;
@@ -1285,14 +1285,14 @@ document.addEventListener('keydown', function(event) {
             }
  
             // 🎯 Navigeer tussen elementen
-            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+            if (event.key === 'PageDown') {
                 event.preventDefault();
                 const nextIndex = (currentIndex + 1) % focusables.length;
                 focusables[nextIndex].focus();
                 return;
             }
  
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+            if (event.key === 'PageUp') {
                 event.preventDefault();
                 const prevIndex = (currentIndex - 1 + focusables.length) % focusables.length;
                 focusables[prevIndex].focus();
@@ -1479,7 +1479,7 @@ document.addEventListener('keydown', function(event) {
         if (activePage.id === 'page14' || activePage.id === 'page14-3player') {
             const isThreePlayer = activePage.id === 'page14-3player';
  
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+            if (event.key === 'PageUp') {
                 event.preventDefault();
                 // ✅ NIEUW: cooldown zodat 2x snel na elkaar drukken niet 2x scoort
                 const now = Date.now();
@@ -1493,7 +1493,7 @@ document.addEventListener('keydown', function(event) {
                 }
                 return;
             }
-            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+            if (event.key === 'PageDown') {
                 event.preventDefault();
                 // ✅ NIEUW: cooldown zodat 2x snel na elkaar drukken niet 2x scoort
                 const now = Date.now();
@@ -1540,12 +1540,12 @@ document.addEventListener('keydown', function(event) {
                 if (typeof window.showPage === 'function') window.showPage(1);
                 return;
             }
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+            if (event.key === 'PageUp') {
                 event.preventDefault();
                 compPageUpStartTime = Date.now();
                 return;
             }
-            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+            if (event.key === 'PageDown') {
                 event.preventDefault();
                 if (typeof window.goToCompCombo === 'function' && window.compComboList && window.compComboList.length > 0) {
                     window.goToCompCombo(window.compComboIndex + 1);
@@ -1608,7 +1608,7 @@ document.addEventListener('keydown', function(event) {
  
         // ✅ PAGINA 6: Match Overzicht — simpelweg elke presenter-knop = naar Hoofdmenu
         if (activePage.id === 'page6') {
-            if (event.key === 'Tab' || event.key === 'PageUp' || event.key === 'ArrowUp' || event.key === 'PageDown' || event.key === 'ArrowDown') {
+            if (event.key === 'Tab' || event.key === 'PageUp' || event.key === 'PageDown') {
                 event.preventDefault();
                 const homeBtn = document.querySelector('#page6 .home-btn');
                 if (homeBtn) homeBtn.click();
@@ -1636,12 +1636,12 @@ document.addEventListener('keydown', function(event) {
                 return;
             }
 
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+            if (event.key === 'PageUp') {
                 event.preventDefault();
                 pageUpStartTime = Date.now();
                 return;
             }
-            if (event.key === 'PageDown' || event.key === 'ArrowDown') {
+            if (event.key === 'PageDown') {
                 event.preventDefault();
                 if (now - lastScoreTime >= COOLDOWN) {
                     if (typeof window.changeScore === 'function') window.changeScore(-1);
@@ -1675,7 +1675,7 @@ document.addEventListener('keydown', function(event) {
  
         // ✅ PAGINA 20: kort PageUp = vorige combinatie, lang ingedrukt (≥2s) = terug naar hoofdmenu
         if (activePage.id === 'page20') {
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+            if (event.key === 'PageUp') {
                 event.preventDefault();
                 if (compPageUpStartTime === null) return;
                 const holdDuration = Date.now() - compPageUpStartTime;
@@ -1692,7 +1692,7 @@ document.addEventListener('keydown', function(event) {
 
         // ✅ PAGINA 5: hold-to-go-back logica bij loslaten van PageUp
         if (activePage.id === 'page5' || activePage.id === 'page50') {
-            if (event.key === 'PageUp' || event.key === 'ArrowUp') {
+            if (event.key === 'PageUp') {
                 event.preventDefault();
                 if (pageUpStartTime === null) return;
  
