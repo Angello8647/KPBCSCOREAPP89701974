@@ -4829,12 +4829,12 @@ window.startDamesAvond = function() {
     function damesKeydownHandler(e) {
         if (!document.getElementById('damesPinOverlay')) return;
         // ✅ NIEUW: 11 posities (0-9 + "Annuleren" op positie 10)
-        if (e.key === 'PageUp' || e.key === 'ArrowUp') {
+        if (e.key === 'PageUp') {
             e.preventDefault(); e.stopImmediatePropagation();
             damesDigitIndex = (damesDigitIndex + 1) % 11;
             digitIdx = damesDigitIndex;
             renderDamesDigits();
-        } else if (e.key === 'PageDown' || e.key === 'ArrowDown') {
+        } else if (e.key === 'PageDown') {
             e.preventDefault(); e.stopImmediatePropagation();
             damesDigitIndex = (damesDigitIndex - 1 + 11) % 11;
             digitIdx = damesDigitIndex;
@@ -4916,11 +4916,11 @@ window.showDamesSpelersKeuze = async function() {
     function damesKeuzeKeydownHandler(e) {
         if (!document.getElementById('damesKeuzeOverlay')) return;
         const maxIndex = damesButtons.length + 1;
-        if (e.key === 'PageDown' || e.key === 'ArrowDown') {
+        if (e.key === 'PageDown') {
             e.preventDefault(); e.stopImmediatePropagation();
             damesFocusIndex = Math.min(damesFocusIndex + 1, maxIndex);
             updateDamesFocusStyle();
-        } else if (e.key === 'PageUp' || e.key === 'ArrowUp') {
+        } else if (e.key === 'PageUp') {
             e.preventDefault(); e.stopImmediatePropagation();
             damesFocusIndex = Math.max(damesFocusIndex - 1, 0);
             updateDamesFocusStyle();
