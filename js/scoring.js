@@ -5290,7 +5290,10 @@ function toonVerkeerdeModusPopup() {
                     De afstandsbediening staat in de verkeerde modus
                 </div>
                 <div style="font-size:1.1rem; color:#475569;">
-                    Houd pijltje-omhoog en pijltje-omlaag <b>samen</b> ingedrukt tot het blauwe lampje knippert, en probeer opnieuw.
+                    Houd pijltje-omhoog en pijltje-omlaag <b>samen</b> ingedrukt tot het blauwe lampje knippert.
+                </div>
+                <div style="font-size:1rem; color:#1e293b; font-weight:600; margin-top:12px;">
+                    Sluit dit venster daarna eerst met een druk op eender welke knop, vóór je verder gaat.
                 </div>
             </div>
         `;
