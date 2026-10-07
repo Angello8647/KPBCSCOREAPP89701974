@@ -948,12 +948,6 @@ window.selectWhitePlayer = function(playerNum) {
         ball1.classList.add('yellow');
     }
 
-    // Meebewegend infovenster: toont wie de witte bal heeft
-    const infoEl = document.getElementById('whiteBallInfo');
-    const naamEl = document.getElementById(playerNum === 1 ? 'whiteBall1Text' : 'whiteBall2Text');
-    if (infoEl && naamEl) {
-        infoEl.textContent = 'Witte bal: ' + naamEl.textContent + '. Pijltje = wisselen. Vierkantje = match starten.';
-    }
     
     // Activeer start knop
     const startBtn = document.getElementById('startMatchBtn');
