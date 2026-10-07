@@ -1622,18 +1622,16 @@ document.addEventListener('keydown', function(event) {
                 return;
             }
 
-            focusables.forEach(el => el.classList.remove('focused'));
-
-            navigateFocusableList(event, focusables, windowIndexRef('page4FocusIndex'), {
-                highlight: (items, idx) => {
-                    items[idx].classList.add('focused');
-                    if (idx === 0 && typeof window.selectWhitePlayer === 'function') {
-                        window.selectWhitePlayer(1);
-                    } else if (idx === 1 && typeof window.selectWhitePlayer === 'function') {
-                        window.selectWhitePlayer(2);
-                    }
-                }
-            });
+            // Alleen de 2 ballen zijn nog te kiezen: elke pijltjesdruk wisselt
+            // de speler met de witte bal (1e druk = speler 1).
+            if (event.key === 'PageUp' || event.key === 'PageDown') {
+                event.preventDefault();
+                const volgende = state.selectedWhitePlayer === 1 ? 2 : 1;
+                window.page4FocusIndex = volgende - 1;
+                focusables.forEach(el => el.classList.remove('focused'));
+                focusables[volgende - 1].classList.add('focused');
+                if (typeof window.selectWhitePlayer === 'function') window.selectWhitePlayer(volgende);
+            }
             return;
         }
  
