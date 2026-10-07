@@ -1601,6 +1601,14 @@ document.addEventListener('keydown', function(event) {
         // Hoofdmenu) — voorkomt dat je per ongeluk de match start terwijl
         // "Terug" gemarkeerd staat.
         if (activePage.id === 'page4') {
+            // Lang pijltje-omhoog op de presenter = F5 of Escape: terug naar het
+            // hoofdmenu (en de browser-eigen F5-herlaad blokkeren).
+            if (event.key === 'F5' || event.key === 'Escape') {
+                event.preventDefault();
+                if (typeof window.showPage === 'function') window.showPage(1);
+                return;
+            }
+
             const ballOptions = Array.from(document.querySelectorAll('#page4 .ball-option'));
             const backBtn = document.querySelector('#page4 .back-btn');
             const homeBtn = document.querySelector('#page4 .home-btn');
