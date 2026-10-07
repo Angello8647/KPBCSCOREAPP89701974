@@ -4773,6 +4773,39 @@ html body * {
     box-shadow: 0 0 20px rgba(0, 210, 211, 0.6) !important;
 }
 
+/* PAGINA 4: ballen groot links, instructiekader er rechts naast */
+#page4 .ball-selection-container {
+    max-width: 1700px;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    column-gap: 20px;
+}
+#page4 .ball-selection-title {
+    grid-column: 1 / -1;
+}
+#page4 .ball-option {
+    grid-row: 2;
+}
+#page4 #whiteBallInfo {
+    grid-column: 3;
+    grid-row: 2;
+    margin: 0 !important;
+    max-width: none !important;
+    font-size: 1.9rem !important;
+    text-align: left !important;
+    line-height: 1.6 !important;
+}
+#page4 .ball-circle {
+    width: 280px !important;
+    height: 280px !important;
+    font-size: 2.2rem !important;
+}
+#page4 .start-match-btn {
+    grid-column: 1 / -1;
+    justify-self: center;
+}
+
 #page50{
     margin:0;
     padding:0;
