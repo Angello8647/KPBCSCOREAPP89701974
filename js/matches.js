@@ -591,4 +591,85 @@ window.startTournamentDubbelMatch = function(match) {
         window.prepareFriendlyBallSelection();
     }
     window.showPage(13);
+    // Eerst per team de volgorde laten bepalen (presenter), dan pas de bal kiezen
+    window.toonTeamVolgordeOverlay();
+};
+
+/**
+ * Tornooi-dubbeltje: de spelers bepalen per team wie eerst speelt, vóór de
+ * witte-bal-keuze. Volledig scherm, bediend met de presenter.
+ * Pijltjes = wisselen, vierkantje = klaar/volgende, lang omhoog = een stap terug.
+ */
+window.toonTeamVolgordeOverlay = function() {
+    const fm = state.friendlyMatch;
+    if (!fm || fm.numPlayers !== 4) return;
+
+    let team = 1;
+    let laatsteTab = 0;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'teamVolgordeOverlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#1e293b;z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+    document.body.appendChild(overlay);
+
+    function namen() {
+        return Object.keys(fm.players)
+            .filter(p => fm.teams[p] === team)
+            .sort((a, b) => fm.orders[a] - fm.orders[b])
+            .map(p => fm.players[p].name);
+    }
+
+    function teken() {
+        const [eerste, tweede] = namen();
+        overlay.innerHTML = `
+            <div style="background:white;border-radius:20px;padding:40px 50px;max-width:1100px;width:100%;text-align:center;">
+                <div style="font-size:2rem;color:#64748b;font-weight:700;">Team ${team} van 2: wie speelt eerst?</div>
+                <div style="font-size:3.4rem;font-weight:900;color:#1e293b;margin:25px 0 10px;">1️⃣ ${eerste}</div>
+                <div style="font-size:3.4rem;font-weight:900;color:#1e293b;margin-bottom:30px;">2️⃣ ${tweede}</div>
+                <div style="background:#f1f5f9;border:3px solid #00d2d3;border-radius:12px;padding:18px 24px;font-size:1.6rem;font-weight:700;color:#1e293b;line-height:1.6;">
+                    Pijltjes = wissel de volgorde<br>
+                    ⚠️ Vierkantje = klaar, volgende ❗❗❗<br>
+                    Pijl omhoog lang inhouden = één stap terug
+                </div>
+            </div>`;
+    }
+
+    function sluit() {
+        document.removeEventListener('keydown', handler, true);
+        overlay.remove();
+    }
+
+    function handler(e) {
+        if (e.key === 'PageUp' || e.key === 'PageDown') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            if (typeof window.toggleTeamOrder === 'function') window.toggleTeamOrder(team);
+            teken();
+        } else if (e.key === 'Tab') {
+            e.preventDefault(); e.stopImmediatePropagation();
+            const nu = Date.now();
+            if (nu - laatsteTab < 500) return;
+            laatsteTab = nu;
+            if (team === 1) {
+                team = 2;
+                teken();
+            } else {
+                sluit();
+                // Teamnamen op de ballen opnieuw opbouwen met de gekozen volgorde
+                if (typeof window.prepareFriendlyBallSelection === 'function') window.prepareFriendlyBallSelection();
+            }
+        } else if (e.key === 'F5' || e.key === 'Escape') {
+            // Lang omhoog op de presenter: een stap terug, in team 1 naar het hoofdmenu
+            e.preventDefault(); e.stopImmediatePropagation();
+            if (team === 2) {
+                team = 1;
+                teken();
+            } else {
+                sluit();
+                window.showPage(1);
+            }
+        }
+    }
+
+    document.addEventListener('keydown', handler, true);
+    teken();
 };
