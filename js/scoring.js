@@ -3091,6 +3091,11 @@ window.startFriendlyMatchFromBallSelection = function() {
  * als bij de gewone team-indeling van een vriendschappelijke match.
  */
 window.renderOrderSwapUI = function() {
+    // Uitgeschakeld: de volgorde per team wordt nu bepaald in het volledige-
+    // schermvenster (toonTeamVolgordeOverlay in matches.js), met de presenter.
+    const leegContainer = document.getElementById('friendlyOrderSwap');
+    if (leegContainer) leegContainer.innerHTML = '';
+    return;
     const fm = state.friendlyMatch;
     const container = document.getElementById('friendlyOrderSwap');
     if (!container || !fm || fm.numPlayers !== 4) { if (container) container.innerHTML = ''; return; }
