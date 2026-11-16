@@ -369,7 +369,19 @@ window.syncTournamentMatchToAPI = async function(match) {
  * dat is exact hoe startTournamentDubbelMatch de teams heeft opgebouwd.
  */
 window.syncTournamentDubbelResult = async function(fm, ts) {
-    const cid = fm.tournamentClubIds;
+    // Links (wit) en rechts volgen fm.teams, net als het scorebord: bij een wissel
+    // van de witte bal (team 2 heeft wit) zijn de teams omgewisseld. De club_id's
+    // koppelen we daarom aan de kant waar ze echt staan, niet aan vaste slots.
+    // Zo gaat de linkerscore (ts.left...) altijd naar het team dat links staat.
+    const alleIds = fm.tournamentClubIds;
+    const linksSlots = Object.keys(fm.players).filter(p => fm.teams[p] == 1);
+    const rechtsSlots = Object.keys(fm.players).filter(p => fm.teams[p] == 2);
+    let cid = alleIds;
+    if (linksSlots.length === 2 && rechtsSlots.length === 2) {
+        cid = { 1: alleIds[linksSlots[0]], 2: alleIds[linksSlots[1]], 3: alleIds[rechtsSlots[0]], 4: alleIds[rechtsSlots[1]] };
+    } else {
+        console.warn("⚠️ Teamindeling niet eenduidig, oude koppeling gebruikt:", fm.teams);
+    }
     const winnerIsLeft = ts.activeSide === 'left';
 
     const payload = {
