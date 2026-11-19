@@ -4934,3 +4934,26 @@ html body * {
 .alt-progress-bar.alt-progress-gehaald{
     background: #3b82f6;
 }
+
+/* Scorebord (pagina 5): + / − / ongedaan niet tonen (bediening met de presenter). */
+#page5 .score-controls .score-btn { display: none !important; }
+#page5 .undo-btn-bottom { display: none !important; }
+
+/* Nodig-blokje: paarse rand en een vaag 💎 achter het cijfer, zoals de andere blokjes. */
+#p1NodigAvg, #p2NodigAvg { border-color: #9b59b6 !important; }
+#p1NodigAvg::before, #p2NodigAvg::before { content: "💎"; color: #9b59b6; }
+
+/* Gespeeld gemiddelde: heel lichte groene of rode achtergrond. */
+#page5 .stat-box.gem-goed { background: rgba(46, 204, 113, 0.28) !important; }
+#page5 .stat-box.gem-slecht { background: rgba(231, 76, 60, 0.28) !important; }
+
+/* Grotere hoofdblokken en infoblokjes, in % van het scherm; alleen vanaf 1200 px breed. */
+@media (min-width: 1200px) {
+    #page5 .scoring-row-container { padding: 20px 24px !important; gap: 16px !important; }
+    #page5 .score-cell { min-height: 22vh !important; max-width: 16vw !important; padding: 25px 6px !important; }
+    #page5 .score-cell.center-info, #page5 #currentPlayerDisplay { min-height: 22vh !important; max-width: 24vw !important; }
+    #page5 .cell-value { font-size: 5.8vw !important; }
+    #page5 #p1TotalCell .cell-value, #page5 #p2TotalCell .cell-value { font-size: 6vw !important; }
+    #page5 .stat-box { width: 10.5vw !important; height: 12vh !important; font-size: 2.6vw !important; }
+    #page5 .stat-box::before { font-size: 6rem !important; }
+}
