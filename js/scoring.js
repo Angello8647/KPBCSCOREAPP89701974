@@ -238,11 +238,11 @@ function updateScoringPage() {
 
     document.getElementById('currentPlayerDisplay').innerHTML = `
         <div style="text-align:center; pointer-events: none;">
-            <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
-                B ${currentBeurt}
+            <div style="font-size:12vh; font-weight:900; color:#7dc4ff; line-height:1; text-shadow: 0 0 25px rgba(125, 196, 255, 0.45);">
+                ${currentBeurt}
             </div>
             <div style="margin-top:15px; font-size:1.1rem; color:#bdc3c7; font-weight:bold; text-transform: uppercase; letter-spacing: 1px;">
-                Einde beurt? Klik hier
+
             </div>
             ${extraInfo}
         </div>`;
@@ -345,7 +345,14 @@ function updateCurrentScoreDisplay() {
     if (p1TotalCell) p1TotalCell.classList.toggle('dimmed', state.currentPlayer !== 1);
     if (p2TotalCell) p2TotalCell.classList.toggle('dimmed', state.currentPlayer !== 2);
 
-    const fmtAvg = (p) => p.turns && p.turns.length > 0 ? (p.score / p.turns.length).toFixed(2).replace('.', ',') : '0,00';
+    const fmtAvg = (p) => {
+        // De speler aan de beurt telt zijn lopende beurt mee (live); na het einde van de match niet meer.
+        const nr = p === state.player1 ? 1 : 2;
+        const lopend = state.currentPlayer === nr && !state.matchEnded;
+        const beurten = (p.turns ? p.turns.length : 0) + (lopend ? 1 : 0);
+        const punten = p.score + (lopend ? (state.currentInput || 0) : 0);
+        return beurten > 0 ? (punten / beurten).toFixed(2).replace('.', ',') : '0,00';
+    };
     const fmtTarget = (val) => val && val !== '−' ? parseFloat(String(val).replace(',', '.')).toFixed(2).replace('.', ',') : '−';
 
     document.getElementById('p1PlayedAvg').textContent = fmtAvg(state.player1);
@@ -355,7 +362,57 @@ function updateCurrentScoreDisplay() {
     document.getElementById('p2PlayedAvg').textContent = fmtAvg(state.player2);
     document.getElementById('p2Highest').textContent = state.player2.highestSeries || 0;
     document.getElementById('p2TargetAvg').textContent = fmtTarget(state.player2.fixedTSG || '−');
+
+    window.updateNodigBlokken();
 }
+
+// "Nodig": punten die je in DEZE beurt nog moet maken om na deze beurt op tempo te zitten
+// (doel / 20 per beurt, Driebanden / 40), naar boven afgerond; live met het huidige punt.
+// Gespeeld gemiddelde: lichtgroen bij gelijk of hoger dan het TSG, lichtrood eronder.
+// Bij Dames en tornooien bestaat dit niet: geen blokje, geen kleur.
+window.updateNodigBlokken = function() {
+    const disc = state.currentMatch ? state.currentMatch.discipline : '';
+    const geenNodig = disc === 'Dames' || disc === 'Tornooi';
+    const doelBeurten = disc === 'Driebanden' ? 40 : 20;
+    const fmtNodig = (p, nr) => {
+        const doel = parseFloat(String(p.target).replace(',', '.'));
+        if (!doel || isNaN(doel)) return '−';
+        const live = state.currentPlayer === nr ? (state.currentInput || 0) : 0;
+        const rest = doel - p.score - live;
+        if (rest <= 0) return '✓';
+        const beurtenGespeeld = p.turns ? p.turns.length : 0;
+        const tempoPunten = (doel * (beurtenGespeeld + 1)) / doelBeurten;
+        const nodig = Math.ceil(tempoPunten - p.score - live - 1e-9);
+        return String(Math.max(0, Math.min(nodig, rest)));
+    };
+    [1, 2].forEach(nr => {
+        const box = document.getElementById('p' + nr + 'NodigAvg');
+        if (!box) return;
+        if (geenNodig) {
+            box.style.setProperty('display', 'none', 'important');
+        } else {
+            box.style.removeProperty('display');
+            box.textContent = fmtNodig(nr === 1 ? state.player1 : state.player2, nr);
+        }
+    });
+
+    const kleurGem = (p, id) => {
+        const box = document.getElementById(id);
+        if (!box) return;
+        box.classList.remove('gem-goed', 'gem-slecht');
+        if (geenNodig) return;
+        const nr = p === state.player1 ? 1 : 2;
+        const lopend = state.currentPlayer === nr && !state.matchEnded;
+        const beurten = (p.turns ? p.turns.length : 0) + (lopend ? 1 : 0);
+        const tsg = parseFloat(String(p.fixedTSG).replace(',', '.'));
+        if (!beurten || !tsg || isNaN(tsg)) return;
+        const gem = Math.round(((p.score + (lopend ? (state.currentInput || 0) : 0)) / beurten) * 100) / 100;
+        const tsgAfgerond = Math.round(tsg * 100) / 100;
+        box.classList.add(gem >= tsgAfgerond ? 'gem-goed' : 'gem-slecht');
+    };
+    kleurGem(state.player1, 'p1PlayedAvg');
+    kleurGem(state.player2, 'p2PlayedAvg');
+};
 
 let geluidGemute = false;
 
@@ -3462,11 +3519,11 @@ window.updateFriendlyUI = function() {
     
     centerInfo.innerHTML = `
         <div style="text-align:center; pointer-events: none;">
-            <div style="font-size:6.5rem; font-weight:900; color:${textColor}; line-height:1; text-shadow: 0 0 25px ${glowColor}; transition: color 0.3s ease;">
-                B ${currentBeurt}
+            <div style="font-size:12vh; font-weight:900; color:#7dc4ff; line-height:1; text-shadow: 0 0 25px rgba(125, 196, 255, 0.45);">
+                ${currentBeurt}
             </div>
             <div style="margin-top:15px; font-size:1.1rem; color:#bdc3c7; font-weight:bold; text-transform: uppercase; letter-spacing: 1px;">
-                Einde beurt? Klik hier
+
             </div>
             ${extraInfo}
         </div>`;
